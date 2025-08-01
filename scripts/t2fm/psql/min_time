@@ -1,0 +1,6 @@
+-- Minimum value of timeFirst as a Unix timestamp
+
+SELECT
+    EXTRACT(epoch FROM MIN("timeFirst"))
+FROM
+    flow

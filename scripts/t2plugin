@@ -1,0 +1,437 @@
+#!/usr/bin/env bash
+#
+# Use this script to create a new plugin or list existing plugins.
+
+source "$(dirname "$0")/t2utils.sh"
+
+usage() {
+    echo "Usage:"
+    echo "    $SNAME [OPTION...] [ACTION...]"
+    echo
+    echo "Actions:"
+    echo "    -c plugin_name    create a new C plugin"
+    echo "    -l                list all available plugins (name, number, description)"
+    echo "    -l=type           list all available plugins by type:"
+    echo "                          g: global,"
+    echo "                          b: basic,"
+    echo "                         l2: layer 2,"
+    echo "                         l4: layer 3/4,"
+    echo "                         l7: layer 7,"
+    echo "                          a: application"
+    echo "                          m: math,"
+    echo "                          c: classifier,"
+    echo "                          o: output"
+    echo
+    echo "Optional arguments:"
+    echo "    -m                create a minimal plugin"
+    echo "    -s                create a minimal sink plugin"
+    echo "    -t                create a minimal t2buf plugin"
+    echo "    --cpp             create a C++ plugin"
+    echo "    --rust            create a Rust plugin"
+    echo "    -n num            plugin number to use [default: random]"
+    echo
+    echo "    -y                do not ask for confirmation before executing an action"
+    echo
+    echo "    -N                only list the name of all available plugins"
+    echo "    -H                do not output any header in the list of plugins"
+    echo
+    echo "Help and documentation arguments:"
+    echo "    -h, --help        display this help and exit"
+}
+
+list_plugins() {
+    if [ -z "$1" ]; then
+        printerr "Usage: list_plugins section_header"
+        exit 1
+    fi
+
+    AWK -F "&" -v header="$1" -v names_only="$NAMES_ONLY" -v headers="$HEADERS" '
+        /subsection/ && $0 ~ header {
+            if (headers) {
+                title = gensub(/^[^\{]+\{([^\}]+)\}.*$/, "\\1", "g", $1)
+                printf "\n\033[1m[%s]\033[0m\n\n", title
+            }
+            p = 1
+            next
+        }
+        p && /[^%]\\tranrefpl/ {
+            name = gensub(/^[^\{]+\{([^\}]+)\}.*$/, "\\1", "g", $1)
+            if (names_only) {
+                print name
+            } else {
+                num  = gensub(/\s*/, "", "g", $2)
+                desc = gensub(/(^\s*|\s*$)/, "", "g", $3)
+                stat = gensub(/\s*/, "", "g", $4)
+                space = ""
+                for (i = length(name); i < 19; i++) {
+                    space = space " "
+                }
+                print name space num "    " desc
+            }
+            next
+        }
+        p && /bottomrule/ {
+            if (headers) {
+                printf "\n"
+            }
+            exit
+        }
+    ' "$T2HOME/doc/status.tex"
+}
+
+rand_pl_num() {
+    if [ "$TEMPLATE_C" = "t2PSkel-sink" ]; then
+        PLUGIN_NUM="9$(cat /dev/urandom | LC_ALL=C tr -dc '0-9' | fold -w 2 | head -1)"
+    else
+        PLUGIN_NUM="$(cat /dev/urandom | LC_ALL=C tr -dc '0-9' | fold -w 3 | head -1)"
+    fi
+}
+
+create_c_plugin() {
+    local files=(
+        "autogen.sh"
+        "CMakeLists.txt"
+        "configure.ac"
+        "COPYING"
+        "default.config"
+        "doc/Makefile"
+        "doc/$SKELETON.tex"
+        "Makefile.am"
+        "meson.build"
+        "src/Makefile.am"
+        "src/$TEMPLATE_C.c"
+        "src/$TEMPLATE_H.h"
+        "t2plconf"
+        "tests/$SKELETON.flags"
+    )
+
+    # Create directories and copy files
+    mkdir -p "$PLUGIN_NAME/"{doc,src,tests}
+    for i in ${files[@]}; do
+        cp "$SKELETON/$i" "$PLUGIN_NAME/$i"
+    done
+
+    # Go into the newly create plugin folder
+    cd "$PLUGIN_NAME"
+
+    # Replace plugin name and order
+    $SED -i "s/$SKELETON/$PLUGIN_NAME/g" ${files[@]}
+    $SED -i "s/$SKELETON/\U$PLUGIN_NAME\E/ig" ${files[@]}
+    $SED -i "s/^PLUGINORDER=999$/PLUGINORDER=${PLUGIN_NUM}/" autogen.sh
+
+    if [ -n "$(AWK '/Decode$/' <<< "$PLUGIN_NAME")" ]; then
+        local plugin_prefix="$("$SED" 's/Decode$//' <<< "$PLUGIN_NAME")"
+        $SED -i "s/Number of ${PLUGIN_NAME} packets/Number of \U${plugin_prefix}\E packets/g" ${files[@]}
+        $SED -i "s/${PLUGIN_NAME}Flow\(_t\|s\|P\)/${plugin_prefix}Flow\\1/g" ${files[@]}
+        $SED -i "s/${PLUGIN_NAME}\(Stat\|Var\)/${plugin_prefix}\\1/g" ${files[@]}
+        $SED -i "s/num${PLUGIN_NAME}\(Pkts0\?\)/num\u${plugin_prefix}\\1/ig" ${files[@]}
+        $SED -i "s/${PLUGIN_NAME}_STAT_MYPROT/\U${plugin_prefix}_STAT_${plugin_prefix}\E/ig" ${files[@]}
+        $SED -i "s/${PLUGIN_NAME}_/${plugin_prefix}_/g" ${files[@]}
+        $SED -i "s/\([^_]\)$(tr '[a-z]' '[A-Z]' <<< "${PLUGIN_NAME}")_/\\1\U${plugin_prefix}\E_/g" ${files[@]}
+    fi
+
+    # Replace guard in header file
+    local guard=$($SED 's/\([a-z0-9_]\+\)\([A-Z]\)/\1_\2/g' <<< "$PLUGIN_NAME")
+    local sguard=$($SED 's/\([a-z0-9_]\+\)\([A-Z]\)/\1_\2/g' <<< "$SKELETON")
+    $SED -i "s/__${sguard}_H__/__\U$guard\E_$(tr [a-z] [A-Z] <<< "$HDR_EXT")__/ig" "src/${TEMPLATE_H}.h"
+
+    # Edit build files
+    if [ "$TEMPLATE_C" = "t2PSkel-t2buf" ]; then
+        $SED -i "s/^\(\s\+\)#\(..\/..\/utils\/t2buf.c\)/\1\2/g" CMakeLists.txt
+        $SED -i "s/^\(\s\+\)#\(join_paths(.*t2buf.c'),\)/\1\2/g" meson.build
+        $SED -i "s/^\(\s\+@PACKAGE_NAME@.c\)\s*$/\1 \\\\/g" src/Makefile.am
+        $SED -i "s/^#\(\s\+.*t2buf.c\)/\1/g" src/Makefile.am
+    fi
+
+    # Rename files
+    mv "doc/${SKELETON}.tex"     "doc/${PLUGIN_NAME}.tex"
+    mv "src/${TEMPLATE_C}.c"     "src/${PLUGIN_NAME}.${SRC_EXT}"
+    mv "src/${TEMPLATE_H}.h"     "src/${PLUGIN_NAME}.${HDR_EXT}"
+    mv "tests/${SKELETON}.flags" "tests/${PLUGIN_NAME}.flags"
+}
+
+create_cpp_plugin() {
+    create_c_plugin
+
+    local files=(
+        "autogen.sh"
+        "CMakeLists.txt"
+        "default.config"
+        "meson.build"
+        "src/Makefile.am"
+        "src/${PLUGIN_NAME}.${SRC_EXT}"
+        "src/${PLUGIN_NAME}.${HDR_EXT}"
+        "tests/${PLUGIN_NAME}.flags"
+    )
+
+    local callbacks=(
+        "void t2Init"
+        "binary_value_t\* t2PrintHeader"
+        "void t2OnNewFlow"
+        "void t2OnLayer2"
+        "void t2OnLayer4"
+        "void t2OnFlowTerminate"
+        "void t2Finalize"
+        "void t2SaveState"
+        "void t2RestoreState"
+        "void t2BufferToSink"
+        "void t2PluginReport"
+        "void t2Monitoring"
+    )
+
+    # include t2Plugin.hpp instead of t2Plugin.h
+    $SED -i 's/^#include "t2Plugin.h"/#include "t2Plugin.hpp"/' "src/${PLUGIN_NAME}."{"${HDR_EXT}","${SRC_EXT}"}
+
+    # replace the file extensions for source files
+    $SED -i "s/${PLUGIN_NAME}\.c/${PLUGIN_NAME}\.${SRC_EXT}/g" ${files[@]}
+    $SED -i "s/${PLUGIN_NAME}\.cpponfig/${PLUGIN_NAME}\.config/g" "default.config"
+
+    # replace the file extensions for header files
+    $SED -i "s/${PLUGIN_NAME}\.h/${PLUGIN_NAME}\.${HDR_EXT}/g" ${files[@]}
+
+    # append the T2_API macro before every callback
+    local oldifs="$IFS"
+    IFS=$'\n'
+    for i in ${callbacks[@]}; do
+        $SED -i "s/$i(/T2_API $i(/g" "src/${PLUGIN_NAME}.${SRC_EXT}"
+    done
+    IFS="$oldifs"
+
+    # src/Makefile.am
+    $SED -i "s/@PACKAGE_NAME@\.c/@PACKAGE_NAME@\.${SRC_EXT}/g" "src/Makefile.am"
+    $SED -i "s/CFLAGS/CXXFLAGS/g" "src/Makefile.am"
+
+    # CMakeLists.txt
+    $SED -i "s/pluginName\.c/pluginName.${SRC_EXT}/g" "CMakeLists.txt"
+    $SED -i "s/C standard to use../C++ standard to use/g" "CMakeLists.txt"
+    $SED -i "s/LANGUAGES\s\+C\s*$/LANGUAGES    CXX/g" "CMakeLists.txt"
+    $SED -i "/C_EXTENSIONS/,/C_STANDARD_REQUIRED/d" "CMakeLists.txt"
+    $SED -i "s/C_STANDARD.*/CXX_STANDARD 11/g" "CMakeLists.txt"
+    $SED -i "s!src/\${_plugin_name}.c!src/\${_plugin_name}.${SRC_EXT}!g" "CMakeLists.txt"
+
+    # meson.build
+    $SED -i "s/'c'/'${SRC_EXT}'/g" "meson.build"
+    $SED -i "s/'\.h/'.${HDR_EXT}/g" "meson.build"
+    $SED -i "s/'\.c/'.${SRC_EXT}/g" "meson.build"
+    $SED -i 's/c_std=gnu99/cpp_std=c++11/g' "meson.build"
+}
+
+create_rust_plugin() {
+    SKELETON="rustTemplate"
+
+    local t2ver="$($SED -n 's/^#define\s\+T2_VERSION\s\+"\([0-9]\+\.[0-9]\+\.[0-9]\+\)".*/\1/p' \
+        "$T2HOME/tranalyzer2/src/main.h")"
+
+    if [[ -z "$t2ver" ]]; then
+        printerr "Failed to get current Tranalyzer version"
+        exit 1
+    fi
+
+    check_dependency git
+    git clone --branch "v${t2ver}" "https://git.tranalyzer.com/tranalyzer/${SKELETON}.git" \
+        "$PLUGIN_NAME" || exit 1
+
+    cd "$PLUGIN_NAME"
+
+    local files=(
+        "Cargo.toml"
+        "autogen.sh"
+        "README.md"
+        "doc/Makefile"
+        "doc/${SKELETON}.tex"
+    )
+
+    $SED -i "s/$SKELETON/$PLUGIN_NAME/g" ${files[@]}
+    $SED -i "s/${SKELETON^}/${PLUGIN_NAME^}/g" src/lib.rs
+    $SED -i "s/^PLUGINORDER=999$/PLUGINORDER=${PLUGIN_NUM}/" autogen.sh
+    mv "doc/${SKELETON}.tex" "doc/${PLUGIN_NAME}.tex"
+}
+
+validate_plugin_name() {
+    validate_next_arg "$1" "$2"
+    if ! [[ "$2" =~ ^[a-z][A-Za-z0-9_]*$ ]]; then
+        printerr "Invalid plugin name '$2'"
+        printinf "Plugin names must start with lowercase and only contain chars in [A-Za-z0-9_]"
+        exit 1
+    fi
+}
+
+validate_type() {
+    local type="$1"
+    case "$type" in
+        g|b|l2|2|l4|4|l7|7|a|m|c|o) ;;
+        *)
+            printerr "Unknown plugin type '$type'"
+            abort_with_help
+            ;;
+    esac
+}
+
+if [ -z "$1" ]; then
+    usage
+    exit 0
+fi
+
+TEMPLATE_C="t2PSkel"
+TEMPLATE_H="t2PSkel"
+LANGUAGE="C"
+SRC_EXT="c"
+HDR_EXT="h"
+
+HEADERS=1
+NAMES_ONLY=0
+
+LIST=()
+
+while [ $# -ne 0 ]; do
+    case "$1" in
+
+        -c|--create)
+            PLUGIN_NAME="${2%/}"
+            validate_plugin_name "$1" "$PLUGIN_NAME"
+            shift
+            ;;
+
+        -m|--minimal)
+            TEMPLATE_C="t2PSkel-min"
+            TEMPLATE_H="t2PSkel-min"
+            ;;
+
+        -s|--sink)
+            TEMPLATE_C="t2PSkel-sink"
+            TEMPLATE_H="t2PSkel-sink"
+            START="900"
+            ;;
+
+        -t|--t2buf)
+            TEMPLATE_C="t2PSkel-t2buf"
+            TEMPLATE_H="t2PSkel-min"
+            ;;
+
+        --[Cc][Pp][Pp]|--[Cc]++)
+            LANGUAGE="C++"
+            SRC_EXT="cpp"
+            HDR_EXT="hpp"
+            ;;
+
+        --[Rr][Uu][Ss][Tt])
+            LANGUAGE="Rust"
+            SRC_EXT="rs"
+            HDR_EXT="h"
+            ;;
+
+        -n|--number|--plugin-number)
+            validate_next_num "$1" "$2"
+            PLUGIN_NUM="$2"
+            shift
+            ;;
+
+        -y|--yes)
+            YES="yes"
+            ;;
+
+        -N|--names-only)
+            NAMES_ONLY=1
+            ;;
+
+        -H|--no-headers)
+            unset HEADERS
+            ;;
+
+        -l|--list)
+            LIST=(g b l2 l4 l7 a m c o)
+            ;;
+        -l[gb247amco]|-ll[247])
+            TYPE="${1#*l}"
+            validate_type "$TYPE"
+            LIST+=("$TYPE")
+            ;;
+        -l=*|--list=*)
+            TYPE="${1#*=}"
+            validate_type "$TYPE"
+            LIST+=("$TYPE")
+            ;;
+
+        -h|-\?|--help)
+            usage
+            exit 0
+            ;;
+
+        *)
+            abort_option_unknown "$1"
+            ;;
+    esac
+    shift
+done
+
+if [ ${#LIST[@]} -gt 0 ]; then
+    for i in ${LIST[@]}; do
+        case "$i" in
+               g) list_plugins "Global";;
+               b) list_plugins "Basic";;
+            l2|2) list_plugins "Layer 2";;
+            l4|4) list_plugins "Layer 3/4";;
+            l7|7) list_plugins "Layer 7";;
+               a) list_plugins "Application";;
+               m) list_plugins "Math";;
+               c) list_plugins "Classifier";;
+               o) list_plugins "Output";;
+        esac
+    done
+    exit 0
+fi
+
+if [ -z "$PLUGIN_NAME" ]; then
+    # Should not happen, but better be safe
+    printerr "Plugin name cannot be empty"
+    abort_with_help
+    exit 1
+fi
+
+SKELETON="t2PSkel"
+
+# Go into the plugin folder
+cd "$T2PLHOME"
+
+if [ "$LANGUAGE" != "Rust" ] && [ ! -d "$SKELETON" ]; then
+    printerr "Could not find folder '$SKELETON/'"
+    exit 1
+fi
+
+if [ -d "$PLUGIN_NAME" ] && [ "$(ls -a "$PLUGIN_NAME" | grep -v "^\.")" ]; then
+    ask_default_no "Folder '$PLUGIN_NAME' already exists... proceed anyway" "$YES" || exit 1
+    rm -rf "$PLUGIN_NAME"
+fi
+
+if [ -z "$PLUGIN_NUM" ]; then
+    rand_pl_num
+    while [ "$(grep "^PLUGINORDER=$PLUGIN_NUM\s*$" */autogen.sh)" ]; do
+        rand_pl_num
+    done
+    echo "No plugin number provided... using $PLUGIN_NUM"
+else
+    TMP="$(grep "^PLUGINORDER=$PLUGIN_NUM\s*$" */autogen.sh)"
+    if [ "$TMP" ]; then
+        printerr "Plugin number $PLUGIN_NUM already used by '${TMP%/*}' plugin"
+        exit 1
+    fi
+
+    if [ "$TEMPLATE_C" = "t2PSkel-sink" ] && [ $PLUGIN_NUM -lt 900 ]; then
+        printerr "Sink plugins must have a plugin number bigger than 900"
+        exit 1
+    fi
+fi
+
+case "$LANGUAGE" in
+       C) create_c_plugin;;
+     C++) create_cpp_plugin;;
+    Rust) create_rust_plugin;;
+       *)
+          # Should not happen...
+          printerr "Creating $LANGUAGE plugins is not supported"
+          exit 1
+          ;;
+esac
+
+printok "$LANGUAGE plugin '$PLUGIN_NAME' created"
+printinf "Make sure to update your aliases by calling 'source \"\$T2HOME/scripts/t2_aliases\"'"

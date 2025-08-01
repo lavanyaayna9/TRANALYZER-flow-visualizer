@@ -1,0 +1,105 @@
+\IfFileExists{t2doc.cls}{
+    \documentclass[documentation]{subfiles}
+}{
+    \errmessage{Error: could not find 't2doc.cls'}
+}
+
+\begin{document}
+
+\trantitle
+    {pwX}
+    {Clear-text Passwords Extractor}
+    {Tranalyzer Development Team} % author(s)
+
+\section{pwX}\label{s:pwX}
+
+\subsection{Description}
+The pwX plugin extracts usernames and passwords from different plaintext protocols.
+This plugin produces only output to the flow file.
+Configuration is achieved by user defined compiler switches in {\tt src/pwX.h}.
+
+\subsection{Configuration Flags}
+The following flags can be used to control the output of the plugin:
+\begin{longtable}{>{\tt}lcl}
+    \toprule
+    {\bf Variable} & {\bf Default} & {\bf Description} \\
+    \midrule\endhead%
+    PWX\_USERNAME    & 1 & Output the username\\
+    PWX\_PASSWORD    & 1 & Output the password\\
+    \\
+    PWX\_FTP         & 1 & Extract FTP authentication\\
+    PWX\_POP3        & 1 & Extract POP3 authentication\\
+    PWX\_IMAP        & 1 & Extract IMAP authentication\\
+    PWX\_SMTP        & 1 & Extract SMTP authentication\\
+    PWX\_HTTP\_BASIC & 1 & Extract HTTP Basic Authorization\\
+    PWX\_HTTP\_PROXY & 1 & Extract HTTP Proxy Authorization\\
+    PWX\_HTTP\_GET   & 1 & Extract HTTP GET authentication\\
+    PWX\_HTTP\_POST  & 1 & Extract HTTP POST authentication\\
+    PWX\_IRC         & 1 & Extract IRC authentication\\
+    PWX\_TELNET      & 1 & Extract Telnet authentication\\
+    PWX\_LDAP        & 1 & Extract LDAP bind request authentication\\\\
+    PWX\_PAP         & 1 & Extract PAP (Password Authentication Protocol) authentication\\
+    \\
+    PWX\_STATUS      & 1 & Extract authentication status (success, error, \ldots).\\
+    \\
+    PWX\_DEBUG       & 0 & Activate debug output.\\
+    \bottomrule
+\end{longtable}
+
+%\subsection{Required files}
+%none
+
+\subsection{Flow File Output}
+The pwX plugin outputs the following columns:
+\begin{longtable}{>{\tt}lll>{\tt\small}l}
+    \toprule
+    {\bf Name} & {\bf Type} & {\bf Description} & {\bf Flags}\\
+    \midrule\endhead%
+    \nameref{pwxType}   & U8 & Authentication type   & \\
+    pwxUser             & S  & Extracted username    & PWX\_USERNAME!=0\\
+    pwxPass             & S  & Extracted password    & PWX\_PASSWORD!=0\\
+    \nameref{pwxStatus} & U8 & Authentication status & PWX\_STATUS!=0\\
+    \bottomrule
+\end{longtable}
+
+\subsubsection{pwxType}\label{pwxType}
+The {\tt pwxType} column is to be interpreted as follows:
+\begin{longtable}{rl}
+    \toprule
+    {\bf pwxType} & {\bf Description}\\
+    \midrule\endhead%
+     0 & No password or username extracted\\
+     1 & FTP authentication\\
+     2 & POP3 authentication\\
+     3 & IMAP authentication\\
+     4 & SMTP authentication\\
+     5 & HTTP Basic Authorization\\
+     6 & HTTP Proxy Authorization\\
+     7 & HTTP GET authentication\\
+     8 & HTTP POST authentication \\
+     9 & IRC authentication \\
+    10 & Telnet authentication \\
+    11 & LDAP authentication \\
+    12 & PAP authentication \\
+    \bottomrule
+\end{longtable}
+
+\subsubsection{pwxStatus}\label{pwxStatus}
+The {\tt pwxStatus} column is to be interpreted as follows:
+\begin{longtable}{rl}
+    \toprule
+    {\bf pwxStatus} & {\bf Description}\\
+    \midrule\endhead%
+    0 & Authentication status is unknown\\
+    1 & Authentication was successful\\
+    2 & Authentication failed\\
+    \bottomrule
+\end{longtable}
+
+%\subsection{Additional Output}
+%none
+
+\subsection{Plugin Report Output}
+The number of passwords extracted is reported.
+
+\end{document}

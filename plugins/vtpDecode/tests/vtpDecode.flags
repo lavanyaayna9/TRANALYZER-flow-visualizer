@@ -1,0 +1,26 @@
+# Flags to toggle
+#
+# Run the ../../../tests/test.sh script from the plugin main directory:
+#
+# cd $T2HOME/plugins/vtpDecode
+# ../../tests/test.sh [OPTION...]
+#
+# If run from this folder, make sure to use absolute path for the '-p' option.
+#
+# Flag name     File
+
+# ../../tranalyzer2/src/networkHeaders.h
+ETH_ACTIVATE    ../../tranalyzer2/src/networkHeaders.h
+
+# ../../tranalyzer2/src/tranalyzer.h
+BLOCK_BUF       ../../tranalyzer2/src/tranalyzer.h
+ENVCNTRL        ../../tranalyzer2/src/tranalyzer.h
+
+# src/vtpDecode.h
+VTP_DEBUG       src/vtpDecode.h
+VTP_STR_MAX     src/vtpDecode.h
+VTP_AGGR        src/vtpDecode.h
+VTP_SAVE        src/vtpDecode.h
+VTP_NUM_UPDID   src/vtpDecode.h
+VTP_TS_FRMT     src/vtpDecode.h
+VTP_VLANID_FRMT src/vtpDecode.h

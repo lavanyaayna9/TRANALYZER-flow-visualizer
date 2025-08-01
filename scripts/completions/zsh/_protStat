@@ -1,0 +1,27 @@
+# ZSH completion for protStat
+
+_protStat() {
+    #compdef protStat
+
+    local cur="${words[CURRENT]}"
+    [ $CURRENT -gt 2 ] && local prev="${words[CURRENT-1]}"
+
+    case "$prev" in
+        --color)
+            local whence=(always auto never)
+            compadd "${whence[@]}"
+            return
+            ;;
+        -n|-p)
+            return
+            ;;
+    esac
+
+    if [[ "$cur" == -* ]]; then
+        _arguments --
+    else
+        _files
+    fi
+}
+
+compdef _protStat protStat

@@ -1,0 +1,1908 @@
+#!/usr/bin/env bash
+#
+# Generates a PDF/LaTeX report from a PCAP, Tranalyzer flow file or database
+# (ClickHouse, MongoDB or PostgreSQL).
+#
+# Usage: t2fm [OPTION...] <INPUT>
+#
+# Required plugins:
+#   basicFlow
+#   basicStats
+#   txtSink
+#
+# Optional plugins:
+#   arpDecode
+#   dnsDecode
+#   #geoip
+#   httpSniffer     (HTTP_SAVE_*=1)
+#   nDPI            (NDPI_OUTPUT_STR=1)
+#   portClassifier  (PBC_NUM=1 &&/|| PBC_STR=1)
+#   pwX
+#   sshDecode
+#   sslDecode
+#
+# TODO
+#   - add support for generating report from NetFlow data
+#   - db backend: add options to choose hostname, port, username, password and table name
+#     (or option to pass db.cfg file?)
+#
+#   - Add link to virustotal for exe
+#   - SCTP ports?
+#   - HTTPS:
+#       - Add top cert. issuer
+#   - Split top protocols over non-standard ports by bytes, packets and flows
+#   - More info in summary:
+#       - Number of A, B flows
+#       - Warnings: snaplen, ...
+#
+#   - Split applications into TCP/UDP applications?
+#   - Split IP into private/public IPs?
+#   - DNS queries/answers: ignore _ldap.tcp, _kerberos._tcp, x.y.z.a.in-addr.arpa...
+#
+#   - delete placeholders at the end
+
+T2FMDIR="$(dirname "${0}")"
+
+source "${T2FMDIR}/../t2utils.sh"
+
+T2FMDIR="$("${READLINK}" -f "${T2FMDIR}")"
+
+REQUIRED_PLUGINS=(
+    basicFlow
+    basicStats
+    txtSink
+)
+
+#OPTIONAL_PLUGINS=(
+#    arpDecode
+#    dnsDecode
+#    #geoip # deprecated by basicFlow
+#    httpSniffer
+#    nDPI
+#    portClassifier
+#    pwX
+#    sshDecode
+#    sslDecode
+#)
+
+REQUIRED_COLS=(
+    # basicFlow
+    dir
+    flowStat
+    timeFirst
+    timeLast
+    duration
+    "srcIP,srcIP4,srcIP6"
+    "dstIP,dstIP4,dstIP6"
+    srcPort
+    dstPort
+    l4Proto
+
+    # basicStats
+    pktsSnt
+    pktsRcvd
+    l7BytesSnt
+    l7BytesRcvd
+)
+
+#OPTIONAL_COLS=(
+#    # arpDecode
+#    #arpStat
+#
+#    # basicFlow
+#    #vlanID
+#    #srcIPASN
+#    #dstIPASN
+#    #srcIPCC     # If present, favoured over geoip
+#    #dstIPCC     # If present, favoured over geoip
+#    #srcIPOrg
+#    #dstIPOrg
+#
+#    # dnsDecode
+#    #dnsAname
+#    #dnsQname
+#    #dnsStat
+#    #dns4Aaddress
+#    #dns6Aaddress
+#
+#    # geoip
+#    #srcIpCountry # deprecated by srcIPCC (basicFlow)
+#    #dstIpCountry # deprecated by dstIPCC (basicFlow)
+#
+#    # httpSniffer
+#    #httpUsrAg
+#    #httpHosts
+#    #httpServ
+#    #httpRSCode
+#
+#    # nDPI
+#    #nDPIclass
+#
+#    # portClassifier
+#    #dstPortClass
+#    #dstPortClassN
+#
+#    # pwX
+#    #pwxType
+#    #pwxUser
+#    #pwxPass
+#
+#    # sshDecode
+#    #sshHassh
+#    #sshStat
+#    #sshVersion
+#
+#    # sslDecode
+#    #sslServerName
+#    #sslCSubjectCommonName
+#    #sslBlistCat
+#    #sslJA3Hash
+#    #sslJA3Desc
+#    #sslJA4
+#    #sslJA4Desc
+#)
+
+TOP_ONLY=0     # Only compute top stats
+BOTTOM_ONLY=1  # Only compute bottom stats
+TOP_BOTTOM=2   # Compute top and bottom stats
+
+# Settings
+HRNUM=0                    # 0: human readable, 1: raw and human readable, 2: raw
+CHART_N=5                  # Number of values to display in charts
+TABLE_N=10                 # Number of values to display in tables
+LOGAXIS=1                  # Whether to use logarithmic Y axis
+POLLINT=1                  # Poll interval
+TOP_STATS="${TOP_BOTTOM}"  # Compute top and bottom stats by default
+
+# Colors (cyan, red, orange, gray!25, ...)
+TABLE_ODD_COLOR="gray!15"           # Background color for odd rows
+TABLE_EVEN_COLOR="white"            # Background color for even rows
+CHART_COLOR="\\\\altrowcolorodd"    # Charts color
+
+AUTHOR="Tranalyzer Development Team"
+TITLE="Tranalyzer report"
+COPYRIGHT="2008-2024 by ${AUTHOR}"
+WATERMARK="Tranalyzer"
+
+# Sections (uncomment to disable the section)
+#NOASNS=1
+#NOCOUNTRIES=1
+#NOORGANIZATIONS=1
+#NODNS=1
+#NOHTTP=1
+#NOHTTPS=1
+#NOSSH=1
+#NONONSTDPORTS=1
+#NOPASSWORDS=1
+#NOWARNINGS=1
+NODATACARVING=1
+
+# Privacy (uncomment to obfuscate)
+#HIDEUSER=1
+#HIDEPASS=1
+
+usage() {
+    echo "${SNAME} - Generate PDF report out of PCAP files or NetFlow records"
+    echo
+    echo "Usage:"
+    echo "    ${SNAME} [OPTION...] <INPUT>"
+    echo
+    echo "Input:"
+    echo "    -i iface              Interface to capture traffic from"
+    echo "    -r pcap               PCAP file to analyze"
+    echo "    -R list               List of PCAP files to analyze"
+    echo "    -F file               Flow file to analyze"
+    echo "    -C dbname             ClickHouse database name"
+    echo "    -m dbname             Mongo database name"
+    echo "    -p dbname             PostgreSQL database name"
+    echo "    -N netflow            NetFlow records (file or directory)"
+    #echo
+    #echo "Databse configuration:"
+    #echo "    -u username           Database username"
+    #echo "    -p password           Database password"
+    #echo "    -H address            Database address"
+    #echo "    -P port               Database port"
+    #echo "    -T name               Database table name"
+    echo
+    echo "Output:"
+    echo "    -w prefix             Append 'prefix' to any output file produced"
+    echo "    -A                    Automatically open the generated PDF"
+    echo
+    echo "Optional arguments:"
+    echo "    -T from to            Only consider data between 'from' and 'to'"
+    echo "                          [-C, -m or -p only]"
+    echo
+    echo "    -b                    Configure and build Tranalyzer2 and the plugins"
+    echo "    --reset               Reset T2 and the plugins configuration at the end"
+    echo "    -f factor             Tranalyzer hash table multiplication factor"
+    echo
+    echo "    -d, --data-carving    Carve HTTP objects (high memory usage)"
+    echo "                          (required to report EXE downloads and their checksums)"
+    echo
+    echo "    --top                 Only compute top statistics"
+    echo "    --bottom              Only compute bottom statistics"
+    echo
+    echo "    --hide-user           Obfuscate usernames for cleartext passwords"
+    echo "    --hide-pass           Obfuscate passwords for cleartext passwords"
+    echo "    --hide-user-pass      Obfuscate usernames/passwords for cleartext passwords"
+    echo
+    echo "    --no-asns             Do not output ASNs statistics"
+    echo "    --no-countries        Do not output countries statistics"
+    echo "    --no-organizations    Do not output organizations statistics"
+    echo "    --no-non-std-ports    Do not output non-standard ports statistics"
+    echo "    --no-dns              Do not output DNS statistics"
+    echo "    --no-http             Do not output HTTP statistics"
+    echo "    --no-https            Do not output HTTPS statistics"
+    echo "    --no-ssh              Do not output SSH statistics"
+    echo "    --no-passwords        Do not output cleartext passwords"
+    echo "    --no-warnings         Do not output the warnings section"
+    echo
+    echo "    -t title              Report title"
+    echo "    -a author             Report author"
+    echo
+    echo "    --chart-color c       Charts color (red, orange, gray!25, ...)"
+    echo "    --table-odd-color c   Tables odd rows background color"
+    echo "    --table-even-color c  Tables even rows background color"
+    echo
+    echo "    -L                    Do not use logarithmic scale for axis"
+    echo
+    echo "    -H                    Output raw numbers instead of human readable"
+    echo "    -HH                   Output raw and human readable numbers"
+    echo
+    echo "    -n num                Compute top/bottom num stats for tables [default: ${TABLE_N}]"
+    echo "    -c num                Compute top/bottom num stats for charts [default: ${CHART_N}]"
+    echo
+    echo "    --copyright [text]    Print a copyright notice at the bottom of every page"
+    echo "    --watermark [text]    Print a watermark on every page"
+    echo
+    echo "    -y                    Do not ask for confirmation before executing an action"
+    echo
+    echo "    -0                    Run all queries in parallel"
+    echo "    -1                    Do not run queries in parallel (slow)"
+    echo "    -NUM                  Run NUM queries in parallel [default: number of cores]"
+    echo
+    echo "Help and documentation arguments:"
+    echo "    -?, -h, --help        Show help options and exit"
+}
+
+_set_db_opref() {
+    if [[ -n "${MONGODB}" ]]; then
+        OPREF="${DBNAME}_mongo"
+    elif [[ -n "${CLICKHOUSEDB}" ]]; then
+        OPREF="${DBNAME}_clickhouse"
+    else
+        OPREF="${DBNAME}_psql"
+    fi
+}
+
+_set_opref_from_input() {
+    if [[ -n "${DBNAME}" ]]; then
+        _set_db_opref
+    else
+        OPREF="$(basename "${INPUT}" | AWK -F'.' -v OFS='.' 'NF > 1 { NF-- } { print }')"
+    fi
+}
+
+# Set output folder/prefix
+_set_odir_opref() {
+    if [[ -z "${OPREF}" ]]; then
+        if [[ -n "${DBNAME}" ]]; then
+            ODIR="${PWD}"
+        else
+            ODIR="$(dirname "${INPUT}")"
+        fi
+        _set_opref_from_input
+    elif [[ -d "${OPREF}" ]]; then
+        ODIR="${OPREF}"
+        _set_opref_from_input
+    elif grep -q '/' <<< "${OPREF}"; then
+        ODIR="$(AWK -F'/' 'NF > 1 { printf "%s", $1; for (i = 2; i < NF; i++) printf "/%s", $i }' <<< "${OPREF}")"
+        if [[ -n "$(AWK '!/\/$/' <<< "${OPREF}")" ]]; then
+            OPREF="$(basename "${OPREF}" | AWK -F'.' -v OFS='.' 'NF > 1 { NF-- } { print }')"
+        else
+            _set_opref_from_input
+        fi
+    else
+        ODIR="$(dirname "${OPREF}")"
+        OPREF="$(basename "${OPREF}")"
+    fi
+}
+
+_build_t2() {
+    local yes
+    if [[ "${YES}" == "yes" ]]; then
+        yes="-y"
+    fi
+    # Patch tranalyzer and the plugins
+    "${T2CONF}" ${yes} -x --patch "${T2FMDIR}/patches/t2fm.patch" || exit 1
+    if [[ -z "${NOHTTP}" && -z "${NODATACARVING}" ]]; then
+        "${T2CONF}" ${yes} -x --patch "${T2FMDIR}/patches/t2fm-carving.patch" || exit 1
+    fi
+    # Build tranalyzer and the plugins
+    "${T2BUILD}" ${yes} -b "${T2FMDIR}/t2fm.load" || exit 1
+}
+
+_reset_t2_config() {
+    local yes
+    if [[ "${YES}" == "yes" ]]; then
+        yes="-y"
+    fi
+    printinf "Restoring tranalyzer2 and plugins configuration..."
+    # Reverse-patch tranalyzer and the plugins
+    "${T2CONF}" ${yes} -x --rpatch "${T2FMDIR}/patches/t2fm.patch" || exit 1
+    if [[ -z "${NOHTTP}" && -z "${NODATACARVING}" ]]; then
+        "${T2CONF}" ${yes} -x --rpatch "${T2FMDIR}/patches/t2fm-carving.patch" || exit 1
+    fi
+}
+
+_check_t2_plugins() {
+    local missing
+    for plugin in "${REQUIRED_PLUGINS[@]}"; do
+        if [[ -z "$(find "${HOME}/.tranalyzer/plugins/" -type f -name "[0-9][0-9][0-9]_${plugin}.so")" ]]; then
+            missing=1
+            printerr "Plugin '${plugin}' is required"
+        fi
+    done
+
+    if [[ -n "${missing}" ]]; then
+        exit 1
+    fi
+}
+
+_check_colnames() {
+    local cols="${1}"
+    for i in "${REQUIRED_COLS[@]}"; do
+        i="$("${SED}" 's/,/\\|/g' <<< "${i}")"
+        if ! grep -q -w "${i}" <<< "${cols}"; then
+            fatal "Column '${i}' not found."
+        fi
+    done
+}
+
+_cleanup() {
+    if [[ -z "${1}" ]]; then
+        fatal "_cleanup: missing return code (cleanup retcode)"
+    fi
+
+    local ret="${1}"
+
+    if [[ -n "${RESET}" ]]; then
+        _reset_t2_config
+    fi
+
+    #printinf "Cleaning temporary files"
+    for ((i = 0; i < ${#QUERIES[@]}; i += 4)); do
+        rm -f "${QUERIES[i+3]}"
+    done
+
+    for i in "${TEMP[@]}"; do
+        rm -f "${i}"
+    done
+
+    if [[ "$(pgrep -P $$ | wc -l)" -gt 1 ]]; then
+        printinf "Killing all subprocesses..."
+        kill -- -$$
+    fi
+
+    exit "${ret}"
+}
+
+################################################################################
+# LaTeX formatting functions
+################################################################################
+
+# $1: number of columns
+# $2: text, e.g., N/A: nDPI plugin required
+_to_tex_table_empty() {
+    "${TAWK_CMD[@]}" -v num_cols="${1}" '{
+        mid = n/2 - 1
+        for (i = 0; i < n; i++) {
+            printf "\\rowcolor{\\altrowcoloreven}"
+            if (i == mid) {
+                printf "\\multicolumn{%s}{c}{%s}\\\\\n", num_cols, texscape($0)
+            } else {
+                for (j = 1; j < num_cols; j++) {
+                    printf "&"
+                }
+                print "\\\\"
+            }
+        }
+    }' <<< "${2}"
+}
+
+# $1: field name (No 'field name' detected)
+_to_tex_table_str_num() {
+    if [[ -z "${1}" ]]; then
+        fatal "Usage: _to_tex_table_str_num field_name"
+    fi
+
+    "${TAWK_CMD[@]}" -v field_name="${1}" '
+        NR > n {
+            printf "%%"
+        }
+        {
+            print texscape($1) " & " hrnum($2, hrnum_mode) "\\\\"
+        }
+        END {
+            if (NR >= 1) {
+                for (i = NR; i < n; i++) {
+                    print "\\rowcolor{\\altrowcoloreven}&\\\\"
+                }
+            } else {
+                mid = n/2 - 1
+                for (i = 0; i < n; i++) {
+                    printf "\\rowcolor{\\altrowcoloreven}"
+                    if (i == mid) {
+                        printf "\\multicolumn{2}{c}{No %s detected}\\\\\n", field_name
+                    } else {
+                        print "&\\\\"
+                    }
+                }
+            }
+        }'
+}
+
+# $1: field name (No 'field name' detected)
+_to_tex_table_str_str_num() {
+    if [[ -z "${1}" ]]; then
+        fatal "Usage: _to_tex_table_str_str_num field_name"
+    fi
+
+    "${TAWK_CMD[@]}" -v field_name="${1}" '
+        NR > n {
+            printf "%%"
+        }
+        {
+            print texscape($1) " & " texscape($2) " & " hrnum($3, hrnum_mode) "\\\\"
+        }
+        END {
+            if (NR >= 1) {
+                for (i = NR; i < n; i++) {
+                    print "\\rowcolor{\\altrowcoloreven}&&\\\\"
+                }
+            } else {
+                mid = n/2 - 1
+                for (i = 0; i < n; i++) {
+                    printf "\\rowcolor{\\altrowcoloreven}"
+                    if (i == mid) {
+                        printf "\\multicolumn{3}{c}{No %s detected}\\\\\n", field_name
+                    } else {
+                        print "&&\\\\"
+                    }
+                }
+            }
+        }'
+}
+
+# $1: ignored
+_to_tex_table_non_std_ports() {
+    "${TAWK_CMD[@]}" '
+        {
+            if (NR > n) printf "%%"
+            #if (NF == 5) {
+            #    portnum = $2
+            #    stats = hrnum($3, hrnum_mode) " & " hrnum($4, hrnum_mode) " & " hrnum($5, hrnum_mode)
+            #} else {
+                portnum = texscape($3) " (" $2 ")"
+                stats = hrnum($4, hrnum_mode) " & " hrnum($5, hrnum_mode) " & " hrnum($6, hrnum_mode)
+            #}
+            print texscape($1) " & " portnum " & " stats "\\\\"
+        }
+        END {
+            if (NR < 1) {
+                mid = n/2 - 1
+                for (i = 0; i < n; i++) {
+                    printf "\\rowcolor{\\altrowcoloreven}"
+                    if (i == mid) {
+                        printf "\\multicolumn{5}{c}{No protocols over non-standard ports detected}\\\\\n"
+                    } else {
+                        print "&&&&\\\\"
+                    }
+                }
+            }
+        }'
+}
+
+# $1: ignored
+_to_tex_table_passwords() {
+    "${TAWK_CMD[@]}" -v hideuser="${HIDEUSER}" -v hidepass="${HIDEPASS}" '
+        BEGIN {
+            tabhdr = sprintf("\\begin{longtable}{*{5}{l}r}\n\\toprule\\rowcolor{\\altrowcoloreven}")
+            l = split("Client,Server,Proto,Username,Password,Flows", h, ",")
+            for (i = 1; i < l; i++) tabhdr = tabhdr "\n" sprintf("{\\bf %s} & ", h[i])
+            tabhdr = tabhdr "\n" sprintf("{\\bf %s}\\\\\n\\midrule\\endhead%\n", h[i])
+        }
+        {
+            # ignore empty username and passwords
+            if ((strisempty($4) && strisempty($5)) ||
+                (streq($4, "(null)") && streq($5, "(null)")))
+            {
+                next
+            }
+            if (tabhdr) {
+                print tabhdr
+                tabhdr = ""
+            }
+            # obfuscate user/pass if required
+            if (hideuser) $4 = "********"
+            if (hidepass) $5 = "********"
+            if (NR > n) printf "%%"
+            for (i = 1; i < NF; i++) printf "%s & ", texscape(unquote($i))
+            printf "%s\\\\\n", hrnum($NF, hrnum_mode)
+        }
+        END {
+            if (tabhdr) printf "No cleartext passwords detected\n"
+            else printf "\\bottomrule\n\\end{longtable}\n"
+        }'
+}
+
+# $1: ignored
+_to_tex_table_exe() {
+    "${TAWK_CMD[@]}" '
+        NR == 1 {
+            print "\\begin{scriptsize}"
+            print "\\begin{center}"
+            #print "\\begin{tabularx}{\\textwidth}{lllLll}"
+            #print "{\\bf SrcIP} & {\\bf DstIP} & {\\bf Filename} & {\\bf Size} & {\\bf MD5}\\\\"
+            print "\\begin{tabularx}{\\textwidth}{lllLll}"
+            print "\\toprule"
+            #print "\\begin{longtable}{llllll}"
+            #print "\\toprule\\rowcolor{\\altrowcoloreven}"
+            print "{\\bf SrcIP} & {\\bf DstIP} & {\\bf Advertised mime} & {\\bf Filename} & {\\bf Size} & {\\bf MD5}\\\\"
+            print "\\midrule%\\endhead%"
+        }
+        {
+            # Do not display packet/flow information
+            fname = gensub(/^([^?]+)(\?.*)?_[0-9]+_[0-9]+_[0-9]+_[0-9]+$/, "\\1", "g", unquote($4))
+            if (NR > n) printf "%%"
+            #print $1 " & " $2 " & " texscape(fname) " & " $5 " & " $6"\\\\ % " unquote($4)
+            print $1 " & " $2 " & " texscape(unquote($3)) " & \\textnhtt{" texscape(fname) "} & " $5 " & {\\tt " $6 "}\\\\ % " unquote($4)
+        }
+        END {
+            if (NR < 1) {
+                printf "No EXE download detected"
+            } else {
+                print "\\bottomrule"
+                #print "\\end{longtable}"
+                print "\\end{tabularx}"
+                print "\\end{center}"
+                print "\\end{scriptsize}"
+            }
+        }'
+}
+
+# $1: ignored
+_to_tex_table_arp() {
+    sort -u | "${TAWK_CMD[@]}" '
+        {
+            _ip_mac[$2] = _ip_mac[$2] "\t" $1
+        }
+        END {
+            for (_ip in _ip_mac) {
+                _l = split(lstrip(_ip_mac[_ip]), _mac, "\t")
+                if (_l > 1) {
+                    print _ip OFS join(_mac, OFS)
+                }
+            }
+        }' | "${TAWK_CMD[@]}" '
+            NR == 1 {
+                print "ARP spoofing detected for:"
+                print "\\begin{multicols}{3}"
+                print "\\begin{itemize}"
+            }
+            NR <= n+10 {
+                if (NR > n) printf "%%"
+                print "\\item " $1
+                if (NR > n) printf "%%"
+                print "    \\begin{itemize}"
+                for (i = 2; i <= NF; i++) {
+                    if (i > n || NR > n) printf "%%"
+                    print "    \\item " $i
+                }
+                if (NR > n) printf "%%"
+                print "    \\end{itemize}"
+                next
+            }
+            NR > n+10 {
+                exit
+            }
+            END {
+                if (NR == 0) {
+                    print "No ARP spoofing detected"
+                } else {
+                    print "\\end{itemize}"
+                    print "\\end{multicols}"
+                }
+            }'
+}
+
+# $1: ignored
+_to_tex_table_dns_zt() {
+    "${TAWK_CMD[@]}" '
+        NR == 1 {
+            print "\\begin{longtable}{llll}"
+            print "\\toprule\\rowcolor{\\altrowcoloreven}"
+            print "{\\bf Time} & {\\bf Client} & {\\bf Server} & {\\bf Query}\\\\"
+            print "\\midrule\\endhead%"
+        }
+        {
+            if (NR > n) printf "%%"
+            print $1 " & " $2 " & " $3 " & " texscape($4) "\\\\"
+        }
+        NR > n+10 {
+            exit
+        }
+        END {
+            if (NR >= 1) print "\\bottomrule\n\\end{longtable}"
+            else print "No DNS zone transfer detected"
+        }'
+}
+
+# $1: ignored
+_to_tex_table_ssh() {
+    "${TAWK_CMD[@]}" 't2sort(5, 0, "num")' | "${TAWK_CMD[@]}" '
+        NR == 1 {
+            tabhdr = tabhdr "\\begin{tabularx}{\\textwidth}{*{5}{l}L}\n\\toprule"
+            l = split("DateFirstSeen,Duration,srcIP,dstIP,SBytes,sshVersion", h, ",")
+            for (i = 1; i < l; i++) tabhdr = tabhdr "\n" sprintf("{\\bf %s} &", h[i])
+            tabhdr = tabhdr sprintf("{\\bf %s}\\\\\n\\midrule\n%\\endhead%\n", h[i])
+            print tabhdr
+        }
+        {
+            if (NR > n) printf "%%"
+            # DateFirstSeen
+            gsub(/\.[0-9]+/, "", $1) # ignore microseconds
+            printf "%s & ", utc($1)
+            # Duration
+            gsub(/^00:(00:)?0?/, "", $2) # ignore leading zeroes
+            for (i = 2; i < NF-1; i++) {
+                printf "%s & ", $i # Duration, srcIP, dstIP
+            }
+            printf "%s & ", hrnum($(NF-1), hrnum_mode) # SBytes
+            printf "%s\\\\\n", texscape(unquote($NF))  # sshVersion
+        }
+        END {
+            if (NR == 0) {
+                print "No SSH connection detected"
+            } else {
+                print "\\bottomrule"
+                print "\\end{tabularx}"
+            }
+        }'
+}
+
+# $1: ignored
+_to_tex_chart() {
+    "${TAWK}" -v n="${CHART_N}" '  # Overwrite n=$TABLE_N
+        {
+            a[NR, "name"] = $1
+            a[NR, "count"] = $2
+        }
+        END {
+            vmax = NR < n ? NR : n
+            for (i = 1; i < vmax; i++) {
+                printf "%s,", a[i, "name"]
+            }
+            printf "%s},\n", a[i, "name"]
+            ymax1 = a[1, "count"]
+            ymax2 = a[vmax, "count"]
+            if (ymax1 == 0 && ymax2 == 0) {
+                ymax = max2(ymax1, ymax2) + 2
+            } else {
+                ymax = max2(ymax1, ymax2) + 1
+            }
+            printf "ymax = " ymax "\n"
+            printf "]\n"
+            printf "\\addplot[fill=\\chartcolor"
+            if (ymax1 == 0 && ymax2 == 0) {
+                printf ", y filter/.expression={y ==nan ? 0 : y}"
+            }
+            printf "] coordinates {"
+            for (i = 1; i <= vmax; i++) {
+                printf "(%s,%s)\n", a[i, "name"], a[i, "count"]
+            }
+        }'
+}
+
+# $1: ignored
+_to_tex_proto_chart() {
+    "${TAWK_CMD[@]}" '{ print proto2str($1), $2 }' | _to_tex_chart "${1}"
+}
+
+################################################################################
+# Setup functions
+################################################################################
+
+_setup_clickhouse() {
+    DBTYPE="ClickHouse"
+    SCRIPTS="${T2FMDIR}/clickhouse"
+    if [[ -n "${IS_MACOS}" ]]; then
+        CMD=(clickhouse client)
+    else
+        CMD=(clickhouse-client)
+    fi
+
+    local databases
+    if ! databases="$("${CMD[@]}" -q 'SHOW DATABASES' 2> /dev/null)"; then
+        fatal "${DBTYPE} server is not running"
+    fi
+
+    if ! grep "^${DBNAME}$" <<< "${databases[@]}" &> /dev/null; then
+        fatal "${DBTYPE} database '${DBNAME}' not found"
+    fi
+
+    CMD+=(-d "${DBNAME}")
+
+    if ! "${CMD[@]}" -q 'SHOW TABLES' | grep -Fw flow &> /dev/null; then
+        fatal "${DBTYPE} table 'flow' not found in database '${DBNAME}'"
+    fi
+
+    if [[ "$("${CMD[@]}" -q 'SELECT COUNT(*) FROM flow')" -eq 0 ]]; then
+        fatal "${DBTYPE} table 'flow' from database '${DBNAME}' is empty"
+    fi
+
+    COLS="$("${CMD[@]}" -q 'DESC TABLE flow' | cut -f 1)"
+
+    if [[ -z "${TIME_FROM}" ]]; then
+        TIME_FROM="$("${CMD[@]}" --queries-file "${SCRIPTS}/min_time")"
+    fi
+
+    if [[ -z "${TIME_TO}" ]]; then
+        TIME_TO="$("${CMD[@]}" --queries-file "${SCRIPTS}/max_time")"
+    fi
+
+    CMD+=(
+        --param_n="${TOP_N}"
+        --param_time_from="${TIME_FROM}"
+        --param_time_to="${TIME_TO}"
+    )
+
+    CMD_BOTTOM=("${CMD[@]}" --param_sort_order="1" --queries-file)
+    CMD+=(--param_sort_order="-1" --queries-file)
+}
+
+_setup_mongo() {
+    DBTYPE="MongoDB"
+    SCRIPTS="${T2FMDIR}/mongo"
+    CMD=(mongosh --quiet "${DBNAME}")
+
+    if ! "${CMD[@]}" --eval 'db.getName()' &> /dev/null; then
+        fatal "${DBTYPE} server is not running"
+    fi
+
+    if [[ "$("${CMD[@]}" --eval 'db.flow.countDocuments()')" -eq 0 ]]; then
+        fatal "${DBTYPE} collection 'flow' from database '${DBNAME}' is empty"
+    fi
+
+    # XXX this assumes all fields are present in the first row
+    COLS="$("${CMD[@]}" --eval 'const row = db.flow.findOne(); for (var key in row) print(key)')"
+
+    if [[ -z "${TIME_FROM}" ]]; then
+        TIME_FROM="$("${CMD[@]}" "${SCRIPTS}/min_time")"
+        TIME_FROM_MONGO="$("${TAWK_CMD[@]}" '{ print utc($1) }' <<< "${TIME_FROM}")"
+    fi
+
+    if [[ -z "${TIME_TO}" ]]; then
+        TIME_TO="$("${CMD[@]}" "${SCRIPTS}/max_time")"
+        TIME_TO_MONGO="$("${TAWK_CMD[@]}" '{ print utc($1) }' <<< "${TIME_TO}")"
+    fi
+
+    CMD+=(
+        --eval "const n = ${TOP_N}, \
+                      time_from = new ISODate('${TIME_FROM_MONGO}'), \
+                      time_to   = new ISODate('${TIME_TO_MONGO}');"
+    )
+
+    CMD_BOTTOM+=("${CMD[@]}" --eval "const sort_order = -1;")
+    CMD+=(--eval "const sort_order = 1;")
+}
+
+_setup_psql() {
+    DBTYPE="PostgreSQL"
+    SCRIPTS="${T2FMDIR}/psql"
+    CMD=(psql -U postgres)
+
+    local databases
+    if ! databases="$("${CMD[@]}" -l 2> /dev/null)"; then
+        fatal "${DBTYPE} server is not running"
+    fi
+
+    if [[ -z "$(AWK -F'|' "\$1 ~ /^\s*${DBNAME}\s*$/" <<< "${databases}")" ]]; then
+        fatal "${DBTYPE} database '${DBNAME}' not found"
+    fi
+
+    CMD+=(-d "${DBNAME}" -A)
+
+    if ! "${CMD[@]}" -c 'SELECT "tablename" FROM pg_catalog.pg_tables' | grep -Fw flow &> /dev/null; then
+        fatal "${DBTYPE} table 'flow' not found in database '${DBNAME}'"
+    fi
+
+    if [[ "$("${CMD[@]}" -t -c 'SELECT COUNT(*) FROM flow')" -eq 0 ]]; then
+        fatal "${DBTYPE} table 'flow' from database '${DBNAME}' is empty"
+    fi
+
+    COLS="$("${CMD[@]}" -c 'SELECT * FROM flow LIMIT 0' | head -1)"
+
+    CMD+=(-t -F $'\t')
+
+    if [[ -z "${TIME_FROM}" ]]; then
+        TIME_FROM="$("${CMD[@]}" -f "${SCRIPTS}/min_time")"
+    fi
+
+    if [[ -z "${TIME_TO}" ]]; then
+        TIME_TO="$("${CMD[@]}" -f "${SCRIPTS}/max_time")"
+    fi
+
+    CMD+=(
+        -v n="${TOP_N}"
+        -v time_from="${TIME_FROM}"
+        -v time_to="${TIME_TO}"
+    )
+
+    CMD_BOTTOM=("${CMD[@]}" -v sort_order="ASC" -f)
+    CMD+=(-v sort_order="DESC" -f)
+}
+
+_setup_nfdump() {
+    SCRIPTS="${T2FMDIR}/nfdump"
+    CMD=(bash "${SCRIPTS}/nfdump_wrapper" -o csv -q -N)
+    if [[ -d "${NETFLOW}" ]]; then
+        CMD+=(-R)
+        NUMFILES="$(find "${NETFLOW}" -type f | wc -l | "${TAWK}" '{ print hrnum($1, 1) }')"
+    else
+        CMD+=(-r)
+        NUMFILES=1
+    fi
+    CMD+=("${NETFLOW}")
+
+    if [[ -z "${TIME_FROM}" && -z "${TIME_TO}" ]]; then
+        TIME_FROM="$("${CMD[@]}" "${SCRIPTS}/min_time")"
+        TIME_TO="$("${CMD[@]}" "${SCRIPTS}/max_time")"
+    else
+        local from
+        if [[ -z "${TIME_FROM}" ]]; then
+            TIME_FROM="$("${CMD[@]}" "${SCRIPTS}/min_time")"
+        fi
+        from="$(date '%(%Y/%m/%d.%H:%M:%S)' <<< "${TIME_FROM}")"
+
+        local to
+        if [[ -z "${TIME_TO}" ]]; then
+            TIME_TO="$("${CMD[@]}" "${SCRIPTS}/max_time")"
+        fi
+        to="$(date '%(%Y/%m/%d.%H:%M:%S)' <<< "${TIME_TO}")"
+
+        CMD+=(-t "${from}-${to}")
+    fi
+
+    CMD_BOTTOM=("${CMD[@]}" -n "-${TOP_N}")
+    CMD+=(-n "${TOP_N}")
+}
+
+_setup_tawk() {
+    SCRIPTS="${T2FMDIR}/tawk"
+    COLS="$("${TAWK_CMD[@]}" -l "${FLOWFILE}")"
+    CMD_BOTTOM=("${TAWK_CMD[@]}" -I "${FLOWFILE}" -v n="-${TOP_N}" -f)
+    CMD=("${TAWK_CMD[@]}" -I "${FLOWFILE}" -v n="${TOP_N}" -f)
+}
+
+###############################################################################
+# Main: Program entry point
+###############################################################################
+
+T2OPTS=("-l")
+START_TIME="$(date +%s)"
+
+while [[ "${#}" -gt 0 ]]; do
+    case "${1}" in
+        -b|--build)
+            BUILD_T2=1
+            ;;
+        --reset)
+            RESET=1
+            ;;
+        -A|--open-pdf)
+            OPENPDF=1
+            ;;
+        -T)
+            validate_next_arg "${1}" "${2}"
+            validate_next_arg "${1}" "${3}"
+            TIME_FROM="$("${TAWK_CMD[@]}" '{ print timestamp($1) }' <<< "${2}")"
+            TIME_TO="$("${TAWK_CMD[@]}" '{ print timestamp($1) }' <<< "${3}")"
+            shift  # TIME_FROM
+            shift  # TIME_TO
+            ;;
+        -f|--hash-factor)
+            validate_next_num "${1}" "${2}"
+            T2OPTS+=("-f" "${2}")
+            shift
+            ;;
+        -d|--data-carving)
+            unset NODATACARVING
+            ;;
+        -C|--clickhouse)
+            validate_next_arg "${1}" "${2}"
+            CLICKHOUSEDB="${2}"
+            shift
+            ;;
+        -m|--mongo)
+            validate_next_arg "${1}" "${2}"
+            MONGODB="${2}"
+            shift
+            ;;
+        -p|--postgres)
+            validate_next_arg "${1}" "${2}"
+            PSQLDB="${2}"
+            shift
+            ;;
+        -N|--netflow|--nfdump)
+            validate_next_file_or_dir "${1}" "${2}"
+            NETFLOW="${2}"
+            shift
+            ;;
+        -i|--iface)
+            validate_next_arg "${1}" "${2}"
+            IFACE="${2}"
+            shift
+            ;;
+        -r|--pcap)
+            validate_next_pcap "${1}" "${2}"
+            PCAP="${2}"
+            shift
+            ;;
+        -R|--pcap-list)
+            validate_next_file "${1}" "${2}"
+            if file -b "${2}" | grep -qwi 'capture file'; then
+                printerr "Invalid argument for option '${1}': '${2}' is a PCAP file"
+                printinf "Use '-r' option to process a PCAP file"
+                abort_with_help
+            fi
+            PCAPLIST="${2}"
+            shift
+            ;;
+        -F|--flow-file)
+            validate_next_file "${1}" "${2}"
+            if file -b "${2}" | grep -qwi 'capture file'; then
+                printerr "Invalid argument for option '${1}': '${2}' is a PCAP file"
+                printinf "Use '-r' option to process a PCAP file"
+                abort_with_help
+            fi
+            FLOWFILE="${2}"
+            shift
+            ;;
+        -w|--output-prefix)
+            validate_next_arg "${1}" "${2}"
+            OPREF="${2}"
+            shift
+            ;;
+        --hide-user)
+            HIDEUSER=1
+            ;;
+        --hide-pass)
+            HIDEPASS=1
+            ;;
+        --hide-user-pass)
+            HIDEUSER=1
+            HIDEPASS=1
+            ;;
+        --top)
+            if [[ "${TOP_STATS}" == "${BOTTOM_ONLY}" ]]; then
+                TOP_STATS="${TOP_BOTTOM}"
+            else
+                TOP_STATS="${TOP_ONLY}"
+            fi
+            ;;
+        --bottom)
+            if [[ "${TOP_STATS}" == "${TOP_ONLY}" ]]; then
+                TOP_STATS="${TOP_BOTTOM}"
+            else
+                TOP_STATS="${BOTTOM_ONLY}"
+            fi
+            ;;
+        --no-asns)
+            NOASNS=1
+            ;;
+        --no-countries)
+            NOCOUNTRIES=1
+            ;;
+        --no-organizations)
+            NOORGANIZATIONS=1
+            ;;
+        --no-dns)
+            NODNS=1
+            ;;
+        --no-http)
+            NOHTTP=1
+            ;;
+        --no-https)
+            NOHTTPS=1
+            ;;
+        --no-ssh)
+            NOSSH=1
+            ;;
+        --no-non-std-ports)
+            NONONSTDPORTS=1
+            ;;
+        --no-passwords)
+            NOPASSWORDS=1
+            ;;
+        --no-warnings)
+            NOWARNINGS=1
+            ;;
+        --chart-color)
+            validate_next_arg "${1}" "${2}"
+            CHART_COLOR="${2}"
+            shift
+            ;;
+        --table-odd-color)
+            validate_next_arg "${1}" "${2}"
+            TABLE_ODD_COLOR="${2}"
+            shift
+            ;;
+        --table-even-color)
+            validate_next_arg "${1}" "${2}"
+            TABLE_EVEN_COLOR="${2}"
+            shift
+            ;;
+        -L|--no-log-axis)
+            LOGAXIS=0
+            ;;
+        --copyright)
+            SHOW_COPYRIGHT=1
+            if [[ -n "${2}" ]] && ! arg_is_option "${2}"; then
+                COPYRIGHT="${2}"
+                shift
+            fi
+            ;;
+        --watermark)
+            SHOW_WATERMARK=1
+            if [[ -n "${2}" ]] && ! arg_is_option "${2}"; then
+                WATERMARK="${2}"
+                shift
+            fi
+            ;;
+        -a|--author)
+            validate_next_arg "${1}" "${2}"
+            AUTHOR="${2}"
+            shift
+            ;;
+        -t|--title)
+            validate_next_arg "${1}" "${2}"
+            TITLE="${2}"
+            shift
+            ;;
+        -n|--table-n)
+            validate_next_num "${1}" "${2}"
+            TABLE_N="${2}"
+            shift
+            ;;
+        -c|--chart-n)
+            validate_next_num "${1}" "${2}"
+            CHART_N="${2}"
+            shift
+            ;;
+        -H|--raw-numbers)
+            HRNUM=2
+            ;;
+        -HH|--raw-and-hrnum)
+            HRNUM=1
+            ;;
+        -[0-9]|-[1-9][0-9]*)
+            NCPUS="${1#*-}"
+            ;;
+        -y|--yes)
+            YES="yes"
+            ;;
+        -\?|-h|--help)
+            usage
+            exit 0
+            ;;
+        *)
+            abort_option_unknown "${1}"
+            ;;
+    esac
+    shift
+done
+
+TAWK_CMD=(
+    "${TAWK}"
+    -v n="${TABLE_N}"
+    -v hrnum_mode="${HRNUM}"
+)
+
+DBNAME="${CLICKHOUSEDB}${MONGODB}${PSQLDB}"
+INFILE="${FLOWFILE}${PCAP}${PCAPLIST}"
+INPUT="${IFACE}${INFILE}${DBNAME}${NETFLOW}"
+
+if [[ -z "${INPUT}" ]]; then
+    printerr "One of -C, -m, -p, -F, -i, -r, -R or -N option is required"
+    abort_with_help
+fi
+
+if [[ "${INPUT}" != "${IFACE}" ]] &&
+   [[ "${INPUT}" != "${PCAP}" ]]  &&
+   [[ "${INPUT}" != "${PCAPLIST}" ]] &&
+   [[ "${INPUT}" != "${FLOWFILE}" ]] &&
+   [[ "${INPUT}" != "${CLICKHOUSEDB}" ]] &&
+   [[ "${INPUT}" != "${MONGODB}" ]] &&
+   [[ "${INPUT}" != "${PSQLDB}" ]] &&
+   [[ "${INPUT}" != "${NETFLOW}" ]];
+then
+    printerr "Cannot use -C, -m, -p, -F, -i, -r, -R and -N options at the same time"
+    abort_with_help
+fi
+
+# Check for required programs
+
+if [[ -n "${IS_MACOS}" ]]; then
+    check_dependency pdflatex mactex
+else
+    check_dependency pdflatex texlive-latex-extra
+fi
+
+case "${INPUT}" in
+    "${CLICKHOUSEDB}")
+        if [[ -n "${IS_MACOS}" ]]; then
+            check_dependency clickhouse
+        else
+            check_dependency clickhouse-client
+        fi
+        NODATACARVING=1
+        ;;
+    "${MONGODB}")
+        check_dependency mongosh
+        NODATACARVING=1
+        ;;
+    "${PSQLDB}")
+        check_dependency psql
+        NODATACARVING=1
+        ;;
+    "${NETFLOW}")
+        check_dependency nfdump
+        NODNS=1
+        NOHTTP=1
+        NOHTTPS=1
+        NONDPI=1
+        NOSSH=1
+        NONONSTDPORTS=1
+        NOPASSWORDS=1
+        NOWARNINGS=1
+        NODATACARVING=1
+        ;;
+esac
+
+if [[ -z "${NCPUS}" ]]; then
+    NCPUS="$(get_nproc)"
+fi
+
+_set_odir_opref
+
+if [[ ! -d "${ODIR}" ]]; then
+    ask_default_yes "Output folder '${ODIR}' does not exist... create it" "${YES}" || exit 1
+    mkdir -p "${ODIR}"
+    echo "Folder '${ODIR}' created"
+fi
+
+if [[ -n "${FLOWFILE}" ]]; then
+    HDRFILE="$("${SED}" 's/_flows.txt/_headers.txt/' <<< "${FLOWFILE}")"
+    LOGFILE="$("${SED}" 's/_flows.txt/_log.txt/' <<< "${FLOWFILE}")"
+    if [[ ! -f "${HDRFILE}" ]]; then
+        printwrn "Header file not found"
+    else
+        CMDLINE="$(grep -F 'Command line: ' "${HDRFILE}")"
+        if grep -qF -- -r <<< "${CMDLINE}"; then
+            PCAP="$(perl -pe 's/.*-r\s+([^[:space:]]+)\s+.*$/\1/'<<< "${CMDLINE}")"
+        fi
+    fi
+elif [[ -z "${DBNAME}" && -z "${NETFLOW}" ]]; then
+
+    if [[ -n "${BUILD_T2}" ]]; then
+        _build_t2
+    fi
+
+    _check_t2_plugins
+
+    if [[ ! -x "$(get_t2_exec)" ]]; then
+        printerr "Tranalyzer executable not found"
+        printinf "Try using ${SNAME} -b option"
+        exit 1
+    fi
+
+    PREFIX="$("${READLINK}" -f "${ODIR}/${OPREF}")"
+    # Handle the special case where OPREF was extracted from
+    # INPUT and a folder with the same name exists
+    if [[ -d "${PREFIX}" ]]; then
+        _PREFIX="${PREFIX}/${OPREF}"
+    else
+        _PREFIX="${PREFIX}"
+    fi
+    FLOWFILE="$(AWK '{ printf "%s_flows.txt\n", $0 }' <<< "${_PREFIX}")"
+    LOGFILE="$(AWK '{ printf "%s_log.txt\n", $0 }' <<< "${_PREFIX}")"
+
+    if [[ -n "${PCAPLIST}" ]]; then
+        T2OPTS+=("-R")
+    elif [[ -n "${IFACE}" ]]; then
+        T2OPTS+=("-i")
+    else
+        T2OPTS+=("-r")
+    fi
+
+    printfinf "Running Tranalyzer... "
+    if ! T2 "${T2OPTS[@]}" "${INPUT}" -w "${PREFIX}"; then
+        printerr "FAIL"
+        ask_default_no "Try to generate the report anyway" "${YES}" || exit 1
+    fi
+
+    printok "OK"
+fi
+
+if [[ ! -f "${FLOWFILE}" && -z "${DBNAME}" && -z "${NETFLOW}" ]]; then
+    fatal "Flow file '${FLOWFILE}' does not exist"
+fi
+
+# TODO query a bit more than required (will be commented out in the report)
+TOP_N="$((TABLE_N > CHART_N ? TABLE_N : CHART_N))"
+
+if [[ -n "${CLICKHOUSEDB}" ]]; then
+    _setup_clickhouse
+elif [[ -n "${MONGODB}" ]]; then
+    _setup_mongo
+elif [[ -n "${PSQLDB}" ]]; then
+    _setup_psql
+elif [[ -n "${NETFLOW}" ]]; then
+    _setup_nfdump
+else
+    _setup_tawk
+fi
+
+if [[ -z "${NETFLOW}" ]]; then
+    _check_colnames "${COLS}"
+fi
+
+# Build output filename
+OFILE="$("${READLINK}" -f "${ODIR}/${OPREF}.tex")"
+PDFFILE="$("${SED}" 's/\.tex/.pdf/' <<< "${OFILE}")"
+
+# Copy the template
+cp "${T2FMDIR}/t2fm_template.tex" "${OFILE}"
+
+# Setup signal handler to take care of temporary files
+trap "trap - SIGTERM && _cleanup 1" HUP INT QUIT TERM
+trap "_cleanup \$?" EXIT
+
+################################################################################
+# Functions to delete/replace LaTeX code
+################################################################################
+
+# $1: name, e.g., DNS for __BEGIN_DNS__, __END_DNS__
+_delete_begin_end() {
+    if [[ -z "${1}" ]]; then
+        fatal "Usage: _delete_begin_end name"
+    fi
+    "${SED}" -i "/%__BEGIN_${1}__/,/%__END_${1}__/d" "${OFILE}"
+}
+
+# $1: placeholder name
+# $2: replacement text
+_replace_placeholder() {
+    if [[ -z "${1}" ]]; then
+        fatal "Usage: _replace_placeholder name text"
+    fi
+    "${SED}" -i "s|%%__${1}__%%|${2}|g" "${OFILE}"
+}
+
+# $1: placeholder name
+_delete_placeholder() {
+    if [[ -z "${1}" ]]; then
+        fatal "Usage: _delete_placeholder name"
+    fi
+    _replace_placeholder "${1}" ""
+}
+
+# $1: plugin name
+_insert_plugin_required() {
+    if [[ -z "${1}" ]]; then
+        fatal "Usage: _insert_plugin_required pluginName"
+    fi
+    local pName="${1}"
+    local pNameUpper
+    pNameUpper="$(tr '[:lower:]' '[:upper:]' <<< "${pName}")"
+    local marker="${pNameUpper}_REQUIRED"
+    "${SED}" -i "s;\(%__BEGIN_${marker}__\);N/A: ${pName} plugin required\n\1;" "${OFILE}"
+    _delete_begin_end "${marker}"
+}
+
+################################################################################
+# Remove unnecessary/unwanted sections
+################################################################################
+
+# Summary (DB or FILE)
+if [[ -n "${DBNAME}" ]]; then
+    _delete_begin_end "FILE_REQUIRED"
+    _delete_begin_end "NFDUMP_REQUIRED"
+elif [[ -n "${NETFLOW}" ]]; then
+    _delete_begin_end "FILE_REQUIRED"
+    _delete_begin_end "DB_REQUIRED"
+    _delete_begin_end "NOT_NFDUMP"
+else
+    _delete_begin_end "DB_REQUIRED"
+    _delete_begin_end "NFDUMP_REQUIRED"
+fi
+
+if [[ -n "${NOASNS}" ]]; then
+    _delete_begin_end "DISTASNS"
+    _delete_begin_end "ASNS"
+fi
+
+[[ -n "${NOCOUNTRIES}" ]]     && _delete_begin_end "COUNTRIES"
+[[ -n "${NOORGANIZATIONS}" ]] && _delete_begin_end "ORGANIZATIONS"
+[[ -n "${NODNS}" ]]           && _delete_begin_end "DNS"
+[[ -n "${NOHTTP}" ]]          && _delete_begin_end "HTTP"
+[[ -n "${NOHTTPS}" ]]         && _delete_begin_end "HTTPS"
+[[ -n "${NOSSH}" ]]           && _delete_begin_end "SSH"
+[[ -n "${NONONSTDPORTS}" ]]   && _delete_begin_end "NON_STD_PORTS"
+[[ -n "${NOPASSWORDS}" ]]     && _delete_begin_end "PASSWORDS"
+[[ -n "${NOWARNINGS}" ]]      && _delete_begin_end "WARNINGS"
+
+if [[ -n "${NODATACARVING}" || -n "${NOHTTP}" ]]; then
+    _delete_begin_end "DATA_CARVING"
+fi
+
+case "${TOP_STATS}" in
+    "${TOP_ONLY}")
+        _delete_begin_end "BOTTOM_STATS"
+        _delete_begin_end "TOP_BOTTOM_STATS"
+        ;;
+    "${BOTTOM_ONLY}")
+        _delete_begin_end "TOP_STATS"
+        _delete_begin_end "TOP_BOTTOM_STATS"
+        ;;
+esac
+
+################################################################################
+# Check for optional plugins and insert 'plugin required' message
+################################################################################
+
+# arpDecode
+if [[ -z "${NOWARNINGS}" ]] && ! grep -qFw arpStat <<< "${COLS}"; then
+    NOARPDECODE=1
+    _insert_plugin_required "arpDecode"
+fi
+
+# dnsDecode
+if [[ -z "${NODNS}" ]] && ! grep -qFw dnsStat <<< "${COLS}"; then
+    NODNS=1
+    _insert_plugin_required "dnsDecode"
+fi
+
+# httpSniffer
+if [[ -z "${NOHTTP}" ]] && ! grep -qFw httpStat <<< "${COLS}"; then
+    NOHTTP=1
+    _insert_plugin_required "httpSniffer"
+fi
+
+# nDPI
+if [[ -z "${NETFLOW}" ]] && ! grep -qFw nDPIclass <<< "${COLS}"; then
+    NONDPI=1
+    X="$(mktemp)"
+    _to_tex_table_empty 2 "N/A: nDPI plugin required" > "${X}"
+    "${SED}" -i "/%%__top_appl_flows__%%/r${X}" "${OFILE}"
+    "${SED}" -i "/%%__top_appl_pkts__%%/r${X}"  "${OFILE}"
+    "${SED}" -i "/%%__top_appl_bytes__%%/r${X}" "${OFILE}"
+    rm "${X}"
+fi
+
+# portClassifier
+if [[ -z "${NETFLOW}" ]] && ! grep -qE "\<dstPortClassN?\>" <<< "${COLS}"; then
+    NOPORTCLASSIFIER=1
+    _insert_plugin_required "portClassifier"
+fi
+
+# nDPI and portClassifier
+if [[ -z "${NONONSTDPORTS}" ]]; then
+    if [[ -n "${NONDPI}" || -n "${NOPORTCLASSIFIER}" ]]; then
+        "${SED}" -i "s;\(%__BEGIN_NDPI_AND_PORTCLASSIFIER_REQUIRED__\);N/A: nDPI and portClassifier plugins required\n\1;" "${OFILE}"
+        _delete_begin_end "NDPI_AND_PORTCLASSIFIER_REQUIRED"
+        NONONSTDPORTS=1
+    fi
+fi
+
+# pwX
+if [[ -z "${NOPASSWORDS}" ]] && ! grep -qFw pwxType <<< "${COLS}"; then
+    NOPASSWORDS=1
+    _insert_plugin_required "pwX"
+fi
+
+# sshDecode
+if [[ -z "${NOSSH}" ]] && ! grep -qFw sshStat <<< "${COLS}"; then
+    NOSSH=1
+    _insert_plugin_required "sshDecode"
+fi
+
+# sslDecode
+if [[ -z "${NOHTTPS}" ]] && ! grep -qFw sslStat <<< "${COLS}"; then
+    NOHTTPS=1
+    _insert_plugin_required "sslDecode"
+fi
+
+################################################################################
+# Check for optional columns (if not available, don't produce content)
+################################################################################
+
+# basicFlow
+if [[ -z "${NOASNS}" && -z "${NETFLOW}" ]]; then
+    if ! grep -qFw -e srcIPASN <<< "${COLS}" || ! grep -qFw dstIPASN <<< "${COLS}"; then
+        NOASNS=1
+    fi
+fi
+
+################################################################################
+# Temporary files
+################################################################################
+
+# Summary
+FIRST_LAST_DUR_NFLOWS_NPKTS_NBYTES="$(mktemp)" ; TEMP+=("${FIRST_LAST_DUR_NFLOWS_NPKTS_NBYTES}")
+MD5SUM="$(mktemp)"                             ; TEMP+=("${MD5SUM}")
+VLANS="$(mktemp)"                              ; TEMP+=("${VLANS}")
+
+################################################################################
+# File stat
+################################################################################
+
+if [[ -n "${DBNAME}" ]]; then
+    FILENAME="${DBNAME}"
+    FULLNAME="${FILENAME}"
+    PERIOD="$("${TAWK_CMD[@]}" -F, '{ print utc($1) " -- " utc($2) }' <<< "${TIME_FROM},${TIME_TO}")"
+elif [[ -n "${NETFLOW}" ]]; then
+    FILENAME="${NETFLOW}"
+    FULLNAME="${FILENAME}"
+    PERIOD="$("${TAWK_CMD[@]}" -F, '{ print utc($1) " -- " utc($2) }' <<< "${TIME_FROM},${TIME_TO}")"
+elif [[ -f "${PCAP}" || -f "${LOGFILE}" ]]; then
+    FULLNAME="${PCAP}"
+    FILENAME="$(AWK -F'/' '{ print $NF }' <<< "${FULLNAME}")"
+    if [[ -f "${PCAP}" ]]; then
+        FILESIZE="$(du -h "${PCAP}" | AWK '{ print $1 }')"
+        if [[ -n "${IS_MACOS}" ]]; then
+            md5 -q "${PCAP}" > "${MD5SUM}" &
+        else
+            md5sum "${PCAP}" | AWK '{ print $1 }' > "${MD5SUM}" &
+        fi
+    else
+        FILESIZE="N/A"
+        echo "N/A" > "${MD5SUM}"
+    fi
+    if [[ -f "${LOGFILE}" ]]; then
+        SNAPLEN="$(grep '^Snapshot length:' "${LOGFILE}" | cut -d: -f2)"
+    elif hash capinfos 2> /dev/null; then
+        SNAPLEN="$(capinfos -T -l "${PCAP}" | AWKF '
+            NR == 2 {
+                gsub("^\\s*\\(", "", $2)
+                gsub("\\)\\s*$", "", $2)
+                print $2
+            }')"
+    else
+        printwrn "Cannot report snapshot length: neither '${LOGFILE}' file, nor 'capinfos' program found"
+        SNAPLEN="N/A"
+    fi
+else
+    FULLNAME="N/A"
+    FILENAME="${INPUT}"
+    FILESIZE="N/A"
+    SNAPLEN="N/A"
+    echo "N/A" > "${MD5SUM}"
+fi
+
+################################################################################
+# Summary
+################################################################################
+
+"${CMD[@]}" "${SCRIPTS}/summary" | "${TAWK_CMD[@]}" '{
+    flows = ($3 ? $3 : 0)
+    pkts  = ($4 ? $4 : 0)
+    bytes = ($5 ? $5 : 0)
+    print $1, $2, $2 - $1, hrnum(flows, 1), hrnum(pkts, 1), hrnum(bytes, 1)
+}' > "${FIRST_LAST_DUR_NFLOWS_NPKTS_NBYTES}" &
+
+if [[ -n "${NETFLOW}" ]] || grep -qFw vlanID <<< "${COLS}"; then
+    "${CMD[@]}" "${SCRIPTS}/unique_vlans" | sort -un | "${TAWK_CMD[@]}" '
+        { a[NR] = $1 }
+        END {
+            if (NR > 0) {
+                if (NR > 1) _s = "s"
+                print "\\item VLAN tag" _s ": " join(a, ", ")
+            }
+        }
+    ' > "${VLANS}" &
+fi
+
+HOSTS="$("${CMD[@]}" "${SCRIPTS}/unique_ips")"
+
+if [[ -z "${HOSTS}" ]]; then
+    DISTINCTIP=0
+    DISTINCTPRIVIP=0
+    DISTINCTPUBIP=0
+    DISTINCTIP4=0
+    DISTINCTIP6=0
+else
+    DISTINCTIP="$(wc -l <<< "${HOSTS}" | "${TAWK_CMD[@]}" '{ print hrnum(strip($1), 1) }')"
+    DISTINCTPRIVIP="$("${TAWK_CMD[@]}" -v i=0 'privip($1) { i++ } END { print hrnum(i ? i : 0, 1) }' <<< "${HOSTS}")"
+    DISTINCTPUBIP="$("${TAWK_CMD[@]}" -v i=0 '!privip($1) { i++ } END { print hrnum(i ? i : 0, 1) }' <<< "${HOSTS}")"
+    DISTINCTIP6="$("${TAWK_CMD[@]}" -v i=0 '/:/ { i++ } END { print hrnum(i ? i : 0, 1) }' <<< "${HOSTS}")"
+    DISTINCTIP4="$("${TAWK_CMD[@]}" '{ print hrnum($1 - $2, 1) }' <<< "${DISTINCTIP}\t${DISTINCTIP6}")"
+fi
+
+if [[ -z "${NOASNS}" ]]; then
+    ASNS="$("${CMD[@]}" "${SCRIPTS}/unique_asns")"
+    if [[ -z "${ASNS}" ]]; then
+        DISTINCTASNS=0
+    else
+        DISTINCTASNS="$(wc -l <<< "${ASNS}" | "${TAWK_CMD[@]}" '{ print hrnum(strip($1), 1) }')"
+    fi
+fi
+
+# Columns in QUERIES array
+#QUERY_SCRIPT=0
+#QUERY_FORMAT=1
+#QUERY_NAME=2
+#QUERY_TEMP=3
+
+# $1: script name
+# $2: formatting function
+# $3: replacement text
+# $4: top (0), bottom (1) or top and bottom (2) stats
+_add_query() {
+    if [[ -z "${1}" || -z "${2}" || -z "${3}" ]]; then
+        fatal "Usage: _add_query script_name formatting_function text"
+    fi
+    local _script_name="${1}"
+    if [[ -z "${4}" || "${4}" == "${TOP_BOTTOM}" || "${4}" == "${TOP_ONLY}" ]]; then
+        # query for top stats
+        QUERIES+=(
+            "${_script_name}" "${2}" "${3}" "$(mktemp)"
+        )
+    fi
+    if [[ -z "${4}" || "${4}" == "${TOP_BOTTOM}" || "${4}" == "${BOTTOM_ONLY}" ]]; then
+        # query for bottom stats
+        _script_name="$(AWK '{ gsub(/^top_/, "bottom_"); print }' <<< "${_script_name}")"
+        QUERIES+=(
+            "${_script_name}" "${2}" "${3}" "$(mktemp)"
+        )
+    fi
+}
+
+QUERIES=()
+
+# Source IP addresses
+_add_query "top_srcIP_flows" _to_tex_table_str_str_num "source IP"
+_add_query "top_srcIP_pkts"  _to_tex_table_str_str_num "source IP"
+_add_query "top_srcIP_bytes" _to_tex_table_str_str_num "source IP"
+
+# Destination IP addresses
+_add_query "top_dstIP_flows" _to_tex_table_str_str_num "destination IP"
+_add_query "top_dstIP_pkts"  _to_tex_table_str_str_num "destination IP"
+_add_query "top_dstIP_bytes" _to_tex_table_str_str_num "destination IP"
+
+# TCP source ports
+_add_query "top_tcp_srcPort_flows" _to_tex_chart "TCP source port"
+_add_query "top_tcp_srcPort_pkts"  _to_tex_chart "TCP source port"
+_add_query "top_tcp_srcPort_bytes" _to_tex_chart "TCP source port"
+
+# TCP destination ports
+_add_query "top_tcp_dstPort_flows" _to_tex_chart "TCP destination port"
+_add_query "top_tcp_dstPort_pkts"  _to_tex_chart "TCP destination port"
+_add_query "top_tcp_dstPort_bytes" _to_tex_chart "TCP destination port"
+
+# UDP source ports
+_add_query "top_udp_srcPort_flows" _to_tex_chart "UDP source port"
+_add_query "top_udp_srcPort_pkts"  _to_tex_chart "UDP source port"
+_add_query "top_udp_srcPort_bytes" _to_tex_chart "UDP source port"
+
+# UDP destination ports
+_add_query "top_udp_dstPort_flows" _to_tex_chart "UDP destination port"
+_add_query "top_udp_dstPort_pkts"  _to_tex_chart "UDP destination port"
+_add_query "top_udp_dstPort_bytes" _to_tex_chart "UDP destination port"
+
+# Top protocols
+_add_query "top_proto_flows" _to_tex_proto_chart "protocols"
+_add_query "top_proto_pkts"  _to_tex_proto_chart "protocols"
+_add_query "top_proto_bytes" _to_tex_proto_chart "protocols"
+
+# Top source and destination ASNs (require basicFlow)
+if [[ -z "${NOASNS}" ]]; then
+    # Source IP ASNs (require basicFlow)
+    _add_query "top_srcASN_flows" _to_tex_table_str_num "source IP"
+    _add_query "top_srcASN_pkts"  _to_tex_table_str_num "source IP"
+    _add_query "top_srcASN_bytes" _to_tex_table_str_num "source IP"
+
+    # Destination IP ASNs (require basicFlow)
+    _add_query "top_dstASN_flows" _to_tex_table_str_num "destination IP"
+    _add_query "top_dstASN_pkts"  _to_tex_table_str_num "destination IP"
+    _add_query "top_dstASN_bytes" _to_tex_table_str_num "destination IP"
+fi
+
+# Top source and destination IP countries (require basicFlow or geoip)
+if [[ -z "${NOCOUNTRIES}" ]]; then
+    # Source IP countries (require basicFlow or geoip)
+    _add_query "top_srcCC_flows" _to_tex_table_str_num "source IP"
+    _add_query "top_srcCC_pkts"  _to_tex_table_str_num "source IP"
+    _add_query "top_srcCC_bytes" _to_tex_table_str_num "source IP"
+
+    # Destination IP countries (require basicFlow or geoip)
+    _add_query "top_dstCC_flows" _to_tex_table_str_num "destination IP"
+    _add_query "top_dstCC_pkts"  _to_tex_table_str_num "destination IP"
+    _add_query "top_dstCC_bytes" _to_tex_table_str_num "destination IP"
+fi
+
+# Top source and destination IP organizations (require basicFlow)
+if [[ -z "${NOORGANIZATIONS}" ]]; then
+    # Source IP organizations (require basicFlow)
+    _add_query "top_srcOrg_flows" _to_tex_table_str_num "source IP"
+    _add_query "top_srcOrg_pkts"  _to_tex_table_str_num "source IP"
+    _add_query "top_srcOrg_bytes" _to_tex_table_str_num "source IP"
+
+    # Destination IP organizations (require basicFlow)
+    _add_query "top_dstOrg_flows" _to_tex_table_str_num "destination IP"
+    _add_query "top_dstOrg_pkts"  _to_tex_table_str_num "destination IP"
+    _add_query "top_dstOrg_bytes" _to_tex_table_str_num "destination IP"
+fi
+
+# Top Applications (require nDPI)
+if [[ -z "${NONDPI}" ]]; then
+    _add_query "top_appl_flows" _to_tex_table_str_num "application"
+    _add_query "top_appl_pkts"  _to_tex_table_str_num "application"
+    _add_query "top_appl_bytes" _to_tex_table_str_num "application"
+fi
+
+# Protocols over non-standard ports
+if [[ -z "${NONONSTDPORTS}" ]]; then
+    _add_query "top_proto_over_nonstd_ports" _to_tex_table_non_std_ports "protocols over non-standard ports"
+fi
+
+# Cleartext passwords
+if [[ -z "${NOPASSWORDS}" ]]; then
+    _add_query "top_passwords" _to_tex_table_passwords "cleartext passwords"
+fi
+
+# DNS (require dnsDecode)
+if [[ -z "${NODNS}" ]]; then
+    _add_query "top_dns_queries" _to_tex_table_str_num "DNS query"
+    _add_query "top_dns_answers" _to_tex_table_str_num "DNS answer"
+    _add_query "top_dns_ipv4"    _to_tex_table_str_num "DNS IPv4 address"
+    _add_query "top_dns_ipv6"    _to_tex_table_str_num "DNS IPv6 address"
+    _add_query "top_dns_tld"     _to_tex_table_str_num "DNS query"
+    _add_query "top_dns_sld"     _to_tex_table_str_num "DNS query"
+fi
+
+# HTTP (require httpSniffer)
+if [[ -z "${NOHTTP}" ]]; then
+    _add_query "top_http_user_agent"      _to_tex_table_str_num "HTTP User-Agent"
+    _add_query "top_http_host"            _to_tex_table_str_num "HTTP Host"
+    _add_query "top_http_server"          _to_tex_table_str_num "HTTP Server"
+    _add_query "top_http_content_type"    _to_tex_table_str_num "HTTP Content-Type"
+    _add_query "top_http_content_subtype" _to_tex_table_str_num "HTTP Content-Type"
+    _add_query "top_http_rscode"          _to_tex_chart         "HTTP Status"
+fi
+
+# HTTPS (require sslDecode)
+if [[ -z "${NOHTTPS}" ]]; then
+    _add_query "top_https_sni"          _to_tex_table_str_num     "HTTPS SNI"
+    _add_query "top_https_cert_cn"      _to_tex_table_str_num     "HTTPS certificate Common Name"
+    #_add_query "top_https_cert_issuer"  _to_tex_table_str_num     "HTTPS certificate Issuer"
+    _add_query "top_https_cert_bl"      _to_tex_table_str_str_num "blacklisted certificate fingerprint"
+    _add_query "top_https_ja3_known"    _to_tex_table_str_str_num "known HTTPS JA3 fingerprint"
+    _add_query "top_https_ja3s_known"   _to_tex_table_str_str_num "known HTTPS JA3S fingerprint"
+    _add_query "top_https_ja4_known"    _to_tex_table_str_str_num "known HTTPS JA4 fingerprint"
+    _add_query "top_https_ja4s_known"   _to_tex_table_str_str_num "known HTTPS JA4S fingerprint"
+    _add_query "top_https_ja3_unknown"  _to_tex_table_str_num     "unknown HTTPS JA3 fingerprint"
+    _add_query "top_https_ja3s_unknown" _to_tex_table_str_num     "unknown HTTPS JA3S fingerprint"
+    _add_query "top_https_ja4_unknown"  _to_tex_table_str_num     "unknown HTTPS JA4 fingerprint"
+    _add_query "top_https_ja4s_unknown" _to_tex_table_str_num     "unknown HTTPS JA4S fingerprint"
+fi
+
+# SSH (require sshDecode)
+if [[ -z "${NOSSH}" ]]; then
+    _add_query "ssh"             _to_tex_table_ssh         "SSH connections"         "${TOP_ONLY}"
+    _add_query "top_hassh_known" _to_tex_table_str_str_num "known HASSH fingerprint"
+fi
+
+# Warnings
+if [[ -z "${NOWARNINGS}" ]]; then
+    # EXE downloads
+    if [[ -z "${NOHTTP}" && -z "${NODATACARVING}" ]]; then
+        _add_query "top_exe_dl" _to_tex_table_exe "EXE" "${TOP_ONLY}" # TODO bottom stats?
+    fi
+
+    # ARP spoofing
+    if [[ -z "${NOARPDECODE}" ]]; then
+        _add_query "arp_spoofing" _to_tex_table_arp "ARP" "${TOP_ONLY}"
+    fi
+
+    # DNS zone transfer
+    if [[ -z "${NODNS}" ]]; then
+        _add_query "dns_zone_transfer" _to_tex_table_dns_zt "DNS ZT" "${TOP_ONLY}"
+    fi
+fi
+
+NUM_QUERIES="$(("${#QUERIES[@]}" / 4))"
+for ((i = 0; i < ${#QUERIES[@]}; i += 4)); do
+    QUERY_NUM="$((i / 4))"
+    QUERY_STATS="$(AWK -v i="${QUERY_NUM}" -v tot="${NUM_QUERIES}" 'BEGIN {
+        printf "%d/%d (%.02f%%)\n", i, tot, 100 * i / tot
+    }')"
+    printfinf "Starting query ${QUERY_STATS}\r"
+    query="${QUERIES[i]}"
+    if [[ "${query}" == "bottom_"* ]]; then
+        bottom=1
+        query="$(AWK '{ gsub(/^bottom_/, "top_"); print }' <<< "${query}")"
+    else
+        bottom=0
+    fi
+    if [[ -f "${SCRIPTS}/${query}" ]]; then
+        if [[ "$bottom" -eq 1 ]]; then
+            "${CMD_BOTTOM[@]}" "${SCRIPTS}/${query}" | "${QUERIES[i+1]}" "${QUERIES[i+2]}" > "${QUERIES[i+3]}" &
+        else
+            "${CMD[@]}" "${SCRIPTS}/${query}" | "${QUERIES[i+1]}" "${QUERIES[i+2]}" > "${QUERIES[i+3]}" &
+        fi
+    else
+        TEXT="$("${TAWK_CMD[@]}" '{ print "N/A: " $0 " script not found" }' <<< "$(basename "${SCRIPTS}/${query}")")"
+        case "${QUERIES[i+1]}" in
+            _to_tex_table_str_num)       NCOLS=2;;
+            _to_tex_table_str_str_num)   NCOLS=3;;
+            _to_tex_table_dns_zt)        NCOLS=4;;
+            _to_tex_table_non_std_ports) NCOLS=5;;
+            _to_tex_table_passwords)     NCOLS=6;;
+            _to_tex_table_exe)           NCOLS=6;;
+            _to_tex_table_ssh)           NCOLS=6;;
+            #_to_tex_table_arp)                  ;; # Not really a table
+        esac
+        [[ -n "${NCOLS}" ]] && TEXT="$(_to_tex_table_empty "${NCOLS}" "${TEXT}")"
+        echo "${TEXT}" > "${QUERIES[i+3]}"
+    fi
+
+    # test for CPU usage
+    if [[ "${NCPUS}" -eq 1 ]]; then
+        wait
+    elif [[ "${NCPUS}" -gt 0 && "${POLLINT}" -gt 0 ]]; then
+        # Wait for one CPU to be free
+        while [[ "$(jobs -p | wc -l)" -eq "${NCPUS}" ]]; do
+            sleep "${POLLINT}"
+        done
+    fi
+done
+
+################################################################################
+# Wait for all the queries to finish
+################################################################################
+
+wait < <(jobs -p)
+
+printf "\e[K"  # Clear line
+printfinf "Executing ${NUM_QUERIES} queries... "
+printok "OK"
+
+################################################################################
+# Format some of the output
+################################################################################
+
+printfinf "Generating LaTeX report... "
+
+FILENAME="$("${TAWK_CMD[@]}" '{ print texscape($0) }' <<< "${FILENAME}" | "${SED}" 's/\\/\\\\/g')"
+FULLNAME="$("${TAWK_CMD[@]}" '{ print texscape($0) }' <<< "${FULLNAME}" | "${SED}" 's/\\/\\\\/g')"
+COPYRIGHT="$("${TAWK_CMD[@]}" '{ print texscape($0) }' <<< "${COPYRIGHT}" | "${SED}" 's/\\/\\\\/g')"
+WATERMARK="$("${TAWK_CMD[@]}" '{ print texscape($0) }' <<< "${WATERMARK}" | "${SED}" 's/\\/\\\\/g')"
+FIRST="$(AWK -F'\t' '{ print $1 }' "${FIRST_LAST_DUR_NFLOWS_NPKTS_NBYTES}")"
+LAST="$(AWK -F'\t' '{ print $2 }' "${FIRST_LAST_DUR_NFLOWS_NPKTS_NBYTES}")"
+DURATION="$(AWK -F'\t' '{ print $3 }' "${FIRST_LAST_DUR_NFLOWS_NPKTS_NBYTES}")"
+NUMFLOWS="$(AWK -F'\t' '{ print $4 }' "${FIRST_LAST_DUR_NFLOWS_NPKTS_NBYTES}")"
+NUMPKTS="$(AWK -F'\t' '{ print $5 }' "${FIRST_LAST_DUR_NFLOWS_NPKTS_NBYTES}")"
+NUMBYTES="$(AWK -F'\t' '{ print $6 }' "${FIRST_LAST_DUR_NFLOWS_NPKTS_NBYTES}")"
+if [[ -z "${FIRST}" || -z "${LAST}" ]]; then
+    UTCFIRST="N/A"
+    UTCLAST="N/A"
+elif [[ -n "${IS_MACOS}" ]]; then
+    FIRST="$("${SED}" 's/\.[0-9]*$//' <<< "${FIRST}")"
+    LAST="$("${SED}" 's/\.[0-9]*$//' <<< "${LAST}")"
+    UTCFIRST="$(date -u -j -r "${FIRST}")"
+    UTCLAST="$(date -u -j -r "${LAST}")"
+else
+    UTCFIRST="$(date -u -d @"${FIRST}")"
+    UTCLAST="$(date -u -d @"${LAST}")"
+fi
+DURSTR="$("${TAWK}" '{ print hrtime($1, 1, 2) }' <<< "${DURATION}")"
+
+################################################################################
+# Fill in the placeholders
+################################################################################
+
+[[ "${LOGAXIS}" -eq 0 ]] && "${SED}" -i "s/logaxistrue/logaxisfalse/" "${OFILE}"
+
+[[ -n "${SHOW_COPYRIGHT}" ]] && "${SED}" -i "s/copyrightfalse/copyrighttrue/" "${OFILE}"
+[[ -n "${SHOW_WATERMARK}" ]] && "${SED}" -i "s/watermarkfalse/watermarktrue/" "${OFILE}"
+
+[[ -n "${PERIOD}" ]] && "${SED}" -i "s;__PERIOD__;${PERIOD};" "${OFILE}"
+[[ -n "${DBTYPE}" ]] && "${SED}" -i "s/__DBTYPE__/${DBTYPE}/" "${OFILE}"
+
+"${SED}" -i "s/__CHART_COLOR__/${CHART_COLOR}/"           "${OFILE}"
+"${SED}" -i "s/__TABLE_ODD_COLOR__/${TABLE_ODD_COLOR}/"   "${OFILE}"
+"${SED}" -i "s/__TABLE_EVEN_COLOR__/${TABLE_EVEN_COLOR}/" "${OFILE}"
+
+"${SED}" -i "s/__AUTHOR__/${AUTHOR}/"       "${OFILE}"
+"${SED}" -i "s/__TITLE__/${TITLE}/"         "${OFILE}"
+"${SED}" -i "s/__COPYRIGHT__/${COPYRIGHT}/" "${OFILE}"
+"${SED}" -i "s/__WATERMARK__/${WATERMARK}/" "${OFILE}"
+"${SED}" -i "s/__TABLE_N__/${TABLE_N}/g"    "${OFILE}"
+"${SED}" -i "s/__CHART_N__/${CHART_N}/g"    "${OFILE}"
+
+"${SED}" -i "s;__FILENAME__;${FILENAME};"      "${OFILE}"
+"${SED}" -i "s;__FULLNAME__;${FULLNAME};"      "${OFILE}"
+"${SED}" -i "s;__SNAPLEN__;${SNAPLEN};"        "${OFILE}"
+"${SED}" -i "s;__FILESIZE__;${FILESIZE};"      "${OFILE}"
+"${SED}" -i "s;__MD5SUM__;$(cat "${MD5SUM}");" "${OFILE}"
+
+[[ -n "${NETFLOW}" ]] && "${SED}" -i "s/__NUMFILES__/${NUMFILES}/" "${OFILE}"
+
+"${SED}" -i "s;__FIRSTPKT__;${UTCFIRST};" "${OFILE}"
+"${SED}" -i "s;__LASTPKT__;${UTCLAST};"   "${OFILE}"
+"${SED}" -i "s/__DURSTR__/${DURSTR}/"     "${OFILE}"
+"${SED}" -i "s/__NUMFLOWS__/${NUMFLOWS}/" "${OFILE}"
+"${SED}" -i "s/__NUMPKTS__/${NUMPKTS}/"   "${OFILE}"
+"${SED}" -i "s/__NUMBYTES__/${NUMBYTES}/" "${OFILE}"
+
+"${SED}" -i "s/__DISTIP__/${DISTINCTIP}/"     "${OFILE}"
+"${SED}" -i "s/__PRIVIP__/${DISTINCTPRIVIP}/" "${OFILE}"
+"${SED}" -i "s/__PUBIP__/${DISTINCTPUBIP}/"   "${OFILE}"
+"${SED}" -i "s/__DISTIP4__/${DISTINCTIP4}/"   "${OFILE}"
+"${SED}" -i "s/__DISTIP6__/${DISTINCTIP6}/"   "${OFILE}"
+
+if [[ -s "${VLANS}" ]]; then
+    "${SED}" -i "/%%__VLANS__%%/r${VLANS}" "${OFILE}"
+else
+    _delete_placeholder "VLANS"
+fi
+
+if [[ -n "${DISTINCTASNS}" ]]; then
+    "${SED}" -i "s/__DISTASNS__/${DISTINCTASNS}/" "${OFILE}"
+    _delete_placeholder "BEGIN_DISTASNS"
+    _delete_placeholder "END_DISTASNS"
+else
+    _delete_begin_end "DISTASNS"
+fi
+
+for ((i = 0; i < ${#QUERIES[@]}; i += 4)); do
+    "${SED}" -i "/%%__${QUERIES[i]}__%%/r${QUERIES[i+3]}" "${OFILE}"
+done
+
+################################################################################
+# Build and display the report
+################################################################################
+
+printok "OK"
+printfinf "Building the PDF... "
+
+PDFLATEX="pdflatex -output-directory=${ODIR} -interaction=nonstopmode -halt-on-error"
+
+if ! ${PDFLATEX} "${OFILE}" > /dev/null || \
+   ! ${PDFLATEX} "${OFILE}" > /dev/null || \
+   ! ${PDFLATEX} "${OFILE}" > /dev/null || \
+   [[ ! -f "${PDFFILE}" ]]
+then
+    LOGFILE="$("${SED}" 's/\.tex/.log/' <<< "${OFILE}")"
+    printerr "FAIL"
+    if [[ -f "${LOGFILE}" ]]; then
+        printinf "Try looking in '${LOGFILE}' for an indication of error"
+    fi
+    exit 1
+fi
+
+printok "OK"
+
+# Remove temporary files
+rm -f "${ODIR}/${OPREF}".{aux,log,out,toc}
+
+ELAPSED_TIME="$(("$(date +%s)" - "${START_TIME}"))"
+ELAPSED_TIME="$("${TAWK}" '{ print hrtime($1, 0, 2) }' <<< "${ELAPSED_TIME}")"
+printok "Successfully generated '${PDFFILE}' in ${ELAPSED_TIME}"
+
+# Open the generated file
+[[ -n "${OPENPDF}" ]] && "${OPEN}" "${PDFFILE}"
+
+exit 0

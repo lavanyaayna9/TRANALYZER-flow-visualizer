@@ -1,0 +1,35 @@
+# Flags to toggle
+#
+# Run the ../../../tests/test.sh script from the plugin main directory:
+#
+# cd $T2HOME/plugins/tcpFlags
+# ../../tests/test.sh [OPTION...]
+#
+# If run from this folder, make sure to use absolute path for the '-p' option.
+#
+# Flag name     File
+
+# ../../tranalyzer2/src/networkHeaders.h
+ETH_ACTIVATE        ../../tranalyzer2/src/networkHeaders.h
+IPV6_ACTIVATE       ../../tranalyzer2/src/networkHeaders.h
+
+# ../../tranalyzer2/src/tranalyzer.h
+BLOCK_BUF           ../../tranalyzer2/src/tranalyzer.h
+DIFF_REPORT         ../../tranalyzer2/src/tranalyzer.h
+FRAGMENTATION       ../../tranalyzer2/src/tranalyzer.h
+
+# src/tcpFlags.h
+SPKTMD_SEQACKREL    src/tcpFlags.h
+SPKTMD_SEQACKHEX    src/tcpFlags.h
+IPTOS               src/tcpFlags.h
+RTT_ESTIMATE        src/tcpFlags.h
+IPCHECKSUM          src/tcpFlags.h
+WINDOWSIZE          src/tcpFlags.h
+TCPJA4T             src/tcpFlags.h
+WINMIN              src/tcpFlags.h
+SEQ_ACK_NUM         src/tcpFlags.h
+FRAG_ANALYZE        src/tcpFlags.h
+NAT_BT_EST          src/tcpFlags.h
+SCAN_DETECTOR       src/tcpFlags.h
+MPTCP               src/tcpFlags.h
+TCPFLGCNT           src/tcpFlags.h

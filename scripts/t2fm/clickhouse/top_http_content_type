@@ -1,0 +1,24 @@
+-- Top HTTP content by number of flows
+
+SELECT
+    LOWER(toValidUTF8(mime)) AS lmime,
+    COUNT(*) AS cnt
+
+FROM (
+    SELECT
+        splitByChar('/', mimes)[1] AS mime
+    FROM
+        flow
+    ARRAY JOIN
+        "httpMimes" AS mimes
+    WHERE
+        notEmpty("httpMimes")
+        AND match(mimes, '[^/]+/[^/]+')
+        AND "timeFirst" >= {time_from:DateTime64(6)}
+        AND "timeLast" <= {time_to:DateTime64(6)}
+) AS flows
+
+GROUP BY lmime
+ORDER BY multiply(cnt, {sort_order:Int8})
+
+LIMIT {n:UInt64}

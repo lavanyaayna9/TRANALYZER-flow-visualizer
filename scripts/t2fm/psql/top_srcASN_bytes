@@ -1,0 +1,40 @@
+-- Top source ASN by number of bytes
+
+SELECT
+    asn,
+    SUM(bytes) AS cnt
+
+FROM (
+    -- A flows
+    SELECT
+        "srcIPASN" AS asn,
+        "l7BytesSnt" AS bytes
+    FROM
+        flow
+    WHERE
+        "dir" = 'A'
+        AND ("flowStat"::BIGINT & 1) = 0::BIGINT
+        AND ("flowStat"::BIGINT & x'c000'::BIGINT) > 0::BIGINT  -- IPv4/6 only
+        AND "timeFirst" >= to_timestamp(:time_from)
+        AND "timeLast" <= to_timestamp(:time_to)
+
+    UNION ALL
+
+    -- B flows
+    SELECT
+        "dstIPASN" AS asn,
+        "l7BytesRcvd" AS bytes
+    FROM
+        flow
+    WHERE
+        "dir" = 'A'
+        AND ("flowStat"::BIGINT & 1) = 1::BIGINT
+        AND ("flowStat"::BIGINT & x'c000'::BIGINT) > 0::BIGINT  -- IPv4/6 only
+        AND "timeFirst" >= to_timestamp(:time_from)
+        AND "timeLast" <= to_timestamp(:time_to)
+) AS flows
+
+GROUP BY asn
+ORDER BY cnt :sort_order
+
+LIMIT :n

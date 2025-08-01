@@ -1,0 +1,233 @@
+.\"
+.\" This program is free software; you can redistribute it and/or modify
+.\" it under the terms of the GNU General Public License as published by
+.\" the Free Software Foundation; either version 2, or (at your option)
+.\" any later version.
+.\"
+.\" This program is distributed in the hope that it will be useful,
+.\" but WITHOUT ANY WARRANTY; without even the implied warranty of
+.\" MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+.\" GNU General Public License for more details.
+.\"
+.\" You should have received a copy of the GNU General Public License
+.\" along with this program; if not, write to the Free Software Foundation,
+.\" Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
+.\"
+
+.IX Title t2fm 1
+
+.TH T2FM 1 "November 2024" "0.9.3" "User Commands"
+
+.SH NAME
+\fIt2fm\fR -- Generate a PDF/LaTeX report from a PCAP, Tranalyzer flow file or database (ClickHouse, MongoDB or PostgreSQL) or NetFlow records.
+
+.SH SYNOPSIS
+\fBt2fm\fI [\fIOPTION\fR...] <\fIINPUT\fR>
+
+.SH DESCRIPTION
+\fBt2fm\fR can be used to generate a PDF report summarizing the traffic contained in a PCAP, a Tranalyzer flow file or database (ClickHouse, MongoDB or PostgreSQL) or NetFlow records.
+It uses \fBTranalyzer\fR to produce a flow file (except when generating a report from NetFlow data) and \fBtawk\fR to analyze it.
+
+.SH INPUT
+.TP
+\fB-i\fR \fIiface\fR
+Interface to capture traffic from
+.TP
+\fB-r\fR \fIpcap\fR
+PCAP file to analyze
+.TP
+\fB-R\fR \fIlist\fR
+List of PCAP files to analyze
+.TP
+\fB-F\fR \fIfile\fR
+Flow file to analyze
+.TP
+\fB-C\fR \fIdbname\fR
+ClickHouse database to use to generate the report
+.TP
+\fB-m\fR \fIdbname\fR
+Mongo database to use to generate the report
+.TP
+\fB-p\fR \fIdbname\fR
+PostgreSQL database to use to generate the report
+.TP
+\fB-N\fR \fIfile_or_dir\fR
+NetFlow data to use to generate the report
+
+.SH OUTPUT
+.TP
+\fB-A\fR
+Automatically open the generated PDF
+.TP
+\fB-w\fR \fIprefix\fR
+Append \fIprefix\fR to any output file produced
+
+.SH OPTIONAL ARGUMENTS
+.TP
+\fB-T\fR \fIfrom\fR \fIto\fR
+Only consider data between from and to [-m and -p only]
+.TP
+\fB-b\fR
+Configure and build Tranalyzer2 and the plugins
+.TP
+\fB--reset\fR
+Reset T2 and the plugins configuration at the end
+.TP
+\fB-f\fR \fIfactor\fR
+Tranalyzer hash table multiplication factor
+.TP
+\fB-d\fR
+Carve HTTP objects (high memory usage, required to report EXE downloads and their checksums)
+.TP
+\fB--hide-user\fR
+Obfuscate usernames for cleartext passwords
+.TP
+\fB--hide-pass\fR
+Obfuscate passwords for cleartext passwords
+.TP
+\fB--hide-user-pass\fR
+Obfuscate usernames and passwords for cleartext passwords
+.TP
+\fB--top\fR
+Only compute top statistics
+.TP
+\fB--bottom\fR
+Only compute bottom statistics
+.TP
+\fB--no-countries\fR
+Do not output top countries
+.TP
+\fB--no-organizations\fR
+Do not output top organizations
+.TP
+\fB--no-dns\fR
+Do not output DNS statistics
+.TP
+\fB--no-http\fR
+Do not output HTTP statistics
+.TP
+\fB--no-https\fR
+Do not output HTTPS statistics
+.TP
+\fB--no-non-std-ports\fR
+Do not output non-standard ports statistics
+.TP
+\fB--no-passwords\fR
+Do not output cleartext passwords
+.TP
+\fB--no-warnings\fR
+Do not output the warnings section
+.TP
+\fB-t\fR \fItitle\fR
+Set the report title
+.TP
+\fB-a\fR \fIauthor\fR
+Set the report author
+.TP
+\fB--chart-color\fR \fIcolor\fR
+Set the charts color (red, orange, gray!25, ...)
+.TP
+\fB--table-odd-color\fR \fIcolor\fR
+Set the tables odd rows color (red, orange, gray!25, ...)
+.TP
+\fB--table-even-color\fR \fIcolor\fR
+Set the table even rows color (red, orange, gray!25, ...)
+.TP
+\fB-L\fR
+Do not use logarithmic scale for axis
+.TP
+\fB-H\fR
+Output raw numbers instead of human readable
+.TP
+\fB-HH\fR
+Output raw and human readable numbers
+.TP
+\fB-n\fR \fInum\fR
+Compute top \fInum\fR statistics for tables [default: 10]
+.TP
+\fB-c\fR \fInum\fR
+Compute top \fInum\fR statistics for charts [default: 5]
+.TP
+\fB--copyright\fR [\fItext\fR]
+Print a copyright notice at the bottom of every page
+.TP
+\fB--watermark\fR [\fItext\fR]
+Print a watermark on every page
+.TP
+\fB-y\fR
+Do not ask for confirmation before executing an action
+.TP
+\fB-0\fR
+Run all queries in parallel
+.TP
+\fB-1\fR
+Do not run queries in parallel (slow)
+.TP
+\fB-NUM\fR
+Run \fINUM\fR queries in parallel [default: number of cores]
+
+.SH HELP AND DOCUMENTATION ARGUMENTS
+.TP
+\fB-?\fR, \fB-h\fR, \fB--help\fR
+Show help options and exit
+
+.SH FILES
+\fIt2fm.load\fR
+.RS
+List of \fBTranalyzer\fR plugins to load in order to generate the full PDF report
+
+.SH ""
+\fIt2fm.patch\fR
+.RS
+Patch to configure \fBTranalyzer\fR and the plugins as required to generate the report
+
+.SH ""
+\fIt2fm_template.tex\fR
+.RS
+Template for the final report
+
+.SH ""
+\fIclickhouse/*\fR
+.RS
+ClickHouse scripts to collect the required statistics
+
+.SH ""
+\fImongo/*\fR
+.RS
+MongoDB scripts to collect the required statistics
+
+.SH ""
+\fIpsql/*\fR
+.RS
+PostgreSQL scripts to collect the required statistics
+
+.SH ""
+\fItawk/*\fR
+.RS
+tawk scripts to collect the required statistics
+
+.SH EXIT STATUS
+\fBt2fm\fR returns 0 on success. Any different value is an indication of error.
+
+.SH AUTHORS
+\fBt2fm\fR was written by the Tranalyzer Development Team
+
+.SH BUGS
+Please send problems, bugs, questions and suggestions to:
+
+.ti +24
+\fIandy@tranalyzer.com\fR
+
+.SH DISTRIBUTION
+The latest version of \fBt2fm\fR can be found at
+
+.ti +22
+\fIhttps://tranalyzer.com\fR
+
+.SH SEE ALSO
+\fIt2conf\fR(1), \fItawk\fR(1), \fItranalyzer\fR(1)
+
+The full documentation for \fBt2fm\fR is available at
+
+.ti +6
+\fIhttps://tranalyzer.com/download/doc/documentation.pdf\fR

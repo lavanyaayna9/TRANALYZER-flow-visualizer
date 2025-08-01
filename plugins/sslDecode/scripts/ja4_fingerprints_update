@@ -1,0 +1,248 @@
+#!/usr/bin/env bash
+#
+# Update and convert JA4 fingerprints from
+#   - https://github.com/FoxIO-LLC/ja4/blob/main/ja4plus-mapping.csv
+#   - https://ja4db.com/api/download/
+
+source "$(dirname "${0}")/../../../scripts/t2utils.sh"
+
+usage() {
+    printf "Usage:\n"
+    printf "    %s [OPTION...]\n\n" "${SNAME}"
+    printf "Optional arguments:\n"
+    printf "    -u      update fingerprints\n"
+    printf "    -c      convert fingerprints\n"
+    printf "    -a      update and convert fingerprints\n"
+    printf "    -s      Use ja4plus-mapping.csv from https://github.com/FoxIO-LLC/ja4\n"
+    printf "            instead of ja4+_db.json from https://ja4db.com\n"
+    #printf "    -f      file to convert\n"
+    printf "    -h      display this help, then exit\n"
+}
+
+onexit() {
+    if [[
+        -f "${TMP_JA4_FILE}"  ||
+        -f "${TMP_JA4S_FILE}" ||
+        -f "${TMP_JA4X_FILE}"
+    ]]; then
+        rm -f "${TMP_JA4_FILE}" "${TMP_JA4S_FILE}" "${TMP_JA4X_FILE}"
+    fi
+}
+
+update_ja4_csv() {
+    local url="https://raw.githubusercontent.com/FoxIO-LLC/ja4/refs/heads/main/ja4plus-mapping.csv"
+    if ! t2_wget_n "${url}"; then
+        fatal "Failed to download ${url}"
+    fi
+
+    printok "Update successful"
+}
+
+update_ja4_json() {
+    local url="https://ja4db.com/api/download/"
+    if ! t2_wget_n "${url}" "${SHOME}/ja4+_db.json"; then
+        fatal "Failed to download ${url}"
+    fi
+
+    printok "Update successful"
+}
+
+sort_and_finalize_ja4() {
+    local ja4_file="${SHOME}/../ja4fingerprints.tsv"
+    local ja4s_file="${SHOME}/../ja4sfingerprints.tsv"
+    local ja4x_file="${SHOME}/../ja4xfingerprints.tsv"
+
+    local num_ja4
+    sort -u -o "${TMP_JA4_FILE}"{,}
+    num_ja4=$(wc -l "${TMP_JA4_FILE}" | AWK '{ print $1 }')
+    echo "% ${num_ja4}" > "${ja4_file}"
+    cat "${TMP_JA4_FILE}" >> "${ja4_file}"
+
+    local num_ja4s
+    sort -u -o "${TMP_JA4S_FILE}"{,}
+    num_ja4s=$(wc -l "${TMP_JA4S_FILE}" | AWK '{ print $1 }')
+    echo "% ${num_ja4s}" > "${ja4s_file}"
+    cat "${TMP_JA4S_FILE}" >> "${ja4s_file}"
+
+    local num_ja4x
+    sort -u -o "${TMP_JA4X_FILE}"{,}
+    num_ja4x=$(wc -l "${TMP_JA4X_FILE}" | AWK '{ print $1 }')
+    echo "% ${num_ja4x}" > "${ja4x_file}"
+    cat "${TMP_JA4X_FILE}" >> "${ja4x_file}"
+
+    printok "Conversion successful:"
+    printok "    - $(basename "${ja4_file}"): ${num_ja4} fingerprints"
+    printok "    - $(basename "${ja4s_file}"): ${num_ja4s} fingerprints"
+    printok "    - $(basename "${ja4x_file}"): ${num_ja4x} fingerprints"
+}
+
+convert_ja4_csv() {
+    local infile="${SHOME}/ja4plus-mapping.csv"
+    if [[ ! -f "${infile}" ]]; then
+        printerr "'$(basename "${infile}")' could not be found"
+        printinf "Run '${SNAME} -s -u' to download the latest version of the file"
+        exit 1
+    fi
+
+    "${TAWK}" -H -N 1 -F, \
+        -v ja4_file="${TMP_JA4_FILE}" \
+        -v ja4s_file="${TMP_JA4S_FILE}" \
+        -v ja4x_file="${TMP_JA4X_FILE}" \
+    '{
+        desc = ""
+        if ($Application) {
+            desc = $Application
+        } else if ($Library) {
+            desc = $Library
+        } else if ($Device) {
+            desc = $Device
+        }
+
+        if ($OS) {
+            if (!desc) {
+                desc = $OS
+            } else {
+                desc = desc " (" $OS ")"
+            }
+        }
+
+        if (!strisempty($ja4)) {
+            print $ja4, desc >> ja4_file
+        }
+
+        if (!strisempty($ja4s)) {
+            print $ja4s, desc >> ja4s_file
+        }
+
+        if (!strisempty($ja4x)) {
+            print $ja4x, desc >> ja4x_file
+        }
+    }' "${infile}"
+
+    sort_and_finalize_ja4
+}
+
+convert_ja4_json() {
+    local infile="${SHOME}/ja4+_db.json"
+    if [[ ! -f "${infile}" ]]; then
+        printerr "'$(basename "${infile}")' could not be found"
+        printinf "Run '${SNAME} -u' to download the latest version of the file"
+        exit 1
+    fi
+
+    "${PYTHON}" -c '
+import argparse
+import json
+
+parser = argparse.ArgumentParser(prog="ja4_convert",
+                                 description="Convert JA4 fingerprints from JSON to TSV")
+parser.add_argument("-i", "--infile", help="Input file", required=True)
+parser.add_argument("-j", "--ja4-file", help="Output file for JA4 signatures", required=True)
+parser.add_argument("-s", "--ja4s-file", help="Output file for JA4S signatures", required=True)
+parser.add_argument("-x", "--ja4x-file", help="Output file for JA4X signatures", required=True)
+args = parser.parse_args()
+
+data = []
+with open(args.infile, encoding="utf-8") as f:
+    data = json.load(f)
+
+with open(args.ja4_file, "w", encoding="utf-8") as ja4_file, \
+     open(args.ja4s_file, "w", encoding="utf-8") as ja4s_file, \
+     open(args.ja4x_file, "w", encoding="utf-8") as ja4x_file:
+
+    for row in data:
+        desc = None
+        if row["application"]:
+            desc = row["application"].strip()
+        elif row["library"]:
+            desc = row["library"].strip()
+        elif row["device"]:
+            desc = row["device"].strip()
+
+        if row["os"]:
+            desc = row["os"].strip() if not desc else f"{desc} ({row["os"].strip()})"
+
+        if not desc and row["user_agent_string"]:
+            desc = row["user_agent_string"].strip()
+
+        # Ignore records without description
+        #if not desc:
+        #    continue
+
+        ja4 = row["ja4_fingerprint"]
+        if ja4 and ja4.isascii():
+            print(f"{ja4.strip()}\t{desc}", file=ja4_file)
+
+        ja4s = row["ja4s_fingerprint"]
+        if ja4s and ja4s.isascii():
+            print(f"{ja4s.strip()}\t{desc}", file=ja4s_file)
+
+        ja4x = row["ja4x_fingerprint"]
+        if ja4x and ja4x.isascii():
+            print(f"{ja4x.strip()}\t{desc}", file=ja4x_file)
+
+    ' \
+    --infile="${infile}" \
+    --ja4-file="${TMP_JA4_FILE}" \
+    --ja4s-file="${TMP_JA4S_FILE}" \
+    --ja4x-file="${TMP_JA4X_FILE}"
+
+    if [[ $? -ne 0 ]]; then
+        fatal "Failed to convert '${infile}' to TSV"
+    fi
+
+    sort_and_finalize_ja4
+}
+
+SOURCE="json"
+
+while [ $# -gt 0 ]; do
+    case "${1}" in
+        -a|--all)
+            UPDATE=1
+            CONVERT=1
+            ;;
+        -u|--update)
+            UPDATE=1
+            ;;
+        -c|--convert)
+            CONVERT=1
+            ;;
+        -s)
+            SOURCE="csv"
+            ;;
+        #-f|--file)
+        #    validate_next_file "$1" "$2"
+        #    INFILE="$($READLINK -f "$2")"
+        #    shift
+        #    ;;
+        -h|-\?|--help)
+            usage
+            exit 0
+            ;;
+        *)
+            abort_option_unknown "${1}"
+            ;;
+    esac
+    shift
+done
+
+if [[ -z "${UPDATE}" && -z "${CONVERT}" ]]; then
+    printerr "One of '-a', '-u' or '-c' option is required"
+    abort_with_help
+fi
+
+if [[ -n "${CONVERT}" ]]; then
+    trap "onexit" EXIT
+    TMP_JA4_FILE="$(mktemp)"
+    TMP_JA4S_FILE="$(mktemp)"
+    TMP_JA4X_FILE="$(mktemp)"
+fi
+
+if [[ "${SOURCE}" == "csv" ]]; then
+    [[ -n "${UPDATE}" ]]  && update_ja4_csv
+    [[ -n "${CONVERT}" ]] && convert_ja4_csv
+else
+    [[ -n "${UPDATE}" ]]  && update_ja4_json
+    [[ -n "${CONVERT}" ]] && convert_ja4_json
+fi

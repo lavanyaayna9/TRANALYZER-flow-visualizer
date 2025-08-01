@@ -1,0 +1,8 @@
+#H tftpOpcode | Description
+#H =============================================================================
+          RRQ | Read request
+          WRQ | Write request
+          DTA | Read or write the next block of data
+          ACK | Acknowledgment
+          ERR | Error message
+          OAK | Option acknowledgment

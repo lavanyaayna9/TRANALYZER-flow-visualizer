@@ -1,0 +1,30 @@
+#!/usr/bin/env awk
+#
+# Remove leading and trailing quotes from a string 's' and
+# unescape all escaped quotes in 's'.
+#
+# Parameters:
+#   - s : the string to unquote
+#
+# Dependencies:
+#   - None
+#
+# See also:
+#   - quote
+#   - chomp
+#   - strip
+#   - lstrip
+#   - rstrip
+#
+# Examples:
+#   - tawk '{ print unquote($pwxUser) }' file.txt
+#   - tawk '{ print unquote($1) }' <<< '"hello \"World\""'
+
+function unquote(s) {
+    if (s ~ /^"/ || s ~ /"$/) {
+        if (s ~ /^"/) s = substr(s, 2)
+        if (s ~ /"$/) s = substr(s, 1, length(s)-1)
+        gsub(/\\"/, "\"", s)
+    }
+    return s
+}

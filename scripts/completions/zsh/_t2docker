@@ -1,0 +1,80 @@
+# ZSH completion for t2docker
+
+_t2docker() {
+    #compdef t2docker
+
+    local cur="${words[CURRENT]}"
+    [ $CURRENT -gt 2 ] && local prev="${words[CURRENT-1]}"
+
+    local cmdline="${words[*]}"
+    if grep -Fw tranalyzer <<< "$cmdline" &> /dev/null || grep -Fw t2 <<< "$cmdline" &> /dev/null; then
+        _t2
+        return
+    elif grep -Fw t2b2t <<< "$cmdline" &> /dev/null; then
+        _t2b2t
+        return
+    elif grep -Fw t2build <<< "$cmdline" &> /dev/null; then
+        _t2build
+        return
+    elif grep -Fw t2conf <<< "$cmdline" &> /dev/null; then
+        _t2conf
+        return
+    elif grep -Fw t2fm <<< "$cmdline" &> /dev/null; then
+        _t2fm
+        return
+    elif grep -Fw t2whois <<< "$cmdline" &> /dev/null; then
+        _t2whois
+        return
+    elif grep -Fw tawk <<< "$cmdline" &> /dev/null; then
+        _tawk
+        return
+    fi
+
+    case "$prev" in
+        -r|-R|-b|-e|-F|-w|-W)
+            _t2
+            return
+            ;;
+        -B|--build|-L|--load)
+            _files
+            return
+            ;;
+        -X|--execute)
+            if grep -Fw -e "-B" -e "-L" <<< "$cmdline" &> /dev/null; then
+                break
+            else
+                images="$(t2docker -ls 2> /dev/null | awk 'NR > 1 { print $1 }')"
+                compadd "${images[@]}"
+                return
+            fi
+            ;;
+        -S|--save)
+            if grep -Fw -e "-B" <<< "$cmdline" &> /dev/null; then
+                break
+            else
+                images="$(t2docker -ls 2> /dev/null | awk 'NR > 1 { print $1 }')"
+                compadd "${images[@]}"
+                return
+            fi
+            ;;
+        -os|--os)
+            os=(
+                centos
+                debian
+                fedora
+                opensuse/leap
+                opensuse/tumbleweed
+                ubuntu
+            )
+            compadd "${os[@]}"
+            return
+            ;;
+        -ov|--os-version)
+            break
+            ;;
+    esac
+
+    _arguments --
+}
+
+compdef _t2docker t2docker

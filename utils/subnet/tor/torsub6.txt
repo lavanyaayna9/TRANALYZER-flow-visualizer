@@ -1,0 +1,2015 @@
+2a0a:4cc0:0:63::1	197540	0.000000	0.000000	de	-	-	G(mewsRelay)v2202309204858238594.happysrv.de
+2a0a:4cc0:0:e35:c4dd:60ff:fe34:7d02	197540	0.000000	0.000000	de	-	-	G(pato)v2202203170714182360.supersrv.de
+2a0a:4cc0:0:f0a:a45c:7aff:fe13:2781	197540	0.000000	0.000000	de	-	-	G(klarheit)mail.klarheit.at
+2a0a:4cc0:1:2e8:430:d0ff:fe16:af4f	197540	0.000000	0.000000	de	-	-	G(0x67726579)netcup.grey.pw
+2a0a:4cc0:1:10f9:4827:d3ff:fe72:b569	197540	0.000000	0.000000	de	-	-	G(StopClimateCollapse)v2202312212604248899.nicesrv.de
+2a0a:4cc0:1:11c1:c80d:3dff:fe8c:eb6c	197540	0.000000	0.000000	de	-	-	G(CheersForEdSnowden)netcup-medium-arm.megasrv.de
+2a0a:4cc0:1:104e::1	197540	0.000000	0.000000	de	-	-	G(vaw)nlih.de
+2a0a:4cc0:1:1129::	197540	0.000000	0.000000	de	-	-	G(KavinRelay)v2202401213208251698.powersrv.de
+2a0a:4cc0:1:1150::	197540	0.000000	0.000000	de	-	-	G(KavinRelay)v2202312213208249990.luckysrv.de
+2a0a:4cc0:1:1237::1	197540	0.000000	0.000000	de	-	-	G(BigOnion)big-onion.org
+2a0a:4cc0:3:10d::42	197540	0.000000	0.000000	de	-	-	G(Totoro4220)v2202411232503298103.luckysrv.de
+2a0a:4cc0:40:91b:7425:2eff:fec8:5578	197540	0.000000	0.000000	de	-	-	GE(MyWatchBegins)tor-exit-1.mywatchbegins.xyz
+2a0a:4cc0:80:5d76:14f1:65ff:fe1e:2ec0	197540	0.000000	0.000000	de	-	-	G(AnotherTorNode1202)v2202502254908314305.goodsrv.de
+2a0a:4cc0:80:47a3::2	197540	0.000000	0.000000	de	-	-	G(TorZurFreiheit1)netcup GmbH
+2a0a:4cc0:80:193::1	197540	0.000000	0.000000	de	-	-	G(RicsinewTORRelay)vservnew.menedetter.net
+2a0a:4cc0:100:2d1::3	197540	0.000000	0.000000	de	-	-	G(Elenore)tor.leenux.de
+2a0a:4cc0:100:91::42	197540	0.000000	0.000000	de	-	-	G(Totoro4219)v2202408232503283885.supersrv.de
+2a0a:4cc0:c0:4c86:d83b:d0ff:fec8:ded8	197540	0.000000	0.000000	de	-	-	G(relay1)netcup GmbH
+2a0a:4cc0:c0:5e48:9887:30ff:fef8:f4c8	197540	0.000000	0.000000	de	-	-	G(komeru2)komeru2-tor-node.poplite.xyz
+2a0a:4cc0:c0:94d9:643c:bdff:fe64:71b1	197540	0.000000	0.000000	de	-	-	G(FeidhlimNetcup00)feidhlim-netcup00.feidhlim.de
+2a0a:4cc0:c0:130c:14c3:a0ff:fe24:7692	197540	0.000000	0.000000	de	-	-	GE(NetSpynode)netcup.spynode.cc
+2a0a:4cc0:c0:300f:98e5:56ff:fe74:bbed	197540	0.000000	0.000000	de	-	-	G(TechniverseNET)vps02.vpshosts.techniverse.net
+2a0a:4cc0:c0:7105:4806:88ff:fe39:a33	197540	0.000000	0.000000	de	-	-	G(GermanCraft5)v22025044455331448.quicksrv.de
+2a0a:4cc0:c0:ad6f:e403:21ff:fe17:32db	197540	0.000000	0.000000	de	-	-	G(FeidhlimNetcup01)feidhlim-netcup01.feidhlim.de
+2a0a:4cc0:c0:ad38:388c:caff:fe46:21a5	197540	0.000000	0.000000	de	-	-	G(GermanCraft29)v220250321168326770.hotsrv.de
+2a0a:4cc0:c0:bbbd:4660:c905:736b:bee8	197540	0.000000	0.000000	de	-	-	G(jilfrg60)v220250428793334782.supersrv.de
+2a0a:51c0::59	48314	0.000000	0.000000	de	-	-	G(thorion)therion.tanascius.com
+2a0a:51c1:a:4e:9::	48314	0.000000	0.000000	de	-	-	G(GermanCraft9)Michael Sebastian Schinzel trading as IP-Projects GmbH & Co. KG
+2a0a:51c1:a:26::1	48314	0.000000	0.000000	de	-	-	G(GermanCraft7)Michael Sebastian Schinzel trading as IP-Projects GmbH & Co. KG
+2a0a:51c1:a:29::1	48314	0.000000	0.000000	de	-	-	G(LABTOR05)Michael Sebastian Schinzel trading as IP-Projects GmbH & Co. KG
+2a0a:c801:1:20::12f	39798	0.000000	0.000000	md	-	-	G(BlindBunny2)194-180-191-179.mivocloud.com
+2a0a:c802:1::bf	39798	0.000000	0.000000	us	-	-	G(opencommunity)no-rdns.mivocloud.com
+2a0b:8bc0:2:232a::1	41608	0.000000	0.000000	nl	-	-	G(DeepGreenResistanc2)mail.deepgreenresistance.org
+2a0b:4141:820:7d::2	213887	0.000000	0.000000	de	-	-	G(prsv)WAIcore Ltd
+2a0b:4141:820:138::2	213887	0.000000	0.000000	de	-	-	G(prsv)WAIcore Ltd
+2a0b:4142:9cf::2	215730	0.000000	0.000000	de	-	-	G(GrigoriRasputin)55782.h2.nexus
+2a0b:4142:d97::2	215730	0.000000	0.000000	de	-	-	G(fedstookover)69496.h2.nexus
+2a0b:4142:da2::2	215730	0.000000	0.000000	de	-	-	G(tormount)H2NEXUS LTD
+2a0b:cbc0:1100:1a::1	2027	0.000000	0.000000	fr	-	-	G(Ceres)ceres.milkywan.cloud
+2a0b:cbc0:1100:7::1	2027	0.000000	0.000000	fr	-	-	G(Pegase)pegase.milkywan.cloud
+2a0b:ee80:e:fefe::40	51395	0.000000	0.000000	ch	-	-	G(bauruine)Datasource AG
+2a0b:ee80:e:fefe::41	51395	0.000000	0.000000	ch	-	-	G(bauruine)Datasource AG
+2a0b:f4c0:16c:1::1	205100	0.000000	0.000000	de	-	-	GE(F3Netze)tor-exit-4.zbau.f3netze.de
+2a0b:f4c0:16c:2::1	205100	0.000000	0.000000	de	-	-	GE(F3Netze)tor-exit-3.zbau.f3netze.de
+2a0b:f4c0:16c:3::1	205100	0.000000	0.000000	de	-	-	GE(F3Netze)tor-exit-2.zbau.f3netze.de
+2a0b:f4c0:16c:4::1	205100	0.000000	0.000000	de	-	-	GE(F3Netze)tor-exit-1.zbau.f3netze.de
+2a0b:f4c0:16c:5::1	205100	0.000000	0.000000	de	-	-	GE(relayongorellik)tor-exit-12.zbau.f3netze.de
+2a0b:f4c0:16c:6::1	205100	0.000000	0.000000	de	-	-	GE(relayonfrazUrbluu)tor-exit-11.zbau.f3netze.de
+2a0b:f4c0:16c:7::1	205100	0.000000	0.000000	de	-	-	GE(relayoneltab)tor-exit-10.zbau.f3netze.de
+2a0b:f4c0:16c:8::1	205100	0.000000	0.000000	de	-	-	GE(relayondiinkarazan)tor-exit-9.zbau.f3netze.de
+2a0b:f4c0:16c:9::1	205100	0.000000	0.000000	de	-	-	GE(relayondagon)tor-exit-8.zbau.f3netze.de
+2a0b:f4c0:16c:10::1	205100	0.000000	0.000000	de	-	-	GE(relayondemogorgon)tor-exit-7.zbau.f3netze.de
+2a0b:f4c0:16c:11::1	205100	0.000000	0.000000	de	-	-	GE(relayonbeshaba)tor-exit-6.zbau.f3netze.de
+2a0b:f4c0:16c:12::1	205100	0.000000	0.000000	de	-	-	GE(relayonbephomet)tor-exit-5.zbau.f3netze.de
+2a0b:f4c0:16c:13::1	205100	0.000000	0.000000	de	-	-	GE(F3Netze)tor-exit-16.zbau.f3netze.de
+2a0b:f4c0:16c:14::1	205100	0.000000	0.000000	de	-	-	GE(F3Netze)tor-exit-15.zbau.f3netze.de
+2a0b:f4c0:16c:15::1	205100	0.000000	0.000000	de	-	-	GE(F3Netze)tor-exit-14.zbau.f3netze.de
+2a0b:f4c0:16c:16::1	205100	0.000000	0.000000	de	-	-	GE(F3Netze)tor-exit-13.zbau.f3netze.de
+2a0b:f4c2:1::129	60729	0.000000	0.000000	de	-	-	GE(relayon0129)tor-exit-129.relayon.org
+2a0b:f4c2:1::130	60729	0.000000	0.000000	de	-	-	GE(relayon0130)tor-exit-130.relayon.org
+2a0b:f4c2:1::132	60729	0.000000	0.000000	de	-	-	GE(relayon0132)tor-exit-132.relayon.org
+2a0b:f4c2:1::133	60729	0.000000	0.000000	de	-	-	GE(relayon0133)tor-exit-133.relayon.org
+2a0b:f4c2:1::134	60729	0.000000	0.000000	de	-	-	GE(relayon0134)tor-exit-134.relayon.org
+2a0b:f4c2:1::135	60729	0.000000	0.000000	de	-	-	GE(relayon0135)tor-exit-135.relayon.org
+2a0b:f4c2:1::137	60729	0.000000	0.000000	de	-	-	GE(relayon0137)tor-exit-137.relayon.org
+2a0b:f4c2:1::138	60729	0.000000	0.000000	de	-	-	GE(relayon0138)tor-exit-138.relayon.org
+2a0b:f4c2:1::139	60729	0.000000	0.000000	de	-	-	GE(relayon0139)tor-exit-139.relayon.org
+2a0b:f4c2:1::140	60729	0.000000	0.000000	de	-	-	GE(relayon0140)tor-exit-140.relayon.org
+2a0b:f4c2:1::141	60729	0.000000	0.000000	de	-	-	GE(relayon0141)tor-exit-141.relayon.org
+2a0b:f4c2:1::142	60729	0.000000	0.000000	de	-	-	GE(relayon0142)tor-exit-142.relayon.org
+2a0b:f4c2:1::143	60729	0.000000	0.000000	de	-	-	GE(relayon0143)tor-exit-143.relayon.org
+2a0b:f4c2:1::144	60729	0.000000	0.000000	de	-	-	GE(relayon0144)tor-exit-144.relayon.org
+2a0b:f4c2:1::145	60729	0.000000	0.000000	de	-	-	GE(relayon0145)tor-exit-145.relayon.org
+2a0b:f4c2:1::146	60729	0.000000	0.000000	de	-	-	GE(relayon0146)tor-exit-146.relayon.org
+2a0b:f4c2:1::147	60729	0.000000	0.000000	de	-	-	GE(relayon0147)tor-exit-147.relayon.org
+2a0b:f4c2:1::148	60729	0.000000	0.000000	de	-	-	GE(relayon0148)tor-exit-148.relayon.org
+2a0b:f4c2:1::149	60729	0.000000	0.000000	de	-	-	GE(relayon0149)tor-exit-149.relayon.org
+2a0b:f4c2:1::150	60729	0.000000	0.000000	de	-	-	GE(relayon0150)tor-exit-150.relayon.org
+2a0b:f4c2:1::151	60729	0.000000	0.000000	de	-	-	GE(relayon0151)tor-exit-151.relayon.org
+2a0b:f4c2:1::152	60729	0.000000	0.000000	de	-	-	GE(relayon0152)tor-exit-152.relayon.org
+2a0b:f4c2:1::153	60729	0.000000	0.000000	de	-	-	GE(relayon0153)tor-exit-153.relayon.org
+2a0b:f4c2:1::154	60729	0.000000	0.000000	de	-	-	GE(relayon0154)tor-exit-154.relayon.org
+2a0b:f4c2:1::155	60729	0.000000	0.000000	de	-	-	GE(relayon0155)tor-exit-155.relayon.org
+2a0b:f4c2:1::156	60729	0.000000	0.000000	de	-	-	GE(relayon0156)tor-exit-156.relayon.org
+2a0b:f4c2:1::157	60729	0.000000	0.000000	de	-	-	GE(relayon0157)tor-exit-157.relayon.org
+2a0b:f4c2:1::158	60729	0.000000	0.000000	de	-	-	GE(relayon0158)tor-exit-158.relayon.org
+2a0b:f4c2:1::160	60729	0.000000	0.000000	de	-	-	GE(relayon0160)tor-exit-160.relayon.org
+2a0b:f4c2:1::162	60729	0.000000	0.000000	de	-	-	GE(relayon0162)tor-exit-162.relayon.org
+2a0b:f4c2:1::163	60729	0.000000	0.000000	de	-	-	GE(relayon0163)tor-exit-163.relayon.org
+2a0b:f4c2:1::164	60729	0.000000	0.000000	de	-	-	GE(relayon0164)tor-exit-164.relayon.org
+2a0b:f4c2:1::165	60729	0.000000	0.000000	de	-	-	GE(relayon0165)tor-exit-165.relayon.org
+2a0b:f4c2:1::166	60729	0.000000	0.000000	de	-	-	GE(relayon0166)tor-exit-166.relayon.org
+2a0b:f4c2:1::167	60729	0.000000	0.000000	de	-	-	GE(relayon0167)tor-exit-167.relayon.org
+2a0b:f4c2:1::168	60729	0.000000	0.000000	de	-	-	GE(relayon0168)tor-exit-168.relayon.org
+2a0b:f4c2:1::169	60729	0.000000	0.000000	de	-	-	GE(relayon0169)tor-exit-169.relayon.org
+2a0b:f4c2:1::170	60729	0.000000	0.000000	de	-	-	GE(relayon0170)tor-exit-170.relayon.org
+2a0b:f4c2:1::171	60729	0.000000	0.000000	de	-	-	GE(relayon0171)tor-exit-171.relayon.org
+2a0b:f4c2:1::172	60729	0.000000	0.000000	de	-	-	GE(relayon0172)tor-exit-172.relayon.org
+2a0b:f4c2:1::173	60729	0.000000	0.000000	de	-	-	GE(relayon0173)tor-exit-173.relayon.org
+2a0b:f4c2:1::174	60729	0.000000	0.000000	de	-	-	GE(relayon0174)tor-exit-174.relayon.org
+2a0b:f4c2:1::175	60729	0.000000	0.000000	de	-	-	GE(relayon0175)tor-exit-175.relayon.org
+2a0b:f4c2:1::176	60729	0.000000	0.000000	de	-	-	GE(relayon0176)tor-exit-176.relayon.org
+2a0b:f4c2:1::178	60729	0.000000	0.000000	de	-	-	GE(relayon0178)tor-exit-178.relayon.org
+2a0b:f4c2:1::179	60729	0.000000	0.000000	de	-	-	GE(relayon0179)tor-exit-179.relayon.org
+2a0b:f4c2:1::180	60729	0.000000	0.000000	de	-	-	GE(relayon0180)tor-exit-180.relayon.org
+2a0b:f4c2:1::182	60729	0.000000	0.000000	de	-	-	GE(relayon0182)tor-exit-182.relayon.org
+2a0b:f4c2:1::183	60729	0.000000	0.000000	de	-	-	GE(relayon0183)tor-exit-183.relayon.org
+2a0b:f4c2:1::184	60729	0.000000	0.000000	de	-	-	GE(relayon0184)tor-exit-184.relayon.org
+2a0b:f4c2:1::185	60729	0.000000	0.000000	de	-	-	GE(relayon0185)tor-exit-185.relayon.org
+2a0b:f4c2:1::186	60729	0.000000	0.000000	de	-	-	GE(relayon0186)tor-exit-186.relayon.org
+2a0b:f4c2:1::187	60729	0.000000	0.000000	de	-	-	GE(relayon0187)tor-exit-187.relayon.org
+2a0b:f4c2:1::188	60729	0.000000	0.000000	de	-	-	GE(relayon0188)tor-exit-188.relayon.org
+2a0b:f4c2:1::189	60729	0.000000	0.000000	de	-	-	GE(relayon0189)tor-exit-189.relayon.org
+2a0b:f4c2:1::190	60729	0.000000	0.000000	de	-	-	GE(relayon0190)tor-exit-190.relayon.org
+2a0b:f4c2:1::191	60729	0.000000	0.000000	de	-	-	GE(relayon0191)tor-exit-191.relayon.org
+2a0b:f4c2:2:1::192	60729	0.000000	0.000000	de	-	-	G(ForPrivacyNET)tor-exit-192.for-privacy.net
+2a0b:f4c2:2:1::193	60729	0.000000	0.000000	de	-	-	G(ForPrivacyNET)tor-exit-193.for-privacy.net
+2a0b:f4c2:2:1::194	60729	0.000000	0.000000	de	-	-	G(ForPrivacyNET)tor-exit-194.for-privacy.net
+2a0b:f4c2:2:1::195	60729	0.000000	0.000000	de	-	-	G(ForPrivacyNET)tor-exit-195.for-privacy.net
+2a0b:f4c2:2:1::196	60729	0.000000	0.000000	de	-	-	G(ForPrivacyNET)tor-exit-196.for-privacy.net
+2a0b:f4c2:2:1::197	60729	0.000000	0.000000	de	-	-	G(ForPrivacyNET)tor-exit-197.for-privacy.net
+2a0b:f4c2:2:1::198	60729	0.000000	0.000000	de	-	-	G(ForPrivacyNET)tor-exit-198.for-privacy.net
+2a0b:f4c2:2:1::199	60729	0.000000	0.000000	de	-	-	G(ForPrivacyNET)tor-exit-199.for-privacy.net
+2a0b:f4c2:2:1::200	60729	0.000000	0.000000	de	-	-	G(ForPrivacyNET)tor-exit-200.for-privacy.net
+2a0b:f4c2:2:1::201	60729	0.000000	0.000000	de	-	-	G(ForPrivacyNET)tor-exit-201.for-privacy.net
+2a0b:f4c2:2:1::202	60729	0.000000	0.000000	de	-	-	G(ForPrivacyNET)tor-exit-202.for-privacy.net
+2a0b:f4c2:2:1::203	60729	0.000000	0.000000	de	-	-	G(ForPrivacyNET)tor-exit-203.for-privacy.net
+2a0b:f4c2:2:1::204	60729	0.000000	0.000000	de	-	-	G(ForPrivacyNET)tor-exit-204.for-privacy.net
+2a0b:f4c2:2:1::205	60729	0.000000	0.000000	de	-	-	G(ForPrivacyNET)tor-exit-205.for-privacy.net
+2a0b:f4c2:2:1::206	60729	0.000000	0.000000	de	-	-	G(ForPrivacyNET)tor-exit-206.for-privacy.net
+2a0b:f4c2:2:1::207	60729	0.000000	0.000000	de	-	-	G(ForPrivacyNET)tor-exit-207.for-privacy.net
+2a0b:f4c2:2:1::208	60729	0.000000	0.000000	de	-	-	G(ForPrivacyNET)tor-exit-208.for-privacy.net
+2a0b:f4c2:2:1::209	60729	0.000000	0.000000	de	-	-	G(ForPrivacyNET)tor-exit-209.for-privacy.net
+2a0b:f4c2:2:1::210	60729	0.000000	0.000000	de	-	-	G(ForPrivacyNET)tor-exit-210.for-privacy.net
+2a0b:f4c2:2:1::211	60729	0.000000	0.000000	de	-	-	G(ForPrivacyNET)tor-exit-211.for-privacy.net
+2a0b:f4c2:2::32	60729	0.000000	0.000000	de	-	-	GE(ForPrivacyNET)tor-exit-32.for-privacy.net
+2a0b:f4c2:2::33	60729	0.000000	0.000000	de	-	-	GE(ForPrivacyNET)tor-exit-33.for-privacy.net
+2a0b:f4c2:2::34	60729	0.000000	0.000000	de	-	-	GE(ForPrivacyNET)tor-exit-34.for-privacy.net
+2a0b:f4c2:2::35	60729	0.000000	0.000000	de	-	-	GE(ForPrivacyNET)tor-exit-35.for-privacy.net
+2a0b:f4c2:2::36	60729	0.000000	0.000000	de	-	-	GE(ForPrivacyNET)tor-exit-36.for-privacy.net
+2a0b:f4c2:2::37	60729	0.000000	0.000000	de	-	-	GE(ForPrivacyNET)tor-exit-37.for-privacy.net
+2a0b:f4c2:2::38	60729	0.000000	0.000000	de	-	-	GE(ForPrivacyNET)tor-exit-38.for-privacy.net
+2a0b:f4c2:2::39	60729	0.000000	0.000000	de	-	-	GE(ForPrivacyNET)tor-exit-39.for-privacy.net
+2a0b:f4c2:2::40	60729	0.000000	0.000000	de	-	-	GE(ForPrivacyNET)tor-exit-40.for-privacy.net
+2a0b:f4c2:2::41	60729	0.000000	0.000000	de	-	-	GE(ForPrivacyNET)tor-exit-41.for-privacy.net
+2a0b:f4c2:2::42	60729	0.000000	0.000000	de	-	-	GE(ForPrivacyNET)tor-exit-42.for-privacy.net
+2a0b:f4c2:2::43	60729	0.000000	0.000000	de	-	-	GE(ForPrivacyNET)tor-exit-43.for-privacy.net
+2a0b:f4c2:2::44	60729	0.000000	0.000000	de	-	-	GE(ForPrivacyNET)tor-exit-44.for-privacy.net
+2a0b:f4c2:2::45	60729	0.000000	0.000000	de	-	-	GE(ForPrivacyNET)tor-exit-45.for-privacy.net
+2a0b:f4c2:2::46	60729	0.000000	0.000000	de	-	-	GE(ForPrivacyNET)tor-exit-46.for-privacy.net
+2a0b:f4c2:2::47	60729	0.000000	0.000000	de	-	-	GE(ForPrivacyNET)tor-exit-47.for-privacy.net
+2a0b:f4c2:2::48	60729	0.000000	0.000000	de	-	-	GE(ForPrivacyNET)tor-exit-48.for-privacy.net
+2a0b:f4c2:2::49	60729	0.000000	0.000000	de	-	-	GE(ForPrivacyNET)tor-exit-49.for-privacy.net
+2a0b:f4c2:2::50	60729	0.000000	0.000000	de	-	-	GE(ForPrivacyNET)tor-exit-50.for-privacy.net
+2a0b:f4c2:2::51	60729	0.000000	0.000000	de	-	-	GE(ForPrivacyNET)tor-exit-51.for-privacy.net
+2a0b:f4c2:2::52	60729	0.000000	0.000000	de	-	-	GE(ForPrivacyNET)tor-exit-52.for-privacy.net
+2a0b:f4c2:2::53	60729	0.000000	0.000000	de	-	-	GE(ForPrivacyNET)tor-exit-53.for-privacy.net
+2a0b:f4c2:2::54	60729	0.000000	0.000000	de	-	-	GE(ForPrivacyNET)tor-exit-54.for-privacy.net
+2a0b:f4c2:2::55	60729	0.000000	0.000000	de	-	-	GE(ForPrivacyNET)tor-exit-55.for-privacy.net
+2a0b:f4c2:2::56	60729	0.000000	0.000000	de	-	-	GE(ForPrivacyNET)tor-exit-56.for-privacy.net
+2a0b:f4c2:2::57	60729	0.000000	0.000000	de	-	-	GE(ForPrivacyNET)tor-exit-57.for-privacy.net
+2a0b:f4c2:2::58	60729	0.000000	0.000000	de	-	-	GE(ForPrivacyNET)tor-exit-58.for-privacy.net
+2a0b:f4c2:2::59	60729	0.000000	0.000000	de	-	-	GE(ForPrivacyNET)tor-exit-59.for-privacy.net
+2a0b:f4c2:2::60	60729	0.000000	0.000000	de	-	-	GE(ForPrivacyNET)tor-exit-60.for-privacy.net
+2a0b:f4c2:2::61	60729	0.000000	0.000000	de	-	-	GE(ForPrivacyNET)tor-exit-61.for-privacy.net
+2a0b:f4c2:2::62	60729	0.000000	0.000000	de	-	-	GE(ForPrivacyNET)tor-exit-62.for-privacy.net
+2a0b:f4c2:2::63	60729	0.000000	0.000000	de	-	-	GE(ForPrivacyNET)tor-exit-63.for-privacy.net
+2a0b:f4c2:4::96	60729	0.000000	0.000000	de	-	-	GE(Digitalcourage4ipaa)tor-exit-96.digitalcourage.de
+2a0b:f4c2:4::97	60729	0.000000	0.000000	de	-	-	GE(Digitalcourage4ipba)tor-exit-97.digitalcourage.de
+2a0b:f4c2:4::98	60729	0.000000	0.000000	de	-	-	GE(Digitalcourage4ipca)tor-exit-98.digitalcourage.de
+2a0b:f4c2:4::99	60729	0.000000	0.000000	de	-	-	GE(Digitalcourage4ipda)tor-exit-99.digitalcourage.de
+2a0b:f4c2:4::100	60729	0.000000	0.000000	de	-	-	GE(Digitalcourage4ipea)tor-exit-100.digitalcourage.de
+2a0b:f4c2:4::101	60729	0.000000	0.000000	de	-	-	GE(Digitalcourage4ipfa)tor-exit-101.digitalcourage.de
+2a0b:f4c2:4::102	60729	0.000000	0.000000	de	-	-	GE(Digitalcourage4ipga)tor-exit-102.digitalcourage.de
+2a0b:f4c2:4::103	60729	0.000000	0.000000	de	-	-	GE(Digitalcourage4ipha)tor-exit-103.digitalcourage.de
+2a0b:f4c2:4::104	60729	0.000000	0.000000	de	-	-	GE(Digitalcourage4ip1a)tor-exit-104.digitalcourage.de
+2a0b:f4c2:4::105	60729	0.000000	0.000000	de	-	-	GE(Digitalcourage4ip2a)tor-exit-105.digitalcourage.de
+2a0b:f4c2:4::106	60729	0.000000	0.000000	de	-	-	GE(Digitalcourage4ip3a)tor-exit-106.digitalcourage.de
+2a0b:f4c2:4::107	60729	0.000000	0.000000	de	-	-	GE(Digitalcourage4ip4a)tor-exit-107.digitalcourage.de
+2a0b:f4c2:4::108	60729	0.000000	0.000000	de	-	-	GE(Digitalcourage4ip5a)tor-exit-108.digitalcourage.de
+2a0b:f4c2:4::109	60729	0.000000	0.000000	de	-	-	GE(Digitalcourage4ip6a)tor-exit-109.digitalcourage.de
+2a0b:f4c2:4::110	60729	0.000000	0.000000	de	-	-	GE(Digitalcourage4ip7a)tor-exit-110.digitalcourage.de
+2a0b:f300:406::	62240	0.000000	0.000000	us	-	-	G(PancakeWhore)tor.rawbit.ninja
+2a0c:4ac1:3:11::148	58212	0.000000	0.000000	de	-	-	G(alexf)148-234-157-45.alexf.fc-fra.core01.de
+2a0c:4ac1:5::7	58212	0.000000	0.000000	de	-	-	G(emir)132.234.157.45.dataforest.net
+2a0c:4ac1:8::27	207695	0.000000	0.000000	de	-	-	G(rexIndex4)index-hosting.com
+2a0c:4ac1:8::30	207695	0.000000	0.000000	de	-	-	G(rexIndex)index-hosting.com
+2a0c:4ac1:8::bd	207695	0.000000	0.000000	de	-	-	G(rexIndex2)index-hosting.com
+2a0c:4ac1:15::4	58212	0.000000	0.000000	de	-	-	G(ariazonaa)dataforest GmbH
+2a0c:5cc0:1:1::293c:1518	197648	0.000000	0.000000	cy	-	-	GE(Eden)tor-exit-readme-4.maxzrbn.it
+2a0c:5cc0:1:1::de78:1017	197648	0.000000	0.000000	cy	-	-	G(OBFI)CLOUDLAYER8 LIMITED
+2a0c:6a41:c13:1337::107	30823	0.000000	0.000000	de	-	-	GE(Herobrine01)aurologic GmbH
+2a0c:9a40:2805:1::198f	34927	0.000000	0.000000	es	-	-	G(droidtakeover)iFog GmbH
+2a0c:9a40:8860:51::aa11	212057	0.000000	0.000000	at	-	-	GE(NodescrapeExitAT1)exit1.nodescrape.net
+2a0c:9a40:8860:51::aa12	212057	0.000000	0.000000	at	-	-	G(NodescrapeRelayAT1)relay1.nodescrape.net
+2a0c:16c0:500:296:216:3cff:fe9c:6a68	42532	0.000000	0.000000	lv	-	-	G(FlashBear)SIA VEESP
+2a0c:16c0:500:296:216:3cff:fef2:c79b	42532	0.000000	0.000000	lv	-	-	G(veespLV)SIA VEESP
+2a0c:16c0:510:dc2::4cab	42532	0.000000	0.000000	lv	-	-	G(L29Ah)SIA VEESP
+2a0c:2500:571:6bf:f10d:eb5:1b24:f5d1	208208	0.000000	0.000000	de	-	-	G(SLAVAUKRAINI)39f9e364.cus19574.vps.st-srv.eu
+2a0c:5700:3133:650:b0ea:eeff:fedb:1f7b	30893	0.000000	0.000000	se	-	-	GE(DXV7520)tor.caspervk.net
+2a0c:5700:3133:1705:be24:11ff:fe0f:9e53	30893	0.000000	0.000000	se	-	-	GE(noack10i0)tor-10.no-ack.net
+2a0c:5700:3133:1705:be24:11ff:fe4e:df9e	30893	0.000000	0.000000	se	-	-	GE(noack8i0)tor-8.no-ack.net
+2a0c:5700:3133:1705:be24:11ff:fe37:3cb	30893	0.000000	0.000000	se	-	-	GE(noack11i0)tor-11.no-ack.net
+2a0c:5700:3133:1705:be24:11ff:fe58:9714	30893	0.000000	0.000000	se	-	-	GE(noack3i0)tor-3.no-ack.net
+2a0c:5700:3133:1705:be24:11ff:fe87:1bec	30893	0.000000	0.000000	se	-	-	GE(noack9i0)tor-9.no-ack.net
+2a0c:5700:3133:1705:be24:11ff:fead:5be0	30893	0.000000	0.000000	se	-	-	GE(noack7i0)tor-7.no-ack.net
+2a0c:5700:3133:1705:be24:11ff:feb6:9942	30893	0.000000	0.000000	se	-	-	GE(noack1i0)tor-1.no-ack.net
+2a0c:5700:3133:1705:be24:11ff:fed0:6ed4	30893	0.000000	0.000000	se	-	-	GE(noack2i0)tor-2.no-ack.net
+2a0c:5700:3133:1705:be24:11ff:fed1:b9d9	30893	0.000000	0.000000	se	-	-	GE(noack4i0)tor-4.no-ack.net
+2a0c:5700:3133:1705:be24:11ff:fee1:73d9	30893	0.000000	0.000000	se	-	-	GE(noack6i0)tor-6.no-ack.net
+2a0c:5700:3133:1705:be24:11ff:fef5:7c39	30893	0.000000	0.000000	se	-	-	GE(noack5i0)tor-5.no-ack.net
+2a0c:5700:3133:4000:be24:11ff:fe3c:6727	30893	0.000000	0.000000	se	-	-	GE(noack14i2)tor-14.no-ack.net
+2a0c:5700:3133:4000:be24:11ff:fe07:68d	30893	0.000000	0.000000	se	-	-	GE(noack13i0)tor-13.no-ack.net
+2a0c:5700:3133:4000:be24:11ff:fe51:a829	30893	0.000000	0.000000	se	-	-	GE(noack12i0)tor-12.no-ack.net
+2a0c:8900:2:b2f::1	200462	0.000000	0.000000	de	-	-	G(GermanCraft3)Lennart Seitz trading as \"ETH-Services\"
+2a0c:b641:3a1:1002::f3a	201670	0.000000	0.000000	bg	-	-	G(NoPeace)S.C. INFOTECH-GRUP S.R.L.
+2a0c:b641:3a1:1002::f60	201670	0.000000	0.000000	bg	-	-	G(iLoveMyTorFriends)S.C. INFOTECH-GRUP S.R.L.
+2a0c:b641:3a1:1002::fa4	201670	0.000000	0.000000	bg	-	-	G(iLove4get)S.C. INFOTECH-GRUP S.R.L.
+2a0c:b641:3a1:1004::3eb	201670	0.000000	0.000000	in	-	-	G(NoProsperity)S.C. INFOTECH-GRUP S.R.L.
+2a0c:b641:3a1:1004::4d8	201670	0.000000	0.000000	in	-	-	G(eclipse23)S.C. INFOTECH-GRUP S.R.L.
+2a0c:b641:3a1:1004::4db	201670	0.000000	0.000000	in	-	-	G(AntonPann1)md-02.privacyhaven.org
+2a0c:b641:3a1:1004::12b	201670	0.000000	0.000000	in	-	-	G(FlashCamel)S.C. INFOTECH-GRUP S.R.L.
+2a0c:b641:3a1:1005::60	201670	0.000000	0.000000	us	-	-	G(h0ldmyb33r)S.C. INFOTECH-GRUP S.R.L.
+2a0c:b641:3a1:1005::e1	201670	0.000000	0.000000	us	-	-	G(Mournful9738)privateprivacy.org
+2a0c:b641:3a1:bac:64d9:45ff:feaf:c4f7	201670	0.000000	0.000000	bg	-	-	G(Zensursula)S.C. INFOTECH-GRUP S.R.L.
+2a0c:b641:6f0:6e::2	214379	0.000000	0.000000	ua	-	-	G(Kyiv)South Park Networks LLC
+2a0c:b641:6f0:23::2	214379	0.000000	0.000000	ua	-	-	G(Kyiv)South Park Networks LLC
+2a0c:b641:6f0:100::2	214379	0.000000	0.000000	ua	-	-	G(Vejprava)vejprava.tor.foundation
+2a0c:b641:6f0:1000::2	214379	0.000000	0.000000	ua	-	-	G(Unnamed)South Park Networks LLC
+2a0c:b641:6f0:b5::2	214379	0.000000	0.000000	ua	-	-	G(Starlink)starlink.tor.foundation
+2a0c:b641:6f0:bb::2	214379	0.000000	0.000000	ua	-	-	G(blueandyellow)South Park Networks LLC
+2a0c:b641:6f0:c4::2	214379	0.000000	0.000000	ua	-	-	G(Kyiv)South Park Networks LLC
+2a0c:b641:6f0:c8::2	214379	0.000000	0.000000	ua	-	-	G(DryTortuga)South Park Networks LLC
+2a0c:b641:6f0:fd::2	214379	0.000000	0.000000	ua	-	-	G(Anulyavana)anulyavana.tor.foundation
+2a0c:b641:6f0:ff::2	214379	0.000000	0.000000	ua	-	-	G(Drone)drone.tor.foundation
+2a0c:d480:c1c1:1286:ffff:ffff:ffff:ffe	210226	0.000000	0.000000	de	-	-	G(Gabara)Windcloud 4.0 GmbH
+2a0c:d480:c1c1:1286::5359	210226	0.000000	0.000000	de	-	-	G(GermanCraft28)Windcloud 4.0 GmbH
+2a0c:e300:b:b::b	198985	0.000000	0.000000	fr	-	-	GE(elenagb1)elenagb.nos-oignons.net
+2a0d:5440::25	48927	0.000000	0.000000	de	-	-	G(pingrelay)pingless.com
+2a0d:5940:90::2	58212	0.000000	0.000000	de	-	-	G(lunoxia)45-145-40-181.lunoxia.mc-fra.de
+2a0d:5940:112:a2::a	214902	0.000000	0.000000	de	-	-	G(firefly55)backfill.duckdns.org
+2a0d:8140:0:7::4d	211462	0.000000	0.000000	ro	-	-	G(pungent6)louver.duckdns.org
+2a0d:8140:1fff:2a21::1	214209	0.000000	0.000000	ro	-	-	GE(obzgs5tbmn4q)tor-exit.ditzy.obzgs5tbmn4q.org
+2a0d:8140:1fff:2c04::1	214209	0.000000	0.000000	ro	-	-	GE(prsv)Internet Magnate (Pty) Ltd
+2a0d:8140:1fff:19d2::1	214209	0.000000	0.000000	ro	-	-	G(pyrorelay)Internet Magnate (Pty) Ltd
+2a0d:8140:1fff:37c8::1	214209	0.000000	0.000000	ro	-	-	G(mira)mail.chaoticmira.gay
+2a0d:8140:1fff:48e0::1	214209	0.000000	0.000000	ro	-	-	G(GodOfLightning)Internet Magnate (Pty) Ltd
+2a0d:8140:1fff:c510::1	214209	0.000000	0.000000	ro	-	-	GE(prsv)Internet Magnate (Pty) Ltd
+2a0d:bbc7::f816:3eff:fe0b:58d3	214503	0.000000	0.000000	se	-	-	GE(r0cket11i0)exit-11.tor.r0cket.net
+2a0d:bbc7::f816:3eff:fe0b:181b	214503	0.000000	0.000000	se	-	-	GE(r0cket12i0)exit-12.tor.r0cket.net
+2a0d:bbc7::f816:3eff:fe1c:869a	214503	0.000000	0.000000	se	-	-	GE(r0cket06i0)exit-06.tor.r0cket.net
+2a0d:bbc7::f816:3eff:fe5d:4413	214503	0.000000	0.000000	se	-	-	GE(r0cket08i0)exit-08.tor.r0cket.net
+2a0d:bbc7::f816:3eff:fe12:1851	214503	0.000000	0.000000	se	-	-	GE(r0cket13i0)exit-13.tor.r0cket.net
+2a0d:bbc7::f816:3eff:fe18:f410	214503	0.000000	0.000000	se	-	-	GE(r0cket01i0)exit-01.tor.r0cket.net
+2a0d:bbc7::f816:3eff:fe65:992f	214503	0.000000	0.000000	se	-	-	GE(r0cket09i0)exit-09.tor.r0cket.net
+2a0d:bbc7::f816:3eff:fe72:95b6	214503	0.000000	0.000000	se	-	-	GE(r0cket03i0)exit-03.tor.r0cket.net
+2a0d:bbc7::f816:3eff:fe77:3729	214503	0.000000	0.000000	se	-	-	GE(r0cket10i0)exit-10.tor.r0cket.net
+2a0d:bbc7::f816:3eff:fe83:fa45	214503	0.000000	0.000000	se	-	-	GE(r0cket15i0)exit-15.tor.r0cket.net
+2a0d:bbc7::f816:3eff:fe84:8a9e	214503	0.000000	0.000000	se	-	-	GE(r0cket02i0)exit-02.tor.r0cket.net
+2a0d:bbc7::f816:3eff:fec7:9bc8	214503	0.000000	0.000000	se	-	-	GE(r0cket07i0)exit-07.tor.r0cket.net
+2a0d:bbc7::f816:3eff:fee6:ca14	214503	0.000000	0.000000	se	-	-	GE(r0cket04i0)exit-04.tor.r0cket.net
+2a0d:bbc7::f816:3eff:fee9:3e45	214503	0.000000	0.000000	se	-	-	GE(r0cket05i0)exit-05.tor.r0cket.net
+2a0d:bbc7::f816:3eff:fef2:6521	214503	0.000000	0.000000	se	-	-	GE(r0cket14i0)exit-14.tor.r0cket.net
+2a0d:c2c0:1:4::2	44592	0.000000	0.000000	nl	-	-	GE(artikel5ev12b)SkyLink Data Center BV
+2a0e:1d80:13:b6d5::1	9009	0.000000	0.000000	es	-	-	GE(wippvannwinkle)M247 Europe SRL
+2a0e:3c0:23::3	553	0.000000	0.000000	de	-	-	G(montserrat)marcie.members.selfnet.de
+2a0e:6a80:3:155::	44486	0.000000	0.000000	de	-	-	G(mercury)254.122.82.45.in-addr.arpa
+2a0e:97c0:3e3:7b4::1	58087	0.000000	0.000000	de	-	-	G(Heinrich)torrelay.maatthias.com
+2a0e:97c0:3e3:460:1337:b00b:1337:1	58087	0.000000	0.000000	de	-	-	GE(TORnadoExit01)88.252.71.109.in-addr.arpa
+2a0e:97c0:3e3:460:1337:b01b:1337:2	58087	0.000000	0.000000	de	-	-	GE(TORnadoExit02)97.252.71.109.in-addr.arpa
+2a0e:97c0:3e3:460:1337:b02b:1337:3	58087	0.000000	0.000000	de	-	-	GE(TORnadoExit03)182.252.71.109.in-addr.arpa
+2a0e:97c0:3e3:460:1337:b03b:1337:4	58087	0.000000	0.000000	de	-	-	GE(TORtelliniExit01)69.225.13.45.in-addr.arpa
+2a0e:97c0:3e3:460:1337:b04b:1337:5	58087	0.000000	0.000000	de	-	-	GE(TORtelliniExit02)78.225.13.45.in-addr.arpa
+2a0e:97c0:3e3:460:1337:b05b:1337:6	58087	0.000000	0.000000	de	-	-	GE(TORtelliniExit03)5.63.114.37.in-addr.arpa
+2a0e:97c0:3e3:460:1337:b10b:1337:8	58087	0.000000	0.000000	de	-	-	GE(TORfuExit01)18.50.114.37.in-addr.arpa
+2a0e:97c0:3e3:460:1337:b20b:1337:9	58087	0.000000	0.000000	de	-	-	GE(TORfuExit02)27.50.114.37.in-addr.arpa
+2a0e:97c0:3e3:460:1337:b30b:1337:10	58087	0.000000	0.000000	de	-	-	GE(TORfuExit03)124.50.114.37.in-addr.arpa
+2a0e:97c0:3e3:460:1337:b40b:1337:11	58087	0.000000	0.000000	de	-	-	GE(TORfuExit04)142.50.114.37.in-addr.arpa
+2a0e:97c0:3e3:a0e::1	58087	0.000000	0.000000	de	-	-	GE(Bogdan)27.247.253.5.in-addr.arpa
+2a0e:97c0:3e3:b6::1	58087	0.000000	0.000000	de	-	-	GE(TORstenExit01)117.36.15.194.in-addr.arpa
+2a0e:97c0:3ea:9e::1	58087	0.000000	0.000000	de	-	-	G(RelayToTheWorld)88.37.100.176.in-addr.arpa
+2a0e:97c0:3ea:35::1	203446	0.000000	0.000000	de	-	-	G(RelayToTheOpenWeb)27.39.134.45.in-addr.arpa
+2a0e:97c0:3ea:882::1	203446	0.000000	0.000000	de	-	-	GE(Pjotrek)158.70.137.45.in-addr.arpa
+2a0e:97c0:470:53:2::14	203446	0.000000	0.000000	us	-	-	G(netlixor)SMARTNET LIMITED
+2a0e:97c0:470::28	203446	0.000000	0.000000	ae	-	-	GE(smartexit2)SMARTNET LIMITED
+2a0e:97c0:470::30	203446	0.000000	0.000000	ae	-	-	GE(smartexit)SMARTNET LIMITED
+2a0e:97c0:471:ff0::7	214243	0.000000	0.000000	de	-	-	G(FlowLorian)Marc Fischer
+2a0e:97c0:471:ff0::10	214243	0.000000	0.000000	de	-	-	G(TCPTorsten)Marc Fischer
+2a0e:97c0:471:ff0::15	214243	0.000000	0.000000	de	-	-	G(TornadoSteven)Marc Fischer
+2a0e:97c0:471:ff0::16	214243	0.000000	0.000000	de	-	-	G(TeleLeon)Marc Fischer
+2a0e:97c0:471:ff0::17	214243	0.000000	0.000000	de	-	-	G(RoutinAlex)Marc Fischer
+2a0e:97c0:471:ff0::f	214243	0.000000	0.000000	de	-	-	G(LatenzLasse)Marc Fischer
+2a0e:1580:1000:0:be24:11ff:fe0c:bc08	206236	0.000000	0.000000	de	-	-	G(mikrogravitation2)default gateway UG (haftungsbeschraenkt)
+2a0e:1580:1000:0:be24:11ff:fe00:dc0e	206236	0.000000	0.000000	de	-	-	G(mikrogravitationD)default gateway UG (haftungsbeschraenkt)
+2a0e:1580:1000:0:be24:11ff:fe2b:98ee	206236	0.000000	0.000000	de	-	-	G(mikrogravitation7)default gateway UG (haftungsbeschraenkt)
+2a0e:1580:1000:0:be24:11ff:fe02:1ea8	206236	0.000000	0.000000	de	-	-	G(mikrogravitation6)default gateway UG (haftungsbeschraenkt)
+2a0e:1580:1000:0:be24:11ff:fe5a:82c5	206236	0.000000	0.000000	de	-	-	G(mikrogravitationB)default gateway UG (haftungsbeschraenkt)
+2a0e:1580:1000:0:be24:11ff:fe6d:a8bd	206236	0.000000	0.000000	de	-	-	G(mikrogravitationE)default gateway UG (haftungsbeschraenkt)
+2a0e:1580:1000:0:be24:11ff:fe7f:14f8	206236	0.000000	0.000000	de	-	-	G(mikrogravitation1)default gateway UG (haftungsbeschraenkt)
+2a0e:1580:1000:0:be24:11ff:fe8a:a5df	206236	0.000000	0.000000	de	-	-	G(mikrogravitation5)default gateway UG (haftungsbeschraenkt)
+2a0e:1580:1000:0:be24:11ff:fe8b:469f	206236	0.000000	0.000000	de	-	-	G(mikrogravitation9)default gateway UG (haftungsbeschraenkt)
+2a0e:1580:1000:0:be24:11ff:fe60:2797	206236	0.000000	0.000000	de	-	-	G(mikrogravitation4)default gateway UG (haftungsbeschraenkt)
+2a0e:1580:1000:0:be24:11ff:fe84:c546	206236	0.000000	0.000000	de	-	-	G(mikrogravitation8)default gateway UG (haftungsbeschraenkt)
+2a0e:1580:1000:0:be24:11ff:fe99:f34a	206236	0.000000	0.000000	de	-	-	G(mikrogravitationA)default gateway UG (haftungsbeschraenkt)
+2a0e:1580:1000:0:be24:11ff:fec2:ff8c	206236	0.000000	0.000000	de	-	-	G(mikrogravitation3)default gateway UG (haftungsbeschraenkt)
+2a0e:1580:1000:0:be24:11ff:fee5:4189	206236	0.000000	0.000000	de	-	-	G(mikrogravitationF)default gateway UG (haftungsbeschraenkt)
+2a0e:1580:1000:0:be24:11ff:feef:d784	206236	0.000000	0.000000	de	-	-	G(mikrogravitationC)default gateway UG (haftungsbeschraenkt)
+2a0e:4005:1002:ffff:185:40:4:22	200195	0.000000	0.000000	ru	-	-	GE(bauruine)tor-exit-terrahost11.tuxli.org
+2a0e:4005:1002:ffff:185:40:4:29	200195	0.000000	0.000000	ru	-	-	GE(bauruine)tor-exit1-terrahost08.tuxli.org
+2a0e:4005:1002:ffff:185:40:4:38	200195	0.000000	0.000000	ru	-	-	GE(terNOicebeer22)Verasel
+2a0e:4005:1002:ffff:185:40:4:44	200195	0.000000	0.000000	ru	-	-	GE(zuluu)Verasel
+2a0e:4005:1002:ffff:185:40:4:64	200195	0.000000	0.000000	ru	-	-	GE(TERRAHOSTrocks)Verasel
+2a0e:4005:1002:ffff:185:40:4:92	200195	0.000000	0.000000	ru	-	-	GE(bauruine)Verasel
+2a0e:4005:1002:ffff:185:40:4:100	200195	0.000000	0.000000	ru	-	-	GE(bauruine)tor-exit1-terrahost07.tuxli.org
+2a0e:4005:1002:ffff:185:40:4:101	200195	0.000000	0.000000	ru	-	-	GE(bauruine)terrahost10-tor-exit.tuxli.org
+2a0e:4005:1002:ffff:185:40:4:127	200195	0.000000	0.000000	ru	-	-	GE(prsv)Verasel
+2a0e:4005:1002:ffff:185:40:4:132	200195	0.000000	0.000000	ru	-	-	GE(4716)tor-exit-info.middelstaedt.com
+2a0e:4005:1002:ffff:185:40:4:149	200195	0.000000	0.000000	ru	-	-	GE(4724)tor-exit-info.middelstaedt.com
+2a0e:b107:dd0::3:fa35:9316	212508	0.000000	0.000000	it	-	-	GE(schreech)Lowhosting services of Davide Gennari
+2a0e:bf00:1030::99:9999:1	202539	0.000000	0.000000	de	-	-	G(AntsySeptum)Internetmanufaktur Karlsruhe UG (haftungsbeschraenkt)
+2a0e:bfc0:0:4::74b5	211619	0.000000	0.000000	hr	-	-	G(onionjamtri)MAXKO d.o.o.
+2a0e:bfc0:0:5::2	211619	0.000000	0.000000	hr	-	-	G(MAXKO)tor.maxko-hosting.com
+2a0e:bfc0:0:11::796d	211619	0.000000	0.000000	hr	-	-	GE(Quetzalcoatl)MAXKO d.o.o.
+2a0e:bfc0:0:14::24a8	211619	0.000000	0.000000	hr	-	-	GE(Quetzalcoatl)MAXKO d.o.o.
+2a0e:bfc2:0:2c::1	211619	0.000000	0.000000	hu	-	-	GE(torexit02588122)srv3.fekr.xyz
+2a0e:bfc2:0:222:b00b:babe:cafe:bad	211619	0.000000	0.000000	hu	-	-	G(zgato)hu5.eu.node.cdn-perfprod.com
+2a0e:bfc7:0:1f2::2634	211619	0.000000	0.000000	bg	-	-	G(litrebty)MAXKO d.o.o.
+2a0e:bfc7:0:3::2d83	211619	0.000000	0.000000	bg	-	-	GE(Quetzalcoatl)MAXKO d.o.o.
+2a0e:bfc7:0:222:b00b:babe:cafe:bad	211619	0.000000	0.000000	bg	-	-	G(zgato)bg9.eu.node.cdn-perfprod.com
+2a0e:e701:1198::1	2027	0.000000	0.000000	fr	-	-	GE(arecoque1)MilkyWan Association
+2a0e:f0c1:0:2258::100	200713	0.000000	0.000000	ch	-	-	G(SwissNETLNOB)s2258.rootserver.io
+2a0e:fa00:0:30::1	49447	0.000000	0.000000	nl	-	-	GE(NLTorNiceVPSnet)nl-tor.nicevps.net
+2a0e:fd40:103:158::1	44103	0.000000	0.000000	nl	-	-	G(Minotauros)The Mastermind Holding B.V.
+2a0f:5f40:0:5::14b	200019	0.000000	0.000000	md	-	-	G(mbserver)ALEXHOST SRL
+2a0f:5f40:1:355::104	200019	0.000000	0.000000	md	-	-	G(letsdoitSE)ALEXHOST SRL
+2a0f:5f40:1000:445::1f	200019	0.000000	0.000000	md	-	-	G(DeathToFascism)dtf.localhost
+2a0f:85c1:356:3238::1	215659	0.000000	0.000000	us	-	-	GE(Bagpipe)Aokigahara SRL
+2a0f:5707:aaf1:31c::1	211301	0.000000	0.000000	de	-	-	G(gloriamundi)gloria-mundi.eu
+2a0f:5707:aaf1:74::1	211301	0.000000	0.000000	de	-	-	G(rexUNESTY)Collin Schneeweiss trading as Unesty Company
+2a0f:5707:aaf1:408::1	211301	0.000000	0.000000	de	-	-	G(SussusAmogus)Collin Schneeweiss trading as Unesty Company
+2a0f:5707:aaf1:ae3::a010	211301	0.000000	0.000000	de	-	-	G(Nekoneko)Collin Schneeweiss trading as Unesty Company
+2a0f:9400:7e11:cb92:b00b:babe:cafe:bad	214209	0.000000	0.000000	ro	-	-	G(zgato)ro1.eu.node.cdn-perfprod.com
+2a0f:ca80:0:e57f::785:2099	213438	0.000000	0.000000	nl	-	-	G(skankhunt42nl1)ColocaTel Inc.
+2a0f:cdc6:500:11e3::2	216127	0.000000	0.000000	de	-	-	GE(Yenoki)INTERNATIONAL HOSTING COMPANY LIMITED
+2a0f:df00:0:255::194	41281	0.000000	0.000000	se	-	-	GE(TORKeFFORG1)KeFF Networks Ltd
+2a0f:df00:0:255::195	41281	0.000000	0.000000	se	-	-	GE(TORKeFFORG2)KeFF Networks Ltd
+2a0f:df00:0:255::196	41281	0.000000	0.000000	se	-	-	GE(TORKeFFORG3)KeFF Networks Ltd
+2a0f:df00:0:255::197	41281	0.000000	0.000000	se	-	-	GE(TORKeFFORG4)KeFF Networks Ltd
+2a0f:df00:0:255::198	41281	0.000000	0.000000	se	-	-	GE(TORKeFFORG5)KeFF Networks Ltd
+2a0f:df00:0:255::199	41281	0.000000	0.000000	se	-	-	GE(TORKeFFORG6)KeFF Networks Ltd
+2a0f:df00:0:255::200	41281	0.000000	0.000000	se	-	-	GE(TORKeFFORG7)KeFF Networks Ltd
+2a00:1b88:4::2	29075	0.000000	0.000000	fr	-	-	GE(marcuse1)marcuse.nos-oignons.net
+2a00:1b88:4::4	29075	0.000000	0.000000	fr	-	-	GE(marcuse9)marcuse-2.nos-oignons.net
+2a00:1ca8:2a:33::2	50673	0.000000	0.000000	nl	-	-	G(woof)Serverius Holding B.V.
+2a00:1dc0:caff:8b::24bd	43289	0.000000	0.000000	md	-	-	GE(TorExitMoldova)Trabia SRL
+2a00:1dc0:caff:12c::4d3a	43289	0.000000	0.000000	md	-	-	GE(BehemothLTDMD1)Trabia SRL
+2a00:1dc0:caff:15::45dc	43289	0.000000	0.000000	md	-	-	GE(TorExitMoldova)Trabia SRL
+2a00:1dc0:caff:20::eda9	43289	0.000000	0.000000	md	-	-	G(h0mer)Trabia SRL
+2a00:1dc0:caff:44::326d	43289	0.000000	0.000000	md	-	-	GE(iLoveSimpleX)Trabia SRL
+2a00:1dc0:caff:73::a568	43289	0.000000	0.000000	md	-	-	GE(calator)Trabia SRL
+2a00:1dc0:caff:118::a2d7	43289	0.000000	0.000000	md	-	-	G(TORtaruga)Trabia SRL
+2a00:1dc0:caff:138::94d2	43289	0.000000	0.000000	md	-	-	GE(Angband)angband.teaparty.net
+2a00:1dc0:caff:172::635a	43289	0.000000	0.000000	md	-	-	G(chaussette1)Trabia SRL
+2a00:1ed0:153::203	43541	0.000000	0.000000	cz	-	-	G(NoLogRelay)VSHosting s.r.o.
+2a00:4d80::1	43150	0.000000	0.000000	de	-	-	G(gergernet1)tor1.gerger-net.de
+2a00:6d41:200:2::e7	31034	0.000000	0.000000	it	-	-	G(PoloUnivAretino)Aruba S.p.A.
+2a00:8a60:e012:a00::9001	47610	0.000000	0.000000	de	-	-	G(FTPhalifaxRWTH)not-ftp.halifax.rwth-aachen.de
+2a00:11c0:60:2cf:d8b5:30ff:fe27:f208	197540	0.000000	0.000000	de	-	-	G(FasterRelay)v2202405223767268297.quicksrv.de
+2a00:16b0:1:243::7012:3117	33837	0.000000	0.000000	se	-	-	GE(PRQseTORexit2)TOR-EXIT-002.prq.se
+2a00:16b0:1:243::7012:a500	33837	0.000000	0.000000	se	-	-	GE(PRQseTORexit3)TOR-EXIT-003.prq.se
+2a00:16b0:1:243::7012:e817	33837	0.000000	0.000000	se	-	-	GE(PRQseTORexit4)TOR-EXIT-001.prq.se
+2a00:19a0:3:d3:0:252e:d31e:1	34222	0.000000	0.000000	cz	-	-	G(Lucius)ZONER a.s.
+2a00:19a0:3:d3:0:252e:d31f:1	34222	0.000000	0.000000	cz	-	-	G(MarcAntony)ZONER a.s.
+2a00:19a0:3:d3:0:252e:d320:1	34222	0.000000	0.000000	cz	-	-	G(NovumComum)ZONER a.s.
+2a00:19a0:3:d3:0:252e:d366:1	34222	0.000000	0.000000	cz	-	-	G(RadicalPrivacy3)ZONER a.s.
+2a00:63c1:10:41::2	44133	0.000000	0.000000	at	-	-	G(Regenwurm)IPAX GmbH
+2a00:63c1:13:148::2	44133	0.000000	0.000000	at	-	-	G(T0rNode555Nose)IPAX GmbH
+2a00:63c1:c:14::2	44133	0.000000	0.000000	at	-	-	G(rinderwahnRelayAT)ipaxAT.tor-relay.de
+2a00:74a0:e000:1003::114	20904	0.000000	0.000000	fi	-	-	GE(effiorgoulu)tor-ou.effi.org
+2a00:99a0:0:1000::2	28855	0.000000	0.000000	fr	-	-	GE(Unnamed)tor.laquadrature.net
+2a00:1098:47f::1	44684	0.000000	0.000000	gb	-	-	G(RoastedTor03)Mythic Beasts Ltd
+2a00:1169:11c:3e00::	21499	0.000000	0.000000	de	-	-	G(Charybdis5)164.161.205.92.host.secureserver.net
+2a00:1169:11f:d680::	21499	0.000000	0.000000	de	-	-	G(Charybdis4)164.161.205.92.host.secureserver.net
+2a00:1169:112:5df0::	21499	0.000000	0.000000	de	-	-	G(Charybdis2)7.129.205.92.host.secureserver.net
+2a00:1169:118:77a0::	21499	0.000000	0.000000	de	-	-	G(SamAAdams2)158.108.205.92.host.secureserver.net
+2a00:1169:119:b120::	21499	0.000000	0.000000	de	-	-	G(Charybdis3)7.129.205.92.host.secureserver.net
+2a00:1398:5:f604:cafe:cafe:cafe:9001	34878	0.000000	0.000000	de	-	-	G(AlleKochenKaffee)this-is-a-tor-node.akk.kit.edu
+2a00:1728:f:a030::1	34224	0.000000	0.000000	bg	-	-	G(valkyrie)Neterra Ltd.
+2a00:1728:f:f:f:f:c03c:9898	34224	0.000000	0.000000	bg	-	-	GE(IlPrioraTOR)Neterra Ltd.
+2a00:1838:37:3a9::5c7d	43317	0.000000	0.000000	ru	-	-	G(marshrutizator0x46)SIA VEESP
+2a00:1838:37:3f8::687e:9201	43317	0.000000	0.000000	ru	-	-	G(Assange003ru2)SIA VEESP
+2a00:1838:37:3f8::7081:9001	43317	0.000000	0.000000	ru	-	-	G(Assange003ru)SIA VEESP
+2a00:1838:37:52::da4e	43317	0.000000	0.000000	ru	-	-	G(cozybeardev)tor.node16.shadowbrokers.eu
+2a00:1838:37:468::98b4	43317	0.000000	0.000000	ru	-	-	G(cozybeardev)tor.node18.shadowbrokers.eu
+2a00:1838:37:ac::e27d	43317	0.000000	0.000000	ru	-	-	G(Clovenhoof)SIA VEESP
+2a00:6020:b2c5:d81a:bbbb:bad4:5326:3d78	3320	0.000000	0.000000	de	-	-	G(motor)p54ac7ec7.dip0.t-ipconnect.de
+2a00:6340:2043:5000::1	58299	0.000000	0.000000	de	-	-	G(surveyor)surveyor.unobtanium.de
+2a00:6800:3:23b:7777:7777:7777:7777	42730	0.000000	0.000000	de	-	-	G(NetWorkXXV)networkxxv.tor-relay.org
+2a00:6800:3:b3b::1111	42730	0.000000	0.000000	de	-	-	G(Bernhard)v37066.1blu.de
+2a00:6800:3:eeb::1	42730	0.000000	0.000000	de	-	-	G(botucal)EVANZO e-commerce GmbH
+2a00:6800:3:f76::2	42730	0.000000	0.000000	de	-	-	G(HappyTorRelay42069)EVANZO e-commerce GmbH
+2a00:8620:201:50e::2a35	200698	0.000000	0.000000	ba	-	-	G(iLoveTheFediverse)Globalhost d.o.o.
+2a00:8620:201:511::5e4c	200698	0.000000	0.000000	ba	-	-	G(iLoveBoykissers)Globalhost d.o.o.
+2a00:8620:201:517::38e5	200698	0.000000	0.000000	ba	-	-	G(iLoveColonThree)Globalhost d.o.o.
+2a00:bd80:12::f	51395	0.000000	0.000000	ch	-	-	G(schokomilch)torexit.schokomil.ch
+2a00:c020:40fe:1f13::6969	51175	0.000000	0.000000	pl	-	-	G(nezupub)Multiplay Sp. z o.o.
+2a00:c70:1:178:170:13:43:1	21409	0.000000	0.000000	fr	-	-	G(Unnamed)frhb90113flex.ikexpress.com
+2a00:c70:1:185:246:84:179:1	21409	0.000000	0.000000	fr	-	-	GE(w000000h000004)exitnodev8.v6.rocks
+2a00:ccc1:1:1a::1	59592	0.000000	0.000000	de	-	-	G(prsv)intercolo GmbH
+2a00:ccc1:1:2c::1	59592	0.000000	0.000000	de	-	-	G(prsv)intercolo GmbH
+2a00:ccc1:1:16::1	59592	0.000000	0.000000	de	-	-	G(prsv)intercolo GmbH
+2a00:ccc1:1:f::1	59592	0.000000	0.000000	de	-	-	G(prsv)intercolo GmbH
+2a00:d4e0:107:4f02:7af2:9eff:fe90:31e0	15600	0.000000	0.000000	ch	-	-	G(Roelae)26-235-40-145.dyn.fiber.qlnet.ch
+2a00:da00:1800:19f::1	8560	0.000000	0.000000	gb	-	-	G(airknight)IONOS SE
+2a00:da00:1800:36d::1	8560	0.000000	0.000000	gb	-	-	G(earthknight)IONOS SE
+2a00:da00:1800:257::1	8560	0.000000	0.000000	gb	-	-	G(violetknight)IONOS SE
+2a00:da00:1800:837c::1	8560	0.000000	0.000000	gb	-	-	G(TORpid)IONOS SE
+2a00:da00:f40a:ae00::1	8560	0.000000	0.000000	gb	-	-	G(PommespanzerGB3)gb3.pommespanzer.cc
+2a00:da00:f43b:5900::1	8560	0.000000	0.000000	gb	-	-	G(waterknight)ip217-154-62-51.pbiaas.com
+2a00:da00:f201:aa00::1	8560	0.000000	0.000000	gb	-	-	G(letsdoitUK)ip77-68-67-193.pbiaas.com
+2a00:da00:f213:6a00::1	8560	0.000000	0.000000	gb	-	-	G(hayzycomr)dev.hayzy.com
+2a00:da00:f410:b400::1	8560	0.000000	0.000000	gb	-	-	G(Tor1EerieIndiana)ip212-227-127-105.pbiaas.com
+2a00:da00:f411:e900:0:6058:9c83:831	8560	0.000000	0.000000	gb	-	-	G(gnampf4i31)IONOS SE
+2a00:da00:f412:c100::1	8560	0.000000	0.000000	gb	-	-	G(SidNYGiants)IONOS SE
+2a00:da00:f441:9800::1	8560	0.000000	0.000000	gb	-	-	G(NoOnionUK01)ip217-154-51-180.pbiaas.com
+2a00:da00:f447:600::1	8560	0.000000	0.000000	gb	-	-	G(outatime)ip217-154-63-133.pbiaas.com
+2a00:e140::34	198161	0.000000	0.000000	cz	-	-	G(Free)Sokolovska uhelna
+2a00:f940:2:1:2::82e	197695	0.000000	0.000000	ru	-	-	G(stm54nni)194-58-103-178.ovz.vps.regruhosting.ru
+2a00:fa40:aaa:9::b9	8648	0.000000	0.000000	de	-	-	G(pikRelay)91.206.142.19.static.alvotech.net
+2a00:fbe4:1ab:ffff::133	205235	0.000000	0.000000	dk	-	-	GE(bornhack4thewin)Labitat
+2a01:1b8:5:1:ffff:ffff:ffff:3	206804	0.000000	0.000000	ee	-	-	G(OysterReef)EstNOC OY
+2a01:4f8:1c0c:6c6b::1	24940	0.000000	0.000000	de	-	-	G(mnlabrelay2)mail.mnlab.xyz
+2a01:4f8:1c0c:6f8c::2	24940	0.000000	0.000000	de	-	-	G(peep)static.113.94.201.195.clients.your-server.de
+2a01:4f8:1c0c:453a::1	24940	0.000000	0.000000	de	-	-	G(torthias)Hetzner Online GmbH
+2a01:4f8:1c1b:7079:aaaa:bbbb:cccc:dddd	24940	0.000000	0.000000	de	-	-	G(AndyprojectTor)Hetzner Online GmbH
+2a01:4f8:1c1c:2ca4::1	24940	0.000000	0.000000	de	-	-	G(dragonhoard)static.3.36.69.159.clients.your-server.de
+2a01:4f8:1c1c:2e49::1	24940	0.000000	0.000000	de	-	-	G(dragonhoard)mail.summerbo.at
+2a01:4f8:1c1c:80f8::1	24940	0.000000	0.000000	de	-	-	G(aatebueli)aatebueli.ch
+2a01:4f8:1c1c:425a::1	24940	0.000000	0.000000	de	-	-	G(Krombianschniedschn)static.243.48.55.162.clients.your-server.de
+2a01:4f8:1c1c:a114::1	24940	0.000000	0.000000	de	-	-	G(AndyprojectTor2)mail.andyproject.de
+2a01:4f8:1c1c:b16b::1	24940	0.000000	0.000000	de	-	-	G(dragonhoard)mail.sergal.club
+2a01:4f8:1c1e:68bd::1	24940	0.000000	0.000000	de	-	-	G(Eigentor)null.dio.io
+2a01:4f8:10a:1f06::2	24940	0.000000	0.000000	de	-	-	G(portugesecartel)static.231.94.99.88.clients.your-server.de
+2a01:4f8:10a:26e5::2	24940	0.000000	0.000000	de	-	-	G(janiTORX5)static.177.142.99.88.clients.your-server.de
+2a01:4f8:10a:292a::2	24940	0.000000	0.000000	de	-	-	G(FragiGrenade)static.235.144.99.88.clients.your-server.de
+2a01:4f8:10a:295e::2	24940	0.000000	0.000000	de	-	-	G(Peabody)static.25.145.99.88.clients.your-server.de
+2a01:4f8:10a:3599:c2f1:ff:6093:6337	24940	0.000000	0.000000	de	-	-	G(currentlane)static.75.165.99.88.clients.your-server.de
+2a01:4f8:10b:2a2a::2	24940	0.000000	0.000000	de	-	-	G(vivaukraine)static.190.52.130.94.clients.your-server.de
+2a01:4f8:10b:2952::2	24940	0.000000	0.000000	de	-	-	G(gaara)static.212.51.130.94.clients.your-server.de
+2a01:4f8:10b:3357::2	24940	0.000000	0.000000	de	-	-	G(Novastation)static.218.69.130.94.clients.your-server.de
+2a01:4f8:10b:3406::2	24940	0.000000	0.000000	de	-	-	G(Bluejaybrd)static.185.70.130.94.clients.your-server.de
+2a01:4f8:10b:3702::2	24940	0.000000	0.000000	de	-	-	G(Tajjina)static.176.89.130.94.clients.your-server.de
+2a01:4f8:10b:ee8::2	24940	0.000000	0.000000	de	-	-	G(Allator)static.179.10.130.94.clients.your-server.de
+2a01:4f8:13b:2dab::2	24940	0.000000	0.000000	de	-	-	G(ElonTusk)static.182.142.130.94.clients.your-server.de
+2a01:4f8:13b:22dc::2	24940	0.000000	0.000000	de	-	-	G(LostSahara)static.104.201.130.94.clients.your-server.de
+2a01:4f8:120:205b::2	24940	0.000000	0.000000	de	-	-	G(MichaelAngelo)static.99.40.63.178.clients.your-server.de
+2a01:4f8:120:716d::1	24940	0.000000	0.000000	de	-	-	G(torrelay583481)srv1.fekr.xyz
+2a01:4f8:120:4169::2	24940	0.000000	0.000000	de	-	-	G(onionsoup)static.183.41.63.178.clients.your-server.de
+2a01:4f8:140:94d6::2	24940	0.000000	0.000000	de	-	-	G(mickymouse)static.29.103.4.46.clients.your-server.de
+2a01:4f8:140:244f::2	24940	0.000000	0.000000	de	-	-	G(masterchief)static.188.66.4.46.clients.your-server.de
+2a01:4f8:140:522c::2	24940	0.000000	0.000000	de	-	-	G(Indigold)static.237.74.4.46.clients.your-server.de
+2a01:4f8:140:1465::2	24940	0.000000	0.000000	de	-	-	G(Citadel5)static.75.57.4.46.clients.your-server.de
+2a01:4f8:140:2459::2	24940	0.000000	0.000000	de	-	-	G(chooThaineha)lucaswerkmeister.de
+2a01:4f8:140:5486::2	24940	0.000000	0.000000	de	-	-	G(Citrinio)static.3.78.4.46.clients.your-server.de
+2a01:4f8:140:8229::2	24940	0.000000	0.000000	de	-	-	G(ChuckyHorror)static.24.96.4.46.clients.your-server.de
+2a01:4f8:150:508a:a62c:457:6b0c:a1f9	24940	0.000000	0.000000	de	-	-	G(GrmmlNott)nott.grmml.net
+2a01:4f8:150:7092::2	24940	0.000000	0.000000	de	-	-	G(Mariposa)static.140.50.9.176.clients.your-server.de
+2a01:4f8:151:2324::2	24940	0.000000	0.000000	de	-	-	G(sn0rlax)static.41.85.9.176.clients.your-server.de
+2a01:4f8:151:3215::2	24940	0.000000	0.000000	de	-	-	G(MyMiddleRelay)static.26.91.9.176.clients.your-server.de
+2a01:4f8:160:8410::2	24940	0.000000	0.000000	de	-	-	G(TorHet2)static.25.14.9.5.clients.your-server.de
+2a01:4f8:160:8410::3	24940	0.000000	0.000000	de	-	-	G(TorHet3)static.30.14.9.5.clients.your-server.de
+2a01:4f8:161:52cb::2	24940	0.000000	0.000000	de	-	-	G(ChumBucket)static.249.56.9.5.clients.your-server.de
+2a01:4f8:161:353a::2	24940	0.000000	0.000000	de	-	-	G(Turik)static.121.38.9.176.clients.your-server.de
+2a01:4f8:162:72e9:aaaa:bbbb:4242:253	24940	0.000000	0.000000	de	-	-	G(idideditheconfig)mail.dirasad.de
+2a01:4f8:162:1124::1	24940	0.000000	0.000000	de	-	-	G(TorKeyRelay01)static.236.86.9.5.clients.your-server.de
+2a01:4f8:171:1c1c::2	24940	0.000000	0.000000	de	-	-	G(Sakurack)static.169.153.243.136.clients.your-server.de
+2a01:4f8:171:1cd2::2	24940	0.000000	0.000000	de	-	-	G(Sidewinder)static.74.154.243.136.clients.your-server.de
+2a01:4f8:171:2a2f::2	24940	0.000000	0.000000	de	-	-	G(CSanders)static.25.19.201.138.clients.your-server.de
+2a01:4f8:171:15d8::2	24940	0.000000	0.000000	de	-	-	G(merc)static.89.147.243.136.clients.your-server.de
+2a01:4f8:171:28e9::2	24940	0.000000	0.000000	de	-	-	G(Diamondback)static.61.78.201.138.clients.your-server.de
+2a01:4f8:171:160::2	24940	0.000000	0.000000	de	-	-	G(Atl4s)static.124.89.243.136.clients.your-server.de
+2a01:4f8:171:238c::2	24940	0.000000	0.000000	de	-	-	G(MaverickPass)static.159.174.243.136.clients.your-server.de
+2a01:4f8:171:501::2	24940	0.000000	0.000000	de	-	-	G(bavariaboys)static.194.92.243.136.clients.your-server.de
+2a01:4f8:171:2594::2	24940	0.000000	0.000000	de	-	-	G(Beanbag)static.179.176.243.136.clients.your-server.de
+2a01:4f8:172:3e99::2	24940	0.000000	0.000000	de	-	-	G(churrodawg)static.252.196.201.138.clients.your-server.de
+2a01:4f8:172:12e6::2	24940	0.000000	0.000000	de	-	-	G(666Sirocco)static.234.57.201.138.clients.your-server.de
+2a01:4f8:172:249f::2	24940	0.000000	0.000000	de	-	-	G(Calypsos)static.103.121.201.138.clients.your-server.de
+2a01:4f8:172:1317::2	24940	0.000000	0.000000	de	-	-	G(Zephyrdead)static.21.58.201.138.clients.your-server.de
+2a01:4f8:172:cad::2	24940	0.000000	0.000000	de	-	-	G(Lotus123)static.181.51.201.138.clients.your-server.de
+2a01:4f8:172:f16::2	24940	0.000000	0.000000	de	-	-	G(Orrion)static.59.54.201.138.clients.your-server.de
+2a01:4f8:173:1d2e::2	24940	0.000000	0.000000	de	-	-	G(GhostBros)static.177.225.201.138.clients.your-server.de
+2a01:4f8:173:2953::2	24940	0.000000	0.000000	de	-	-	G(4mnesia)static.111.2.99.88.clients.your-server.de
+2a01:4f8:190:62d9::2	24940	0.000000	0.000000	de	-	-	G(antifaang)static.26.123.46.78.clients.your-server.de
+2a01:4f8:190:73a4::2	24940	0.000000	0.000000	de	-	-	G(TorchWood)static.174.3.76.144.clients.your-server.de
+2a01:4f8:191:602a::2	24940	0.000000	0.000000	de	-	-	G(pratyHorseRelay)static.43.56.76.144.clients.your-server.de
+2a01:4f8:192:3c5::2	24940	0.000000	0.000000	de	-	-	G(mixminion)static.198.81.76.144.clients.your-server.de
+2a01:4f8:192:1318::2	24940	0.000000	0.000000	de	-	-	G(TORtuga)static.5.86.76.144.clients.your-server.de
+2a01:4f8:200:32e6::2	24940	0.000000	0.000000	de	-	-	G(BEEzar)static.218.159.76.144.clients.your-server.de
+2a01:4f8:200:42c6::2	24940	0.000000	0.000000	de	-	-	G(justinjoker)static.199.166.76.144.clients.your-server.de
+2a01:4f8:200:82ca::2	24940	0.000000	0.000000	de	-	-	G(freeassange)static.253.201.76.144.clients.your-server.de
+2a01:4f8:200:146d::2	24940	0.000000	0.000000	de	-	-	G(SeraphimFields)static.110.140.76.144.clients.your-server.de
+2a01:4f8:200:428c::2	24940	0.000000	0.000000	de	-	-	G(frozone)static.141.166.76.144.clients.your-server.de
+2a01:4f8:200:2211::2	24940	0.000000	0.000000	de	-	-	G(eridanus)eridanus.5ir.de
+2a01:4f8:200:3391::2	24940	0.000000	0.000000	de	-	-	G(StuRav)static.202.162.76.144.clients.your-server.de
+2a01:4f8:200:4423::2	24940	0.000000	0.000000	de	-	-	G(Unnamed)static.36.168.76.144.clients.your-server.de
+2a01:4f8:201:34d0::2	24940	0.000000	0.000000	de	-	-	G(nuker)static.209.236.251.148.clients.your-server.de
+2a01:4f8:201:44d3::2	24940	0.000000	0.000000	de	-	-	G(Vanbo)static.190.3.63.178.clients.your-server.de
+2a01:4f8:201:64d7::2	24940	0.000000	0.000000	de	-	-	G(Elektra)static.237.10.251.148.clients.your-server.de
+2a01:4f8:201:922f::1	24940	0.000000	0.000000	de	-	-	G(torcatgirlcloud)levana.999eagle.moe
+2a01:4f8:202:172::2	24940	0.000000	0.000000	de	-	-	G(fusion)fusion.foxwells.garden
+2a01:4f8:202:1139::2	24940	0.000000	0.000000	de	-	-	G(fuckfbi)static.34.51.251.148.clients.your-server.de
+2a01:4f8:202:5368::2	24940	0.000000	0.000000	de	-	-	G(kuro)static.53.83.251.148.clients.your-server.de
+2a01:4f8:202:6096::2	24940	0.000000	0.000000	de	-	-	G(redvader)static.195.85.251.148.clients.your-server.de
+2a01:4f8:202:7071::2	24940	0.000000	0.000000	de	-	-	G(fuego)static.115.90.251.148.clients.your-server.de
+2a01:4f8:210:400f::2	24940	0.000000	0.000000	de	-	-	G(defcon777)static.16.136.251.148.clients.your-server.de
+2a01:4f8:210:504b::3	24940	0.000000	0.000000	de	-	-	G(LSTorRelay01)niklasl.com
+2a01:4f8:211:1d41::2	24940	0.000000	0.000000	de	-	-	G(blackfox)static.194.3.243.136.clients.your-server.de
+2a01:4f8:211:208e::	24940	0.000000	0.000000	de	-	-	G(NHRelay2)static.11.7.243.136.clients.your-server.de
+2a01:4f8:211:cc::2	24940	0.000000	0.000000	de	-	-	G(privexrelayde1)eos-seed-de.privex.io
+2a01:4f8:221:1ac1:dead:beef:7005:9001	24940	0.000000	0.000000	de	-	-	G(sputnik)sputnik.jreusch.de
+2a01:4f8:221:12da::2	24940	0.000000	0.000000	de	-	-	G(puff3rf1sh)static.213.102.99.88.clients.your-server.de
+2a01:4f8:221:20df::2	24940	0.000000	0.000000	de	-	-	G(0x12345)static.108.193.99.88.clients.your-server.de
+2a01:4f8:231:1ed8:106::106	24940	0.000000	0.000000	de	-	-	G(FreedomFries2)edward.littleproject.de
+2a01:4f8:231:16e0::2	24940	0.000000	0.000000	de	-	-	G(HRMB)h2.rmb.li
+2a01:4f8:231:19f::2	24940	0.000000	0.000000	de	-	-	G(Mlrage)static.87.241.201.195.clients.your-server.de
+2a01:4f8:241:4d16::2	24940	0.000000	0.000000	de	-	-	G(ieditedtheconfig)static.27.150.202.116.clients.your-server.de
+2a01:4f8:241:509e::2	24940	0.000000	0.000000	de	-	-	G(Nightingali)static.212.237.202.116.clients.your-server.de
+2a01:4f8:242:4d2e::2	24940	0.000000	0.000000	de	-	-	G(D9agonfly)static.55.2.119.168.clients.your-server.de
+2a01:4f8:252:3df0::2	24940	0.000000	0.000000	de	-	-	G(SODrelay)mail.stateofduality.de
+2a01:4f8:252:194b::2	24940	0.000000	0.000000	de	-	-	G(itomori)itomori.katawaredoki.net
+2a01:4f8:252:4568:9::10	24940	0.000000	0.000000	de	-	-	G(arpsel)mx.arpsel.ws
+2a01:4f8:261:2ced::2	24940	0.000000	0.000000	de	-	-	G(D4rkKn1gh7)static.35.157.132.142.clients.your-server.de
+2a01:4f8:261:27e5::2	24940	0.000000	0.000000	de	-	-	G(severepactrend)static.131.151.132.142.clients.your-server.de
+2a01:4f8:261:50da::2	24940	0.000000	0.000000	de	-	-	G(spicyavocado)static.165.204.132.142.clients.your-server.de
+2a01:4f8:261:5099::2	24940	0.000000	0.000000	de	-	-	G(m4rs)static.112.204.132.142.clients.your-server.de
+2a01:4f8:261:5145::2	24940	0.000000	0.000000	de	-	-	G(Bluejaybrd)static.43.205.132.142.clients.your-server.de
+2a01:4f8:262:494f:1::22	24940	0.000000	0.000000	de	-	-	G(NixOS)9eee861cd8a5fe26a1f276879323172f5b91082c.mkg20001.io
+2a01:4f8:271:5d58::2	24940	0.000000	0.000000	de	-	-	G(punkpop)static.67.131.55.162.clients.your-server.de
+2a01:4f8:2200:14dc:120::100	24940	0.000000	0.000000	de	-	-	G(jhsfirsttorrelay)static.134.112.235.167.clients.your-server.de
+2a01:4f8:2200:14dc:120::101	24940	0.000000	0.000000	de	-	-	G(jhsfifthtorrelay)static.134.112.235.167.clients.your-server.de
+2a01:4f8:a0:90b0:789d:6a4:95f3:a78c	24940	0.000000	0.000000	de	-	-	G(GrmmlDag)dag.grmml.net
+2a01:4f8:a0:2276:1::20	24940	0.000000	0.000000	de	-	-	G(SchwarzeLocke5)primus.athalis.de
+2a01:4f8:a0:8070::2	24940	0.000000	0.000000	de	-	-	G(pablito)static.213-239-213-220.clients.your-server.de
+2a01:4f8:c0c:4811::1	24940	0.000000	0.000000	de	-	-	G(FxSociety)Hetzner Online GmbH
+2a01:4f8:c0c:ad3f::1	24940	0.000000	0.000000	de	-	-	G(darkHuginn)static.230.231.12.49.clients.your-server.de
+2a01:4f8:c0c:b448::1	24940	0.000000	0.000000	de	-	-	G(Liliaceae)static.178.161.47.78.clients.your-server.de
+2a01:4f8:c0c:cbfd::1	24940	0.000000	0.000000	de	-	-	G(birchbark)static.194.146.69.159.clients.your-server.de
+2a01:4f8:c2c:d4e4::1	24940	0.000000	0.000000	de	-	-	G(guenthergraubein)dafabhoid.de
+2a01:4f8:c2c:d75::1	24940	0.000000	0.000000	de	-	-	G(VonKuenheimRelay)mail.vonkuenheim.de
+2a01:4f8:c2c:e8a0::1	24940	0.000000	0.000000	de	-	-	G(COtto)c-otto.de
+2a01:4f8:c2c:f4b0::1	24940	0.000000	0.000000	de	-	-	G(HCCSRV02)my.chaos-system.de
+2a01:4f8:c012:c9bc::1	24940	0.000000	0.000000	de	-	-	G(Desperado)desperado.tor-relay.io
+2a01:4f8:c013:66ec::	24940	0.000000	0.000000	de	-	-	G(bobross)static.41.58.245.188.clients.your-server.de
+2a01:4f8:c013:524e::1	24940	0.000000	0.000000	de	-	-	G(yeeterus420)static.71.124.245.188.clients.your-server.de
+2a01:4f8:c013:b570::1	24940	0.000000	0.000000	de	-	-	G(Unnamed)static.143.171.199.138.clients.your-server.de
+2a01:4f8:c013:e4c0::1	24940	0.000000	0.000000	de	-	-	G(ITSCTheLordMyLight)static.104.60.140.128.clients.your-server.de
+2a01:4f8:c17:49c0::1	24940	0.000000	0.000000	de	-	-	G(sig9gianni)static.26.44.88.23.clients.your-server.de
+2a01:4f8:c17:71fa::1	24940	0.000000	0.000000	de	-	-	G(shellfish01)srv-cdn-tor.privateger.me
+2a01:4f8:c17:ba99::1	24940	0.000000	0.000000	de	-	-	G(nsaPwned)pluto.server.stefans-entwicklerecke.de
+2a01:4f8:c17:e4d1::1	24940	0.000000	0.000000	de	-	-	G(sanctuary)dermatzeimnetz.de
+2a01:4f9:2a:1b96:2::2	24940	0.000000	0.000000	fi	-	-	G(Ranlvor)thyristor.starletp9.de
+2a01:4f9:2a:10f0::2	24940	0.000000	0.000000	fi	-	-	G(Runaz)bruzzzla.de
+2a01:4f9:2a:14af::2	24940	0.000000	0.000000	fi	-	-	G(c0der)static.80.20.216.95.clients.your-server.de
+2a01:4f9:2a:16a8::2	24940	0.000000	0.000000	fi	-	-	G(johnsrelay)static.87.22.216.95.clients.your-server.de
+2a01:4f9:2a:134f::2	24940	0.000000	0.000000	fi	-	-	G(Hypervistor)static.41.19.216.95.clients.your-server.de
+2a01:4f9:2a:164a::2	24940	0.000000	0.000000	fi	-	-	G(sklep)static.24.22.216.95.clients.your-server.de
+2a01:4f9:2a:1669::2	24940	0.000000	0.000000	fi	-	-	G(LandShrimp)static.22.22.216.95.clients.your-server.de
+2a01:4f9:2a:1787:0:999:0:2086	24940	0.000000	0.000000	fi	-	-	G(CheeseRobot)gouda.cheeserobot.org
+2a01:4f9:2a:2145::1	24940	0.000000	0.000000	fi	-	-	G(Ukko)ukko.0x90.dk
+2a01:4f9:2a:2145::2	24940	0.000000	0.000000	fi	-	-	G(Akka)akka.0x90.dk
+2a01:4f9:2a:c5c::2	24940	0.000000	0.000000	fi	-	-	G(lenin)static.30.12.216.95.clients.your-server.de
+2a01:4f9:2a:d54::2	24940	0.000000	0.000000	fi	-	-	G(snowball)static.55.13.216.95.clients.your-server.de
+2a01:4f9:2a:d96::2	24940	0.000000	0.000000	fi	-	-	G(lancelot)static.120.13.216.95.clients.your-server.de
+2a01:4f9:2b:31a0::2	24940	0.000000	0.000000	fi	-	-	G(billgates)static.117.39.217.95.clients.your-server.de
+2a01:4f9:2b:151f:95:216:101:247	24940	0.000000	0.000000	fi	-	-	G(TykRelay02)torrelay11.servers.tyknet.dk
+2a01:4f9:2b:f53::2	24940	0.000000	0.000000	fi	-	-	G(PWKR)static.44.96.216.95.clients.your-server.de
+2a01:4f9:3b:468e::13	24940	0.000000	0.000000	fi	-	-	G(fuchs1)tor-relay.zwiebeltoralf.de
+2a01:4f9:4a:2e4e::2	24940	0.000000	0.000000	fi	-	-	G(arbitraryTessa0)tessa.arbitrary.ch
+2a01:4f9:4a:48d0::11	24940	0.000000	0.000000	fi	-	-	G(galtlandeu3)static.111.231.217.95.clients.your-server.de
+2a01:4f9:4a:264d::2	24940	0.000000	0.000000	fi	-	-	G(memcpy4)box4.memcpy.io
+2a01:4f9:4a:1812::2	24940	0.000000	0.000000	fi	-	-	G(willwallace)static.151.72.217.95.clients.your-server.de
+2a01:4f9:4b:4e97::6666	24940	0.000000	0.000000	de	-	-	G(s6tor2)tor2.schellingstrasse.de
+2a01:4f9:4b:4268::2	24940	0.000000	0.000000	fi	-	-	G(Unnamed)static.118.63.181.135.clients.your-server.de
+2a01:4f9:5a:442b::3	24940	0.000000	0.000000	fi	-	-	G(Gilgamesh)gilgamesh.wcbsecurity.com
+2a01:4f9:5a:442b::4	24940	0.000000	0.000000	fi	-	-	G(Enkidu2)torfin.wcbsecurity.com
+2a01:4f9:5a:442b::6	24940	0.000000	0.000000	fi	-	-	G(Enkidu)tornode-pt.wcbsecurity.com
+2a01:4f9:6a:528d::a	24940	0.000000	0.000000	fi	-	-	G(HORUS1)ra.horus-it.com
+2a01:4f9:6b:3408::2	24940	0.000000	0.000000	fi	-	-	G(arbitraryKenzie0)kenzie.arbitrary.ch
+2a01:4f9:3051:3d19:100::116	24940	0.000000	0.000000	fi	-	-	G(emailfucker)static.235.110.109.65.clients.your-server.de
+2a01:4f9:3070:2c54::120	24940	0.000000	0.000000	fi	-	-	G(CSGuardTorRelayTwo)torrelay-2.csguard.eu
+2a01:4f9:3070:2c54::124	24940	0.000000	0.000000	fi	-	-	G(CSGuardTorRelayOne)torrelay-1.csguard.eu
+2a01:4f9:3100:3be5::1	24940	0.000000	0.000000	fi	-	-	G(MeinMiddleRelay)static.152.48.180.157.clients.your-server.de
+2a01:4f9:c01f:30::1	24940	0.000000	0.000000	fi	-	-	G(waveguide01)waveguide-01.phantomwave.org
+2a01:4f9:c010:9cbb::1	24940	0.000000	0.000000	fi	-	-	G(atrip)static.38.41.181.135.clients.your-server.de
+2a01:4f9:c010:9d66::1	24940	0.000000	0.000000	fi	-	-	G(rspn1)tor1.rittersporn.net
+2a01:4f9:c010:33ef::1	24940	0.000000	0.000000	fi	-	-	G(Sodium)static.132.246.21.65.clients.your-server.de
+2a01:4f9:c010:84bd::1	24940	0.000000	0.000000	fi	-	-	G(DeinCoolerRelayName)static.167.78.180.157.clients.your-server.de
+2a01:4f9:c010:516b::1	24940	0.000000	0.000000	fi	-	-	G(zapner)static.94.6.217.95.clients.your-server.de
+2a01:4f9:c010:2697::1	24940	0.000000	0.000000	fi	-	-	G(bornhack2)tor2.xn--sb-lka.org
+2a01:4f9:c010:7637::1	24940	0.000000	0.000000	fi	-	-	G(torvarval)static.68.162.217.95.clients.your-server.de
+2a01:4f9:c010:b8b3::1	24940	0.000000	0.000000	fi	-	-	G(2fer)static.53.233.109.65.clients.your-server.de
+2a01:4f9:c010:c870::1	24940	0.000000	0.000000	fi	-	-	G(ShadowCircuit)static.112.42.27.37.clients.your-server.de
+2a01:4f9:c010:ef05:7077:e1a1:8798:b644	24940	0.000000	0.000000	fi	-	-	G(cryptonion)static.19.30.181.135.clients.your-server.de
+2a01:4f9:c011:b2fd::1	24940	0.000000	0.000000	fi	-	-	G(FreeLasagna)static.223.8.27.37.clients.your-server.de
+2a01:4f9:c012:6cc4::1	24940	0.000000	0.000000	fi	-	-	G(HopBunnyHop)static.141.2.27.37.clients.your-server.de
+2a01:4f9:c012:487a::1	24940	0.000000	0.000000	fi	-	-	G(cebulak1)static.98.47.27.37.clients.your-server.de
+2a01:4f9:c012:883a::1	24940	0.000000	0.000000	fi	-	-	G(fi1andersio)static.217.0.21.65.clients.your-server.de
+2a01:4f9:c012:2271::1	24940	0.000000	0.000000	fi	-	-	G(Andromeda)lmbx.me
+2a01:4f9:c012:6094::1	24940	0.000000	0.000000	fi	-	-	G(fi2andersio)static.210.0.109.65.clients.your-server.de
+2a01:4f9:c012:e860::1	24940	0.000000	0.000000	fi	-	-	G(RoastedTor02)static.19.187.217.95.clients.your-server.de
+2a01:4f9:c013:886::1	24940	0.000000	0.000000	fi	-	-	G(ichon)tor.ichon.eu
+2a01:4ff:1f0:12a5::1	212317	0.000000	0.000000	us	-	-	G(SigmaRizzler)mail.c0mp.rocks
+2a01:4ff:1f0:922f::1	212317	0.000000	0.000000	us	-	-	G(SuchRelayVeryFast)static.8.114.78.5.clients.your-server.de
+2a01:5e0:36:c311::1	16019	0.000000	0.000000	cz	-	-	GE(MarlboroMan)Vodafone Czech Republic a.s.
+2a01:5e0:36:ca7b::1	16019	0.000000	0.000000	cz	-	-	G(jcstamos)Vodafone Czech Republic a.s.
+2a01:5e0:36:cf2a::1	16019	0.000000	0.000000	cz	-	-	GE(Slumlord)Vodafone Czech Republic a.s.
+2a01:7e00::f03c:91ff:fe56:2656	63949	0.000000	0.000000	gb	-	-	GE(Gertrude)tor-exit-node.gertrude.stuken.me
+2a01:7e00::f03c:91ff:fe78:b382	63949	0.000000	0.000000	gb	-	-	GE(golosa)golosa.info
+2a01:7e00::f03c:91ff:fe93:4455	63949	0.000000	0.000000	gb	-	-	G(flatcap)flatcap.org
+2a01:36c:3300:33b:f43a:f78:3c16:a7fa	20845	0.000000	0.000000	hu	-	-	G(lymvvzqpwr)77-234-79-34.pool.digikabel.hu
+2a01:170:118f:30::100	8820	0.000000	0.000000	de	-	-	G(Lukaschenko)tal.de GmbH
+2a01:238:423d:b500:d308:6847:718e:e2a6	6724	0.000000	0.000000	de	-	-	G(viennaOnTheWalk)h2971567.stratoserver.net
+2a01:238:429c:9600:40e6:e961:9cf7:31d1	6724	0.000000	0.000000	de	-	-	G(viennaOnTheRunnn)h2920043.stratoserver.net
+2a01:238:439a:1900:43d6:a3e4:9968:9811	6724	0.000000	0.000000	de	-	-	G(RightToInformation)Strato GmbH
+2a01:238:4326:f500:5f9:1474:1f7b:814a	6724	0.000000	0.000000	de	-	-	G(kol3v14)h2980558.stratoserver.net
+2a01:239:2b6:b400::1	8560	0.000000	0.000000	de	-	-	G(jhseigthtorrelay)IONOS SE
+2a01:239:2bc:e200::1	8560	0.000000	0.000000	de	-	-	G(0xdeadbeef)ip85-215-136-64.pbiaas.com
+2a01:239:2c5:7100::1	8560	0.000000	0.000000	de	-	-	G(PommespanzerDE6)de6.pommespanzer.cc
+2a01:239:2ea:9a00:0:c5e0:b84c:18f9	8560	0.000000	0.000000	de	-	-	G(gnampf4i30)ip194-164-53-4.pbiaas.com
+2a01:239:2ed:4600::1	8560	0.000000	0.000000	de	-	-	G(SteinchesTORRelay)tor-gateway.hopto.org
+2a01:239:2ee:3a00::1	8560	0.000000	0.000000	de	-	-	G(TMTime)IONOS SE
+2a01:239:2f2:6800::1	8560	0.000000	0.000000	de	-	-	G(node02)ip217.154.210-192.pbiaas.com
+2a01:239:2f3:4a00::1	8560	0.000000	0.000000	de	-	-	G(viennaOnTheGo)IONOS SE
+2a01:239:2f3:9b00::1	8560	0.000000	0.000000	de	-	-	G(v205)tor.hint.de
+2a01:239:3a0:d000::1	6724	0.000000	0.000000	de	-	-	G(SupportSeaWatch)h2980627.stratoserver.net
+2a01:239:3a0:fc00::1	8560	0.000000	0.000000	de	-	-	G(ViDiSrv)tor.graef.in
+2a01:239:22f:3800::1	8560	0.000000	0.000000	de	-	-	G(Gurkenserver01)ip217-160-76-78.pbiaas.com
+2a01:239:24a:7200::1	8560	0.000000	0.000000	de	-	-	G(LeClassiqueRelay)IONOS SE
+2a01:239:26f:8b00::1	8560	0.000000	0.000000	de	-	-	G(limette)ip87-106-235-75.pbiaas.com
+2a01:239:27f:4400::1	8560	0.000000	0.000000	de	-	-	G(observatory1234)IONOS SE
+2a01:239:29e:cf00::1	8560	0.000000	0.000000	de	-	-	G(nirukoru)h2976303.stratoserver.net
+2a01:239:30a:1500::1	8560	0.000000	0.000000	de	-	-	G(DefendRojava)IONOS SE
+2a01:239:30b:7c00::1	8560	0.000000	0.000000	de	-	-	G(node03)ip217.154.211-3.pbiaas.com
+2a01:239:30d:3000::1	8560	0.000000	0.000000	de	-	-	G(Gurkenserver)ip213-165-83-14.pbiaas.com
+2a01:239:31a:be00::1	8560	0.000000	0.000000	de	-	-	G(brlIOtor3)brl-3.io.tor.twormtwo.com
+2a01:239:33d:2e00::1	8560	0.000000	0.000000	de	-	-	G(PommespanzerDE4)de4.pommespanzer.cc
+2a01:239:33e:600::1	8560	0.000000	0.000000	de	-	-	G(TuerUndTor)ip85-215-222-151.pbiaas.com
+2a01:239:33e:be00::1	8560	0.000000	0.000000	de	-	-	G(strator)strator.stoerte.net
+2a01:239:37a:5d00::1	8560	0.000000	0.000000	de	-	-	G(HugeTransFemNerd)IONOS SE
+2a01:239:37a:3300::1	8560	0.000000	0.000000	de	-	-	G(Sachya)IONOS SE
+2a01:239:211:f500::1	8560	0.000000	0.000000	de	-	-	G(PommespanzerDE1)de1.pommespanzer.cc
+2a01:239:229:d300::1	8560	0.000000	0.000000	de	-	-	G(Zensursula)IONOS SE
+2a01:239:254:8c00::1	8560	0.000000	0.000000	de	-	-	G(Hattorren)IONOS SE
+2a01:239:303:100::1	8560	0.000000	0.000000	de	-	-	G(TacticalAtom)IONOS SE
+2a01:239:314:a500::1	8560	0.000000	0.000000	de	-	-	G(NAKAM)IONOS SE
+2a01:239:319:100::1	8560	0.000000	0.000000	de	-	-	G(PommespanzerDE5)de5.pommespanzer.cc
+2a01:239:328:5800::1	8560	0.000000	0.000000	de	-	-	G(PommespanzerDE2)de2.pommespanzer.cc
+2a01:239:351:4100::1	8560	0.000000	0.000000	de	-	-	G(RelayImmerscharf)IONOS SE
+2a01:239:353:8d00::1	8560	0.000000	0.000000	de	-	-	G(PommespanzerDE9)de9.pommespanzer.cc
+2a01:239:353:1400::1	8560	0.000000	0.000000	de	-	-	G(PommespanzerDE0)de0.pommespanzer.cc
+2a01:239:356:ca00::1	8560	0.000000	0.000000	de	-	-	G(igloo1)IONOS SE
+2a01:239:358:7000::1	8560	0.000000	0.000000	de	-	-	G(ce2cb4203f79)practical-goldwasser.87-106-86-231.plesk.page
+2a01:239:363:b800::1	8560	0.000000	0.000000	de	-	-	G(etinet)IONOS SE
+2a01:239:369:e200::1	8560	0.000000	0.000000	de	-	-	G(Unnamed)IONOS SE
+2a01:239:380:6d00::1	8560	0.000000	0.000000	de	-	-	G(CityTrustBonn)bonn.citytrust.de
+2a01:239:381:8e00::1	8560	0.000000	0.000000	de	-	-	G(cuteTransfemNode)IONOS SE
+2a01:270:98d8::1	41075	0.000000	0.000000	hu	-	-	G(prsv)ATW Internet Kft.
+2a01:270:9293::1	41075	0.000000	0.000000	hu	-	-	G(AntonPann3)ATW Internet Kft.
+2a01:270:9542::1	41075	0.000000	0.000000	hu	-	-	G(Runaz2)ATW Internet Kft.
+2a01:270:9847::1	41075	0.000000	0.000000	hu	-	-	GE(speakFreely)torexitspeakfreely.com
+2a01:440:108:11:82:149:227:125	29551	0.000000	0.000000	de	-	-	G(cryzrelay02)Aixit GmbH
+2a01:440:108:11:82:149:227:126	29551	0.000000	0.000000	de	-	-	G(cryzrelay01)Aixit GmbH
+2a01:488:67:1000:5bfa:5134:0:1	8972	0.000000	0.000000	de	-	-	G(minty004)rs249605.rs.hosteurope.de
+2a01:6340:2:501::10	60404	0.000000	0.000000	nl	-	-	GE(NLfreedom1)The Infrastructure Group B.V.
+2a01:6340:2:501::20	60404	0.000000	0.000000	nl	-	-	GE(mentoreth1)The Infrastructure Group B.V.
+2a01:8640:a::6163:8bf8	59711	0.000000	0.000000	pl	-	-	G(TorRelayPoland)HZ Hosting Ltd
+2a01:8640:f::86f8:57d7	59711	0.000000	0.000000	ee	-	-	G(TorRelayEE)HZ Hosting Ltd
+2a01:a500:2766::2e08:6313	42831	0.000000	0.000000	gb	-	-	G(code9n)UK Dedicated Servers Limited
+2a01:a500:2766::d04:d3cc	42831	0.000000	0.000000	gb	-	-	G(whodunithree)UK Dedicated Servers Limited
+2a01:cb15:80de:1b00:2a0:98ff:fe22:8e77	3215	0.000000	0.000000	fr	-	-	G(667)atoulouse-651-1-50-222.w90-38.abo.wanadoo.fr
+2a01:d0:fa02:5555:6829:17ff:fe25:da0c	35530	0.000000	0.000000	ua	-	-	G(DistroHub)distrohub.kyiv.ua
+2a01:d0:fc27:0:dea6:32ff:fe44:be84	31148	0.000000	0.000000	ua	-	-	G(waka)Freenet LTD
+2a01:e0a:3e0:6c31::16	12322	0.000000	0.000000	fr	-	-	G(bigbrother23470)Free SAS
+2a01:e0a:3e0:6c31::17	12322	0.000000	0.000000	fr	-	-	G(bigbrother23470)Free SAS
+2a01:e0a:5d6:6de0::c	12322	0.000000	0.000000	fr	-	-	G(Abeille)yuno.antopie.org
+2a01:e0a:5e4:1d0::acab	12322	0.000000	0.000000	fr	-	-	G(TransRights)relay.trinity.fr.eu.org
+2a01:e0a:16:b821:c0ff:ee:717:717	12322	0.000000	0.000000	fr	-	-	G(centorLyon)mail.lescorpsdereve.eu
+2a01:e0a:19b:4ad0::a810:b196	12322	0.000000	0.000000	fr	-	-	G(MyLittleTorRelay)82-64-136-240.subs.proxad.net
+2a01:e0a:42d:bd00:5f9d:bb64:4e5c:a0d4	12322	0.000000	0.000000	fr	-	-	G(Maximator)88-120-182-244.subs.proxad.net
+2a01:e0a:281:be00:b6c4:b1e4:1c19:abfd	12322	0.000000	0.000000	fr	-	-	G(ub4nix)82-64-46-143.subs.proxad.net
+2a01:e11:1028:4080:24b2:b1c0:c3e3:d917	29447	0.000000	0.000000	it	-	-	G(NotNotUnnamed69)SCALEWAY S.A.S.
+2a01:e11:7007:390:be24:11ff:fe7b:1092	29447	0.000000	0.000000	it	-	-	G(Relosky)SCALEWAY S.A.S.
+2a01:e11:7007:390:be24:11ff:feb3:e098	29447	0.000000	0.000000	it	-	-	G(ReloskyHelper)SCALEWAY S.A.S.
+2a01:e34:ec29:e1e0:179d:47f9:49af:7542	12322	0.000000	0.000000	fr	-	-	G(seeidideditit)Free SAS
+2a01:e901:1:aa00::37	216249	0.000000	0.000000	ro	-	-	G(s1crelaysprk)tor-relay-s1c.bucharest.photonspark.net
+2a01:f500:2:1f00::a	214379	0.000000	0.000000	ua	-	-	G(zgato)ua3.eu.node.cdn-perfprod.com
+2a01:f500:2:c00::a	214379	0.000000	0.000000	ua	-	-	G(zgato)ua1.eu.node.cdn-perfprod.com
+2a01:f500:2:f00::a	214379	0.000000	0.000000	ua	-	-	G(decicus)tor-ua-01.anon.no
+2a02:2b88:2:1::79d2:43	197019	0.000000	0.000000	cz	-	-	G(Assange043cz)WEDOS Internet
+2a02:2b88:2:1::4205:1	197019	0.000000	0.000000	cz	-	-	G(wedostor)tor4.terjan.net
+2a02:2b88:2:407::1	197019	0.000000	0.000000	cz	-	-	G(CyberWarOnline)cyberwar.online
+2a02:2b88:2:417::1	197019	0.000000	0.000000	cz	-	-	G(BrightWowRelay)WEDOS Internet
+2a02:7b40:b0df:8d6a::1	212531	0.000000	0.000000	lt	-	-	G(Theoden)1947b.l.time4vps.cloud
+2a02:7b40:d418:648a::1	212531	0.000000	0.000000	lt	-	-	G(upsuperRelay2)vps12.upsuper.org
+2a02:16a:da02:c1a::187	13030	0.000000	0.000000	ch	-	-	G(Nyarlathotep)Init7 (Switzerland) Ltd.
+2a02:16d0:0:5::1	49855	0.000000	0.000000	de	-	-	GE(PLUTEX)tor.plutex.de
+2a02:27a8:0:a::12b	15626	0.000000	0.000000	ua	-	-	G(zwewwlUA2)GREEN FLOID LLC
+2a02:27a8:0:a::100	15626	0.000000	0.000000	ua	-	-	G(zwewwlUA1)GREEN FLOID LLC
+2a02:27aa::3f1	59729	0.000000	0.000000	bg	-	-	G(opencommunity)GREEN FLOID LLC
+2a02:27aa::88	59729	0.000000	0.000000	bg	-	-	G(lyingbush)GREEN FLOID LLC
+2a02:27aa::505	59729	0.000000	0.000000	bg	-	-	G(FlashLizard)domain.com
+2a02:27aa::ce	59729	0.000000	0.000000	bg	-	-	G(TorNodeSofia)GREEN FLOID LLC
+2a02:27ab:0:2::22	21100	0.000000	0.000000	nl	-	-	G(zwewwlNL1)GREEN FLOID LLC
+2a02:27ab:8000::ab1	21100	0.000000	0.000000	nl	-	-	G(opencommunity)GREEN FLOID LLC
+2a02:27ac::120	50979	0.000000	0.000000	lv	-	-	G(RigaLatvia)GREEN FLOID LLC
+2a02:29e0:2:6:1:1:7760:bbd6	49367	0.000000	0.000000	it	-	-	G(rofltor04)Seflow s.r.l.
+2a02:29e0:2:6:1:1:b2e8:4015	49367	0.000000	0.000000	it	-	-	G(ziorufus)Seflow s.r.l.
+2a02:168:4f3f:5:beae:c5ff:fe10:2c02	13030	0.000000	0.000000	ch	-	-	G(uhrm01)Init7 (Switzerland) Ltd.
+2a02:168:6a16:1130::32:101	13030	0.000000	0.000000	ch	-	-	G(YoYuD1N01NoExit)tor-exit-1.geodb.org
+2a02:168:6a16:1130::32:102	13030	0.000000	0.000000	ch	-	-	G(YoYuD1N02NoExit)tor-exit-2.geodb.org
+2a02:168:53a8:0:5eed:8cff:fea0:5b5c	13030	0.000000	0.000000	ch	-	-	G(KoopaRelay)212-51-151-254.fiber7.init7.net
+2a02:168:83d4:7777:44bd:c9ff:fe2e:3165	13030	0.000000	0.000000	ch	-	-	G(lodrich2)85-195-253-142.fiber7.init7.net
+2a02:168:83d4:7777:48b6:8fff:feb0:bb1e	13030	0.000000	0.000000	ch	-	-	G(lodrich)85-195-253-142.fiber7.init7.net
+2a02:168:4800::31	13030	0.000000	0.000000	ch	-	-	G(ChocolateBit)85-195-244-251.fiber7.init7.net
+2a02:168:6426::11	13030	0.000000	0.000000	ch	-	-	G(arbertDelroth)Init7 (Switzerland) Ltd.
+2a02:168:ae0d:99::1111	13030	0.000000	0.000000	ch	-	-	G(torrelaymirror)85-195-230-248.fiber7.init7.net
+2a02:168:ae0d:99::2222	13030	0.000000	0.000000	ch	-	-	G(torrelaymirror2)85-195-230-248.fiber7.init7.net
+2a02:168:b415:0:2ecf:67ff:fea5:2e91	13030	0.000000	0.000000	ch	-	-	G(Yogurt)Init7 (Switzerland) Ltd.
+2a02:180:6:1::2eee	35366	0.000000	0.000000	de	-	-	G(Freebird32)ISPpro Internet KG
+2a02:180:6:1::2fce	35366	0.000000	0.000000	de	-	-	G(Doedelkiste08)ISPpro Internet KG
+2a02:180:6:1::2fcf	35366	0.000000	0.000000	de	-	-	G(Doedelkiste16)ISPpro Internet KG
+2a02:180:6:1::3d8	35366	0.000000	0.000000	de	-	-	G(Freebird31)ISPpro Internet KG
+2a02:180:6:1::694	35366	0.000000	0.000000	de	-	-	G(Freebird33)ISPpro Internet KG
+2a02:238:f04b:4125::	16097	0.000000	0.000000	de	-	-	G(Datenschredder)HL komm Telekommunikations GmbH
+2a02:247a:20c:6c00::1	8560	0.000000	0.000000	de	-	-	G(myserver)IONOS SE
+2a02:247a:25c:9d00::1	8560	0.000000	0.000000	de	-	-	G(freeiranandtheworld)IONOS SE
+2a02:247a:207:eb00::1	8560	0.000000	0.000000	de	-	-	G(GermanCraft17)IONOS SE
+2a02:247a:210:3200::1	8560	0.000000	0.000000	de	-	-	G(BensVPSRelayDE)ip212.227.224.245.pbiaas.com
+2a02:247a:214:5600::1	8560	0.000000	0.000000	de	-	-	G(Spynode)ip217-160-210-159.pbiaas.com
+2a02:247a:234:7b00::1	8560	0.000000	0.000000	de	-	-	G(53c70r)mail.53c70r.de
+2a02:247a:247:a700:1::1	8560	0.000000	0.000000	de	-	-	G(PathosII)pathos-ii.de
+2a02:390:9854:40:8c84:91ff:fe56:1a76	12496	0.000000	0.000000	gb	-	-	G(1337T0rN0d3)cust214-dsl91-135-7.idnet.net
+2a02:418:6017::147	29691	0.000000	0.000000	ch	-	-	GE(DigiGesTor3e1)tor3e1.digitale-gesellschaft.ch
+2a02:418:6017::148	29691	0.000000	0.000000	ch	-	-	GE(DigiGesTor3e3)tor3e3.digitale-gesellschaft.ch
+2a02:752:0:18::17c2	42708	0.000000	0.000000	se	-	-	G(FromSwedenWithLove)tortwo.duckdns.org
+2a02:898:218::1	8283	0.000000	0.000000	nl	-	-	GE(VrijHeid2)tor-exit.vrij-heid.nl
+2a02:898:218::2	8283	0.000000	0.000000	nl	-	-	GE(VrijHeid3)tor-exit.vrij-heid.nl
+2a02:908:c201:7000:8b9e:bd98:4063:9149	3209	0.000000	0.000000	de	-	-	G(cycascnsurelay1)cycasc.net
+2a02:2028:10f5:71::252	15943	0.000000	0.000000	de	-	-	G(Harksheide)wilhelm.tel GmbH
+2a02:2479:1e:7600::1	8560	0.000000	0.000000	fr	-	-	G(zoozndeq)ip217-154-16-112.pbiaas.com
+2a02:2780::e01a	35434	0.000000	0.000000	pl	-	-	G(ZXSpectrum)93.95.88.13.chorzowska.pirx.pl
+2a02:4780:41:fb88::1	47583	0.000000	0.000000	de	-	-	G(LiegenderHut)srv826632.hstgr.cloud
+2a02:8071:3e85:bc60::4a11	3209	0.000000	0.000000	de	-	-	G(AndJusticeForAll)ip-134-003-129-057.um41.pools.vodafone-ip.de
+2a02:8071:5cb1:5502:be24:11ff:fe5a:3b26	3209	0.000000	0.000000	de	-	-	G(Unnamed)ip-178-202-167-073.um47.pools.vodafone-ip.de
+2a02:8071:5ef0:2f00:be24:11ff:fe7a:cb10	3209	0.000000	0.000000	de	-	-	G(torminator)ip-078-043-121-210.um18.pools.vodafone-ip.de
+2a02:8108:9808:de00:7d8a:5cd2:4a0c:5fd	3209	0.000000	0.000000	de	-	-	G(relaysupporter55)ipbcc23d5b.dynamic.kabel-deutschland.de
+2a02:8109:f04:9200:55f:7a34:7863:8190	3209	0.000000	0.000000	de	-	-	G(cryShell01)ip4d17c84e.dynamic.kabel-deutschland.de
+2a02:a03f:d9df:d900:9657:a5ff:fe63:720	5432	0.000000	0.000000	be	-	-	G(Azhurold)39.188-241-81.adsl-dyn.isp.belgacom.be
+2a02:a46c:5d12:1:7e10:c9ff:feb9:ebc	1136	0.000000	0.000000	nl	-	-	G(ipenburg)77-174-164-37.fixed.kpn.net
+2a02:a46e:f838:4:265e:beff:fe51:3772	1136	0.000000	0.000000	nl	-	-	G(JobiWan)86-80-225-203.fixed.kpn.net
+2a02:a445:4f0f:0:397c:e568:dd49:ed4d	1136	0.000000	0.000000	nl	-	-	G(subspacerelay1)77-162-249-122.fixed.kpn.net
+2a02:a466:6b10:1:1:1:1:1	1136	0.000000	0.000000	nl	-	-	G(CookieCrumble)77-174-188-151.fixed.kpn.net
+2a02:a468:8d92:1:1e86:bff:fe20:2c8	1136	0.000000	0.000000	nl	-	-	G(op2)77-174-62-158.fixed.kpn.net
+2a02:a468:8d92:1:1:c:bad:c0de	1136	0.000000	0.000000	nl	-	-	G(2cv)77-174-62-158.fixed.kpn.net
+2a02:a468:8d92:1::baf	1136	0.000000	0.000000	nl	-	-	G(lw)77-174-62-158.fixed.kpn.net
+2a02:a469:a88b:1:5a9c:fcff:fe04:34c2	1136	0.000000	0.000000	nl	-	-	G(bv0002w)77-172-70-151.fixed.kpn.net
+2a02:c202:2191:7710::1	51167	0.000000	0.000000	de	-	-	G(FreeTheInternet)vmi1917710.contaboserver.net
+2a02:c202:3014:1921::1	51167	0.000000	0.000000	de	-	-	G(SpiritBomb)vmd141921.contaboserver.net
+2a02:c204:2195:2012::1	51167	0.000000	0.000000	de	-	-	GE(MarieAlex)sortie-tor.a-n-o-n-y-m-e.net
+2a02:c204:2261:2270::1	51167	0.000000	0.000000	de	-	-	GE(Quetzalcoatl)Contabo GmbH
+2a02:c204:2263:5153::1	51167	0.000000	0.000000	de	-	-	GE(Quetzalcoatl)Contabo GmbH
+2a02:c204:3017:2597::1	51167	0.000000	0.000000	de	-	-	G(charon)Contabo GmbH
+2a02:c205:1000:6686::5	51167	0.000000	0.000000	de	-	-	G(zerodivided)relay.divided-by-zero.eu
+2a02:c205:3003:5755::1	51167	0.000000	0.000000	de	-	-	G(iblech)tor.quasicoherent.io
+2a02:c206:2209:9698::1	51167	0.000000	0.000000	de	-	-	G(Relosky2)vmi2099698.contaboserver.net
+2a02:c206:2214:7698::1	51167	0.000000	0.000000	de	-	-	G(Oymyakon)vmi2147698.contaboserver.net
+2a02:c206:2227:7426::1	51167	0.000000	0.000000	de	-	-	G(Gladiator)vmi2277426.contaboserver.net
+2a02:c206:3006:4281::1	51167	0.000000	0.000000	de	-	-	G(enceladus01)vmd64281.contaboserver.net
+2a02:c206:3010:8083::1	51167	0.000000	0.000000	de	-	-	G(SafeAndEffective)vmd108083.contaboserver.net
+2a02:c206:3011:733::1	51167	0.000000	0.000000	de	-	-	G(fvesca)vmd110733.contaboserver.net
+2a02:c206:3013:5744::1	51167	0.000000	0.000000	de	-	-	G(MichasTorRelay)Contabo GmbH
+2a02:c207:2034:5805::1	51167	0.000000	0.000000	de	-	-	G(TerminaTor)Contabo GmbH
+2a02:c207:2098:7239::1	51167	0.000000	0.000000	de	-	-	G(DebatableMink)vmi987239.contaboserver.net
+2a02:c207:2256:4847::1	51167	0.000000	0.000000	de	-	-	G(Ulcerate)tor-relay04.stareintodeathandbestill.com
+2a02:c207:3003:935::1	51167	0.000000	0.000000	de	-	-	G(dontstopmenow)nx42.de
+2a02:c207:3005:233::1	51167	0.000000	0.000000	de	-	-	G(IdeaNexus)discourse.bits-und-baeume.org
+2a02:c207:3005:1808::1	51167	0.000000	0.000000	de	-	-	G(onemoretorserver1)vmd51808.contaboserver.net
+2a02:c207:3006:5899::1	51167	0.000000	0.000000	de	-	-	G(gaunahTorRelay)vmd65899.contaboserver.net
+2a02:c207:3016:9963::1	51167	0.000000	0.000000	de	-	-	G(Echolot)vmd169963.contaboserver.net
+2a02:c207:3017:295::1	51167	0.000000	0.000000	de	-	-	G(pluto)Contabo GmbH
+2a02:c500:2:110::8709:9001	199246	0.000000	0.000000	gr	-	-	G(Assange023gr)static.104.134.4.185.clients.grserver.gr
+2a02:c500:2:110::a1e9:9201	199246	0.000000	0.000000	gr	-	-	G(Assange023gr2)static.104.134.4.185.clients.grserver.gr
+2a02:ec0:209:10::4	41653	0.000000	0.000000	fr	-	-	GE(AquaRayTerminus)Aqua Ray SAS
+2a02:ed06::222	50304	0.000000	0.000000	no	-	-	GE(hackeriet1)Blix Solutions AS
+2a02:f58:4:300:216:3eff:fec2:a0f9	49409	0.000000	0.000000	no	-	-	G(Unnamed)tor-exit.exs.no
+2a02:f58:4:300:216:3eff:fec2:a1f9	49409	0.000000	0.000000	no	-	-	G(Unnamed)tor-exit.exs.no
+2a03:3b40:fe:1e2::1	24971	0.000000	0.000000	cz	-	-	G(Y3EQFkVr)vps.cz-pro.cz
+2a03:6f02::93e1	210976	0.000000	0.000000	nl	-	-	G(edamame)Timeweb
+2a03:50a0:302:e400::2	39699	0.000000	0.000000	fi	-	-	G(LouneaGigabitFiber)Lounea Palvelut Oy
+2a03:50a0:302:e400::3	39699	0.000000	0.000000	fi	-	-	G(LouneaGigabitFiber)Lounea Palvelut Oy
+2a03:75c0:3c:a257::1	197922	0.000000	0.000000	fr	-	-	G(Neyo)Techcrea Solutions SAS
+2a03:75c0:36:2124::1	197922	0.000000	0.000000	fr	-	-	G(firstor)tor5.terjan.net
+2a03:90c0:1b5:ffff::72:1	202422	0.000000	0.000000	it	-	-	G(shallmakenolaw)heureka.hahn.mt
+2a03:90c0:4c0:2903:ffff::251	202422	0.000000	0.000000	ro	-	-	G(Guardian)G-Core Labs S.A.
+2a03:90c0:4c0:2903:ffff::781	202422	0.000000	0.000000	ro	-	-	G(0x0DAY)G-Core Labs S.A.
+2a03:90c0:15:86::1	202422	0.000000	0.000000	eu	-	-	G(0x0DAY)G-Core Labs S.A.
+2a03:90c0:32:1::89	199524	0.000000	0.000000	us	-	-	G(NoOnionUS01)G-Core Labs S.A.
+2a03:90c0:83:2908::7a	202422	0.000000	0.000000	lu	-	-	G(TannhauserGate)tor-relay.maxwellfarrior.tech
+2a03:90c0:83:2908::9e	202422	0.000000	0.000000	lu	-	-	G(revengeTourII)G-Core Labs S.A.
+2a03:90c0:277::3f1	202422	0.000000	0.000000	ua	-	-	G(0x0DAY)G-Core Labs S.A.
+2a03:90c0:c5::14	199524	0.000000	0.000000	us	-	-	G(freedom1)G-Core Labs S.A.
+2a03:94e0:ffff:185:14:97:0:96	56655	0.000000	0.000000	no	-	-	G(NoWay)cyber.tattoo
+2a03:94e0:ffff:185:181:60:0:181	56655	0.000000	0.000000	no	-	-	G(DowntimePatrol1)trf1.no.downtimepatrol.com
+2a03:94e0:ffff:185:181:63:0:124	56655	0.000000	0.000000	no	-	-	G(decicus)tor-no-01.anon.no
+2a03:94e3:ffff:198:140:141:0:51	56655	0.000000	0.000000	no	-	-	G(bauruine)terrahost04.tuxli.org
+2a03:94e3:ffff:198:140:141:0:52	56655	0.000000	0.000000	no	-	-	G(bauruine)Gigahost AS
+2a03:4000:1a:1f5::2	197540	0.000000	0.000000	de	-	-	G(0xdeadbeef)mail.my-mail.rocks
+2a03:4000:1a:5dc:242e:cbff:fe4d:cb31	197540	0.000000	0.000000	de	-	-	G(Piratenpartei13)v22018127271878335.hotsrv.de
+2a03:4000:1a:5de:6489:b7ff:fe8f:8434	197540	0.000000	0.000000	de	-	-	G(Piratenpartei04)v22018127271878341.bestsrv.de
+2a03:4000:1a:6f8:98f0:87ff:fe6a:29af	197540	0.000000	0.000000	de	-	-	G(Piratenpartei06)v22019042160787598.megasrv.de
+2a03:4000:1b:c6:536d:6f6c:4e6f:6465	197540	0.000000	0.000000	de	-	-	G(SmolNode)smolno.de
+2a03:4000:1c:79d::1	197540	0.000000	0.000000	de	-	-	G(FreedomOfSpeech)netcup GmbH
+2a03:4000:1c:555::11e8	197540	0.000000	0.000000	de	-	-	G(TorNode05)v2202504171896332844.quicksrv.de
+2a03:4000:1d:3d:1827:b1ff:feec:f6b0	197540	0.000000	0.000000	de	-	-	GE(0xcc)netcup GmbH
+2a03:4000:1d:b7a:782f:17ff:fef0:a708	197540	0.000000	0.000000	de	-	-	GE(Quetzalcoatl)netcup GmbH
+2a03:4000:1e:7d4:84fb:5fff:fef3:9d56	197540	0.000000	0.000000	de	-	-	GE(Quetzalcoatl)netcup GmbH
+2a03:4000:1e:81:c835:7dff:fe90:3ed5	197540	0.000000	0.000000	de	-	-	GE(Quetzalcoatl)netcup GmbH
+2a03:4000:1:47e::443	197540	0.000000	0.000000	de	-	-	G(themis)themis.tor.rndsh.it
+2a03:4000:2a:2df:38b0:44ff:fea0:658	197540	0.000000	0.000000	de	-	-	G(iamanickname)v220240549785271589.bestsrv.de
+2a03:4000:2a:ab9:281c:73ff:fe04:9be3	197540	0.000000	0.000000	de	-	-	G(wormhole)v2202501170252308383.hotsrv.de
+2a03:4000:2a:d6:949c:84ff:fe0c:84ba	197540	0.000000	0.000000	de	-	-	G(isodiapher)isodiapher.relay.tor.rtc0.dev
+2a03:4000:2b:9:a4e0:1fff:fe06:d2f3	197540	0.000000	0.000000	de	-	-	G(bananaanarchy161)v2202304198449226002.quicksrv.de
+2a03:4000:2b:41f:0:1d:0:fe	197540	0.000000	0.000000	de	-	-	G(theonlyone)mrbesen.de
+2a03:4000:2b:66e:dead:beef:ca1f:1337	197540	0.000000	0.000000	de	-	-	GE(artikel5ev8b)this-is-a-tor-node---8.artikel5ev.de
+2a03:4000:2b:673:24da:28ff:feb5:e5c5	197540	0.000000	0.000000	de	-	-	G(juggernautrelay)v2201912101799105506.powersrv.de
+2a03:4000:2:ba4:88e9:eff:fe89:3637	197540	0.000000	0.000000	de	-	-	G(cvbnet1)cvbnet.de
+2a03:4000:2:e5::1	197540	0.000000	0.000000	de	-	-	G(mine)heinrich5991.de
+2a03:4000:3e:568:446c:e7ff:fe7d:de4f	197540	0.000000	0.000000	de	-	-	G(ZynfulRelay)srv1.ezyn.de
+2a03:4000:3f:155:b8d7:bbff:fe4b:f0ec	197540	0.000000	0.000000	de	-	-	G(Unnamed)v2201912109846104514.ultrasrv.de
+2a03:4000:3f:cc1::	197540	0.000000	0.000000	de	-	-	G(CryingOnion)v2201911101084103125.hotsrv.de
+2a03:4000:4a:fb8:86c:21ff:fe56:f680	197540	0.000000	0.000000	de	-	-	G(DemonHunter)demonhunter.ultrasrv.de
+2a03:4000:4c:ccf::1337	197540	0.000000	0.000000	de	-	-	G(anong33)vps02.jwgn.de
+2a03:4000:4e:67::1	197540	0.000000	0.000000	de	-	-	G(GermanCraft16)v220231221168249235.powersrv.de
+2a03:4000:4e:c87:185:232:68:32	197540	0.000000	0.000000	de	-	-	G(hera)tor01.malbolge.net
+2a03:4000:4e:f3:689c:c6ff:fe24:89b4	197540	0.000000	0.000000	de	-	-	G(CryptoCactus)v2202406158561275396.megasrv.de
+2a03:4000:4f:9dd:941d:48ff:fe68:323d	197540	0.000000	0.000000	de	-	-	G(ZynR01)whispers.ezyn.de
+2a03:4000:4f:336:1807:efff:fef4:3c1	197540	0.000000	0.000000	de	-	-	G(Roentgen)gonku.de
+2a03:4000:5b:126:588d:91ff:fe63:d442	197540	0.000000	0.000000	de	-	-	G(Vendetta3)v2202406220018273604.nicesrv.de
+2a03:4000:5b:563::1	197540	0.000000	0.000000	de	-	-	G(Unnamed)mail.luflosi.de
+2a03:4000:5b:e1::8	197540	0.000000	0.000000	de	-	-	G(mullbinde8)tor-proxy8.mull-binde.de
+2a03:4000:5c:119:4451:29ff:febb:8849	197540	0.000000	0.000000	de	-	-	G(Vendetta6)v2202405220018269651.happysrv.de
+2a03:4000:5d:fab::1	197540	0.000000	0.000000	de	-	-	G(jugendhackerassange)v2202111140006168793.powersrv.de
+2a03:4000:5e:c47::1	197540	0.000000	0.000000	de	-	-	G(TorRelay2a)tor-relay-2.axstet.de
+2a03:4000:5:65b:388a:15ff:fedc:30d6	197540	0.000000	0.000000	de	-	-	GE(Quetzalcoatl)netcup GmbH
+2a03:4000:5:613:9872:48ff:fede:289d	197540	0.000000	0.000000	de	-	-	G(tembi)tembi-tor-relay.manchester.gr
+2a03:4000:5:b1:14bb:a9ff:fe0f:70c3	197540	0.000000	0.000000	de	-	-	G(northerndownpour)v2202408188286282466.nicesrv.de
+2a03:4000:6a:37::1	197540	0.000000	0.000000	de	-	-	G(TorRelay3a)tor-relay-3.axstet.de
+2a03:4000:6a:270:8ac:87ff:fe9e:7573	197540	0.000000	0.000000	de	-	-	G(queerfeminism)v2202305198449228047.bestsrv.de
+2a03:4000:6b:9c:7830:35ff:fe23:d89b	197540	0.000000	0.000000	de	-	-	G(ARCNetWork)zora.sglorch.de
+2a03:4000:6:56d8:41f:11ff:fed9:e96d	197540	0.000000	0.000000	de	-	-	G(RobLoo)v220250615321355001.happysrv.de
+2a03:4000:6:81b3:3817:fdff:feac:72a9	197540	0.000000	0.000000	de	-	-	G(TWrelay02)v2202408230880280420.luckysrv.de
+2a03:4000:6:102b:c457:f3ff:feb0:a6d0	197540	0.000000	0.000000	de	-	-	GE(Quetzalcoatl)netcup GmbH
+2a03:4000:6:537c::4	197540	0.000000	0.000000	de	-	-	G(Unnamed)mail.fa-ta-ma.de
+2a03:4000:6:543b::443	197540	0.000000	0.000000	de	-	-	G(dike)dike.tor.rndsh.it
+2a03:4000:6:543f:78b2:4fff:fe7b:fb6a	197540	0.000000	0.000000	de	-	-	G(Piratenpartei08)v22018112160777800.quicksrv.de
+2a03:4000:6:614:d803:40ff:fec3:832a	197540	0.000000	0.000000	de	-	-	GE(Quetzalcoatl)netcup GmbH
+2a03:4000:6:724c:df98:15f9:b34d:443	197540	0.000000	0.000000	de	-	-	G(gGDHjdcC6zAlM8k08lX)netcup GmbH
+2a03:4000:6:2388:df98:15f9:b34d:443	197540	0.000000	0.000000	de	-	-	G(gGDHjdcC6zAlM8k08lY)netcup GmbH
+2a03:4000:6:3698::11e8	197540	0.000000	0.000000	de	-	-	G(TorNode02)v2202203171896184250.luckysrv.de
+2a03:4000:6:5444::1	197540	0.000000	0.000000	de	-	-	G(torud)v22018117312077814.hotsrv.de
+2a03:4000:6:8161:282b:15ff:fe1d:ea8c	197540	0.000000	0.000000	de	-	-	G(phaiJ6ha5hopeVae2Ae)lacrimosa.wurzelmann.at
+2a03:4000:6:d0b2:2862:dcff:fe26:31fd	197540	0.000000	0.000000	de	-	-	G(HelloTorWorld)v220220946436202300.luckysrv.de
+2a03:4000:6:d009:2844:1ff:feec:de5e	197540	0.000000	0.000000	de	-	-	G(flokisboat)v2202207109456196059.ultrasrv.de
+2a03:4000:6:d042:5440:88ff:fedd:4ae5	197540	0.000000	0.000000	de	-	-	GE(Quetzalcoatl)netcup GmbH
+2a03:4000:6:e047:6494:62ff:fe3f:85b8	197540	0.000000	0.000000	de	-	-	GE(Quetzalcoatl)netcup GmbH
+2a03:4000:6:f808:948b:b5ff:fe41:2238	197540	0.000000	0.000000	de	-	-	G(nononicetry)v2202201165249174659.quicksrv.de
+2a03:4000:7:dcc:14ac:f2ff:fea9:e4c7	197540	0.000000	0.000000	de	-	-	GE(pentestdotidotng)tor.pentest.i.ng
+2a03:4000:8:3c1::9001	197540	0.000000	0.000000	de	-	-	G(cybr)asterix.shreddox.eu
+2a03:4000:8:61b:85e:b6ff:fefa:8752	197540	0.000000	0.000000	de	-	-	G(fedoriansRelayTor)v2202104140705149385.happysrv.de
+2a03:4000:8:69a:74ab:8fff:fe06:a47a	197540	0.000000	0.000000	de	-	-	G(fokaia)fokaia-tor-relay.manchester.gr
+2a03:4000:8:503:48d:bff:fe2a:1010	197540	0.000000	0.000000	de	-	-	G(magritte)v2201911108725103163.quicksrv.de
+2a03:4000:9:635:c48e:47ff:fea8:490	197540	0.000000	0.000000	de	-	-	G(PostGuard)v2202102140950142693.nicesrv.de
+2a03:4000:10:5a:e889:a0ff:fed2:e913	197540	0.000000	0.000000	de	-	-	G(fluffypancakes001de)v2202309205538237596.luckysrv.de
+2a03:4000:10:16b:78e6:28ff:fea6:9f18	197540	0.000000	0.000000	de	-	-	G(flowjob00)v220241279589301769.hotsrv.de
+2a03:4000:10:92a:8472:96ff:fefd:c680	197540	0.000000	0.000000	de	-	-	G(1983)v2202505277580346899.powersrv.de
+2a03:4000:10:e31:7871:61ff:fe26:4017	197540	0.000000	0.000000	de	-	-	G(RoentgenTwo)kontor.pro
+2a03:4000:13:7c3:dead:beef:ca1f:1337	197540	0.000000	0.000000	de	-	-	GE(artikel5ev42)this-is-a-tor-node---42.artikel5ev.de
+2a03:4000:15:533:3418:31ff:fe1c:a2ed	197540	0.000000	0.000000	de	-	-	G(CaptainData)v2202503260056322601.goodsrv.de
+2a03:4000:15:928:dead:beef:ca1f:1337	197540	0.000000	0.000000	de	-	-	GE(artikel5ev10b)this-is-a-tor-node---10.artikel5ev.de
+2a03:4000:17:82:d4ac:5fff:fe6f:f2fe	197540	0.000000	0.000000	de	-	-	G(Dathomir)v2202210184368202840.luckysrv.de
+2a03:4000:17:98::cafe:6a7e	197540	0.000000	0.000000	de	-	-	G(stamppot)stamppot.mmap.at
+2a03:4000:17:688:b854:7ff:fe48:bdcb	197540	0.000000	0.000000	de	-	-	G(Piratenpartei03)v22018127271878278.nicesrv.de
+2a03:4000:17:a15:d4db:fbff:fef4:8b7b	197540	0.000000	0.000000	de	-	-	GE(Quetzalcoatl)netcup GmbH
+2a03:4000:21:3ba:840a:fff:fe2e:3fec	197540	0.000000	0.000000	de	-	-	G(DevilHunter)devilhunter.ultrasrv.de
+2a03:4000:21:8a8:dead:beef:ca1f:1337	197540	0.000000	0.000000	de	-	-	GE(artikel5ev9b)this-is-a-tor-node---9.artikel5ev.de
+2a03:4000:21:89c:b8d4:46ff:fe68:40db	197540	0.000000	0.000000	de	-	-	G(theark2)netcup.isola.red
+2a03:4000:22:62::2	197540	0.000000	0.000000	de	-	-	G(ncbanerelay)harrenhal.fucloud.de
+2a03:4000:22:175:a452:acff:fefc:987f	197540	0.000000	0.000000	de	-	-	G(Piratenpartei02)v22018117271877462.bestsrv.de
+2a03:4000:23:55:485b:4eff:fed8:bb89	197540	0.000000	0.000000	de	-	-	G(Mewtwo)v2202408188286282467.happysrv.de
+2a03:4000:23:409:748d:52ff:fe41:cdcc	197540	0.000000	0.000000	de	-	-	G(CryptoHouse)mail.psy-bunker.nl
+2a03:4000:24:b3::443	197540	0.000000	0.000000	de	-	-	G(libertas)libertas.tor.rndsh.it
+2a03:4000:27:6f8:e466:27ff:fe82:1b2a	197540	0.000000	0.000000	de	-	-	GE(Quetzalcoatl)netcup GmbH
+2a03:4000:27:36:c813:6dff:fe0e:b93e	197540	0.000000	0.000000	de	-	-	GE(Quetzalcoatl)netcup GmbH
+2a03:4000:27:71a:1853:7aff:feaf:449b	197540	0.000000	0.000000	de	-	-	G(makeitfoss)v2202206178406193985.nicesrv.de
+2a03:4000:28:1e8::69	197540	0.000000	0.000000	de	-	-	GE(LillyCL)tor-exit.okade.pro
+2a03:4000:28:7b2:94:16:113:14	197540	0.000000	0.000000	de	-	-	G(TorUtilizer)netcup GmbH
+2a03:4000:28:97e:84fa:9ff:fef2:cc0	197540	0.000000	0.000000	de	-	-	G(torrx)v2202112164388173550.megasrv.de
+2a03:4000:28:900:786f:7fff:fe08:8217	197540	0.000000	0.000000	de	-	-	G(debiansRelayTor)v2202102140705142254.bestsrv.de
+2a03:4000:29:36a:c474:eeff:fe9e:7148	197540	0.000000	0.000000	de	-	-	G(GinkoRelay)v22018062771868244.quicksrv.de
+2a03:4000:29:38:d4c8:c3ff:fe18:4132	197540	0.000000	0.000000	de	-	-	G(GermanCraft4)netcup GmbH
+2a03:4000:31:1c::1	197540	0.000000	0.000000	de	-	-	G(rivon)relay.vonderste.in
+2a03:4000:31:2f::2430	197540	0.000000	0.000000	de	-	-	G(cookieandtea)cookieandtea.hotsrv.de
+2a03:4000:31:9c6:b884:77ff:fe6c:5f4	197540	0.000000	0.000000	de	-	-	G(TORnadoTime)tor.pietzschmann.org
+2a03:4000:31:12f::1	197540	0.000000	0.000000	de	-	-	G(torrocks)morty.ultrasrv.de
+2a03:4000:31:40:c48f:36ff:fec9:eaf6	197540	0.000000	0.000000	de	-	-	G(giesskanne)netcup GmbH
+2a03:4000:31:141::1337	197540	0.000000	0.000000	de	-	-	G(dezember)jonaswitmer.ch
+2a03:4000:32:1ea:846f:81ff:fe5a:8073	197540	0.000000	0.000000	de	-	-	G(flowjob03)v220241179589300431.quicksrv.de
+2a03:4000:32:81b:78ac:5cff:fe4f:cb83	197540	0.000000	0.000000	de	-	-	G(chaoscode2)v220201226501135302.nicesrv.de
+2a03:4000:32:211::1	197540	0.000000	0.000000	de	-	-	G(privacyandbuch)privacyhandbuch.de
+2a03:4000:33:1ba:44af:cbff:fe0c:e975	197540	0.000000	0.000000	de	-	-	G(flowjob07)v220241279589304672.nicesrv.de
+2a03:4000:33:1c8::13	197540	0.000000	0.000000	de	-	-	G(15T01)t01.s-ix.net
+2a03:4000:33:1c9:68d7:eff:fe33:3593	197540	0.000000	0.000000	de	-	-	G(flowjob04)v220241179589300432.ultrasrv.de
+2a03:4000:33:6c:346d:daff:fef4:10de	197540	0.000000	0.000000	de	-	-	G(Unnamed)v220231250814251356.powersrv.de
+2a03:4000:33:255:2895:5dff:fe24:437d	197540	0.000000	0.000000	de	-	-	G(flowjob02)v220241279589301770.quicksrv.de
+2a03:4000:33:c4c:7823:e2ff:fe4d:d4c6	197540	0.000000	0.000000	de	-	-	G(Rem)v2202504264264328386.goodsrv.de
+2a03:4000:34:1d7:e815:a2ff:fed3:2025	197540	0.000000	0.000000	de	-	-	G(flowjob05)v220241179589300433.bestsrv.de
+2a03:4000:37:1fc:487b:b7ff:fe13:839b	197540	0.000000	0.000000	de	-	-	G(Vendetta2)v2202404220018264381.nicesrv.de
+2a03:4000:37:3:e842:2ff:feb9:c49c	197540	0.000000	0.000000	de	-	-	GE(Quetzalcoatl)netcup GmbH
+2a03:4000:37:76e:68f6:30ff:fe7c:a4	197540	0.000000	0.000000	de	-	-	G(m0rix)venus.4096bit.de
+2a03:4000:37:77c::10	197540	0.000000	0.000000	de	-	-	G(RincesBSDRelay1)v2202008127302125116.bestsrv.de
+2a03:4000:40:4b:2811:c1ff:fe70:40cf	197540	0.000000	0.000000	de	-	-	G(Vendetta4)v2202406220018273606.happysrv.de
+2a03:4000:40:6a:5829:22ff:fedd:b07f	197540	0.000000	0.000000	de	-	-	G(HappyBits)v2202311209999244342.nicesrv.de
+2a03:4000:40:27:98d9:edff:fe35:2783	197540	0.000000	0.000000	de	-	-	G(RightToPrivacy)netcup GmbH
+2a03:4000:41:2a7::1	197540	0.000000	0.000000	de	-	-	G(GermanCraft6)v220231221168249704.bestsrv.de
+2a03:4000:41:7f:6804:9fff:fed0:e2ef	197540	0.000000	0.000000	de	-	-	G(knob56)v2202503174297323050.luckysrv.de
+2a03:4000:43:26f::1	197540	0.000000	0.000000	de	-	-	G(fauringer01)server-01.fauringer.de
+2a03:4000:43:216:5443:2bff:fe16:c6b5	197540	0.000000	0.000000	de	-	-	G(thesergeant)v2202004119962116040.hotsrv.de
+2a03:4000:45:16::1	197540	0.000000	0.000000	de	-	-	G(catgirl)catgirl.senf.space
+2a03:4000:46:11c:8459:ecff:fee4:9a99	197540	0.000000	0.000000	de	-	-	G(VeilsOfTheOnion)tor-relay02.veilsoftheonion.eu
+2a03:4000:46:95::1	197540	0.000000	0.000000	de	-	-	G(GermanCraft31)v220231221168251287.bestsrv.de
+2a03:4000:46:197:b434:d3ff:fe68:d9e1	197540	0.000000	0.000000	de	-	-	GE(Aramis)v2202307203666234413.quicksrv.de
+2a03:4000:47:631:a437:b1ff:fe5c:74a2	197540	0.000000	0.000000	de	-	-	G(b0rken)tor.b0rken.de
+2a03:4000:48:4d:88c8:8eff:fee8:9d1a	197540	0.000000	0.000000	de	-	-	GE(hackster)v2202302189715219857.goodsrv.de
+2a03:4000:49:6c4::1	197540	0.000000	0.000000	de	-	-	G(cuptor01)netcup GmbH
+2a03:4000:49:243:5417:b0ff:fec6:da84	197540	0.000000	0.000000	de	-	-	G(Vendetta5)v2202406220018273607.happysrv.de
+2a03:4000:50:97::1	197540	0.000000	0.000000	de	-	-	G(GermanCraft30)v220231221168251172.bestsrv.de
+2a03:4000:50:201::1	197540	0.000000	0.000000	de	-	-	G(Samtor)v2202505274841342389.quicksrv.de
+2a03:4000:50:e1b:842c:42ff:fedc:e5c6	197540	0.000000	0.000000	de	-	-	G(incognito)netcup GmbH
+2a03:4000:50:e4c::	197540	0.000000	0.000000	de	-	-	G(baloonasTORrelay)mail.baloona.de
+2a03:4000:51:7c::1	197540	0.000000	0.000000	de	-	-	G(GermanCraft32)v220231221168251288.supersrv.de
+2a03:4000:55:53:e4ba:cfff:fef3:ac36	197540	0.000000	0.000000	de	-	-	G(toezdemir)vps.tayfunoezdemir.de
+2a03:4000:56:90:e4ce:e3ff:fe49:5558	197540	0.000000	0.000000	de	-	-	G(BourbonKid)v220240243632255682.goodsrv.de
+2a03:4000:56:c1b::1	197540	0.000000	0.000000	de	-	-	G(pKD9jZ19N1LiTvsjOF3)pKD9jZ19N1LiTvsjOF3.ultrasrv.de
+2a03:4000:58:7d:de1:ea7:dead:beef	197540	0.000000	0.000000	de	-	-	G(0x1ea7deadbeef)tor-exit-node.1ea7deadbeef.de
+2a03:4000:58:115::2	197540	0.000000	0.000000	de	-	-	G(cve)cve.cx
+2a03:4000:60:113::	197540	0.000000	0.000000	de	-	-	G(GermanCraft2)netcup GmbH
+2a03:4000:60:460:3855:1eff:fe30:5412	197540	0.000000	0.000000	de	-	-	G(flowjob08)v220250179589311121.nicesrv.de
+2a03:4000:62:8:c855:23ff:fef6:50ee	197540	0.000000	0.000000	de	-	-	GE(Quetzalcoatl)netcup GmbH
+2a03:4000:62:ec7:d42a:41ff:feac:7169	197540	0.000000	0.000000	de	-	-	G(ZynR02)hermes.ezyn.de
+2a03:4000:62:f06:7777:7777:7777:7777	197540	0.000000	0.000000	de	-	-	G(NetWorkXXIV)networkxxiv.tor-relay.org
+2a03:4000:64:d6f:3855:34ff:fe06:ba9	197540	0.000000	0.000000	de	-	-	G(zwiebelfoo2)v2202202167652178945.megasrv.de
+2a03:4000:64:e83:c491:b8ff:feb0:f90e	197540	0.000000	0.000000	de	-	-	G(fuchur)tor.fuchur.rocks
+2a03:4000:64:fe8:c853:14ff:fe86:7a3d	197540	0.000000	0.000000	de	-	-	G(root1Moh)v2202202167805178136.megasrv.de
+2a03:4000:65:208::8	197540	0.000000	0.000000	de	-	-	G(mullbinde7)tor-proxy7.mull-binde.de
+2a03:4000:66:15:18a0:6bff:fe90:3147	197540	0.000000	0.000000	de	-	-	GE(Quetzalcoatl)netcup GmbH
+2a03:4000:66:d0e::1	197540	0.000000	0.000000	de	-	-	G(MCdrKNe2)v220230758444233663.quicksrv.de
+2a03:4000:67:11a:48e6:ddff:fe82:4760	197540	0.000000	0.000000	de	-	-	G(LongLiveTheOnion)mail.z0py.de
+2a03:4000:67:d1a::1	197540	0.000000	0.000000	de	-	-	G(xrl4tjdevde)rl4.tjdev.de
+2a03:4000:68:6a:8435:5aff:feae:322e	197540	0.000000	0.000000	de	-	-	G(flowjob01)v220241179589300640.ultrasrv.de
+2a03:4000:68:c65:542b:f3ff:fefc:ca96	197540	0.000000	0.000000	de	-	-	G(stopthewarinUA)v2202210165427203540.luckysrv.de
+2a03:4000:68:c73::	197540	0.000000	0.000000	de	-	-	G(TorNode01)v2202210171896203370.quicksrv.de
+2a03:4000:69:e5b:a4ec:edff:fed8:ed74	197540	0.000000	0.000000	de	-	-	G(halfdansboat)v2202211109456205922.megasrv.de
+2a03:4000:69:e40::1	197540	0.000000	0.000000	de	-	-	G(TorRelay1a)tor-relay-1.axstet.de
+2a03:4000:a:72::1337	197540	0.000000	0.000000	de	-	-	G(Senfrelay)relay.senf.space
+2a03:4000:b:d88::11e8	197540	0.000000	0.000000	de	-	-	G(TorNode04)v2202504171896332841.powersrv.de
+2a03:4000:f:4c:e878:7fff:fe35:105d	197540	0.000000	0.000000	de	-	-	G(mytorrelayinDE)v2202211187362207591.ultrasrv.de
+2a03:4000:f:64f:5443:78ff:fe62:7ad8	197540	0.000000	0.000000	de	-	-	G(Piratenpartei07)v22019042160787595.bestsrv.de
+2a03:4000:f:512:8475:54ff:fefe:912d	197540	0.000000	0.000000	de	-	-	G(Piratenpartei12)v22018127271878291.ultrasrv.de
+2a03:4000:f:992:98d8:54ff:fe3d:fc2b	197540	0.000000	0.000000	de	-	-	G(mittelerde)v2202205175214189208.luckysrv.de
+2a03:8600::a1	42675	0.000000	0.000000	se	-	-	G(ParadiseTorRelay1)tor-relay1.flashdance.cx
+2a03:8600::a2	42675	0.000000	0.000000	se	-	-	G(ParadiseTorRelay2)tor-relay2.flashdance.cx
+2a03:8600::a3	42675	0.000000	0.000000	se	-	-	G(ParadiseTorRelay3)tor-relay3.flashdance.cx
+2a03:8600::a4	42675	0.000000	0.000000	se	-	-	G(ParadiseTorRelay4)tor-relay4.flashdance.cx
+2a03:8600::a5	42675	0.000000	0.000000	se	-	-	G(ParadiseTorRelay5)tor-relay5.flashdance.cx
+2a03:8600::a6	42675	0.000000	0.000000	se	-	-	G(ParadiseTorRelay6)tor-relay6.flashdance.cx
+2a03:b0c0:2:d0::f43:5001	14061	0.000000	0.000000	nl	-	-	G(slarty1)001.slarty.org
+2a03:b0c0:2:f0::1bc:9001	14061	0.000000	0.000000	us	-	-	G(WarheadRelay)warhead.engineering
+2a03:cfc0:8000:7::5fd6:3560	201814	0.000000	0.000000	pl	-	-	G(bauruine)skynode03.tuxli.org
+2a03:cfc0:8000:7::5fd6:3561	201814	0.000000	0.000000	pl	-	-	G(bauruine)skynode03.tuxli.org
+2a03:e600:100:c3::7	208323	0.000000	0.000000	at	-	-	G(clarke)Foundation for Applied Privacy
+2a03:e600:100:c3::8	208323	0.000000	0.000000	at	-	-	G(bender)Foundation for Applied Privacy
+2a03:e600:100::1	208323	0.000000	0.000000	at	-	-	GE(blumenkohl)tor-exit-anonymizer.appliedprivacy.net
+2a03:e600:100::2	208323	0.000000	0.000000	at	-	-	GE(artischocke)tor-exit-anonymizer.appliedprivacy.net
+2a03:e600:100::3	208323	0.000000	0.000000	at	-	-	GE(erbse)tor-exit-anonymizer.appliedprivacy.net
+2a03:e600:100::4	208323	0.000000	0.000000	at	-	-	GE(broccoli)tor-exit-anonymizer.appliedprivacy.net
+2a03:e600:100::5	208323	0.000000	0.000000	at	-	-	GE(erdapfel)tor-exit-anonymizer.appliedprivacy.net
+2a03:e600:100::6	208323	0.000000	0.000000	at	-	-	GE(avocado)tor-exit-anonymizer.appliedprivacy.net
+2a03:e600:100::65	208323	0.000000	0.000000	at	-	-	GE(batate)tor-exit-anonymizer.appliedprivacy.net
+2a03:e600:100::66	208323	0.000000	0.000000	at	-	-	GE(brunnenkresse)tor-exit-anonymizer.appliedprivacy.net
+2a03:e600:100::67	208323	0.000000	0.000000	at	-	-	GE(chicoree)tor-exit-anonymizer.appliedprivacy.net
+2a03:e600:100::68	208323	0.000000	0.000000	at	-	-	GE(antilope)tor-exit-anonymizer.appliedprivacy.net
+2a03:e600:100::69	208323	0.000000	0.000000	at	-	-	GE(biber)tor-exit-anonymizer.appliedprivacy.net
+2a03:e600:100::70	208323	0.000000	0.000000	at	-	-	GE(bonobo)tor-exit-anonymizer.appliedprivacy.net
+2a03:e600:100::71	208323	0.000000	0.000000	at	-	-	GE(adler)tor-exit-anonymizer.appliedprivacy.net
+2a04:6c80::8d	6718	0.000000	0.000000	ro	-	-	G(jgsec)NAV COMMUNICATIONS SRL
+2a04:9dc0:0:144::10	9009	0.000000	0.000000	ro	-	-	G(looney)ns1.web-development.ro
+2a04:9dc0:31::c0cc:4d	9009	0.000000	0.000000	ro	-	-	GE(teap0t)exit.teap0t.com
+2a04:52c0:101:46a::	60404	0.000000	0.000000	nl	-	-	GE(quartz)tor-exit.NL-DRN-KVMNVME-3.liteserver.nl
+2a04:52c0:101:164::99	60404	0.000000	0.000000	nl	-	-	G(jstark1809nl002)The Infrastructure Group B.V.
+2a04:52c0:102:46e0::1	60404	0.000000	0.000000	nl	-	-	GE(ambient8exit)tor-exit.ambient8.xyz
+2a04:52c0:103:5acd::1	60404	0.000000	0.000000	nl	-	-	GE(oniondaoftw)The Infrastructure Group B.V.
+2a04:52c0:103:412::1	60404	0.000000	0.000000	nl	-	-	GE(kilroywashere)The Infrastructure Group B.V.
+2a04:52c0:104:4735::1	60404	0.000000	0.000000	nl	-	-	GE(cb1tor)The Infrastructure Group B.V.
+2a04:52c0:104:ad97::1	60404	0.000000	0.000000	nl	-	-	GE(Unnamed)The Infrastructure Group B.V.
+2a04:52c0:105:d7eb::1	60404	0.000000	0.000000	nl	-	-	GE(wurzelIO)tor-exit-01.wurzel.io
+2a04:52c0:106:394:e813:c39a:9eb9:d95b	60404	0.000000	0.000000	nl	-	-	GE(SieNCoAd)tor-exit-3.allium.dev
+2a04:52c0:106:d219::1	60404	0.000000	0.000000	nl	-	-	GE(annatesla)The Infrastructure Group B.V.
+2a04:52c0:108:a34f::1	60404	0.000000	0.000000	nl	-	-	GE(yrh3W)The Infrastructure Group B.V.
+2a04:52c0:115:df08::1	60404	0.000000	0.000000	nl	-	-	GE(dreamachine)The Infrastructure Group B.V.
+2a04:52c0:115:fed3::1	60404	0.000000	0.000000	nl	-	-	G(oppaiTOR)oppai.fi
+2a04:52c0:116:e0e3::1	60404	0.000000	0.000000	nl	-	-	GE(Kornnatter)kornnatter.dedyn.io
+2a04:52c0:117:7157::1	60404	0.000000	0.000000	nl	-	-	G(Unicorns4Anonymity)The Infrastructure Group B.V.
+2a04:52c0:122:2694::1	60404	0.000000	0.000000	nl	-	-	G(trisolaris)The Infrastructure Group B.V.
+2a04:52c0:123:5ccf:50ef:cafe:babe:1337	60404	0.000000	0.000000	nl	-	-	GE(BehemothLTDNL2)The Infrastructure Group B.V.
+2a04:52c0:123:c6c3::1	60404	0.000000	0.000000	nl	-	-	GE(deadedSouth)The Infrastructure Group B.V.
+2a04:52c0:126:3ab8::1	60404	0.000000	0.000000	nl	-	-	G(u0f0m2yh)The Infrastructure Group B.V.
+2a04:52c0:128:c6e7:50ef:cafe:babe:1337	60404	0.000000	0.000000	nl	-	-	GE(BehemothLTDNL1)anonimity-nl1.encrypt.co.il
+2a04:52c0:130:896e::1	60404	0.000000	0.000000	nl	-	-	GE(Truancy)The Infrastructure Group B.V.
+2a04:52c0:134:dcaf::1	60404	0.000000	0.000000	nl	-	-	G(Kujata)The Infrastructure Group B.V.
+2a04:52c0:135:334c::1	60404	0.000000	0.000000	nl	-	-	G(mhack2)The Infrastructure Group B.V.
+2a04:204:3a6f:4e00:51b4:1e59:6c53:3036	48101	0.000000	0.000000	gb	-	-	G(georgector)Trooli Ltd.
+2a04:1741:0:12::	47987	0.000000	0.000000	ua	-	-	G(sandbox)Zemlyaniy Dmitro Leonidovich
+2a04:2180:0:1::35da:3bca	61272	0.000000	0.000000	lt	-	-	G(c0rexxxpallas)14997-26178.bacloud.info
+2a04:2180:0:1::e308:9180	61272	0.000000	0.000000	lt	-	-	G(Assange015lt)10024-17721.bacloud.info
+2a04:2180:dc03:2::13	61272	0.000000	0.000000	lt	-	-	G(Unnamed)32581-51914.bacloud.info
+2a04:3545:1000:720:4cfe:77ff:fe91:452d	202053	0.000000	0.000000	fi	-	-	G(farthinder)94-237-8-19.fi-hel2.upcloud.host
+2a04:b540:3000:1::150	205007	0.000000	0.000000	rs	-	-	G(eclipse21)Maxim Azarov trading as eServer
+2a04:bdc7:100:47b6::a	63473	0.000000	0.000000	us	-	-	G(zgato)la6.na.node.cdn-perfprod.com
+2a04:c47:e00:7cdf:4b9:a0ff:fe00:2f0	61098	0.000000	0.000000	bg	-	-	G(Slavyanka)Akenes SA
+2a04:ecc0:8:a8:4567:152:0:1	207992	0.000000	0.000000	fr	-	-	G(prsv)FEELB SARL
+2a04:ecc0:8:a8:4567:646b:0:1	207992	0.000000	0.000000	fr	-	-	G(prsv)hms78383.hostmyservers.me
+2a05:1c00::797e:80e4	6718	0.000000	0.000000	ro	-	-	G(Dacia)NAV COMMUNICATIONS SRL
+2a05:541:110:3e::1	215540	0.000000	0.000000	it	-	-	GE(pingj)pingj.lsd.cat
+2a05:541:110:20::1	215540	0.000000	0.000000	it	-	-	GE(pingg)pingg.lsd.cat
+2a05:541:112:31::1	215540	0.000000	0.000000	pt	-	-	GE(sacco)sacco.osservatorionessuno.org
+2a05:541:123:10::1	215540	0.000000	0.000000	dk	-	-	G(GanduVisionary1)GLOBAL CONNECTIVITY SOLUTIONS LLP
+2a05:541:123:f::1	215540	0.000000	0.000000	dk	-	-	G(GanduVisionary2)GLOBAL CONNECTIVITY SOLUTIONS LLP
+2a05:4140:3::4e9f	212271	0.000000	0.000000	it	-	-	G(NoGoodwill)Cinzia Tocci trading as Lumanex Srl
+2a05:9403::215	204957	0.000000	0.000000	cz	-	-	G(TorNodeCzech)GREEN FLOID LLC
+2a05:b0c7:6acd::1	51396	0.000000	0.000000	de	-	-	G(Famy)hosted-by.pfcloud.io
+2a05:b0c7:6ba1::1	51396	0.000000	0.000000	de	-	-	G(emirus)hosted-by.pfcloud.io
+2a05:b0c7:6bd4::1	51396	0.000000	0.000000	de	-	-	GE(cozybeardev)hosted-by.pfcloud.io
+2a05:b0c7:6cc4::1	51396	0.000000	0.000000	de	-	-	GE(xks)hosted-by.pfcloud.io
+2a05:b0c7:66a2::1	51396	0.000000	0.000000	de	-	-	G(Famy)hosted-by.pfcloud.io
+2a05:b0c7:67c6::1	51396	0.000000	0.000000	de	-	-	GE(cozybeardev)hosted-by.pfcloud.io
+2a05:b0c7:68c5::1	51396	0.000000	0.000000	de	-	-	G(Famy)hosted-by.pfcloud.io
+2a05:b0c7:655b::1	51396	0.000000	0.000000	de	-	-	GE(nix)hosted-by.pfcloud.io
+2a05:b0c7:6388::1	51396	0.000000	0.000000	de	-	-	GE(cozybeardev)hosted-by.pfcloud.io
+2a05:b0c7:6949::1	51396	0.000000	0.000000	de	-	-	GE(cozybeardev)hosted-by.pfcloud.io
+2a05:f6c7:8321::160	203953	0.000000	0.000000	dk	-	-	G(TaageHemmingAgner)drkt.eu
+2a05:f480:2400:1eb4:5400:5ff:fe42:ff1	20473	0.000000	0.000000	pl	-	-	G(hellowebtun2)70.34.249.203.vultrusercontent.com
+2a06:5b80:167::336e:f71b	207083	0.000000	0.000000	nl	-	-	G(FlashApe2)HostSlim B.V.
+2a06:5b83:2:4::c7f6:a7d2	207083	0.000000	0.000000	nl	-	-	G(titanium)HostSlim B.V.
+2a06:1700:0:3c::1	200651	0.000000	0.000000	ro	-	-	GE(cepa1)FlokiNET ehf
+2a06:1700:0:47::166	200651	0.000000	0.000000	ro	-	-	GE(Truck)FlokiNET ehf
+2a06:1700:0:50::11	200651	0.000000	0.000000	ro	-	-	GE(TorExitRomania)FlokiNET ehf
+2a06:1700:0:195::1	200651	0.000000	0.000000	ro	-	-	G(Rendlesham)rendlesham.ufoencounter.site
+2a06:1700:3:19::1	200651	0.000000	0.000000	nl	-	-	GE(flokinet2n1)FlokiNET ehf
+2a06:1700:3:34::1	200651	0.000000	0.000000	nl	-	-	GE(Exit)FlokiNET ehf
+2a06:1700:4:14::1	200651	0.000000	0.000000	nl	-	-	GE(JohnSnow)FlokiNET ehf
+2a06:3000::30	28715	0.000000	0.000000	gb	-	-	GE(BHCARM64OpenBSD3)Brass Horn Communications
+2a06:3000::40	28715	0.000000	0.000000	gb	-	-	GE(BHCARM64OpenBSD4)Brass Horn Communications
+2a06:d380:0:103::62	57860	0.000000	0.000000	dk	-	-	GE(kramse01)tor01.zencurity.com
+2a06:d380:0:103::63	57860	0.000000	0.000000	dk	-	-	GE(kramse02)tor02.zencurity.com
+2a06:de00:401:4af::2	207252	0.000000	0.000000	de	-	-	G(MiddleMaze)Felix Gassan
+2a06:e80:3000:1:bad:babe:ca11:911	211720	0.000000	0.000000	nl	-	-	GE(xor)Datashield
+2a06:e881:7000::4120:4a7	208226	0.000000	0.000000	fr	-	-	G(Esquie)OUIHEBERG SARL
+2a06:e881:7000::d06d:4778	208226	0.000000	0.000000	fr	-	-	G(zgato)fr1.eu.node.cdn-perfprod.com
+2a06:f900:1:100::53a	56630	0.000000	0.000000	ru	-	-	G(TARS)tars.schokomil.ch
+2a06:f901:1:100:300:ffff:1b1:a671	56630	0.000000	0.000000	nl	-	-	G(ams01)ams01.dn42.ventilaar.net
+2a07:6d80:1e01:3a13::	59891	0.000000	0.000000	ch	-	-	GE(fastforward)FSIT AG
+2a07:9380:2:aaaa::98db:3bdb	50840	0.000000	0.000000	pl	-	-	G(CasaRrelay)Marek Bajerski trading as HITME.PL
+2a07:b242:1000:1300:f250:8f0a:cdba:4d76	202618	0.000000	0.000000	cz	-	-	G(Zela)176-114-248-225.rychlydrat.cz
+2a07:e03:2a::bcde	210083	0.000000	0.000000	nl	-	-	GE(privexnl1exit)tor-exit-nl1.privex.cc
+2a07:e041:1:106::1	206075	0.000000	0.000000	se	-	-	G(zgato)se5.eu.node.cdn-perfprod.com
+2a07:e042:1:181::1	206075	0.000000	0.000000	nl	-	-	GE(bernd)bernd.tor-exit.mxmla.de
+2a07:e042:1:182::1	206075	0.000000	0.000000	nl	-	-	GE(tanja)tanja.tor-exit.mxmla.de
+2a09:5e41:319:4a40::6	3292	0.000000	0.000000	dk	-	-	G(frodo)0x573d647d.static.cust.fastspeed.dk
+2a09:61c0::20	61125	0.000000	0.000000	nl	-	-	GE(torexitams00)SABOTAGE LLC
+2a09:61c0::21	61125	0.000000	0.000000	nl	-	-	GE(torexitams01)SABOTAGE LLC
+2a09:61c0::22	61125	0.000000	0.000000	nl	-	-	GE(torexitams02)SABOTAGE LLC
+2a09:61c0::beef	61125	0.000000	0.000000	nl	-	-	GE(sabotage)tor-exit.sabotage.org
+2a09:6301:0:12c:b268:35c2:dbf3:765a	208208	0.000000	0.000000	de	-	-	G(toptor1)351e62fb.cus20555.vps.st-srv.eu
+2a09:6301:0:bca:ed84:b764:d729:a9fc	208208	0.000000	0.000000	de	-	-	G(firstRelay)38a0d873.cus21545.vps.st-srv.eu
+2a09:6382:4000:2:45:155:170:60	62000	0.000000	0.000000	fr	-	-	G(SLM)SERVERD SAS
+2a09:8740:0:3::13:4008	35426	0.000000	0.000000	fr	-	-	G(porte)NXT Initiative SAS
+2a09:be40:28fb:1337::b00b	199950	0.000000	0.000000	se	-	-	G(Relay04MaskAD)HJELM ENTERPRISES AB
+2a09:be40:28fb:1337::babe	199950	0.000000	0.000000	se	-	-	G(Relay01MaskAD)tor-relay01.mask.ad
+2a09:be40:28fb:1337::beef	199950	0.000000	0.000000	se	-	-	G(Relay02MaskAD)tor-relay02.mask.ad
+2a09:be40:28fb:1337::dead	199950	0.000000	0.000000	se	-	-	G(Relay03MaskAD)HJELM ENTERPRISES AB
+2a09:be40:28ff:50:4c8d:fcff:fe52:e27d	199950	0.000000	0.000000	se	-	-	G(HjelmEnterprises01)HJELM ENTERPRISES AB
+2a09:be40:28ff:50:943b:16ff:feb3:302	199950	0.000000	0.000000	se	-	-	G(HjelmEnterprises02)HJELM ENTERPRISES AB
+2a09:be40:28ff:50:b436:f5ff:fef5:a154	199950	0.000000	0.000000	se	-	-	G(Playstar01)tor-relay01.playstar.se
+2a09:be40:28ff:50:be24:11ff:fe2d:698f	199950	0.000000	0.000000	se	-	-	G(HjelmEnterprises04)HJELM ENTERPRISES AB
+2a09:be40:28ff:50:be24:11ff:fecd:ab66	199950	0.000000	0.000000	se	-	-	G(HjelmEnterprises03)HJELM ENTERPRISES AB
+2a09:be40:28ff:50:c4c9:3dff:fea3:f4fa	199950	0.000000	0.000000	se	-	-	G(Playstar02)tor-relay02.playstar.se
+2a09:e1c1:efc1:1337::9001	21473	0.000000	0.000000	de	-	-	G(whatconfig)zarkon.mcl.gg
+2a09:e1c1:efc2:1337::9001	48927	0.000000	0.000000	de	-	-	G(whatconfig)lotor.mcl.gg
+2a10:1fc0:1::f813:75e0	62005	0.000000	0.000000	ee	-	-	G(Gibara)BlueVPS OU
+2a10:8a40:f313::29	39405	0.000000	0.000000	fr	-	-	GE(mwittig1)Eurofiber France SAS
+2a10:46c0:0:2::13	208367	0.000000	0.000000	ee	-	-	G(siffeurattex)CSpace Hostings OU
+2a10:3781:16ea:90:45:80:171:211	206238	0.000000	0.000000	nl	-	-	G(NTH117R1)117.tor-relay.nothingtohide.nl
+2a10:3781:29b6::3	206238	0.000000	0.000000	nl	-	-	G(BlickWinkel)connected.by.freedominter.net
+2a10:3781:56c8:1::2d8e:91de	206238	0.000000	0.000000	nl	-	-	G(arighttospeak)Freedom Internet BV
+2a10:3781:222b:84::3	206238	0.000000	0.000000	nl	-	-	G(LxcTorNode)Freedom Internet BV
+2a10:9301:100:780::105	200736	0.000000	0.000000	gr	-	-	G(PapakiRelay)MEDIANET INVEST AE
+2a10:9301:100:900:be24:11ff:fea1:d718	200736	0.000000	0.000000	gr	-	-	G(PapagalosRelay)MEDIANET INVEST AE
+2a10:c800:1:9cc6::1	56322	0.000000	0.000000	hu	-	-	GE(Lyle)sortie-tor.a-n-o-n-y-m-e.net
+2a10:c800:1:77d1::1	56322	0.000000	0.000000	hu	-	-	G(aino)29613309-stellar.serverastra.com
+2a10:c800:1:77f8::1	56322	0.000000	0.000000	hu	-	-	G(wildbill)166254722-stellar.serverastra.com
+2a10:c800:1:f7f8:0:1ce:1ce:babe	56322	0.000000	0.000000	hu	-	-	GE(Mirage)tor-exit-readme-3.maxzrbn.it
+2a10:fc81:abb7:42ea::1	47447	0.000000	0.000000	de	-	-	G(sogidanet)pxg5wzuj.trafficplex.cloud
+2a11:4c02:0:24::1	44477	0.000000	0.000000	kz	-	-	G(tinkerbase)PQ HOSTING PLUS S.R.L.
+2a11:4c05:0:1::1	44477	0.000000	0.000000	cz	-	-	G(flowjob06)PQ HOSTING PLUS S.R.L.
+2a11:6c7:2000:cd00:be24:11ff:fe68:e3e3	577	0.000000	0.000000	ca	-	-	G(SunBlueBerry)bras-base-ahbgon0101w-grc-37-76-64-64-177.dsl.bell.ca
+2a11:6c7:a:65::2	212895	0.000000	0.000000	ca	-	-	G(Route64TorRelay)Johannes Ernst
+2a11:29c0:3d92::4	214402	0.000000	0.000000	gb	-	-	G(cryptobridge)SIGNALX CLOUD COMMUNICATIONS LTD
+2a11:29c0:3d92::cafe:babe	214402	0.000000	0.000000	gb	-	-	G(Obsidian)SIGNALX CLOUD COMMUNICATIONS LTD
+2a11:840:51:1b::5b43:19b6	136258	0.000000	0.000000	nl	-	-	G(outerhaven)BrainStorm Network
+2a11:840:69:1b::b65e:c091	136258	0.000000	0.000000	us	-	-	G(TsofeerD)BrainStorm Network
+2a11:6100:0:12:a236:9fff:fe9e:36ea	43641	0.000000	0.000000	nl	-	-	GE(FreedomIsAMust)dedicated.sollutium.com
+2a11:6100:0:1467::	43641	0.000000	0.000000	nl	-	-	GE(DontSmiteMeDown)torexit1.privacyjam.com
+2a12:3e80:400:aa::	48314	0.000000	0.000000	de	-	-	G(Unnamed)Michael Sebastian Schinzel trading as IP-Projects GmbH & Co. KG
+2a12:6fc1::681	204957	0.000000	0.000000	us	-	-	G(Assange047us)GREEN FLOID LLC
+2a12:4040:beda:b655::1	48014	0.000000	0.000000	al	-	-	G(zgato)al1.eu.node.cdn-perfprod.com
+2a12:4040:f5c5:b5b0::1	48014	0.000000	0.000000	al	-	-	G(zgato)al5.eu.node.cdn-perfprod.com
+2a12:4047:9126:b8c4::1	48014	0.000000	0.000000	al	-	-	G(zgato)al3.eu.node.cdn-perfprod.com
+2a12:4047:d99e:dbdf::1	48014	0.000000	0.000000	al	-	-	G(zgato)al2.eu.node.cdn-perfprod.com
+2a12:8641:5:a::	213850	0.000000	0.000000	de	-	-	G(rexNexo)dnsrelay.network
+2a12:a800:1:1:2:58:56:15	210558	0.000000	0.000000	nl	-	-	G(CORONA)corona.cridyn.com
+2a12:a800:1:1:2:58:56:35	210558	0.000000	0.000000	nl	-	-	GE(Quetzalcoatl)1337 Services GmbH
+2a12:a800:1:1:2:58:56:43	210558	0.000000	0.000000	nl	-	-	GE(Quetzalcoatl)2.58.56.43.powered.by.rdp.sh
+2a12:a800:1:1:2:58:56:93	210558	0.000000	0.000000	nl	-	-	GE(Quetzalcoatl)2.58.56.93.powered.by.rdp.sh
+2a12:a800:1:1:2:58:56:220	210558	0.000000	0.000000	nl	-	-	GE(Quetzalcoatl)2.58.56.220.powered.by.rdp.sh
+2a12:a800:1:1:45:92:1:136	210558	0.000000	0.000000	nl	-	-	G(prsv)1337 Services GmbH
+2a12:a800:1:1:45:154:98:33	210558	0.000000	0.000000	nl	-	-	GE(ASqUADeo)tor-exit-1.allium.dev
+2a12:a800:1:1:194:26:192:77	210558	0.000000	0.000000	nl	-	-	GE(Quetzalcoatl)194.26.192.77.powered.by.rdp.sh
+2a12:a800:1:1:194:26:192:186	210558	0.000000	0.000000	nl	-	-	G(prsv)194.26.192.186.powered.by.rdp.sh
+2a12:a800:2:1:45:80:158:23	210558	0.000000	0.000000	pl	-	-	GE(Quetzalcoatl)1337 Services GmbH
+2a12:a800:2:1:45:80:158:27	210558	0.000000	0.000000	pl	-	-	GE(Quetzalcoatl)1337 Services GmbH
+2a12:a800:2:1:45:80:158:69	210558	0.000000	0.000000	pl	-	-	GE(Aramis)1337 Services GmbH
+2a12:a800:2:1:45:80:158:167	210558	0.000000	0.000000	pl	-	-	GE(Quetzalcoatl)1337 Services GmbH
+2a12:a800:2:1:45:138:16:42	210558	0.000000	0.000000	pl	-	-	GE(Quetzalcoatl)45.138.16.42.powered.by.rdp.sh
+2a12:a800:2:1:45:138:16:69	210558	0.000000	0.000000	pl	-	-	GE(Quetzalcoatl)45.138.16.69.powered.by.rdp.sh
+2a12:a800:2:1:45:138:16:76	210558	0.000000	0.000000	pl	-	-	GE(Quetzalcoatl)45.138.16.76.powered.by.rdp.sh
+2a12:a800:2:1:45:138:16:107	210558	0.000000	0.000000	pl	-	-	G(Quetzalcoatl)1337 Services GmbH
+2a12:a800:2:1:45:138:16:113	210558	0.000000	0.000000	pl	-	-	GE(Quetzalcoatl)1337 Services GmbH
+2a12:a800:2:1:45:138:16:164	210558	0.000000	0.000000	pl	-	-	GE(Quetzalcoatl)1337 Services GmbH
+2a12:a800:2:1:45:138:16:222	210558	0.000000	0.000000	pl	-	-	GE(Quetzalcoatl)1337 Services GmbH
+2a12:a800:2:1:45:138:16:230	210558	0.000000	0.000000	pl	-	-	GE(Aramis)1337 Services GmbH
+2a12:a800:2:1:45:138:16:231	210558	0.000000	0.000000	pl	-	-	GE(Aramis)1337 Services GmbH
+2a12:a800:2:1:45:138:16:239	210558	0.000000	0.000000	pl	-	-	GE(Quetzalcoatl)1337 Services GmbH
+2a12:a800:2:1:45:138:16:240	210558	0.000000	0.000000	pl	-	-	GE(Quetzalcoatl)1337 Services GmbH
+2a12:a800:2:1:45:138:16:248	210558	0.000000	0.000000	pl	-	-	GE(Quetzalcoatl)1337 Services GmbH
+2a12:a800:2:1:45:141:215:17	210558	0.000000	0.000000	pl	-	-	GE(Quetzalcoatl)1337 Services GmbH
+2a12:a800:2:1:45:141:215:19	210558	0.000000	0.000000	pl	-	-	GE(Quetzalcoatl)1337 Services GmbH
+2a12:a800:2:1:45:141:215:21	210558	0.000000	0.000000	pl	-	-	GE(Aramis)1337 Services GmbH
+2a12:a800:2:1:45:141:215:28	210558	0.000000	0.000000	pl	-	-	GE(Aramis)1337 Services GmbH
+2a12:a800:2:1:45:141:215:40	210558	0.000000	0.000000	pl	-	-	GE(Quetzalcoatl)1337 Services GmbH
+2a12:a800:2:1:45:141:215:56	210558	0.000000	0.000000	pl	-	-	GE(Quetzalcoatl)1337 Services GmbH
+2a12:a800:2:1:45:141:215:61	210558	0.000000	0.000000	pl	-	-	GE(Quetzalcoatl)1337 Services GmbH
+2a12:a800:2:1:45:141:215:62	210558	0.000000	0.000000	pl	-	-	GE(Quetzalcoatl)1337 Services GmbH
+2a12:a800:2:1:45:141:215:63	210558	0.000000	0.000000	pl	-	-	GE(Quetzalcoatl)1337 Services GmbH
+2a12:a800:2:1:45:141:215:80	210558	0.000000	0.000000	pl	-	-	GE(Quetzalcoatl)1337 Services GmbH
+2a12:a800:2:1:45:141:215:88	210558	0.000000	0.000000	pl	-	-	GE(Quetzalcoatl)1337 Services GmbH
+2a12:a800:2:1:45:141:215:90	210558	0.000000	0.000000	pl	-	-	GE(Quetzalcoatl)1337 Services GmbH
+2a12:a800:2:1:45:141:215:95	210558	0.000000	0.000000	pl	-	-	GE(Quetzalcoatl)1337 Services GmbH
+2a12:a800:2:1:45:141:215:97	210558	0.000000	0.000000	pl	-	-	GE(Quetzalcoatl)1337 Services GmbH
+2a12:a800:2:1:45:141:215:110	210558	0.000000	0.000000	pl	-	-	GE(Quetzalcoatl)1337 Services GmbH
+2a12:a800:2:1:45:141:215:114	210558	0.000000	0.000000	pl	-	-	GE(Quetzalcoatl)1337 Services GmbH
+2a12:a800:2:1:45:141:215:167	210558	0.000000	0.000000	pl	-	-	GE(Quetzalcoatl)1337 Services GmbH
+2a12:a800:2:1:45:141:215:169	210558	0.000000	0.000000	pl	-	-	GE(Quetzalcoatl)1337 Services GmbH
+2a12:a800:2:1:45:141:215:200	210558	0.000000	0.000000	pl	-	-	GE(Quetzalcoatl)1337 Services GmbH
+2a12:a800:2:1:185:241:208:71	210558	0.000000	0.000000	pl	-	-	GE(Quetzalcoatl)1337 Services GmbH
+2a12:a800:2:1:185:241:208:81	210558	0.000000	0.000000	pl	-	-	GE(Illusion)tor-exit-readme-5.maxzrbn.it
+2a12:a800:2:1:185:241:208:82	210558	0.000000	0.000000	pl	-	-	GE(Quetzalcoatl)1337 Services GmbH
+2a12:a800:2:1:185:241:208:92	210558	0.000000	0.000000	pl	-	-	GE(Quetzalcoatl)1337 Services GmbH
+2a12:a800:2:1:185:241:208:115	210558	0.000000	0.000000	pl	-	-	GE(Quetzalcoatl)1337 Services GmbH
+2a12:a800:2:1:185:241:208:185	210558	0.000000	0.000000	pl	-	-	GE(Quetzalcoatl)1337 Services GmbH
+2a12:a800:2:1:185:241:208:202	210558	0.000000	0.000000	pl	-	-	GE(Aramis)1337 Services GmbH
+2a12:a800:2:1:185:241:208:204	210558	0.000000	0.000000	pl	-	-	GE(Aramis)1337 Services GmbH
+2a12:a800:2:1:185:241:208:206	210558	0.000000	0.000000	pl	-	-	GE(Aramis)1337 Services GmbH
+2a12:a800:8:1:45:94:31:68	210558	0.000000	0.000000	nl	-	-	GE(Quetzalcoatl)1337 Services GmbH
+2a12:a800:9:1:45:83:31:79	23470	0.000000	0.000000	us	-	-	GE(Quetzalcoatl)ReliableSite.Net LLC
+2a12:a800:9:1:45:88:186:89	23470	0.000000	0.000000	us	-	-	GE(Quetzalcoatl)ReliableSite.Net LLC
+2a12:a800:9:1:45:88:186:92	23470	0.000000	0.000000	us	-	-	GE(Quetzalcoatl)ReliableSite.Net LLC
+2a12:a800:9:1:193:26:115:43	23470	0.000000	0.000000	us	-	-	GE(Quetzalcoatl)ReliableSite.Net LLC
+2a12:a800:9:1:193:26:115:61	23470	0.000000	0.000000	us	-	-	GE(Quetzalcoatl)ReliableSite.Net LLC
+2a12:a800:9:1:193:26:115:82	23470	0.000000	0.000000	us	-	-	GE(Quetzalcoatl)193.26.115.82.powered.by.rdp.sh
+2a12:a800:9:1:193:26:115:140	23470	0.000000	0.000000	us	-	-	GE(Quetzalcoatl)ReliableSite.Net LLC
+2a12:a800:9:1:193:26:115:212	23470	0.000000	0.000000	us	-	-	GE(obzgs5tbmn4q)tor-exit.corsage.obzgs5tbmn4q.org
+2a12:a800:11:1:124:198:131:62	210558	0.000000	0.000000	us	-	-	GE(Quetzalcoatl)1337 Services GmbH
+2a12:a800:11:1:124:198:131:108	210558	0.000000	0.000000	us	-	-	GE(Quetzalcoatl)1337 Services GmbH
+2a12:a800:11:1:124:198:131:223	210558	0.000000	0.000000	us	-	-	GE(Quetzalcoatl)1337 Services GmbH
+2a12:a800:11:1:124:198:131:253	210558	0.000000	0.000000	us	-	-	GE(Quetzalcoatl)1337 Services GmbH
+2a12:a800:11:1:124:198:132:13	210558	0.000000	0.000000	us	-	-	GE(Quetzalcoatl)1337 Services GmbH
+2a12:a800:11:1:124:198:132:52	210558	0.000000	0.000000	us	-	-	GE(Aramis)1337 Services GmbH
+2a12:a800:11:1:124:198:132:172	210558	0.000000	0.000000	us	-	-	GE(Quetzalcoatl)1337 Services GmbH
+2a12:a800:11:1:124:198:132:237	210558	0.000000	0.000000	us	-	-	GE(Quetzalcoatl)1337 Services GmbH
+2a12:a800:11:1:192:159:99:74	210558	0.000000	0.000000	us	-	-	GE(Quetzalcoatl)192.159.99.74.powered.by.rdp.sh
+2a12:a800:11:1:192:159:99:168	210558	0.000000	0.000000	us	-	-	GE(Quetzalcoatl)1337 Services GmbH
+2a12:bec0:20b:3cb6::1	199654	0.000000	0.000000	nl	-	-	G(fluffypancakes002nl)Oxide Group Limited
+2a12:bec0:20b:7a10::1	199654	0.000000	0.000000	nl	-	-	G(fluffypancakes004nl)Oxide Group Limited
+2a12:bec0:20b:9426::1	199654	0.000000	0.000000	nl	-	-	G(fluffypancakes003nl)Oxide Group Limited
+2a12:bec0:20b:9803::1	199654	0.000000	0.000000	nl	-	-	G(fluffypancakes001nl)Oxide Group Limited
+2a12:bec0:20b:a9bb::1	199654	0.000000	0.000000	nl	-	-	G(fluffypancakes005nl)Oxide Group Limited
+2a12:bec0:20b:cc38::1	199654	0.000000	0.000000	nl	-	-	G(fluffypancakes008nl)Oxide Group Limited
+2a12:bec0:20b:da62::1	199654	0.000000	0.000000	nl	-	-	G(fluffypancakes007nl)Oxide Group Limited
+2a12:bec0:20b:f20c::1	199654	0.000000	0.000000	nl	-	-	G(fluffypancakes009nl)Oxide Group Limited
+2a12:bec0:20c:94bb::1	199654	0.000000	0.000000	us	-	-	G(fluffypancakes001us)Oxide Group Limited
+2a12:bec4:1822:ab::a	214677	0.000000	0.000000	nl	-	-	G(zgato)Matteo Martelloni trading as DELUXHOST
+2a12:de40:21:1be4::	216063	0.000000	0.000000	de	-	-	GE(WienerskillExit)24fire.de
+2a12:de40:203:5add::	216063	0.000000	0.000000	de	-	-	G(WienerskillRelay)24fire GmbH
+2a13:7c81:19f::2	214640	0.000000	0.000000	se	-	-	G(AnonHelper)Hostup AB
+2a13:d207:0:40e::1	50340	0.000000	0.000000	ru	-	-	G(tetris)JSC Selectel
+2a14:1ec7:10a0:5963::1	214481	0.000000	0.000000	nl	-	-	G(zgato)nl12.eu.node.cdn-perfprod.com
+2a14:3f87:f001:2e::a	64289	0.000000	0.000000	nl	-	-	G(ElectricThing)cloud.54.158.71.206.macarne.com
+2a14:3f87:f001:11::a	64289	0.000000	0.000000	nl	-	-	G(macapw2)cloud.53.158.71.206.macarne.com
+2a14:3f87:f001:23::a	64289	0.000000	0.000000	nl	-	-	G(macapw)cloud.48.158.71.206.macarne.com
+2a14:3f87:f002:d::a	64289	0.000000	0.000000	nl	-	-	G(prsv)cloud.25.187.90.45.macarne.com
+2c0f:6c0:0:2::6983	329325	0.000000	0.000000	za	-	-	GE(Quetzalcoatl)Maxko for Gaming Development
+2c0f:6c0:0:d::d28b	329325	0.000000	0.000000	za	-	-	GE(obzgs5tbmn4q)tor-exit.dill.obzgs5tbmn4q.org
+2c0f:8c0:2:100a:beef::1	47447	0.000000	0.000000	de	-	-	G(Zensursula)23M GmbH
+2c0f:8c0:2:100a::2	47447	0.000000	0.000000	de	-	-	G(Zensursula)23M GmbH
+2c0f:8c0:2:100a::feed:b	47447	0.000000	0.000000	de	-	-	G(Zensursula)23M GmbH
+240b:10:92c2:5a00:215:5dff:fe55:d201	2514	0.000000	0.000000	jp	-	-	G(h3zjp)pl3758.ag1212.nttpc.ne.jp
+2001:1a48:1112:6:122:0:1d:0	25512	0.000000	0.000000	cz	-	-	G(CzechDS)CD-Telematika a.s.
+2001:1ad0:c4fe:504::11	24953	0.000000	0.000000	at	-	-	G(XoaseRelay)privacy.xoa.se
+2001:1af8:4700:a0ad:5::108	60781	0.000000	0.000000	nl	-	-	G(FiveEyesPlus)ajax.lab.cat
+2001:1af8:4700:a114:6::1	60781	0.000000	0.000000	nl	-	-	G(Lavaeolous)LeaseWeb Netherlands B.V.
+2001:1b40:5700:96a7::1	20860	0.000000	0.000000	gb	-	-	G(prsv)IOMART CLOUD SERVICES LIMITED
+2001:1b60:2:1:3935:104:0:1	31103	0.000000	0.000000	de	-	-	GE(Illuminati)www.miner.dk
+2001:1b60:2:23:1013:201::	31103	0.000000	0.000000	de	-	-	G(Anguirus)Keyweb AG
+2001:1b60:3:34:1107:102:0:1	31103	0.000000	0.000000	de	-	-	G(GermanCraft24)Keyweb AG
+2001:1b60:3:221:701:102:0:1	31103	0.000000	0.000000	de	-	-	GE(tormachine)Keyweb AG
+2001:1b60:3:221:3132:102:0:1	31103	0.000000	0.000000	de	-	-	GE(artikel5ev1b)this-is-a-tor-exit-node---keywebtor1.artikel5ev.de
+2001:1b60:3:221:4134:101:0:1	31103	0.000000	0.000000	de	-	-	GE(artikel5ev4b)ns.tor-exit-4.artikel5ev.de
+2001:1b60:3:239:1003:103:0:1	31103	0.000000	0.000000	de	-	-	GE(artikel5ev2b)this-is-a-tor-exit-node---keywebtor2.artikel5ev.de
+2001:1b60:3:239:1003:106:0:1	31103	0.000000	0.000000	de	-	-	GE(artikel5ev3b)this-is-a-tor-exit-node---keywebtor3.artikel5ev.de
+2001:1ba8:201:20:4a0f:cfff:fe28:f10d	50821	0.000000	0.000000	se	-	-	G(mharelay)customer-147-28-87-56.stosn.net
+2001:4b20:12:f001::105	34288	0.000000	0.000000	ch	-	-	GE(gatter)Kantonsschule Zug
+2001:4b98:dc0:43:f816:3eff:fe49:506d	203476	0.000000	0.000000	fr	-	-	G(portoloin)xvm-106-182.dc0.ghst.net
+2001:4ba0:cafe:9da::1	24961	0.000000	0.000000	de	-	-	G(bubbleteasback)vps2578715.fastwebserver.de
+2001:4ba0:cafe:24f::1	24961	0.000000	0.000000	de	-	-	G(colon)colon.stoerte.net
+2001:4ba0:cafe:31c::1	24961	0.000000	0.000000	de	-	-	G(Ishtar)ishtar.wcbsecurity.com
+2001:4ba0:cafe:1267::1	24961	0.000000	0.000000	de	-	-	G(nobbs)nobbs.stoerte.net
+2001:4ba0:cafe:f55:dead:beef:dead:beef	24961	0.000000	0.000000	de	-	-	G(mylocXdus01)vps1735874.vs.webtropia-customer.com
+2001:4ba0:ffa4:2cf::74e7:9001	24961	0.000000	0.000000	de	-	-	G(Assange045de)ve901.venus.dedi.server-hosting.expert
+2001:4ba0:ffa4:2cf::f7ee:9201	24961	0.000000	0.000000	de	-	-	G(Assange045de2)ve901.venus.dedi.server-hosting.expert
+2001:4ba0:ffea:14a:6c4f::90d3	24961	0.000000	0.000000	de	-	-	G(Unnamed)phoenitydawn.de
+2001:4ba0:ffff:4a::2	24961	0.000000	0.000000	de	-	-	G(ForPrivacyNET)tor-proxy-00.for-privacy.net
+2001:4ba0:ffff:58::2	24961	0.000000	0.000000	de	-	-	G(ForPrivacyNET)tor-proxy-02.for-privacy.net
+2001:6b0:7:125::243	1653	0.000000	0.000000	se	-	-	G(Lule)lule.sunet.se
+2001:6b0:30:1000::99	1653	0.000000	0.000000	se	-	-	G(mdfnet1)tor1.mdfnet.se
+2001:6b0:30:1000::100	1653	0.000000	0.000000	se	-	-	G(mdfnet2)tor2.mdfnet.se
+2001:6b0:30:1000::101	1653	0.000000	0.000000	se	-	-	G(mdfnet3)tor3.mdfnet.se
+2001:8d8:1801:8156::1	8560	0.000000	0.000000	de	-	-	G(TORvalds)IONOS SE
+2001:8e0:39e5:1601:6208:862b:67a8:a1e4	8758	0.000000	0.000000	ch	-	-	G(NotYours)132.86.84.91.bbcs.as8758.net
+2001:9b0:217:2b00:dca8:cff:fe8e:89c3	8473	0.000000	0.000000	se	-	-	G(Bifrost)h-213-164-193-245.A444.priv.bahnhof.se
+2001:9b1:9bd0::73	8473	0.000000	0.000000	se	-	-	G(ParadiseTorRelay7)tor-relay7.flashdance.cx
+2001:9b1:9bd0::74	8473	0.000000	0.000000	se	-	-	G(ParadiseTorRelay8)tor-relay8.flashdance.cx
+2001:9b1:26fe:c700:786a:5f14:ca5f:7b6c	8473	0.000000	0.000000	se	-	-	G(anontele701)h-98-128-175-69.A785.priv.bahnhof.se
+2001:9b1:26fe:c700:eeb1:d7ff:fe65:4fcd	8473	0.000000	0.000000	se	-	-	G(anontele861)h-98-128-175-69.A785.priv.bahnhof.se
+2001:19f0:9003:9c8:ec4:7aff:fe8f:69aa	20473	0.000000	0.000000	us	-	-	G(Aid6)45.77.112.107.vultrusercontent.com
+2001:41d0:2:2e67::1	16276	0.000000	0.000000	fr	-	-	G(thicancyborg)cyborg.thican.net
+2001:41d0:2:5b14::1	16276	0.000000	0.000000	fr	-	-	G(CerberusTheDonkey)fr1.paulwebster.online
+2001:41d0:2:8bd1::1	16276	0.000000	0.000000	fr	-	-	G(AnhKagi)anhkagi.net
+2001:41d0:2:ae0a::1	16276	0.000000	0.000000	fr	-	-	G(ididnteditheconfig)ns313236.ip-188-165-227.eu
+2001:41d0:8:522c:24d9:6a97:78db:2bcb	16276	0.000000	0.000000	nl	-	-	G(elc5)vpn.xutrox.com
+2001:41d0:8:9366::1	16276	0.000000	0.000000	fr	-	-	G(p1onX01)ks3268576.kimsufi.com
+2001:41d0:24e:fe00::32	16276	0.000000	0.000000	ie	-	-	G(fr13nds)ip146.ip-188-165-4.eu
+2001:41d0:203:2126::1	16276	0.000000	0.000000	fr	-	-	G(prsv)ns3103821.ip-54-37-80.eu
+2001:41d0:203:bb6c::6:6	16276	0.000000	0.000000	fr	-	-	G(htx02)ip159.ip-178-33-45.eu
+2001:41d0:302:2200::220b	16276	0.000000	0.000000	fr	-	-	G(Unnamed)vps-81ca0bf0.vps.ovh.net
+2001:41d0:302:2200::390e	16276	0.000000	0.000000	fr	-	-	G(shrimpmaster)shrimpmaster.omgomg.eu
+2001:41d0:303:5b4b::1	16276	0.000000	0.000000	fr	-	-	G(MeinMiddleRelay123)ns3115383.ip-54-37-255.eu
+2001:41d0:303:8f52::1	16276	0.000000	0.000000	fr	-	-	G(prsv)ns3134799.ip-51-77-132.eu
+2001:41d0:303:9d44::1	16276	0.000000	0.000000	pt	-	-	G(Islay)onion.pt
+2001:41d0:303:703d::1	16276	0.000000	0.000000	fr	-	-	G(Weltbank)weltbank.biz
+2001:41d0:304:200::3ea4	16276	0.000000	0.000000	fr	-	-	GE(rdExiTorNode)vps-4e8e6ed2.vps.ovh.net
+2001:41d0:304:200::5ae1	16276	0.000000	0.000000	fr	-	-	G(Clara)clara.zergflag.fr
+2001:41d0:304:200::6e59	16276	0.000000	0.000000	fr	-	-	G(TmpDrunkenOyster)fra1.as199327.net
+2001:41d0:304:200::9dce	16276	0.000000	0.000000	fr	-	-	GE(ExiTOR)exitor.zof.sh
+2001:41d0:304:200::632f	16276	0.000000	0.000000	fr	-	-	G(espeonsRelay)vps-c51e5b87.vps.ovh.net
+2001:41d0:304:200::3348	16276	0.000000	0.000000	fr	-	-	GE(0xdeadbeef)vps-d19ace40.vps.ovh.net
+2001:41d0:304:200::6211	16276	0.000000	0.000000	fr	-	-	G(toryolo)turn.yolovision-inc.com
+2001:41d0:304:200::a061	16276	0.000000	0.000000	fr	-	-	G(PommespanzerFR3)fr3.pommespanzer.cc
+2001:41d0:304:200::c969	16276	0.000000	0.000000	fr	-	-	G(PommespanzerFR1)fr1.pommespanzer.cc
+2001:41d0:304:200::f26	16276	0.000000	0.000000	fr	-	-	G(PommespanzerFR2)fr2.pommespanzer.cc
+2001:41d0:305:2100::7cb4	16276	0.000000	0.000000	fr	-	-	G(KherNl)tor-relay.kher.nl
+2001:41d0:305:2100::4430	16276	0.000000	0.000000	fr	-	-	G(ftracking2E256D)2e256d.ftracking.org
+2001:41d0:401:3100::7fda	16276	0.000000	0.000000	fr	-	-	G(PieroV)ace.pierov.org
+2001:41d0:401:3100::30dc	16276	0.000000	0.000000	fr	-	-	G(rofltor01)tor-relay1.rofl.cat
+2001:41d0:601:1100::1b8	16276	0.000000	0.000000	pl	-	-	G(rofltor09)tor-relay9.rofl.cat
+2001:41d0:601:1100::2db7	16276	0.000000	0.000000	pl	-	-	G(0xcc01N6)node-pl-001.tor.0xcc01.de
+2001:41d0:601:1100::3e84	16276	0.000000	0.000000	pl	-	-	G(tORu)vps-569002f0.vps.ovh.net
+2001:41d0:601:1100::3ee8	16276	0.000000	0.000000	pl	-	-	G(PommespanzerPL2)pl2.pommespanzer.cc
+2001:41d0:601:1100::3fd	16276	0.000000	0.000000	pl	-	-	G(Darkheroes)vps-3b5264b1.vps.ovh.net
+2001:41d0:601:1100::4c5f	16276	0.000000	0.000000	pl	-	-	G(funrelay)funsafe.xyz
+2001:41d0:601:1100::5a7f	16276	0.000000	0.000000	pl	-	-	G(torRelayTaledoCorp)vps-ace9df0c.vps.ovh.net
+2001:41d0:601:1100::6f85	16276	0.000000	0.000000	pl	-	-	GE(MyWatchBegins)tor-exit-3.mywatchbegins.xyz
+2001:41d0:601:1100::17f0	16276	0.000000	0.000000	pl	-	-	G(Pierogi)vps-ae1c09ff.vps.ovh.net
+2001:41d0:601:1100::31ac	16276	0.000000	0.000000	pl	-	-	G(BehemothLTDPL1)vps-4b300467.vps.ovh.net
+2001:41d0:601:1100::41f0	16276	0.000000	0.000000	pl	-	-	G(0x4242)vps-65ba23b7.vps.ovh.net
+2001:41d0:601:1100::71bb	16276	0.000000	0.000000	pl	-	-	GE(Ulcerate)tor-relay03.stareintodeathandbestill.com
+2001:41d0:601:1100::609d	16276	0.000000	0.000000	pl	-	-	G(PommespanzerPL3)pl3.pommespanzer.cc
+2001:41d0:601:1100::5784	16276	0.000000	0.000000	pl	-	-	G(PommespanzerPL1)pl1.pommespanzer.cc
+2001:41d0:601:1100::5914	16276	0.000000	0.000000	pl	-	-	G(InVinoVeritas3)invinoveritas3.fegefeuer.online
+2001:41d0:601:1100::6524	16276	0.000000	0.000000	pl	-	-	GE(Ulcerate)tor-relay01.stareintodeathandbestill.com
+2001:41d0:602:32bc::	16276	0.000000	0.000000	pl	-	-	G(SomewhereInTheSkies)ns31199905.ip-51-83-143.eu
+2001:41d0:602:2093:fd1a::1	16276	0.000000	0.000000	pl	-	-	G(Zensursula)ip135.ip-137-74-5.eu
+2001:41d0:602:2093:fd1a::a	16276	0.000000	0.000000	pl	-	-	G(Zensursula)ip135.ip-137-74-5.eu
+2001:41d0:700:10a2::	16276	0.000000	0.000000	de	-	-	GE(runesandrelics)ns3112521.ip-54-36-108.eu
+2001:41d0:700:70e:8fc3:beff:fe0b:7e7b	16276	0.000000	0.000000	de	-	-	G(RibsGrowBack)ip23.ip-51-89-95.eu
+2001:41d0:700:482a:2cfc:bdc:9917:1	16276	0.000000	0.000000	de	-	-	G(maat)OVH SAS
+2001:41d0:700:3033::	16276	0.000000	0.000000	de	-	-	G(norderney)ns3159079.ip-51-89-40.eu
+2001:41d0:701:1000::5196	16276	0.000000	0.000000	de	-	-	GE(mITexit01)exit1.mit-security.at
+2001:41d0:701:1100::1e29	16276	0.000000	0.000000	de	-	-	G(torlan)torlan.xonumi.com
+2001:41d0:701:1100::5a30	16276	0.000000	0.000000	de	-	-	G(DemonsysEU)toreu.demonsys.net
+2001:41d0:701:1100::6e02	16276	0.000000	0.000000	de	-	-	G(torfinity)torfinity.xonumi.com
+2001:41d0:701:1100::8bb2	16276	0.000000	0.000000	de	-	-	G(torionic)torionic.xonumi.com
+2001:41d0:701:1100::57d3	16276	0.000000	0.000000	de	-	-	GE(GermanyOutput)vps-f285398f.vps.ovh.net
+2001:41d0:701:1100::475	16276	0.000000	0.000000	de	-	-	G(torzilla)torzilla.xonumi.com
+2001:41d0:701:1100::4313	16276	0.000000	0.000000	de	-	-	G(ForFreedom)vps-c88e5b7a.vps.ovh.net
+2001:41d0:800:2e90:13df:5ba7:c7a6:1	16276	0.000000	0.000000	gb	-	-	G(ZyronsRelay)OVH SAS
+2001:41d0:800:b1f::	16276	0.000000	0.000000	gb	-	-	G(0x3d01)0x3d.lu
+2001:41d0:801:2000::1bde	16276	0.000000	0.000000	gb	-	-	G(buzz)vps-c65734d0.vps.ovh.net
+2001:41d0:801:2000::4eb4	16276	0.000000	0.000000	gb	-	-	G(InVinoVeritas)invinoveritas.fegefeuer.online
+2001:41d0:801:2000::5e1f	16276	0.000000	0.000000	gb	-	-	G(nautilus)vps-6d34ed9b.vps.ovh.net
+2001:41d0:801:2000::127c	16276	0.000000	0.000000	gb	-	-	G(InVinoVeritas2)invinoveritas2.fegefeuer.online
+2001:41d0:801:2000::251	16276	0.000000	0.000000	gb	-	-	G(Wakako)wakako.rod.ac
+2001:41d0:801:2000::436b	16276	0.000000	0.000000	gb	-	-	G(GenericTorNode27)OVH SAS
+2001:41d0:801:2000::678	16276	0.000000	0.000000	gb	-	-	G(XtorX)OVH SAS
+2001:41d0:801:2000::1607	16276	0.000000	0.000000	gb	-	-	G(ioexploitR01)tor-relay-01.ioexplo.it
+2001:41d0:801:2000::f2a	16276	0.000000	0.000000	gb	-	-	G(BehemothLTDUK1)anonode.uk-1.prod.encrypt.co.il
+2001:41d0:801:2000::f6e	16276	0.000000	0.000000	gb	-	-	G(rofltor10)tor-relay10.rofl.cat
+2001:41d0:805:d300::2b19:1929	215311	0.000000	0.000000	gb	-	-	GE(k3rn3lp4nic)Regxa Company for Information Technology Ltd
+2001:41d0:1004:14da::1	16276	0.000000	0.000000	fr	-	-	G(prsv)ns3037905.ip-164-132-200.eu
+2001:41d0:1008:20d1::1	16276	0.000000	0.000000	fr	-	-	GE(whistle01)ns3304237.ip-164-132-172.eu
+2001:41d0:a:1c2c::123:1	16276	0.000000	0.000000	nl	-	-	G(Challenger)tor-relay-1.dnet.ovh
+2001:41d0:a:5c0::1	16276	0.000000	0.000000	fr	-	-	GE(0xdeadbeef)ns3126614.ip-37-187-5.eu
+2001:41d0:a:557d::1	16276	0.000000	0.000000	fr	-	-	G(SORgaming)system-of-rampage.online
+2001:41d0:a:6063::1	16276	0.000000	0.000000	fr	-	-	G(Unnamed)ns335264.ip-5-196-64.eu
+2001:41d0:a:f308::1	16276	0.000000	0.000000	fr	-	-	G(malechick)ns331507.ip-37-187-122.eu
+2001:41d0:a:fe22::1	16276	0.000000	0.000000	fr	-	-	GE(amersufi01)ns376762.ip-5-196-95.eu
+2001:41d0:e:6ac::1	16276	0.000000	0.000000	fr	-	-	G(sumsumbrrr)biene.stachelkaktus.net
+2001:41d0:e:418::1	16276	0.000000	0.000000	fr	-	-	G(Janky380201)ns380201.janky.solutions
+2001:41f0:89ef:17::10	33915	0.000000	0.000000	nl	-	-	G(ElektroGod1)D964BD1C.static.ziggozakelijk.nl
+2001:41f0:89ef:17::11	33915	0.000000	0.000000	nl	-	-	G(ElektroGod2)D964BD1D.static.ziggozakelijk.nl
+2001:67c:2a0:202::246	50066	0.000000	0.000000	se	-	-	G(SrsTubesRelay)194-14-0-246.cust.srstubes.net
+2001:67c:2a0:202::247	50066	0.000000	0.000000	se	-	-	G(SrsTubesRelay)194-14-0-247.cust.srstubes.net
+2001:67c:6ec:201:145:220:0:15	1101	0.000000	0.000000	nl	-	-	G(Schmutzig)anonymous.schmutzig.org
+2001:67c:6ec:203:218:33ff:fe44:5513	1101	0.000000	0.000000	nl	-	-	GE(hviv113)this-is-a-tor-exit-node-hviv113.hviv.nl
+2001:67c:6ec:203:218:33ff:fe44:5514	1101	0.000000	0.000000	nl	-	-	GE(hviv114)this-is-a-tor-exit-node-hviv114.hviv.nl
+2001:67c:6ec:203:218:33ff:fe44:5515	1101	0.000000	0.000000	nl	-	-	GE(hviv115)this-is-a-tor-exit-node-hviv115.hviv.nl
+2001:67c:6ec:203:218:33ff:fe44:5517	1101	0.000000	0.000000	nl	-	-	GE(hviv117)this-is-a-tor-exit-node-hviv117.hviv.nl
+2001:67c:6ec:203:218:33ff:fe44:5518	1101	0.000000	0.000000	nl	-	-	GE(hviv118)this-is-a-tor-exit-node-hviv118.hviv.nl
+2001:67c:6ec:203:218:33ff:fe44:5519	1101	0.000000	0.000000	nl	-	-	GE(hviv119)this-is-a-tor-exit-node-hviv119.hviv.nl
+2001:67c:6ec:203:218:33ff:fe44:5520	1101	0.000000	0.000000	nl	-	-	GE(hviv120)this-is-a-tor-exit-node-hviv120.hviv.nl
+2001:67c:6ec:203:218:33ff:fe44:5522	1101	0.000000	0.000000	nl	-	-	GE(hviv122)this-is-a-tor-exit-node-hviv122.hviv.nl
+2001:67c:6ec:203:218:33ff:fe44:5523	1101	0.000000	0.000000	nl	-	-	GE(hviv123)this-is-a-tor-exit-node-hviv123.hviv.nl
+2001:67c:6ec:203:218:33ff:fe44:5524	1101	0.000000	0.000000	nl	-	-	GE(hviv124)this-is-a-tor-exit-node-hviv124.hviv.nl
+2001:67c:6ec:203:218:33ff:fe44:5526	1101	0.000000	0.000000	nl	-	-	GE(hviv126)this-is-a-tor-exit-node-hviv126.hviv.nl
+2001:67c:6ec:203:218:33ff:fe44:5527	1101	0.000000	0.000000	nl	-	-	GE(hviv127)this-is-a-tor-exit-node-hviv127.hviv.nl
+2001:67c:6ec:203:218:33ff:fe44:5528	1101	0.000000	0.000000	nl	-	-	GE(hviv128)this-is-a-tor-exit-node-hviv128.hviv.nl
+2001:67c:13c::35	16075	0.000000	0.000000	de	-	-	G(taz)kodos.taz.de
+2001:67c:15e0:3::fce:ad76	50360	0.000000	0.000000	bg	-	-	G(FlashDuck)Tamatiya EOOD
+2001:67c:21bc:1e::1:1	200533	0.000000	0.000000	bg	-	-	G(tryler)tryler.ludost.net
+2001:67c:21bc:1e::f00f	200533	0.000000	0.000000	bg	-	-	G(marla)freedns.ludost.net
+2001:67c:89c:666::1	210731	0.000000	0.000000	dk	-	-	GE(d2d4)relay-02.torproject.net
+2001:67c:89c:702:1ce:1ce:babe:1	210731	0.000000	0.000000	dk	-	-	GE(dotsrcExit1)tor-project-exit1.dotsrc.org
+2001:67c:89c:702:1ce:1ce:babe:2	210731	0.000000	0.000000	dk	-	-	GE(dotsrcExit2)tor-project-exit2.dotsrc.org
+2001:67c:89c:702:1ce:1ce:babe:3	210731	0.000000	0.000000	dk	-	-	GE(dotsrcExit3)tor-project-exit3.dotsrc.org
+2001:67c:89c:702:1ce:1ce:babe:4	210731	0.000000	0.000000	dk	-	-	GE(dotsrcExit4)tor-project-exit4.dotsrc.org
+2001:67c:89c:702:1ce:1ce:babe:5	210731	0.000000	0.000000	dk	-	-	GE(dotsrcExit5)tor-project-exit5.dotsrc.org
+2001:67c:89c:702:1ce:1ce:babe:6	210731	0.000000	0.000000	dk	-	-	GE(dotsrcExit6)tor-project-exit6.dotsrc.org
+2001:67c:89c:702:1ce:1ce:babe:7	210731	0.000000	0.000000	dk	-	-	GE(dotsrcExit7)tor-project-exit7.dotsrc.org
+2001:67c:89c:702:1ce:1ce:babe:8	210731	0.000000	0.000000	dk	-	-	GE(dotsrcExit8)tor-project-exit8.dotsrc.org
+2001:67c:89c:702:1ce:1ce:babe:9	210731	0.000000	0.000000	dk	-	-	GE(dotsrcExit9)tor-project-exit9.dotsrc.org
+2001:67c:89c:702:1ce:1ce:babe:10	210731	0.000000	0.000000	dk	-	-	GE(dotsrcExit10)tor-project-exit10.dotsrc.org
+2001:67c:289c:2::35	198093	0.000000	0.000000	se	-	-	GE(DFRI53)tor-exit-read-me.dfri.se
+2001:67c:289c:2::36	198093	0.000000	0.000000	se	-	-	GE(DFRI45)tor-exit-read-me.dfri.se
+2001:67c:289c:2::37	198093	0.000000	0.000000	se	-	-	GE(DFRI69)tor-exit-read-me.dfri.se
+2001:67c:289c:2::38	198093	0.000000	0.000000	se	-	-	GE(DFRI61)tor-exit-read-me.dfri.se
+2001:67c:289c:2::39	198093	0.000000	0.000000	se	-	-	GE(DFRI85)tor-exit-read-me.dfri.se
+2001:67c:289c:2::40	198093	0.000000	0.000000	se	-	-	GE(DFRI77)tor-exit-read-me.dfri.se
+2001:67c:289c:2::234	198093	0.000000	0.000000	se	-	-	GE(DFRI09)tor-exit-read-me.dfri.se
+2001:67c:289c:2::235	198093	0.000000	0.000000	se	-	-	GE(DFRI25)tor-exit-read-me.dfri.se
+2001:67c:289c:4::77	198093	0.000000	0.000000	se	-	-	GE(DFRI15)tor-exit-read-me.dfri.se
+2001:67c:289c:4::78	198093	0.000000	0.000000	se	-	-	GE(DFRI17)tor-exit-read-me.dfri.se
+2001:67c:289c:4::79	198093	0.000000	0.000000	se	-	-	GE(DFRI21)tor-exit-read-me.dfri.se
+2001:67c:289c:4::80	198093	0.000000	0.000000	se	-	-	GE(DFRI19)tor-exit-read-me.dfri.se
+2001:67c:289c:4::131	198093	0.000000	0.000000	se	-	-	GE(DFRI43)tor-exit-read-me.dfri.se
+2001:67c:289c::20	198093	0.000000	0.000000	se	-	-	GE(DFRI13)tor-exit-read-me.dfri.se
+2001:67c:289c::25	198093	0.000000	0.000000	se	-	-	GE(DFRI23)tor-exit-read-me.dfri.se
+2001:67c:440:f887:194:147:140:101	214366	0.000000	0.000000	ua	-	-	G(tor101)Moustafa Mohamed Mohamed Ahmed Elghoubashi
+2001:67c:440:f887:194:147:140:102	214366	0.000000	0.000000	ua	-	-	G(tor102)tor102.ip-connect.info
+2001:67c:440:f887:194:147:140:106	214366	0.000000	0.000000	ua	-	-	G(tor106)tor106.ip-connect.info
+2001:67c:440:f887:194:147:140:107	214366	0.000000	0.000000	ua	-	-	G(tor107)tor107.ip-connect.info
+2001:67c:1220:8b0::93e5:b1b4	197451	0.000000	0.000000	cz	-	-	G(torsp)odyssey.fit.vutbr.cz
+2001:67c:2044:1905::26	51290	0.000000	0.000000	pl	-	-	GE(httpx)tor.httpx.pl
+2001:67c:2564:a120::57	1133	0.000000	0.000000	nl	-	-	G(SNTor)sntor.snt.utwente.nl
+2001:67c:2608::1	197422	0.000000	0.000000	fr	-	-	GE(marylou1)marylou.nos-oignons.net
+2001:67c:b58:200::341:1	202520	0.000000	0.000000	pl	-	-	G(plsDontDDoSMe)hosted-by.SkillHost.PL
+2001:67c:c14:864::74	210152	0.000000	0.000000	no	-	-	G(ENITGRelay)185-147-35-74ip.as210152.net
+2001:67c:e3c:300::16	215296	0.000000	0.000000	nl	-	-	G(as215296torrelay01)tor-relay01.as215296.net
+2001:67c:e28:1::2	214094	0.000000	0.000000	it	-	-	GE(bludicapra)Davide Silvetti trading as 'Association Osservatorio Nessuno ODV'
+2001:67c:e28:1::3	214094	0.000000	0.000000	it	-	-	GE(raschera)Davide Silvetti trading as 'Association Osservatorio Nessuno ODV'
+2001:67c:e28:1::4	214094	0.000000	0.000000	it	-	-	GE(tomino)Davide Silvetti trading as 'Association Osservatorio Nessuno ODV'
+2001:67c:e60:c0c:192:42:116:173	1101	0.000000	0.000000	nl	-	-	GE(NTH21R1)21.tor-exit.nothingtohide.nl
+2001:67c:e60:c0c:192:42:116:174	1101	0.000000	0.000000	nl	-	-	GE(NTH22R1)22.tor-exit.nothingtohide.nl
+2001:67c:e60:c0c:192:42:116:175	1101	0.000000	0.000000	nl	-	-	GE(NTH23R1)23.tor-exit.nothingtohide.nl
+2001:67c:e60:c0c:192:42:116:176	1101	0.000000	0.000000	nl	-	-	GE(NTH24R1)24.tor-exit.nothingtohide.nl
+2001:67c:e60:c0c:192:42:116:177	1101	0.000000	0.000000	nl	-	-	GE(NTH25R1)25.tor-exit.nothingtohide.nl
+2001:67c:e60:c0c:192:42:116:178	1101	0.000000	0.000000	nl	-	-	GE(NTH26R1)26.tor-exit.nothingtohide.nl
+2001:67c:e60:c0c:192:42:116:179	1101	0.000000	0.000000	nl	-	-	GE(NTH27R1)27.tor-exit.nothingtohide.nl
+2001:67c:e60:c0c:192:42:116:180	1101	0.000000	0.000000	nl	-	-	GE(NTH28R1)28.tor-exit.nothingtohide.nl
+2001:67c:e60:c0c:192:42:116:181	1101	0.000000	0.000000	nl	-	-	GE(NTH29R1)29.tor-exit.nothingtohide.nl
+2001:67c:e60:c0c:192:42:116:182	1101	0.000000	0.000000	nl	-	-	GE(NTH30R1)30.tor-exit.nothingtohide.nl
+2001:67c:e60:c0c:192:42:116:183	1101	0.000000	0.000000	nl	-	-	GE(NTH31R1)31.tor-exit.nothingtohide.nl
+2001:67c:e60:c0c:192:42:116:184	1101	0.000000	0.000000	nl	-	-	GE(NTH32R1)32.tor-exit.nothingtohide.nl
+2001:67c:e60:c0c:192:42:116:185	1101	0.000000	0.000000	nl	-	-	GE(NTH33R1)33.tor-exit.nothingtohide.nl
+2001:67c:e60:c0c:192:42:116:186	1101	0.000000	0.000000	nl	-	-	GE(NTH34R1)34.tor-exit.nothingtohide.nl
+2001:67c:e60:c0c:192:42:116:188	1101	0.000000	0.000000	nl	-	-	G(NTH36R1)36.tor-exit.nothingtohide.nl
+2001:67c:e60:c0c:192:42:116:189	1101	0.000000	0.000000	nl	-	-	G(NTH37R1)37.tor-exit.nothingtohide.nl
+2001:67c:e60:c0c:192:42:116:191	1101	0.000000	0.000000	nl	-	-	GE(NTH1R1)1.tor-exit.nothingtohide.nl
+2001:67c:e60:c0c:192:42:116:192	1101	0.000000	0.000000	nl	-	-	GE(NTH2R1)2.tor-exit.nothingtohide.nl
+2001:67c:e60:c0c:192:42:116:193	1101	0.000000	0.000000	nl	-	-	GE(NTH3R1)3.tor-exit.nothingtohide.nl
+2001:67c:e60:c0c:192:42:116:194	1101	0.000000	0.000000	nl	-	-	GE(NTH4R1)4.tor-exit.nothingtohide.nl
+2001:67c:e60:c0c:192:42:116:195	1101	0.000000	0.000000	nl	-	-	GE(NTH5R1)5.tor-exit.nothingtohide.nl
+2001:67c:e60:c0c:192:42:116:196	1101	0.000000	0.000000	nl	-	-	GE(NTH6R1)6.tor-exit.nothingtohide.nl
+2001:67c:e60:c0c:192:42:116:197	1101	0.000000	0.000000	nl	-	-	GE(NTH7R1)7.tor-exit.nothingtohide.nl
+2001:67c:e60:c0c:192:42:116:198	1101	0.000000	0.000000	nl	-	-	GE(NTH8R1)8.tor-exit.nothingtohide.nl
+2001:67c:e60:c0c:192:42:116:199	1101	0.000000	0.000000	nl	-	-	GE(NTH9R1)9.tor-exit.nothingtohide.nl
+2001:67c:e60:c0c:192:42:116:200	1101	0.000000	0.000000	nl	-	-	GE(NTH10R1)10.tor-exit.nothingtohide.nl
+2001:67c:e60:c0c:192:42:116:201	1101	0.000000	0.000000	nl	-	-	GE(NTH38R1)38.tor-exit.nothingtohide.nl
+2001:67c:e60:c0c:192:42:116:202	1101	0.000000	0.000000	nl	-	-	GE(NTH39R1)39.tor-exit.nothingtohide.nl
+2001:67c:e60:c0c:192:42:116:203	1101	0.000000	0.000000	nl	-	-	GE(NTH40R1)40.tor-exit.nothingtohide.nl
+2001:67c:e60:c0c:192:42:116:208	1101	0.000000	0.000000	nl	-	-	GE(NTH11R1)11.tor-exit.nothingtohide.nl
+2001:67c:e60:c0c:192:42:116:209	1101	0.000000	0.000000	nl	-	-	GE(NTH12R1)12.tor-exit.nothingtohide.nl
+2001:67c:e60:c0c:192:42:116:210	1101	0.000000	0.000000	nl	-	-	GE(NTH13R1)13.tor-exit.nothingtohide.nl
+2001:67c:e60:c0c:192:42:116:211	1101	0.000000	0.000000	nl	-	-	GE(NTH14R1)14.tor-exit.nothingtohide.nl
+2001:67c:e60:c0c:192:42:116:212	1101	0.000000	0.000000	nl	-	-	GE(NTH15R1)15.tor-exit.nothingtohide.nl
+2001:67c:e60:c0c:192:42:116:213	1101	0.000000	0.000000	nl	-	-	GE(NTH16R1)16.tor-exit.nothingtohide.nl
+2001:67c:e60:c0c:192:42:116:214	1101	0.000000	0.000000	nl	-	-	GE(NTH17R1)17.tor-exit.nothingtohide.nl
+2001:67c:e60:c0c:192:42:116:215	1101	0.000000	0.000000	nl	-	-	GE(NTH18R1)18.tor-exit.nothingtohide.nl
+2001:67c:e60:c0c:192:42:116:216	1101	0.000000	0.000000	nl	-	-	GE(NTH19R1)19.tor-exit.nothingtohide.nl
+2001:67c:e60:c0c:192:42:116:217	1101	0.000000	0.000000	nl	-	-	GE(NTH20R1)20.tor-exit.nothingtohide.nl
+2001:67c:e60:c0c:192:42:116:218	1101	0.000000	0.000000	nl	-	-	GE(NTH44R1)44.tor-exit.nothingtohide.nl
+2001:67c:e60:c0c:192:42:116:219	1101	0.000000	0.000000	nl	-	-	GE(NTH45R1)45.tor-exit.nothingtohide.nl
+2001:67c:ea8::19	57811	0.000000	0.000000	pl	-	-	G(torrorist)garmonbozia.netium.pl
+2001:67c:ecc:50::20	206125	0.000000	0.000000	fi	-	-	G(TimsRelay01)Nicklas Yli-Lantta
+2001:67c:f54:3000::220	213959	0.000000	0.000000	nl	-	-	G(tarantula)Florian Overkamp
+2001:418:8006::9	3927	0.000000	0.000000	us	-	-	G(rgiad)tor0.iad.rg.net
+2001:470:1f1a:344::2	48753	0.000000	0.000000	md	-	-	G(ididnteditheconfig)AVA HOST SRL
+2001:470:1f1b:1f4:250:56ff:fe00:17	47325	0.000000	0.000000	hu	-	-	G(Assange017hu)23.115.229.87.static.v4yip.hu
+2001:470:1f1b:a2::77f0	48753	0.000000	0.000000	md	-	-	G(werewolf822)AVA HOST SRL
+2001:470:1f06:67a::cf36	49683	0.000000	0.000000	us	-	-	G(particle7)dormer.duckdns.org
+2001:470:1f07:8b9::f7ae	36352	0.000000	0.000000	us	-	-	G(breaker39)shingle.duckdns.org
+2001:470:1:908::9001	6939	0.000000	0.000000	us	-	-	GE(deadbabecafe)Hurricane Electric LLC
+2001:470:164:2::2	6939	0.000000	0.000000	us	-	-	GD(faravahar)do-not-block-tor-directory-authority.redteam.net
+2001:470:5429::b3	198930	0.000000	0.000000	de	-	-	G(vsm)81-2-133-N4.customer.vsm.sh
+2001:470:a085:2:529a:4cff:fe73:a039	23310	0.000000	0.000000	us	-	-	G(Laputa)TASTY LIME
+2001:470:dd6d::21	2119	0.000000	0.000000	se	-	-	G(DiraE2yhvB)c-92-35-26-29.bbcust.telenor.se
+2001:470:dd60:666::113	59720	0.000000	0.000000	no	-	-	G(NXNW)Bofiber AS
+2001:470:deb8:a1::2	206774	0.000000	0.000000	se	-	-	G(agrajag)Internetnord AB
+2001:470:d:11bc::472b	36352	0.000000	0.000000	us	-	-	G(tornado)soffit.duckdns.org
+2001:470:e01f:700::20	701	0.000000	0.000000	us	-	-	G(nsaciabrb)pool-71-244-170-31.bltmmd.fios.verizon.net
+2001:569:7d22:6900::1	852	0.000000	0.000000	ca	-	-	G(DigitalPiraTor)d173-180-13-156.bchsia.telus.net
+2001:610:510:113:192:42:113:101	1103	0.000000	0.000000	nl	-	-	G(Teuntje)teuntje.ip-eend.nl
+2001:610:510:113:192:42:113:102	1103	0.000000	0.000000	nl	-	-	G(Spigen)spigen.ip-eend.nl
+2001:610:510:115:192:42:115:101	1103	0.000000	0.000000	nl	-	-	G(cry)cry.ip-eend.nl
+2001:610:510:115:192:42:115:102	1103	0.000000	0.000000	nl	-	-	G(Onyx)onyx.ip-eend.nl
+2001:610:510:115:192:42:115:103	1103	0.000000	0.000000	nl	-	-	G(Gijsje)gijsje.ip-eend.nl
+2001:620:20d0::23	559	0.000000	0.000000	ch	-	-	GE(DigiGesTor5e1)tor5e1.digitale-gesellschaft.ch
+2001:620:20d0::24	559	0.000000	0.000000	ch	-	-	GE(DigiGesTor5e3)tor5e3.digitale-gesellschaft.ch
+2001:630:212:2a8:a6bf:1ff:fe25:b961	786	0.000000	0.000000	gb	-	-	G(ephemer5)ephemer.cl.cam.ac.uk
+2001:638:301:f732::150	680	0.000000	0.000000	de	-	-	GE(zarathustra)tor.rz.hs-fulda.de
+2001:638:708:30c8::65	680	0.000000	0.000000	de	-	-	G(csUniHB)tor.informatik.uni-bremen.de
+2001:638:a000:4140::ffff:188	680	0.000000	0.000000	de	-	-	G(fluxe4)angmar.informatik.uni-erlangen.de
+2001:638:a004:4111:192:129:10:18	680	0.000000	0.000000	de	-	-	G(FAUtor)bree.cs.fau.de
+2001:648:2ffc:1225:a800:5ff:feac:5099	5408	0.000000	0.000000	gr	-	-	G(libertariannode1312)snf-898229.vm.okeanos.grnet.gr
+2001:648:2ffe:501:cc00:10ff:fe8f:490	5408	0.000000	0.000000	gr	-	-	G(ExwMiaTigriMesaMou)snf-24298.ok-kno.grnetcloud.net
+2001:648:2ffe:501:cc00:13ff:fe62:ebdd	5408	0.000000	0.000000	gr	-	-	G(krommydas)National Infrastructures for Research and Technology S.A.
+2001:648:2810:1012:be24:11ff:fe0f:2105	12364	0.000000	0.000000	gr	-	-	G(thingyRelay)thingy.uom.gr
+2001:678:6d4:4010::1de	200019	0.000000	0.000000	md	-	-	G(mol)mol.stoerte.net
+2001:678:6d4:4010::3c	200019	0.000000	0.000000	md	-	-	G(TorAHOS1)ALEXHOST SRL
+2001:678:6d4:4020::469	200019	0.000000	0.000000	md	-	-	G(iLoveTheInternet)ALEXHOST SRL
+2001:678:6d4:5050::2abe:100	200019	0.000000	0.000000	md	-	-	G(md01)ALEXHOST SRL
+2001:678:6d4:5130::aaaa:1d6	200019	0.000000	0.000000	md	-	-	G(F24oFirstRelay)ALEXHOST SRL
+2001:678:6d4:5130::aaaa:2d9	200019	0.000000	0.000000	md	-	-	G(MetalRelay1)ALEXHOST SRL
+2001:678:6d4:7410::316	200019	0.000000	0.000000	md	-	-	G(NonBioluminescent)ALEXHOST SRL
+2001:678:6d4:9114::149	200019	0.000000	0.000000	md	-	-	G(ThisNodeDontGlow)ALEXHOST SRL
+2001:678:6d4:9202::101	200019	0.000000	0.000000	md	-	-	G(privacyMatters)ALEXHOST SRL
+2001:678:230:2132:192:42:132:106	1102	0.000000	0.000000	nl	-	-	G(Bananenbakker)deurpost.prutsnet.nl
+2001:678:230:3028:192:87:28:28	1103	0.000000	0.000000	nl	-	-	G(SEC6xFreeBSD64)anonymous6.sec.nl
+2001:678:230:3028:192:87:28:82	1103	0.000000	0.000000	nl	-	-	G(Smeerboel)anonymous6.sec.nl
+2001:678:848:240::240	8873	0.000000	0.000000	se	-	-	G(ATP)anderstorpsfestivalen.se
+2001:678:a40:7001:2::4711	204911	0.000000	0.000000	de	-	-	G(systemli01)Digitale Partizipation e.V.
+2001:678:d64:564d::70f	202585	0.000000	0.000000	nl	-	-	G(bgprodeo)tor0.3x6.nl
+2001:788:f31:c155::107	6893	0.000000	0.000000	ch	-	-	G(Naville)creamy.noellys.net
+2001:878:346:1cf9:446a:c4eb:4548:7061	1835	0.000000	0.000000	dk	-	-	G(dotsrcRelay1)Forskningsnettet - Danish network for Research and Education
+2001:878:346:1cf9:446a:c4eb:4548:7062	1835	0.000000	0.000000	dk	-	-	G(dotsrcRelay2)Forskningsnettet - Danish network for Research and Education
+2001:948:7:2::163	2603	0.000000	0.000000	dk	-	-	G(ndnr1)tor.nordu.net
+2001:1600:10:100::3ab	29222	0.000000	0.000000	ch	-	-	G(StarAppsTrenton)195-15-242-29.dc3-a.pub1.etik-cloud.com
+2001:1600:10:100::201	29222	0.000000	0.000000	ch	-	-	G(StarAppsMobley)195-15-242-99.dc3-a.pub1.etik-cloud.com
+2001:1600:10:100::226	29222	0.000000	0.000000	ch	-	-	G(StarAppsRomero)195-15-242-113.dc3-a.pub1.etik-cloud.com
+2001:1600:10:100::836	29222	0.000000	0.000000	ch	-	-	G(MoniTor)188-213-129-118.dc3-a.pub1.etik-cloud.com
+2001:1600:13:101::13ef	29222	0.000000	0.000000	ch	-	-	G(IchBinHobbylosDA)ov-77591e.infomaniak.ch
+2001:1600:13:101::150d	29222	0.000000	0.000000	ch	-	-	G(BlackBoxCH)ov-ec0d04.infomaniak.ch
+2001:1600:13:101::184f	29222	0.000000	0.000000	ch	-	-	G(IchBinHobbylosMa)ov-28a6fc.infomaniak.ch
+2001:1600:13:101::1096	29222	0.000000	0.000000	ch	-	-	G(vpskilobug)ov-57d458.infomaniak.ch
+2001:1600:13:101::1239	29222	0.000000	0.000000	ch	-	-	G(0xdeadbeef)ov-3501fe.infomaniak.ch
+2001:1620:425a:6fde::10	13030	0.000000	0.000000	ch	-	-	G(QOnan)Init7 (Switzerland) Ltd.
+2001:1680:101:43f::1	207143	0.000000	0.000000	ch	-	-	G(bauruine)35766.hostserv.eu
+2001:1900:5:2:2::583a	3356	0.000000	0.000000	de	-	-	G(washington)Level 3 Parent
+2001:1900:5:2:2::583b	3356	0.000000	0.000000	de	-	-	G(BananaShake)Level 3 Parent
+2001:2003:f728:1b00:223:24ff:febb:32c2	1759	0.000000	0.000000	fi	-	-	G(zer0bitz)dsl-jklbng11-54fb28-27.dhcp.inet.fi
+2001:2030:0:93::d	1299	0.000000	0.000000	se	-	-	G(plasmarifle)Arelion Sweden AB
+2001:b011:4006:545c::b	3462	0.000000	0.000000	tw	-	-	GE(initramfs)114-35-245-150.hinet-ip.hinet.net
+2001:b030:2422::7234	3462	0.000000	0.000000	tw	-	-	GE(GuruKopi)118-163-74-160.hinet-ip.hinet.net
+2001:ba0:23f:b500::1	8560	0.000000	0.000000	es	-	-	G(NoOnionES01)ip217-160-226-12.pbiaas.com
+2001:ba0:200:7a00:0:d26c:bdd4:6841	8560	0.000000	0.000000	es	-	-	G(gnampf4i33)ip194-164-173-152.pbiaas.com
+2001:ba0:202:d200::1	8560	0.000000	0.000000	es	-	-	G(Zensursula)ip93-93-118-87.pbiaas.com
+2001:ba0:204:800::1	8560	0.000000	0.000000	es	-	-	G(rreellaayy2)ip194-164-174-127.pbiaas.com
+2001:ba0:210:c500::1	8560	0.000000	0.000000	es	-	-	G(BSDrelay01)bsdrelay01.zwiebelrouter.net
+2001:ba0:211:7c00::1	8560	0.000000	0.000000	es	-	-	G(ObscuraNode01)ip213-165-93-177.pbiaas.com
+2001:ba0:214:a800::1	8560	0.000000	0.000000	es	-	-	G(TORkedOff)IONOS SE
+2001:ba0:234:8400::1	8560	0.000000	0.000000	es	-	-	G(Schnurpselpeter)IONOS SE
+2001:ba0:234:a600::1	8560	0.000000	0.000000	es	-	-	G(roffelpoff)IONOS SE
+2001:ba0:234:a800::1	8560	0.000000	0.000000	es	-	-	G(Painkiller)IONOS SE
+2001:ba0:246:9f00::1	8560	0.000000	0.000000	es	-	-	G(BSDrelay02)bsdrelay02.zwiebelrouter.net
+2001:ba0:246:a100::1	8560	0.000000	0.000000	es	-	-	G(BSDrelay03)bsdrelay03.zwiebelrouter.net
+2001:ba0:246:a200::1	8560	0.000000	0.000000	es	-	-	G(BSDrelay04)bsdrelay04.zwiebelrouter.net
+2001:ba0:246:a400::1	8560	0.000000	0.000000	es	-	-	G(BSDrelay05)bsdrelay05.zwiebelrouter.net
+2001:ba0:255:500::1	8560	0.000000	0.000000	es	-	-	G(PommespanzerES1)es1.pommespanzer.cc
+2001:ba0:266:7e00::1	8560	0.000000	0.000000	es	-	-	G(PommespanzerES2)es2.pommespanzer.cc
+2001:ba0:269:5d00::1	8560	0.000000	0.000000	es	-	-	G(Platypus)IONOS SE
+2001:bc8:1d90:9f7:dc00:ff:fe20:7b75	12876	0.000000	0.000000	pl	-	-	G(kanemeadminmanmu)kanemeadminmanmu.giannoug.gr
+2001:bc8:2ecd:caed:746f:7200:746f:7200	12876	0.000000	0.000000	fr	-	-	G(jceaonline)51-159-34-131.rev.poneytelecom.eu
+2001:bc8:17c0:411:8634:97ff:fe11:7a70	12876	0.000000	0.000000	nl	-	-	G(Belize)oligarch.ge
+2001:bc8:17c0:504:9eb6:54ff:febb:54e4	12876	0.000000	0.000000	nl	-	-	G(severancecheck)51-158-204-114.rev.poneytelecom.eu
+2001:bc8:30c6:100::dead	12876	0.000000	0.000000	fr	-	-	G(Alastor)62-210-123-24.rev.poneytelecom.eu
+2001:bc8:32d7:10b::6ecd:9301	12876	0.000000	0.000000	fr	-	-	G(Assange008fr3)62-210-122-182.rev.poneytelecom.eu
+2001:bc8:32d7:10b::6759:9001	12876	0.000000	0.000000	fr	-	-	G(Assange008fr)62-210-122-182.rev.poneytelecom.eu
+2001:bc8:32d7:10b::f1fa:9201	12876	0.000000	0.000000	fr	-	-	G(Assange008fr2)62-210-122-182.rev.poneytelecom.eu
+2001:bc8:32d7:185::1:1	12876	0.000000	0.000000	fr	-	-	G(4720)163-172-13-237.rev.poneytelecom.eu
+2001:bc8:32d7:185::2:1	12876	0.000000	0.000000	fr	-	-	G(4721)163-172-13-237.rev.poneytelecom.eu
+2001:bc8:32d7:185::3:1	12876	0.000000	0.000000	fr	-	-	G(4728)163-172-13-237.rev.poneytelecom.eu
+2001:bc8:32d7:185::4:1	12876	0.000000	0.000000	fr	-	-	G(4729)163-172-13-237.rev.poneytelecom.eu
+2001:bc8:32d7:276::	12876	0.000000	0.000000	fr	-	-	G(Cyprus)paphos.onion.pt
+2001:bc8:32d7:278::	12876	0.000000	0.000000	fr	-	-	G(Barsik)old.lab.cat
+2001:bc8:208a::	12876	0.000000	0.000000	fr	-	-	G(AsiaArgento)163-172-93-6.rev.poneytelecom.eu
+2001:bc8:710:5bcb:dc00:ff:fe5e:e8b5	12876	0.000000	0.000000	fr	-	-	G(netimanmu)netimanmu.giannoug.gr
+2001:bc8:710:51f:dc00:ff:fe27:c7db	12876	0.000000	0.000000	fr	-	-	G(scaletor)tor3.terjan.net
+2001:bc8:710:ec2:dc00:ff:fe29:f71f	12876	0.000000	0.000000	fr	-	-	G(pacoCalienteRelay2)SCALEWAY S.A.S.
+2001:bc8:710:f5c:dc00:ff:fe2a:6d75	12876	0.000000	0.000000	fr	-	-	G(mitsuha)mitsuha.katawaredoki.net
+2001:bc8:1201:512:da5e:d3ff:fe6c:8241	12876	0.000000	0.000000	fr	-	-	G(TorScale2)scale.nikolov.cz
+2001:bc8:1201:608:46a8:42ff:fe3d:2743	12876	0.000000	0.000000	fr	-	-	G(KANPAIkanna)mail.kanp.ai
+2001:bc8:1210:e4a:dc00:ff:fe30:edd3	12876	0.000000	0.000000	fr	-	-	G(ToRussiaWithTruth)c751df96-bf37-4917-9041-1f0ba079f2ae.pub.instances.scw.cloud
+2001:bc8:1210:efe:dc00:ff:fe31:df1f	12876	0.000000	0.000000	fr	-	-	G(ColinCogleEU)eu.colincogle.name
+2001:bc8:1640:1a5:dc00:ff:fe10:365f	12876	0.000000	0.000000	nl	-	-	G(pulsetor)tor2.terjan.net
+2001:bc8:1640:1e30:dc00:ff:fe2a:2549	12876	0.000000	0.000000	nl	-	-	G(olabobamanmu)olabobamanmu.giannoug.gr
+2001:bc8:1640:3ac:dc00:ff:fe16:f9b9	12876	0.000000	0.000000	nl	-	-	G(torproxy02)SCALEWAY S.A.S.
+2001:bc8:1640:4ae:dc00:ff:fe11:278f	12876	0.000000	0.000000	nl	-	-	G(taki)taki.katawaredoki.net
+2001:bc8:1640:16d5:dc00:ff:fe22:2981	12876	0.000000	0.000000	nl	-	-	G(WinstonSmith)SCALEWAY S.A.S.
+2001:bc8:1640:317d:dc00:ff:fe39:7bb3	12876	0.000000	0.000000	nl	-	-	GE(artikel5ev13b)SCALEWAY S.A.S.
+2001:bc8:1640:777:dc00:ff:fe12:d075	12876	0.000000	0.000000	nl	-	-	G(gh5d4h56s468r784s32)SCALEWAY S.A.S.
+2001:bc8:6010:213:208:a2ff:fe0c:8128	12876	0.000000	0.000000	nl	-	-	G(VeilsOfTheOnion)tor-relay03.veilsoftheonion.eu
+2001:bf0:666:0:1c0c:49cb:1d9a:a032	44716	0.000000	0.000000	de	-	-	G(dhrlytwofive)dyn-212-21-66-25.all.de
+2001:bf0:666::666	44716	0.000000	0.000000	de	-	-	GE(birnenpfeffimitzimt)tor-exit-4.all.de
+2001:df4:1780:d000::2222	38074	0.000000	0.000000	jp	-	-	G(hashy10G)Ayao Takata
+2001:df7:7400:c10d:216:3eff:fecd:511a	136052	0.000000	0.000000	id	-	-	GE(jivin)PT Cloud Hosting Indonesia
+2001:e42:102:1504:160:16:57:39	9370	0.000000	0.000000	jp	-	-	G(Superfly)ns1.csp-frontier.jp
+2003:e9:d733:bd01:20d7:deff:fe7f:75f5	3320	0.000000	0.000000	de	-	-	G(jay)p4fc2f046.dip0.t-ipconnect.de
+2003:ed:6706:8400:7cd5:1bb1:ea23:2d16	3320	0.000000	0.000000	de	-	-	G(fliegenfranz)p54b8e7fc.dip0.t-ipconnect.de
+2003:fa:ef2a:c900:24fe:7d8d:7fb:c107	3320	0.000000	0.000000	de	-	-	G(SaiseiNet)p5dc3d65f.dip0.t-ipconnect.de
+2003:fd:5711:dc00:e65f:1ff:fe00:96c5	3320	0.000000	0.000000	de	-	-	G(TOPAS)p5b36fc8c.dip0.t-ipconnect.de
+2003:fe:6f05:f00:20c:29ff:feb8:26bf	3320	0.000000	0.000000	de	-	-	G(HanseTor)p4fc7f7b9.dip0.t-ipconnect.de
+2400:8901::f03c:94ff:fe7f:59f6	63949	0.000000	0.000000	sg	-	-	GE(JAEN)tor-exit.triggersolutions.au
+2400:8901::f03c:95ff:fe89:4a88	63949	0.000000	0.000000	sg	-	-	GE(linuxenbyEXIT1)172-104-186-73.ip.linodeusercontent.com
+2400:8905::f03c:95ff:fe67:ec03	63949	0.000000	0.000000	jp	-	-	GE(linuxenbyEXIT2)172-233-82-41.ip.linodeusercontent.com
+2400:8907::f03c:95ff:fe79:8c79	63949	0.000000	0.000000	au	-	-	GE(TorExitJJLaytonSyd)tor-exit-sydney.jjlayton.com
+2400:d320:2202:5765::1	141995	0.000000	0.000000	sg	-	-	GE(MarieMichel)sortie-tor.a-n-o-n-y-m-e.net
+2400:d320:2261:6860::1	141995	0.000000	0.000000	sg	-	-	GE(Quetzalcoatl)Contabo Asia Private Limited
+2401:5e40:1:2033::45:2	63770	0.000000	0.000000	jp	-	-	G(nyonyonyo)163-220-236-41.inchiki.v4.coe.ad.jp
+2401:2500:102:1206:133:242:146:78	7684	0.000000	0.000000	jp	-	-	G(Superfly)host.nozoe.jp
+2401:c080:2000:111f:5400:4ff:fea3:9c02	20473	0.000000	0.000000	au	-	-	GE(ProjectPrivacyX1)tor-exit-au-42.project-privacy.com.au
+2402:1f00:8000:239::	16276	0.000000	0.000000	sg	-	-	GE(DirtyMoney)ns536014.ip-139-99-8.net
+2402:1f00:8100:400::9	16276	0.000000	0.000000	au	-	-	GE(Assange004auX)tor-exit-au-04.finlay.wattle.id.au
+2402:d0c0:21::2df5:510a	142036	0.000000	0.000000	de	-	-	G(afterbeam)Hosteons Pte. Ltd.
+2406:17c0:0:2::7ab8:d3ab	207083	0.000000	0.000000	nl	-	-	G(suupiste3)69.174.98.59.static.quadranet.com
+2406:17c0:0:2::8f52:2324	207083	0.000000	0.000000	nl	-	-	G(AntonPann9)HostSlim B.V.
+2406:17c0:0:2::3897:e4c7	207083	0.000000	0.000000	nl	-	-	G(AntonPann6)HostSlim B.V.
+2406:17c0:0:2::7470:e4a7	207083	0.000000	0.000000	nl	-	-	G(iLoveBunnies)HostSlim B.V.
+2406:17c0:0:2::a23f:10c	207083	0.000000	0.000000	nl	-	-	G(Zensursula)69.174.98.5.static.quadranet.com
+2406:17c0:0:2::c506:7e11	207083	0.000000	0.000000	nl	-	-	G(iLoveGoreshit)HostSlim B.V.
+2407:3640:2207:8882::1	141995	0.000000	0.000000	sg	-	-	GE(MariePascal)sortie-tor.a-n-o-n-y-m-e.net
+2407:3640:2259:6302::1	141995	0.000000	0.000000	sg	-	-	GE(Quetzalcoatl)Contabo Asia Private Limited
+2407:3640:3015:7494::1	141995	0.000000	0.000000	sg	-	-	G(bombay)vmd157494.contaboserver.net
+2407:3641:2259:8208::1	141995	0.000000	0.000000	sg	-	-	GE(Quetzalcoatl)Contabo Asia Private Limited
+2600:2b00:9373:3204:aab8:e0ff:fe00:87f3	6181	0.000000	0.000000	us	-	-	G(evequefou2)Cincinnati Bell Telephone Company LLC
+2600:3c0a::f03c:95ff:fe5d:a877	63949	0.000000	0.000000	us	-	-	GE(bluto)bluto.relaymagic.org
+2600:3c0b::f03c:95ff:fefa:bdff	63949	0.000000	0.000000	it	-	-	GE(linuxenbyEXIT3)172-232-209-254.ip.linodeusercontent.com
+2600:3c00::f03c:91ff:fe73:f9ba	63949	0.000000	0.000000	us	-	-	GE(intothetylerzone)tor.tyler.zone
+2600:3c00::f03c:91ff:fe96:1cd9	63949	0.000000	0.000000	us	-	-	GE(colagioia)tor.colagioia.net
+2600:3c00::f03c:95ff:fe5d:8f00	63949	0.000000	0.000000	us	-	-	GE(brutus)brutus.relaymagic.org
+2600:3c01::f03c:91ff:fedf:8cc1	63949	0.000000	0.000000	us	-	-	G(IWorshipHisShadow)drone.mantrid.net
+2600:3c02::f03c:94ff:fe1e:a6cb	63949	0.000000	0.000000	us	-	-	G(HFCRelay)173-230-134-72.ip.linodeusercontent.com
+2600:3c03:e000:19f:0:11:11:11	63949	0.000000	0.000000	us	-	-	G(hydrogenuine)hydrogenuine.tor-relay.fastquake.com
+2600:3c03::f03c:95ff:fe5d:562	63949	0.000000	0.000000	us	-	-	GE(popeye)popeye.relaymagic.org
+2600:3c04::f03c:93ff:fece:e1d1	63949	0.000000	0.000000	ca	-	-	G(AndroidFighter)172-105-6-34.ip.linodeusercontent.com
+2600:3c04::f03c:95ff:fe41:d42c	63949	0.000000	0.000000	ca	-	-	GE(linuxenbyEXIT4)172-105-20-12.ip.linodeusercontent.com
+2600:3c06::f03c:93ff:fe6e:ecf2	63949	0.000000	0.000000	us	-	-	G(oualulotue)172-232-24-166.ip.linodeusercontent.com
+2600:1700:5de1:2320:5054:ff:fe40:d01a	7018	0.000000	0.000000	us	-	-	G(r1grrtordigi)AT&T Enterprises
+2600:1700:9a12:4070::41	7018	0.000000	0.000000	us	-	-	G(KZL303)76-235-207-28.lightspeed.toldoh.sbcglobal.net
+2600:1700:38d4:10d0:ecfb:a2ff:fe14:5e2	7018	0.000000	0.000000	us	-	-	G(Unnamed)69-209-100-183.lightspeed.sntcca.sbcglobal.net
+2600:1700:e412:823:4027:c183:e6f9:b5ae	7018	0.000000	0.000000	us	-	-	G(ogre005)108-211-32-201.lightspeed.lsvlky.sbcglobal.net
+2600:1700:e412:823:5530:7ec9:d236:b9f5	7018	0.000000	0.000000	us	-	-	G(ogre003)108-211-32-201.lightspeed.lsvlky.sbcglobal.net
+2600:1700:ef71:65c0::49	7018	0.000000	0.000000	us	-	-	G(duckduckGOOSE)162-206-3-44.lightspeed.wepbfl.sbcglobal.net
+2600:1702:6aa3:b210::2	7018	0.000000	0.000000	us	-	-	G(carlos1001)AT&T Enterprises
+2600:1702:5410:d260:be24:11ff:fecb:19ae	7018	0.000000	0.000000	us	-	-	G(9072997home)104-3-165-248.lightspeed.fyvlar.sbcglobal.net
+2600:4040:20b0:af02:21b:21ff:fe36:fd2f	701	0.000000	0.000000	us	-	-	G(jubei)Verizon Business
+2600:4040:b0d2:c800:7285:c2ff:fed3:c3c	701	0.000000	0.000000	us	-	-	G(paranoidAndroid)pool-96-244-38-131.bltmmd.fios.verizon.net
+2600:4041:44e3:7200:be24:11ff:fe1c:ec02	701	0.000000	0.000000	us	-	-	G(Sinatra)pool-100-35-197-122.nwrknj.fios.verizon.net
+2600:4041:175:f600:10:100:1:8086	701	0.000000	0.000000	us	-	-	G(WOPRPi1)pool-173-75-20-115.pitbpa.fios.verizon.net
+2600:4041:175:f600:10:100:1:8087	701	0.000000	0.000000	us	-	-	G(WOPRPoE1)pool-173-75-20-115.pitbpa.fios.verizon.net
+2601:1c2:4586:e8da::b	7922	0.000000	0.000000	us	-	-	G(gaeaRelay0)c-24-21-129-68.hsd1.or.comcast.net
+2602:2a8:4b::d23e	400175	0.000000	0.000000	us	-	-	G(tinyonion)Microtronix ESolutions
+2602:2c8:0:2c3f::1	397423	0.000000	0.000000	us	-	-	G(Ducking4767)Tier.Net Technologies LLC
+2602:2e5::104	22296	0.000000	0.000000	us	-	-	GE(toor)tor-exit.toor.sh
+2602:f6f6:2:90f1::1	27284	0.000000	0.000000	us	-	-	GE(NeelTorExit6A)Fourplex Telecom LLC
+2602:f6f6:2:941d::1	27284	0.000000	0.000000	us	-	-	GE(NeelTorExit7A)Fourplex Telecom LLC
+2602:f6f6:2:2634::1	27284	0.000000	0.000000	us	-	-	GE(NeelTorExit2A)Fourplex Telecom LLC
+2602:f6f6:2:3637::1	27284	0.000000	0.000000	us	-	-	GE(NeelTorExit8A)Fourplex Telecom LLC
+2602:f6f6:2:ad5c::1	27284	0.000000	0.000000	us	-	-	GE(NeelTorExit1A)Fourplex Telecom LLC
+2602:f6f6:2:cf34::1	27284	0.000000	0.000000	us	-	-	GE(NeelTorExit4A)Fourplex Telecom LLC
+2602:f6f6:2:d31a::1	27284	0.000000	0.000000	us	-	-	GE(NeelTorExit3A)Fourplex Telecom LLC
+2602:f6f6:2:dc17::1	27284	0.000000	0.000000	us	-	-	GE(NeelTorExit5A)Fourplex Telecom LLC
+2602:f9f3:0:2::3b0	399646	0.000000	0.000000	us	-	-	G(theThirdRelay)Snaju Development
+2602:f9f3:0:2::233	399646	0.000000	0.000000	us	-	-	G(SurveillanceMonster)us1.surveillance.monster
+2602:f81c:9:0:23:188:56:140	401332	0.000000	0.000000	us	-	-	G(Triplebit140)triplebit140.tor-relay.triplebit.net
+2602:f81c:9:0:23:188:56:141	401332	0.000000	0.000000	us	-	-	G(Triplebit141)triplebit141.tor-relay.triplebit.net
+2602:f81c:9:0:23:188:56:142	401332	0.000000	0.000000	us	-	-	G(Triplebit142)triplebit142.tor-relay.triplebit.net
+2602:f81c:9:0:23:188:56:143	401332	0.000000	0.000000	us	-	-	G(Triplebit143)triplebit143.tor-relay.triplebit.net
+2602:f81c:9:0:23:188:56:144	401332	0.000000	0.000000	us	-	-	G(Triplebit144)triplebit144.tor-relay.triplebit.net
+2602:f81c:9:0:23:188:56:145	401332	0.000000	0.000000	us	-	-	G(Triplebit145)triplebit145.tor-relay.triplebit.net
+2602:f81c:9:0:23:188:56:146	401332	0.000000	0.000000	us	-	-	G(Triplebit146)triplebit146.tor-relay.triplebit.net
+2602:f81c:9:0:23:188:56:147	401332	0.000000	0.000000	us	-	-	G(Triplebit147)triplebit147.tor-relay.triplebit.net
+2602:f81c:9:0:23:188:56:148	401332	0.000000	0.000000	us	-	-	G(Triplebit148)triplebit148.tor-relay.triplebit.net
+2602:f81c:9:0:23:188:56:149	401332	0.000000	0.000000	us	-	-	G(Triplebit149)triplebit149.tor-relay.triplebit.net
+2602:f81c:9:0:23:188:56:150	401332	0.000000	0.000000	us	-	-	G(Triplebit150)triplebit150.tor-relay.triplebit.net
+2602:f81c:9:0:23:188:56:151	401332	0.000000	0.000000	us	-	-	G(Triplebit151)triplebit151.tor-relay.triplebit.net
+2602:f81c:9:0:23:188:56:152	401332	0.000000	0.000000	us	-	-	G(Triplebit152)triplebit152.tor-relay.triplebit.net
+2602:f81c:9:0:23:188:56:153	401332	0.000000	0.000000	us	-	-	G(Triplebit153)triplebit153.tor-relay.triplebit.net
+2602:f81c:9:0:23:188:56:154	401332	0.000000	0.000000	us	-	-	G(Triplebit154)triplebit154.tor-relay.triplebit.net
+2602:f81c:9:0:23:188:56:155	401332	0.000000	0.000000	us	-	-	G(Triplebit155)triplebit155.tor-relay.triplebit.net
+2602:f81c:9:0:23:188:56:156	401332	0.000000	0.000000	us	-	-	G(Triplebit156)triplebit156.tor-relay.triplebit.net
+2602:f81c:9:0:23:188:56:157	401332	0.000000	0.000000	us	-	-	G(Triplebit157)triplebit157.tor-relay.triplebit.net
+2602:f81c:9:0:23:188:56:158	401332	0.000000	0.000000	us	-	-	G(Triplebit158)triplebit158.tor-relay.triplebit.net
+2602:f81c:9:0:23:188:56:159	401332	0.000000	0.000000	us	-	-	G(Triplebit159)triplebit159.tor-relay.triplebit.net
+2602:f81c:9:0:23:188:56:160	401332	0.000000	0.000000	us	-	-	G(Triplebit160)triplebit160.tor-relay.triplebit.net
+2602:f81c:9:0:23:188:56:161	401332	0.000000	0.000000	us	-	-	G(Triplebit161)Triplebit
+2602:f81c:9:0:23:188:56:162	401332	0.000000	0.000000	us	-	-	G(Triplebit162)Triplebit
+2602:f81c:9:0:23:188:56:163	401332	0.000000	0.000000	us	-	-	G(Triplebit163)Triplebit
+2602:f81c:9:0:23:188:56:164	401332	0.000000	0.000000	us	-	-	G(Triplebit164)Triplebit
+2602:f81c:9:0:23:188:56:165	401332	0.000000	0.000000	us	-	-	G(Triplebit165)Triplebit
+2602:f81c:9:0:23:188:56:166	401332	0.000000	0.000000	us	-	-	G(Triplebit166)Triplebit
+2602:f81c:9:0:23:188:56:167	401332	0.000000	0.000000	us	-	-	G(Triplebit167)Triplebit
+2602:f81c:9:0:23:188:56:168	401332	0.000000	0.000000	us	-	-	G(Triplebit168)Triplebit
+2602:f81c:9:0:23:188:56:169	401332	0.000000	0.000000	us	-	-	G(Triplebit169)Triplebit
+2602:f81c:83:250::34	401332	0.000000	0.000000	us	-	-	G(Triplebit34)triplebit34.tor-relay.triplebit.net
+2602:f81c:83:250::35	401332	0.000000	0.000000	us	-	-	G(Triplebit35)triplebit35.tor-relay.triplebit.net
+2602:f81c:83:250::36	401332	0.000000	0.000000	us	-	-	G(Triplebit36)triplebit36.tor-relay.triplebit.net
+2602:f81c:83:250::37	401332	0.000000	0.000000	us	-	-	G(Triplebit37)triplebit37.tor-relay.triplebit.net
+2602:f81c:83:250::38	401332	0.000000	0.000000	us	-	-	G(Triplebit38)triplebit38.tor-relay.triplebit.net
+2602:f81c:83:250::39	401332	0.000000	0.000000	us	-	-	G(Triplebit39)triplebit39.tor-relay.triplebit.net
+2602:f81c:83:250::40	401332	0.000000	0.000000	us	-	-	G(Triplebit40)triplebit40.tor-relay.triplebit.net
+2602:f81c:83:250::41	401332	0.000000	0.000000	us	-	-	G(Triplebit41)triplebit41.tor-relay.triplebit.net
+2602:f81c:83:250::42	401332	0.000000	0.000000	us	-	-	G(Triplebit42)triplebit42.tor-relay.triplebit.net
+2602:f81c:83:250::43	401332	0.000000	0.000000	us	-	-	G(Triplebit43)triplebit43.tor-relay.triplebit.net
+2602:f81c:83:250::44	401332	0.000000	0.000000	us	-	-	G(Triplebit44)triplebit44.tor-relay.triplebit.net
+2602:f81c:83:250::45	401332	0.000000	0.000000	us	-	-	G(Triplebit45)triplebit45.tor-relay.triplebit.net
+2602:f81c:83:250::46	401332	0.000000	0.000000	us	-	-	G(Triplebit46)triplebit46.tor-relay.triplebit.net
+2602:f81c:83:250::47	401332	0.000000	0.000000	us	-	-	G(Triplebit47)triplebit47.tor-relay.triplebit.net
+2602:f81c:83:250::48	401332	0.000000	0.000000	us	-	-	G(Triplebit48)triplebit48.tor-relay.triplebit.net
+2602:f81c:83:250::49	401332	0.000000	0.000000	us	-	-	G(Triplebit49)triplebit49.tor-relay.triplebit.net
+2602:f81c:83:250::50	401332	0.000000	0.000000	us	-	-	G(Triplebit50)triplebit50.tor-relay.triplebit.net
+2602:f81c:83:250::51	401332	0.000000	0.000000	us	-	-	G(Triplebit51)triplebit51.tor-relay.triplebit.net
+2602:f81c:83:250::52	401332	0.000000	0.000000	us	-	-	G(Triplebit52)triplebit52.tor-relay.triplebit.net
+2602:f81c:83:250::53	401332	0.000000	0.000000	us	-	-	G(Triplebit53)triplebit53.tor-relay.triplebit.net
+2602:f81c:83:250::54	401332	0.000000	0.000000	us	-	-	G(Triplebit54)triplebit54.tor-relay.triplebit.net
+2602:f81c:83:250::55	401332	0.000000	0.000000	us	-	-	G(Triplebit55)triplebit55.tor-relay.triplebit.net
+2602:f81c:83:250::56	401332	0.000000	0.000000	us	-	-	G(Triplebit56)triplebit56.tor-relay.triplebit.net
+2602:f81c:83:250::57	401332	0.000000	0.000000	us	-	-	G(Triplebit57)triplebit57.tor-relay.triplebit.net
+2602:f81c:83:250::58	401332	0.000000	0.000000	us	-	-	G(Triplebit58)triplebit58.tor-relay.triplebit.net
+2602:f81c:83:250::59	401332	0.000000	0.000000	us	-	-	G(Triplebit59)triplebit59.tor-relay.triplebit.net
+2602:f81c:83:250::60	401332	0.000000	0.000000	us	-	-	G(Triplebit60)Triplebit
+2602:f81c:83:250::61	401332	0.000000	0.000000	us	-	-	G(Triplebit61)Triplebit
+2602:f704:115::1	23507	0.000000	0.000000	al	-	-	G(aloloke)AV SERVICES LLC
+2602:f704:128::1	23507	0.000000	0.000000	al	-	-	G(zgato)al7.eu.node.cdn-perfprod.com
+2602:f704:c0c::1	23507	0.000000	0.000000	gb	-	-	G(prsv)AV SERVICES LLC
+2602:f953:6:5c::a	62564	0.000000	0.000000	us	-	-	G(wheat77)sill.duckdns.org
+2602:fa4f:900:ac7e:1012:c753:3a91:1a91	61112	0.000000	0.000000	us	-	-	G(independence)AKILE LTD
+2602:fa8a:3:a::a	11721	0.000000	0.000000	us	-	-	GE(ididnteditheconfig)StylenTech LLC
+2602:fb9f::dead:beef:cafe	400564	0.000000	0.000000	us	-	-	G(WestonReed)onion.westonreed.com
+2602:fc2f:100:da00::a	399820	0.000000	0.000000	us	-	-	G(briefcase4)Atomic Networks LLC
+2602:fc05::132	400226	0.000000	0.000000	us	-	-	G(StormyCloud)torrelay.stormycloud.org
+2602:fc24:10:9102::1	210630	0.000000	0.000000	us	-	-	G(fumofumo)srv-ii5SNR.incognet.io
+2602:fc24:10:bb36::1	210630	0.000000	0.000000	us	-	-	GE(BigLoop)tor-exit00.doggett.tech
+2602:fc24:12:81a6::1	210630	0.000000	0.000000	us	-	-	GE(yangwenli)tor-exit.yangwenli.anondns.net
+2602:fc24:18:30d2::1	210630	0.000000	0.000000	us	-	-	G(chlorine)chlorine.null-f.org
+2602:fc24:18:148f::1	210630	0.000000	0.000000	us	-	-	G(zgato)wa1.na.node.cdn-perfprod.com
+2602:fc24:18:633d::1	210630	0.000000	0.000000	us	-	-	G(DowntimePatrol2)llk1.us.downtimepatrol.com
+2602:fc24:18:f38f::1	210630	0.000000	0.000000	us	-	-	GE(Miska)tor-exit-relay2.0xmiska.com
+2602:fc24:19:524::1	210630	0.000000	0.000000	us	-	-	GE(incognetALNTWNPA)tor-pa.as210630.net
+2602:fc24:19:eb06::dead	210630	0.000000	0.000000	us	-	-	GE(Angler7943)tor-exit.torrelay.org
+2602:fc81:1:1::9:a600	399334	0.000000	0.000000	us	-	-	G(permanentrecord)Skysilk
+2602:fccf:100:3::14	26286	0.000000	0.000000	us	-	-	GE(HoustonTexas4Torcom)MysticDev LLC
+2602:fccf:310:1::c	26286	0.000000	0.000000	us	-	-	GE(KingShadow3)MysticDev LLC
+2602:fd92:2e9::a	26042	0.000000	0.000000	us	-	-	G(zgato)tor-relay-ut7.zgato.ru
+2602:fea7:e0c:62:b00b:babe:cafe:bad	32181	0.000000	0.000000	us	-	-	G(zgato)il7.na.node.cdn-perfprod.com
+2602:ff16:6:0:1:297:0:1	29802	0.000000	0.000000	us	-	-	G(ac1dburn)HIVELOCITY
+2602:ffd1:7:6b::a	393336	0.000000	0.000000	us	-	-	G(mkn7787relay0)ved.handycodejob.com
+2602:ffd5:1:28c::1	26832	0.000000	0.000000	ca	-	-	G(gizmo13)Rica Web Services
+2602:ffd5:1:29a::1	26832	0.000000	0.000000	ca	-	-	G(fluffypancakes001ca)Rica Web Services
+2602:ffd5:1:29b::1	26832	0.000000	0.000000	ca	-	-	G(fluffypancakes003ca)Rica Web Services
+2602:ffd5:1:29c::1	26832	0.000000	0.000000	ca	-	-	G(fluffypancakes002ca)Rica Web Services
+2602:ffd5:1:174:3123:9092:3f1a:19c2	26832	0.000000	0.000000	ca	-	-	G(Unnamed)Rica Web Services
+2603:3:610a:5050::	398101	0.000000	0.000000	us	-	-	G(Minotaur2)188.215.109.208.host.secureserver.net
+2603:3:6102:f8d0::	398101	0.000000	0.000000	us	-	-	G(Minotaur3)243.214.109.208.host.secureserver.net
+2603:3:6106:2460::	398101	0.000000	0.000000	us	-	-	G(Minotaur4)188.215.109.208.host.secureserver.net
+2603:400a:0:9:f816:3eff:fe73:f862	3	0.000000	0.000000	us	-	-	G(pdos00)tor.pdos.csail.mit.edu
+2603:8000:b00:a01::2	20001	0.000000	0.000000	us	-	-	G(Plokmijnuhby)syn-172-114-008-083.res.spectrum.com
+2603:c020:11:787e:95c:552f:575:d7f5	31898	0.000000	0.000000	us	-	-	G(JohnthePhisherman)Oracle Corporation
+2603:c020:800d:8bff:6613:6cb5:af30:8bd5	31898	0.000000	0.000000	us	-	-	G(LeftSnowflake1933)Oracle Corporation
+2603:c020:4010:3301:57f6:7f0f:82bb:c569	31898	0.000000	0.000000	us	-	-	G(retort)Oracle Corporation
+2603:c022:2:97ff:ea23:6cb6:a969:ff7f	31898	0.000000	0.000000	gb	-	-	G(SnowflakeAwake9184)Oracle Corporation
+2603:c022:c002:b0e:df68:94b3:52b1:5f2c	31898	0.000000	0.000000	us	-	-	G(Minun)Oracle Corporation
+2603:c022:c002:b0e:f620:461d:1cc1:fa75	31898	0.000000	0.000000	us	-	-	G(Plusle)Oracle Corporation
+2603:c023:4003:7f43:6162:6161:6c54:6f72	31898	0.000000	0.000000	us	-	-	G(CabaalTorRelay1)Oracle Corporation
+2603:c024:c001:207e:2b71:7031:c7c7:abec	31898	0.000000	0.000000	us	-	-	G(Tron)Oracle Corporation
+2603:c024:c006:c969:f379:75d:4532:3b82	31898	0.000000	0.000000	us	-	-	G(getrelayedon01)Oracle Corporation
+2603:c026:300:a97e:c3bb:9228:afd9:e243	31898	0.000000	0.000000	us	-	-	G(oraclerelay4718)Oracle Corporation
+2603:c027:0:caff:8058:d9b8:1072:cc10	31898	0.000000	0.000000	us	-	-	G(SnowflakeDown1092)Oracle Corporation
+2604:2dc0:100:38e9::1	16276	0.000000	0.000000	us	-	-	G(null)ns1010913.ip-135-148-100.us
+2604:2dc0:101:100::4d9	16276	0.000000	0.000000	us	-	-	G(skjsbc8qwncsa83)skjsbc8qwncsa83.anonymousbits.net
+2604:2dc0:101:200::1c4	16276	0.000000	0.000000	us	-	-	G(cal)vps-555b5c6b.vps.ovh.us
+2604:2dc0:101:200::1f45	16276	0.000000	0.000000	us	-	-	G(Lamia1)lamia1.brandonkuschel.com
+2604:2dc0:101:200::2d6	16276	0.000000	0.000000	us	-	-	G(Assange010us)vps-7ceb336a.vps.ovh.us
+2604:2dc0:101:200::5b67	16276	0.000000	0.000000	us	-	-	G(lmtlabs)tor.lmtlabs.com
+2604:2dc0:101:200::6c	16276	0.000000	0.000000	us	-	-	G(Assange012us)vps-a0b936c9.vps.ovh.us
+2604:2dc0:101:200::28cd	16276	0.000000	0.000000	us	-	-	G(Joesrelay)vps-57a7cd4f.vps.ovh.us
+2604:2dc0:101:200::b63	16276	0.000000	0.000000	us	-	-	G(Lamia2)lamia.brandonkuschel.com
+2604:2dc0:202:200::1f4	16276	0.000000	0.000000	us	-	-	G(HDpNGmau7e4WFBKc)hdpngmau7e4wfbkc.anonymousbits.net
+2604:2dc0:202:300::581	16276	0.000000	0.000000	us	-	-	G(tapatapatapa)vps-eea3d679.vps.ovh.us
+2604:2dc0:202:300::995	16276	0.000000	0.000000	us	-	-	G(Echidna12)echidna1.brandonkuschel.com
+2604:2dc0:202:300::1642	16276	0.000000	0.000000	us	-	-	G(qwertyasdfghzxcvbn)vps-9ca46360.vps.ovh.us
+2604:2dc0:202:300::cd0	16276	0.000000	0.000000	us	-	-	G(Echidna2)echidna.brandonkuschel.com
+2604:2dc0:202:300::ed3	16276	0.000000	0.000000	us	-	-	GE(Tor2DotTeitelNet)tor2.teitel.net
+2604:86c0:5001:e:f::	63023	0.000000	0.000000	us	-	-	G(eruption)GTHost
+2604:86c0:f001:d::3	63023	0.000000	0.000000	au	-	-	G(Planetclaire60)GTHost
+2604:4300:a:3bc:224:1dff:fe70:b203	32097	0.000000	0.000000	us	-	-	G(Apollo)WholeSale Internet
+2604:4300:a:3e9::170	33387	0.000000	0.000000	us	-	-	G(jstark1809eff)Nocix
+2604:4500:8:14::4	29802	0.000000	0.000000	us	-	-	G(kibble)66-165-241-228.static.hvvc.us
+2604:4500:8:14::8	29802	0.000000	0.000000	us	-	-	G(bibble)66-165-241-230.static.hvvc.us
+2604:a00:101:4:216:3eff:fe2f:1c84	26666	0.000000	0.000000	us	-	-	GE(Cassanova)Interserver
+2604:a00:101:4:216:3eff:fe2f:20c3	26666	0.000000	0.000000	us	-	-	GE(NewPalace)Interserver
+2604:a880:400:d0::26:a001	14061	0.000000	0.000000	us	-	-	G(tito37wer)DigitalOcean
+2604:a880:400:d0::237f:f001	14061	0.000000	0.000000	us	-	-	G(belovachapNYC)DigitalOcean
+2604:a880:800:10::be1:9001	14061	0.000000	0.000000	us	-	-	G(nep)DigitalOcean
+2604:a880:cad:d0::6805:f001	14061	0.000000	0.000000	us	-	-	G(artlogic)relay.kruth.org
+2604:b480:3:6::2	46841	0.000000	0.000000	us	-	-	GE(Unzane)ghatanothoa.unzane.com
+2604:e580:ffff:ff00::87	2900	0.000000	0.000000	us	-	-	G(TorASU)theseinternetmeasurementsareforresearchmoreinfohere.breakpointingbad.net
+2604:e880:3::19	40156	0.000000	0.000000	us	-	-	G(zgato)tx2.na.node.cdn-perfprod.com
+2605:9f80:2000:83::2	63018	0.000000	0.000000	us	-	-	G(SDRHausSEA1)caliber.sea.sdr.haus
+2605:2700:0:2:a800:ff:fe03:2bd5	47066	0.000000	0.000000	us	-	-	G(Voidium)aqua-emerald.vm.tornadovps.net
+2605:2700:0:2:a800:ff:fe39:574	47066	0.000000	0.000000	us	-	-	GE(mordel)tor-exit-1.telnor.org
+2605:2700:0:3:a800:ff:fe10:f0d3	47066	0.000000	0.000000	us	-	-	G(flyDamFlowertrial)ochre-denim.vm.tornadovps.net
+2605:6400:10:1ab:2605:6400:10:1ab	53667	0.000000	0.000000	us	-	-	GE(2mpe2)FranTech Solutions
+2605:6400:10:4b0::1	53667	0.000000	0.000000	us	-	-	G(alxu)pink.alxu.ca
+2605:6400:10:6e4:e3ae:556c:d5be:2ad1	53667	0.000000	0.000000	us	-	-	G(theorionarm)theorionarm.net
+2605:6400:10:44f::1	53667	0.000000	0.000000	us	-	-	GE(Blanche)sortie-tor.a-n-o-n-y-m-e.net
+2605:6400:10:58f:8768:8283:1a62:bdc6	53667	0.000000	0.000000	us	-	-	GE(TorDotTeitelNet)tor.teitel.net
+2605:6400:10:75:1585:9b71:1c16:b1a1	53667	0.000000	0.000000	us	-	-	GE(Quetzalcoatl)FranTech Solutions
+2605:6400:10:253:2085:7b82:89a7:2145	53667	0.000000	0.000000	us	-	-	GE(PufferfishNYC)tor-exit-nyc.pufferfish.li
+2605:6400:10:798:40b3:e03b:8f0f:e4e2	53667	0.000000	0.000000	us	-	-	G(queercat)connection.reset.by.queer.cat
+2605:6400:10:984:41e7:4ad6:a11e:cdcc	53667	0.000000	0.000000	us	-	-	GE(Quetzalcoatl)FranTech Solutions
+2605:6400:10:1008:1111:1111:1111:1111	53667	0.000000	0.000000	us	-	-	GE(HiMom)tor-exit.cyberjake.xyz
+2605:6400:10:1362::2	53667	0.000000	0.000000	us	-	-	GE(Aramis)FranTech Solutions
+2605:6400:20:3ea:c2a3:1162:7224:e5df	53667	0.000000	0.000000	us	-	-	GE(Mjolnir)tor-exit.greektor.com
+2605:6400:20:12b7:4ea2:4422:e11e:adcd	53667	0.000000	0.000000	us	-	-	GE(PufferfishLAS)tor-exit-las.pufferfish.li
+2605:6400:20:254:75bc:a49b:2762:7398	53667	0.000000	0.000000	us	-	-	G(Moonlight)FranTech Solutions
+2605:6400:20:274::1	53667	0.000000	0.000000	us	-	-	G(alxu2)red.alxu.ca
+2605:6400:20:482:3920:1829:1839:1293	53667	0.000000	0.000000	us	-	-	GE(anonymityiscool)tor-exit.cubicchaos.net
+2605:6400:20:2417::69	53667	0.000000	0.000000	us	-	-	GE(DicedOnions)tor-exit.dicedonions.xyz
+2605:6400:20:ae6:e6c6:d90:fee8:5ad5	53667	0.000000	0.000000	us	-	-	G(Cerberus)FranTech Solutions
+2605:6400:20:be7::1	53667	0.000000	0.000000	us	-	-	GE(andr788k)FranTech Solutions
+2605:6400:20:c26:5163:253e:1ef6:d887	53667	0.000000	0.000000	us	-	-	GE(hogman4)FranTech Solutions
+2605:6400:20:c26:5163:253e:1ef6:d896	53667	0.000000	0.000000	us	-	-	GE(hogman5)FranTech Solutions
+2605:6400:20:d54:78d8:62d7:9b5a:6ae9	53667	0.000000	0.000000	us	-	-	G(Unnamed)bauxite.xnode.org
+2605:6400:20:ff9::1	53667	0.000000	0.000000	us	-	-	GE(Triangulum1)tor-exit-relay-002.carlos1001.com
+2605:6400:40:fe09::2	53667	0.000000	0.000000	us	-	-	GE(Aramis)FranTech Solutions
+2605:a140:2262:7686::1	40021	0.000000	0.000000	us	-	-	GE(Quetzalcoatl)Contabo Inc.
+2605:a140:3017:2598::1	40021	0.000000	0.000000	us	-	-	G(styx)Contabo Inc.
+2605:a141:2261:4410::1	40021	0.000000	0.000000	us	-	-	GE(Quetzalcoatl)Contabo Inc.
+2605:a142:2263:1906::1	40021	0.000000	0.000000	us	-	-	GE(Quetzalcoatl)Contabo Inc.
+2605:aa80:0:9::3	27176	0.000000	0.000000	us	-	-	GE(OgresHaveLayers)DataWagon LLC
+2605:aa80:c007:1736::	27176	0.000000	0.000000	us	-	-	G(pushypebble)DataWagon LLC
+2605:e440:3::3ef	26383	0.000000	0.000000	es	-	-	GE(fumo)Baxet Group Inc.
+2605:e440:35::249	26383	0.000000	0.000000	de	-	-	G(Zensursula)Baxet Group Inc.
+2606:8e80:700b:8802::2000	32133	0.000000	0.000000	ca	-	-	G(Falke)Ting Fiber Inc.
+2607:5300:60:708d:cd09:2eff:fed4:145b	16276	0.000000	0.000000	ca	-	-	G(BoomerBile)ip236.ip-15-235-29.net
+2607:5300:60:979f:7634:0:9e45:e29f	16276	0.000000	0.000000	ca	-	-	G(EchoBase)echobase.va1der.ca
+2607:5300:60:8408:d5c1:af00:0:1	16276	0.000000	0.000000	ca	-	-	G(Zensursula)ip220.ip-15-235-60.net
+2607:5300:60:8408:d5c1:af00::	16276	0.000000	0.000000	ca	-	-	G(Zensursula)ip220.ip-15-235-60.net
+2607:5300:61:785:1:2:3:4	16276	0.000000	0.000000	ca	-	-	G(Chimera4)chimera3.brandonkuschel.com
+2607:5300:61:785::	16276	0.000000	0.000000	ca	-	-	G(Chimera2)chimera.brandonkuschel.com
+2607:5300:120:c74::1	16276	0.000000	0.000000	ca	-	-	G(vaahteranlehti)ns547470.ip-158-69-252.net
+2607:5300:201:3000::17d3	16276	0.000000	0.000000	ca	-	-	G(PyotrTorpotkinOne)mail.nullvoid.me
+2607:5300:201:3000::da8	16276	0.000000	0.000000	ca	-	-	G(NuclearShack)247.ip-158-69-205.net
+2607:5300:201:3000::dfc	16276	0.000000	0.000000	ca	-	-	G(oscar)oscar.f00.net
+2607:5300:201:3100::1f05	16276	0.000000	0.000000	ca	-	-	G(PommespanzerCA3)ca3.pommespanzer.cc
+2607:5300:201:3100::3dc8	16276	0.000000	0.000000	ca	-	-	G(Timberwolf)12.ip-144-217-80.net
+2607:5300:201:3100::3e59	16276	0.000000	0.000000	ca	-	-	G(PyotrTorpotkinTwo)chat.nullvoid.me
+2607:5300:201:3100::5b0d	16276	0.000000	0.000000	ca	-	-	G(SaruTorUmidanuki)umidanuki.saru.moe
+2607:5300:201:3100::10a6	16276	0.000000	0.000000	ca	-	-	G(StopFossilFuels)mail.livingplanetalliance.org
+2607:5300:201:3100::35c5	16276	0.000000	0.000000	ca	-	-	GE(torjockel)47.ip-149-56-44.net
+2607:5300:201:3100::63d	16276	0.000000	0.000000	ca	-	-	G(PommespanzerCA1)ca1.pommespanzer.cc
+2607:5300:201:3100::740a	16276	0.000000	0.000000	ca	-	-	G(PommespanzerCA2)ca2.pommespanzer.cc
+2607:5300:201:3100::dad	16276	0.000000	0.000000	ca	-	-	G(ioexploitR03)tor-relay-03.ioexplo.it
+2607:5300:203:3ab9::1	16276	0.000000	0.000000	ca	-	-	G(phil)phil.captainsonic.com
+2607:5300:203:7ac5:198:50:223:16	16276	0.000000	0.000000	ca	-	-	G(blackmamba)OVH SAS
+2607:5300:203:3012:7634:0:5439:5218	16276	0.000000	0.000000	ca	-	-	G(BaseOne)yavin.va1der.ca
+2607:5300:203:b45b::	16276	0.000000	0.000000	ca	-	-	GE(Unnamed)ns5021551.ip-148-113-152.net
+2607:5300:205:200::1d62	16276	0.000000	0.000000	ca	-	-	G(slotor04)vps-2d8e8a38.vps.ovh.ca
+2607:5300:205:200::55fb	16276	0.000000	0.000000	ca	-	-	G(HeliosReaper)helios.for-no-reason.net
+2607:5300:205:200::66a0	16276	0.000000	0.000000	ca	-	-	G(DemonsysNA)torna.demonsys.net
+2607:5300:205:200::105c	16276	0.000000	0.000000	ca	-	-	G(Virgo)vps-a1c8b30e.vps.ovh.ca
+2607:5300:205:200::938	16276	0.000000	0.000000	ca	-	-	G(Amiba)vps-0001.amiba.me
+2607:5300:205:200::4894	16276	0.000000	0.000000	ca	-	-	GE(theintern01)vps-82450d6d.vps.ovh.ca
+2607:5300:205:200::5066	16276	0.000000	0.000000	ca	-	-	G(Torrefacteur)vps-48c46a24.vps.ovh.ca
+2607:5300:205:200::ea0	16276	0.000000	0.000000	ca	-	-	G(BehemothLTDCA1)vps-35ceb163.vps.ovh.ca
+2607:9000:0:19::c4b:a312	11878	0.000000	0.000000	us	-	-	G(mergevps1)martin.bet
+2607:9000:0:28::2610:75dc	11878	0.000000	0.000000	us	-	-	G(blargh01)gutter.duckdns.org
+2607:9000:9000:106f::a	11878	0.000000	0.000000	us	-	-	G(echonetna3)tzulo
+2607:b500:402:8b00::1	8560	0.000000	0.000000	us	-	-	G(letsdoitUS)ip74-208-189-124.pbiaas.com
+2607:b500:404:4a00::1	8560	0.000000	0.000000	us	-	-	G(PommespanzerUS1)us1.pommespanzer.cc
+2607:b500:425:9100::1	8560	0.000000	0.000000	us	-	-	G(pewpew)ip198-251-67-184.pbiaas.com
+2607:b500:425:c000:0:d9f:fd98:556d	8560	0.000000	0.000000	us	-	-	G(gnampf4i32)IONOS SE
+2607:f1c0:f00b:ca00::1	8560	0.000000	0.000000	us	-	-	G(rreellaayy)ip74-208-201-163.pbiaas.com
+2607:f1c0:f00f:d300::1	8560	0.000000	0.000000	us	-	-	G(OROGOM)ip74-208-45-216.pbiaas.com
+2607:f1c0:f04e:fd00::1	8560	0.000000	0.000000	us	-	-	G(TORque)IONOS SE
+2607:f1c0:f004:1000::1	8560	0.000000	0.000000	us	-	-	G(usaIOtor1)usa-1.io.tor.twormtwo.com
+2607:f1c0:f06f:b300:0:234a:3492:3aef	8560	0.000000	0.000000	us	-	-	G(ecuasterces)ip69-48-205-198.pbiaas.com
+2607:f1c0:f07d:b900::1	8560	0.000000	0.000000	us	-	-	G(outatime)ip66-179-189-106.pbiaas.com
+2607:f1c0:f007:a200::1	8560	0.000000	0.000000	us	-	-	G(Delight)ip69-48-206-32.pbiaas.com
+2607:f1c0:f044:4400::1	8560	0.000000	0.000000	us	-	-	G(NoOnionUS02)ip66-179-94-91.pbiaas.com
+2607:f1c0:f065:3d00::1	8560	0.000000	0.000000	us	-	-	G(PommespanzerUS2)us2.pommespanzer.cc
+2607:f298:5:101d:f816:3eff:fe9b:c835	26347	0.000000	0.000000	us	-	-	G(TorRelaylxbchppt)*.apps.geekcentral.io
+2607:f298:5:101d:f816:3eff:fe9f:47b1	26347	0.000000	0.000000	us	-	-	G(TorRelaylxbchppt)ip-208-113-128-210.nodes.dream.io
+2607:f298:5:101d:f816:3eff:fe56:6ffa	26347	0.000000	0.000000	us	-	-	G(TorRelaylxbchppt)ip-208-113-133-68.nodes.dream.io
+2607:f298:5:101d:f816:3eff:fea3:b8	26347	0.000000	0.000000	us	-	-	G(TorRelaylxbchppt)ip-208-113-200-37.dreamhost.com
+2607:f298:5:101d:f816:3eff:fefd:ad20	26347	0.000000	0.000000	us	-	-	G(TorRelaylxbchppt)a2.swarthy.mail.dreamhost.net
+2607:f530:8002::19	10996	0.000000	0.000000	ca	-	-	G(TorExitVIF)tor-gateway.vif.com
+2607:fa18:3:beef:f001:c0de:feed:ba5e	6315	0.000000	0.000000	us	-	-	GE(xmission)this.is.a.tor.exit.xmission.com
+2610:1c0:0:5::16	11403	0.000000	0.000000	us	-	-	G(NYCBUG1)nycbug1.nycbug.org
+2610:1c0:0:5::20	11403	0.000000	0.000000	us	-	-	G(NYCBUG0)nycbug0.nycbug.org
+2620:6:2000:104::a	20473	0.000000	0.000000	us	-	-	G(Prolixium)dax.prolixium.com
+2620:7:6001::101	62744	0.000000	0.000000	us	-	-	GE(Quintex11)tor11.quintex.com
+2620:7:6001::102	62744	0.000000	0.000000	us	-	-	GE(Quintex12)tor12.quintex.com
+2620:7:6001::103	62744	0.000000	0.000000	us	-	-	GE(Quintex13)tor13.quintex.com
+2620:7:6001::104	62744	0.000000	0.000000	us	-	-	GE(Quintex14)tor14.quintex.com
+2620:7:6001::105	62744	0.000000	0.000000	us	-	-	GE(Quintex15)tor15.quintex.com
+2620:7:6001::106	62744	0.000000	0.000000	us	-	-	GE(Quintex16)tor16.quintex.com
+2620:7:6001::107	62744	0.000000	0.000000	us	-	-	GE(Quintex17)tor17.quintex.com
+2620:7:6001::108	62744	0.000000	0.000000	us	-	-	GE(Quintex18)tor18.quintex.com
+2620:7:6001::109	62744	0.000000	0.000000	us	-	-	GE(Quintex19)tor19.quintex.com
+2620:7:6001::110	62744	0.000000	0.000000	us	-	-	GE(Quintex20)tor20.quintex.com
+2620:7:6001::111	62744	0.000000	0.000000	us	-	-	GE(QuintexColinNSarah)tor31.quintex.com
+2620:7:6001::112	62744	0.000000	0.000000	us	-	-	GE(QuintexPhoulRules)tor32.quintex.com
+2620:7:6001::113	62744	0.000000	0.000000	us	-	-	GE(Quintex33)tor33.quintex.com
+2620:7:6001::114	62744	0.000000	0.000000	us	-	-	GE(Quintex34)tor34.quintex.com
+2620:7:6001::115	62744	0.000000	0.000000	us	-	-	GE(QuintexAirVPN4)tor4.quintex.com
+2620:7:6001::116	62744	0.000000	0.000000	us	-	-	GE(QuintexAirVPN5)tor5.quintex.com
+2620:7:6001::117	62744	0.000000	0.000000	us	-	-	GE(QuintexAirVPN6)tor6.quintex.com
+2620:7:6001::118	62744	0.000000	0.000000	us	-	-	GE(QuintexAirVPN7)tor7.quintex.com
+2620:7:6001::119	62744	0.000000	0.000000	us	-	-	GE(QuintexAirVPN3)tor3.quintex.com
+2620:7:6001::120	62744	0.000000	0.000000	us	-	-	GE(QuintexAirVPN1)tor1.quintex.com
+2620:7:6001::122	62744	0.000000	0.000000	us	-	-	GE(QuintexAirVPN8)tor8.quintex.com
+2620:7:6001::123	62744	0.000000	0.000000	us	-	-	GE(QuintexAirVPN9)tor9.quintex.com
+2620:7:6001::140	62744	0.000000	0.000000	us	-	-	GE(Quintex51)tor51.quintex.com
+2620:7:6001::141	62744	0.000000	0.000000	us	-	-	GE(Quintex52)tor52.quintex.com
+2620:7:6001::142	62744	0.000000	0.000000	us	-	-	GE(Quintex53)tor53.quintex.com
+2620:7:6001::143	62744	0.000000	0.000000	us	-	-	GE(Quintex54)tor54.quintex.com
+2620:7:6001::144	62744	0.000000	0.000000	us	-	-	GE(Quintex55)tor55.quintex.com
+2620:7:6001::145	62744	0.000000	0.000000	us	-	-	GE(Quintex56)tor56.quintex.com
+2620:7:6001::146	62744	0.000000	0.000000	us	-	-	GE(Quintex57)tor57.quintex.com
+2620:7:6001::147	62744	0.000000	0.000000	us	-	-	GE(Quintex58)tor58.quintex.com
+2620:7:6001::148	62744	0.000000	0.000000	us	-	-	GE(Quintex59)tor59.quintex.com
+2620:7:6001::149	62744	0.000000	0.000000	us	-	-	GE(Quintex60)tor60.quintex.com
+2620:7:6001::150	62744	0.000000	0.000000	us	-	-	GE(Quintex61)tor61.quintex.com
+2620:7:6001::151	62744	0.000000	0.000000	us	-	-	GE(Quintex62)tor62.quintex.com
+2620:7:6001::152	62744	0.000000	0.000000	us	-	-	GE(Quintex63)tor63.quintex.com
+2620:7:6001::153	62744	0.000000	0.000000	us	-	-	GE(Quintex64)tor64.quintex.com
+2620:7:6001::154	62744	0.000000	0.000000	us	-	-	GE(Quintex65)tor65.quintex.com
+2620:7:6001::155	62744	0.000000	0.000000	us	-	-	GE(Quintex66)tor66.quintex.com
+2620:7:6001::156	62744	0.000000	0.000000	us	-	-	GE(Quintex67)tor67.quintex.com
+2620:7:6001::157	62744	0.000000	0.000000	us	-	-	GE(Quintex68)tor68.quintex.com
+2620:7:6001::158	62744	0.000000	0.000000	us	-	-	GE(Quintex69)tor69.quintex.com
+2620:7:6001::159	62744	0.000000	0.000000	us	-	-	GE(Quintex70)tor70.quintex.com
+2620:7:6001::160	62744	0.000000	0.000000	us	-	-	GE(Quintex71)tor71.quintex.com
+2620:7:6001::161	62744	0.000000	0.000000	us	-	-	GE(Quintex72)tor72.quintex.com
+2620:7:6001::162	62744	0.000000	0.000000	us	-	-	GE(Quintex73)tor73.quintex.com
+2620:7:6001::163	62744	0.000000	0.000000	us	-	-	GE(Quintex74)tor74.quintex.com
+2620:7:6001::164	62744	0.000000	0.000000	us	-	-	GE(Quintex75)tor75.quintex.com
+2620:7:6001::165	62744	0.000000	0.000000	us	-	-	GE(Quintex76)tor76.quintex.com
+2620:7:6001::166	62744	0.000000	0.000000	us	-	-	GE(Quintex77)tor77.quintex.com
+2620:7:6001::167	62744	0.000000	0.000000	us	-	-	GE(Quintex78)tor78.quintex.com
+2620:7:6001::168	62744	0.000000	0.000000	us	-	-	GE(Quintex79)tor79.quintex.com
+2620:7:6001::169	62744	0.000000	0.000000	us	-	-	GE(Quintex80)tor80.quintex.com
+2620:7:6001::170	62744	0.000000	0.000000	us	-	-	GE(Quintex81)tor81.quintex.com
+2620:7:6001::171	62744	0.000000	0.000000	us	-	-	GE(Quintex82)tor82.quintex.com
+2620:7:6001::172	62744	0.000000	0.000000	us	-	-	GE(Quintex83)tor83.quintex.com
+2620:7:6001::173	62744	0.000000	0.000000	us	-	-	GE(Quintex84)tor84.quintex.com
+2620:7:6001::174	62744	0.000000	0.000000	us	-	-	GE(Quintex85)tor85.quintex.com
+2620:7:6001::175	62744	0.000000	0.000000	us	-	-	GE(Quintex86)tor86.quintex.com
+2620:7:6001::176	62744	0.000000	0.000000	us	-	-	GE(Quintex87)tor87.quintex.com
+2620:7:6001::177	62744	0.000000	0.000000	us	-	-	GE(Quintex88)tor88.quintex.com
+2620:7:6001::178	62744	0.000000	0.000000	us	-	-	GE(Quintex89)tor89.quintex.com
+2620:7:6001::179	62744	0.000000	0.000000	us	-	-	GE(Quintex90)tor90.quintex.com
+2620:7:6001::180	62744	0.000000	0.000000	us	-	-	GE(Quintex91)tor91.quintex.com
+2620:7:6001::181	62744	0.000000	0.000000	us	-	-	GE(Quintex92)tor92.quintex.com
+2620:7:6001::182	62744	0.000000	0.000000	us	-	-	GE(Quintex93)tor93.quintex.com
+2620:7:6001::183	62744	0.000000	0.000000	us	-	-	GE(Quintex94)tor94.quintex.com
+2620:7:6001::184	62744	0.000000	0.000000	us	-	-	GE(Quintex95)tor95.quintex.com
+2620:7:6001::185	62744	0.000000	0.000000	us	-	-	GE(Quintex96)tor96.quintex.com
+2620:7:6001::186	62744	0.000000	0.000000	us	-	-	GE(Quintex97)tor97.quintex.com
+2620:7:6001::187	62744	0.000000	0.000000	us	-	-	GE(Quintex98)tor98.quintex.com
+2620:7:6001::189	62744	0.000000	0.000000	us	-	-	GE(Quintex100)tor100.quintex.com
+2620:7:6001::e664	62744	0.000000	0.000000	us	-	-	GE(QuintexAirVPN10)tor10.quintex.com
+2620:7:6001::ffff:c759:e64a	62744	0.000000	0.000000	us	-	-	GE(QuintexAirVPN21)tor21.quintex.com
+2620:7:6001::ffff:c759:e64b	62744	0.000000	0.000000	us	-	-	GE(QuintexAirVPN22)tor22.quintex.com
+2620:7:6001::ffff:c759:e64c	62744	0.000000	0.000000	us	-	-	GE(QuintexAirVPN23)tor23.quintex.com
+2620:7:6001::ffff:c759:e64d	62744	0.000000	0.000000	us	-	-	GE(QuintexAirVPN24)tor24.quintex.com
+2620:7:6001::ffff:c759:e64e	62744	0.000000	0.000000	us	-	-	GE(QuintexAirVPN25)tor25.quintex.com
+2620:7:6001::ffff:c759:e64f	62744	0.000000	0.000000	us	-	-	GE(QuintexAirVPN26)tor26.quintex.com
+2620:7:6001::ffff:c759:e640	62744	0.000000	0.000000	us	-	-	GE(Quintex41)tor41.quintex.com
+2620:7:6001::ffff:c759:e643	62744	0.000000	0.000000	us	-	-	GE(Quintex44)tor44.quintex.com
+2620:7:6001::ffff:c759:e644	62744	0.000000	0.000000	us	-	-	GE(Quintex45)tor45.quintex.com
+2620:7:6001::ffff:c759:e645	62744	0.000000	0.000000	us	-	-	GE(Quintex46)tor46.quintex.com
+2620:7:6001::ffff:c759:e646	62744	0.000000	0.000000	us	-	-	GE(Quintex47)tor47.quintex.com
+2620:7:6001::ffff:c759:e648	62744	0.000000	0.000000	us	-	-	GE(Quintex49)tor49.quintex.com
+2620:7:6001::ffff:c759:e649	62744	0.000000	0.000000	us	-	-	GE(Quintex50)tor50.quintex.com
+2620:7:6001::ffff:c759:e650	62744	0.000000	0.000000	us	-	-	GE(QuintexAirVPN27)tor27.quintex.com
+2620:7:6001::ffff:c759:e652	62744	0.000000	0.000000	us	-	-	GE(QuintexAirVPN29)tor29.quintex.com
+2620:7:6001::ffff:c759:e653	62744	0.000000	0.000000	us	-	-	GE(QuintexAirVPN30)tor30.quintex.com
+2620:7:6001::ffff:c759:e654	62744	0.000000	0.000000	us	-	-	GE(Quintex35)tor35.quintex.com
+2620:7:6001::ffff:c759:e655	62744	0.000000	0.000000	us	-	-	GE(Quintex36)tor36.quintex.com
+2620:7:6001::ffff:c759:e656	62744	0.000000	0.000000	us	-	-	GE(Quintex37)tor37.quintex.com
+2620:7:6001::ffff:c759:e657	62744	0.000000	0.000000	us	-	-	GE(Quintex38)tor38.quintex.com
+2620:7:6001::ffff:c759:e658	62744	0.000000	0.000000	us	-	-	GE(Quintex39)tor39.quintex.com
+2620:7:6001::ffff:c759:e659	62744	0.000000	0.000000	us	-	-	GE(Quintex40)tor40.quintex.com
+2620:18c:0:192::e0:130	396507	0.000000	0.000000	us	-	-	GE(ageis)emeraldonion.net
+2620:18c:0:192::e0:131	396507	0.000000	0.000000	us	-	-	GE(barlow)emeraldonion.net
+2620:18c:0:192::e0:132	396507	0.000000	0.000000	us	-	-	GE(binney)emeraldonion.net
+2620:18c:0:192::e0:133	396507	0.000000	0.000000	us	-	-	GE(bowden)emeraldonion.net
+2620:18c:0:192::e0:134	396507	0.000000	0.000000	us	-	-	GE(drake)emeraldonion.net
+2620:18c:0:192::e0:135	396507	0.000000	0.000000	us	-	-	GE(ellsburg)emeraldonion.net
+2620:18c:0:192::e0:136	396507	0.000000	0.000000	us	-	-	GE(fellwock)emeraldonion.net
+2620:18c:0:192::e0:137	396507	0.000000	0.000000	us	-	-	GE(goldwasser)emeraldonion.net
+2620:18c:0:192::e0:138	396507	0.000000	0.000000	us	-	-	GE(goodman)emeraldonion.net
+2620:18c:0:192::e0:139	396507	0.000000	0.000000	us	-	-	GE(kaminsky)emeraldonion.net
+2620:18c:0:192::e0:140	396507	0.000000	0.000000	us	-	-	GE(kiriakou)emeraldonion.net
+2620:18c:0:192::e0:141	396507	0.000000	0.000000	us	-	-	GE(klein)emeraldonion.net
+2620:18c:0:192::e0:142	396507	0.000000	0.000000	us	-	-	GE(manning)emeraldonion.net
+2620:18c:0:192::e0:143	396507	0.000000	0.000000	us	-	-	GE(merrill)emeraldonion.net
+2620:18c:0:192::e0:144	396507	0.000000	0.000000	us	-	-	GE(moxie)emeraldonion.net
+2620:18c:0:192::e0:145	396507	0.000000	0.000000	us	-	-	GE(mudge)emeraldonion.net
+2620:18c:0:192::e0:146	396507	0.000000	0.000000	us	-	-	GE(poitras)emeraldonion.net
+2620:18c:0:192::e0:147	396507	0.000000	0.000000	us	-	-	GE(snowden)emeraldonion.net
+2620:18c:0:192::e0:148	396507	0.000000	0.000000	us	-	-	GE(swartz)emeraldonion.net
+2620:18c:0:192::e0:149	396507	0.000000	0.000000	us	-	-	GE(tice)emeraldonion.net
+2620:18c:0:192::e0:150	396507	0.000000	0.000000	us	-	-	GE(turing)emeraldonion.net
+2620:18c:0:192::e0:151	396507	0.000000	0.000000	us	-	-	GE(winner)emeraldonion.net
+2620:18c:0:192::e0:152	396507	0.000000	0.000000	us	-	-	GE(young)emeraldonion.net
+2620:18c:0:192::e0:153	396507	0.000000	0.000000	us	-	-	GE(zimmermann)emeraldonion.net
+2620:18c:0:192::e0:154	396507	0.000000	0.000000	us	-	-	GE(diffie)emeraldonion.net
+2620:18c:0:192::e0:155	396507	0.000000	0.000000	us	-	-	GE(hellman)emeraldonion.net
+2620:18c:0:192::e0:156	396507	0.000000	0.000000	us	-	-	GE(merkle)emeraldonion.net
+2620:18c:0:192::e0:157	396507	0.000000	0.000000	us	-	-	GE(gun)emeraldonion.net
+2620:18c:0:192::e0:158	396507	0.000000	0.000000	us	-	-	GE(landau)emeraldonion.net
+2620:18c:0:192::e0:159	396507	0.000000	0.000000	us	-	-	GE(perlman)emeraldonion.net
+2620:18c:0:192::e0:160	396507	0.000000	0.000000	us	-	-	GE(dwork)emeraldonion.net
+2620:18c:0:192::e0:161	396507	0.000000	0.000000	us	-	-	GE(syverson)emeraldonion.net
+2620:18c:0:192::e0:162	396507	0.000000	0.000000	us	-	-	GE(dingledine)emeraldonion.net
+2620:18c:0:192::e0:163	396507	0.000000	0.000000	us	-	-	GE(mathewson)emeraldonion.net
+2620:18c:0:192::e0:164	396507	0.000000	0.000000	us	-	-	GE(samarati)emeraldonion.net
+2620:18c:0:192::e0:166	396507	0.000000	0.000000	us	-	-	GE(sweeney)emeraldonion.net
+2620:95:4007::111	40138	0.000000	0.000000	us	-	-	G(53labsfmt)tor.fmt.53labs.com
+2620:124:1009:1::171	12161	0.000000	0.000000	us	-	-	G(dao)tor1.dao.org
+2620:b0:2000:102::7	400771	0.000000	0.000000	us	-	-	G(nitrogen9001)tor-exit.us.dontinterceptmebro.com
+2800:ba0:6:c1::4858	263812	0.000000	0.000000	mx	-	-	GE(TrujillosExit)-
+2803:6d90:111::67	272996	0.000000	0.000000	cw	-	-	GE(CembraNutBoys03)-
+2803:cd80:2000:10::db8f:5f60	264811	0.000000	0.000000	tt	-	-	GE(CembraNutBoys02)-

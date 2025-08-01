@@ -1,0 +1,31 @@
+prefix=/usr/local
+exec_prefix=${prefix}
+
+bindir=${exec_prefix}/bin
+datarootdir=${prefix}/share
+datadir=${datarootdir}
+docdir=${prefix}/doc
+includedir=${prefix}/include
+infodir=${datarootdir}/info
+htmldir=${docdir}
+libdir=/usr/local/lib64
+libexecdir=${exec_prefix}/libexec
+localstatedir=${prefix}/var
+mandir=${datarootdir}/man
+sbindir=${exec_prefix}/sbin
+sharedstatedir=${prefix}/com
+sysconfdir=${prefix}/etc
+
+## ------------------------------------------------------------
+
+Name: CRE2
+Description: C wrapper for re2, a regular expressions library
+Version: 0.3.6
+Requires: re2 >= 0.0.0
+Libs: -L${libdir} -lcre2
+Cflags: -I${includedir}
+
+### end of file
+# Local Variables:
+# mode: script
+# End:

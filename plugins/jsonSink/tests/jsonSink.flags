@@ -1,0 +1,32 @@
+# Flags to toggle
+#
+# Run the ../../../tests/test.sh script from the plugin main directory:
+#
+# cd $T2HOME/plugins/jsonSink
+# ../../tests/test.sh [OPTION...]
+#
+# If run from this folder, make sure to use absolute path for the '-p' option.
+#
+# Flag name     File
+
+# ../../tranalyzer2/src/tranalyzer.h
+BLOCK_BUF                   ../../tranalyzer2/src/tranalyzer.h
+ENVCNTRL                    ../../tranalyzer2/src/tranalyzer.h
+TSTAMP_UTC                  ../../tranalyzer2/src/tranalyzer.h
+VERBOSE                     ../../tranalyzer2/src/tranalyzer.h
+TSTAMP_PREC                 ../../tranalyzer2/src/tranalyzer.h
+
+# ../../utils/bin2txt.h
+B2T_TIMESTR                 ../../utils/bin2txt.h
+IP4_FORMAT                  ../../utils/bin2txt.h
+IP6_FORMAT                  ../../utils/bin2txt.h
+MAC_FORMAT                  ../../utils/bin2txt.h
+
+# src/jsonSink.h
+JSON_GZ_COMPRESS            src/jsonSink.h # Keep this one first (need to rebuild Makefiles)
+JSON_SOCKET_ON              src/jsonSink.h
+JSON_SPLIT                  src/jsonSink.h
+JSON_ROOT_NODE              src/jsonSink.h
+JSON_SUPPRESS_EMPTY_ARRAY   src/jsonSink.h
+JSON_NO_SPACES              src/jsonSink.h
+JSON_SELECT                 src/jsonSink.h

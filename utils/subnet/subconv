@@ -1,0 +1,118 @@
+#!/usr/bin/env bash
+
+source "$(dirname "$0")/../../scripts/t2utils.sh"
+
+cd "$(dirname "$0")" || fatal "Failed to cd into '$(dirname "$0")'"
+
+usage() {
+    echo "Usage:"
+    echo "    $SNAME [OPTION...] <subnets.txt>"
+    echo
+    echo "Optional arguments:"
+    echo "    -4                Generate subnet file for IPv4"
+    echo "    -6                Generate subnet file for IPv6"
+    echo
+    echo "    -t                Add Tor info to subnet file"
+    echo "    -a                Download and add Tor info to subnet file"
+    echo "    -c                Convert from Tor JSON info to subnet file"
+    echo
+    echo "    -h, --help        Show this help, then exit"
+}
+
+while [ $# -ne 0 ]; do
+    case "$1" in
+        -h|-\?|--help) usage; exit 0;;
+        -t) TOR=1;;
+        -4) IPVER=4;;
+        -6) IPVER=6;;
+        *)
+            if [ ! -f "$1" ]; then
+                abort_option_unknown "$1"
+            fi
+            FILE="$1"
+            ;;
+    esac
+    shift
+done
+
+if [ ! -f "$FILE" ]; then
+    abort_required_file
+fi
+
+if [ -z "$IPVER" ]; then
+    # Try to automatically detect the version
+    IPVER="$(AWK 'match($0, /^#[ \t]+Begin[ \t]+IPv([46])[ \t]+/, ipver) {
+        print ipver[1]
+        exit
+    }' <<< "$(head -3 "$FILE")")"
+fi
+
+if [ -z "$IPVER" ]; then
+    printerr "One of '-4' or '-6' option is required"
+    abort_with_help
+fi
+
+# Try building utils_v[46]
+if ! make "utils_v$IPVER"; then
+    printerr "Failed to build 'utils_v$IPVER'"
+    exit 1
+fi
+
+V="$(AWK -F'\t' 'NR == 1 { print $2, $3; exit }' "$FILE")"
+VER="$(AWK '{ print $1 }' <<< "$V")"
+REV="$(AWK '{ print $2 }' <<< "$V")"
+SUBRNG=$(get_define SUBRNG ../subnetHL.h)
+
+printinf "IPv$IPVER subnet file version $VER revision $REV, mode $SUBRNG"
+
+# check subnet version supported by T2
+T2V=$(get_define SUBVER ../subnetHL.h)
+if [ "$VER" != "$T2V" ]; then
+    printerr "\nSubnet file '$FILE' version $VER not supported by Tranalyzer"
+    printinf "Update it or try running 't2build -f tranalyzer2'"
+    exit 1
+fi
+
+PREFIX="$(AWK -F'.' -v OFS='.' 'NF > 1 { NF-- } { print }' <<< "$FILE")"
+HLFILE="${PREFIX}_HL.txt"
+
+convert() {
+    local HLFILE="$1"
+    local HLPFILE="${PREFIX}_HLP.txt"
+    local BINFILE="${PREFIX}_HLP.bin"
+    #NCPU=$(get_nproc)
+    if [ "$SUBRNG" -eq 1 ]; then
+        #LC_ALL=C sort -t$'\t' -k1,1 -k2n,2 "$HLFILE" --parallel=$NCPU | ./nett$IPVER | ./vect$IPVER > "$HLPFILE"
+        LC_ALL=C sort -t$'\t' -k1,1 -k2n,2 "$HLFILE" | "./nett$IPVER" | "./vect$IPVER" > "$HLPFILE" || exit 1
+    else
+        #LC_ALL=C sort -t$'\t' -k1,1 -k2n,2 "$HLFILE" --parallel=$NCPU | uniq | ./nett$IPVER | ./vect$IPVER > "$HLPFILE"
+        LC_ALL=C sort -t$'\t' -k1,1 -k2n,2 "$HLFILE" | uniq | "./nett$IPVER" | "./vect$IPVER" > "$HLPFILE" || exit 1
+    fi
+    "./sbm$IPVER" "$HLPFILE" "$BINFILE" "$VER" "$REV" || exit 1
+}
+
+printinf "Converting IPv$IPVER subnet file and generating binary"
+if [ "$SUBRNG" -eq 1 ]; then
+    LC_ALL=C sort -t$'\t' -V -k2,2 "$FILE" | uniq > nudel.txt
+    "./ext$IPVER" nudel.txt > "$HLFILE" || exit 1
+    rm nudel.txt
+else
+    "./ext$IPVER" "$FILE" > "$HLFILE" || exit 1
+fi
+convert "$HLFILE"
+
+if [ -n "$TOR" ]; then
+    make -C tor all || exit 1
+    if [ ! -s "tor/exit.json" ] && [ ! -s "tor/guard.json" ]; then
+        printwrn "\nNot adding IPv$IPVER Tor info: could not find a valid 'exit.json' and/or 'guard.json' file"
+        printinf "Try running 't2build -U tranalyzer2' to get the latest version of the Tor files\n"
+    else
+        if [ ! -s "tor/torsub$IPVER" ]; then
+            ./tor/torldld -c
+        fi
+        printinf "Adding IPv$IPVER Tor info"
+        "tor/bsHL$IPVER" "tor/torsub$IPVER.txt" >> "$HLFILE" || exit 1
+        printinf "Interlacing Tor info into IPv$IPVER subnet file and generating binary"
+        convert "$HLFILE"
+    fi
+fi

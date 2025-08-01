@@ -1,0 +1,23 @@
+-- Top known HASSH signatures by number of flows
+
+SELECT
+    hassh,
+    hasshDesc,
+    COUNT(*) AS cnt
+
+FROM (
+    SELECT
+        UNNEST("sshHassh") AS hassh,
+        UNNEST("sshHasshDesc") AS hasshDesc
+    FROM
+        flow
+    WHERE
+        ARRAY_LENGTH("sshHasshDesc", 1) > 0
+        AND "timeFirst" >= to_timestamp(:time_from)
+        AND "timeLast" <= to_timestamp(:time_to)
+) AS flows
+
+GROUP BY hassh, hasshDesc
+ORDER BY cnt :sort_order
+
+LIMIT :n

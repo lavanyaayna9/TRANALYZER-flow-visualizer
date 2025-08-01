@@ -1,0 +1,19 @@
+# Flags to toggle
+#
+# Run the ../../../tests/test.sh script from the plugin main directory:
+#
+# cd $T2HOME/plugins/popDecode
+# ../../tests/test.sh [OPTION...]
+#
+# If run from this folder, make sure to use absolute path for the '-p' option.
+#
+# Flag name     File
+
+# ../../tranalyzer2/src/tranalyzer.h
+BLOCK_BUF       ../../tranalyzer2/src/tranalyzer.h
+ENVCNTRL        ../../tranalyzer2/src/tranalyzer.h
+
+# src/popDecode.h
+POP_SAVE        src/popDecode.h
+POP_RMDIR       src/popDecode.h
+POP_BTFLD       src/popDecode.h

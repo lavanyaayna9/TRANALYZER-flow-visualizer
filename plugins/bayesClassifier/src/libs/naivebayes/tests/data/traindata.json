@@ -1,0 +1,44 @@
+{
+    "datasets" : [
+        {
+            "data" : [0, 10, 5, 30, 45],
+            "model_label" : "class_1"
+        },
+        {
+            "data" : [20, 50, 22, 34, 10],
+            "model_label" : "class_1"
+        },
+        {
+            "data" : [11, 0, 5, 30, 12],
+            "model_label" : "class_1"
+        },
+        {
+            "data" : [2, 21, 33, 50, 40],
+            "model_label" : "class_1"
+        },
+        {
+            "data" : [30, 22, 34, 40, 10],
+            "model_label" : "class_1"
+        },
+        {
+            "data" : [53, 100, 60, 62, 90],
+            "model_label" : "class_2"
+        },
+        {
+            "data" : [70, 80, 67, 89, 75],
+            "model_label" : "class_2"
+        },
+        {
+            "data" : [65, 55, 63, 91, 100],
+            "model_label" : "class_2"
+        },
+        {
+            "data" : [83, 87, 64, 84, 99],
+            "model_label" : "class_2"
+        },
+        {
+            "data" : [59, 73, 85, 70, 89],
+            "model_label" : "class_2"
+        }
+    ]
+}

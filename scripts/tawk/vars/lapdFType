@@ -1,0 +1,5 @@
+#H lapdFType | Description
+#H =============================================================================
+           0 | Information frame
+           1 | Supervisory frame
+           3 | Unnumbered frame

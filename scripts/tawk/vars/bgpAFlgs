@@ -1,0 +1,21 @@
+#H bit | bgpAFlgs | Description
+#H =============================================================================
+#W   0 | 0x0001   | Bogons advertisement
+#W   1 | 0x0002   | Prefix more specific than /24 was advertised
+#W   2 | 0x0004   | Prefix less specific than /8 was advertised
+#W   3 | 0x0008   | Possible blackhole: community with tag 666
+
+#W   4 | 0x0010   | Possible loop: My AS in AS path
+#W   5 | 0x0020   | Multiple Origin AS (same prefix announced by more than one origin AS)
+#W   6 | 0x0040   | AS prepended more than 10 times in AS path (average AS path length is between 4 and 5)
+#W   7 | 0x0080   | AS number reserved for private use in AS path (AS: 64512-65534, AS4: 4200000000-4294967294)
+
+#W   8 | 0x0100   | Route for more specific prefix advertised
+     9 | 0x0200   | -
+    10 | 0x0400   | -
+    11 | 0x0800   | -
+
+    12 | 0x1000   | -
+    13 | 0x2000   | -
+    14 | 0x4000   | -
+    15 | 0x8000   | -

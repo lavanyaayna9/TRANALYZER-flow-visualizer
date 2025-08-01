@@ -1,0 +1,27 @@
+# ZSH completion for t2flowstat
+
+_t2flowstat() {
+    #compdef t2flowstat
+
+    local cur="${words[CURRENT]}"
+    [ $CURRENT -gt 2 ] && local prev="${words[CURRENT-1]}"
+
+    case "$prev" in
+        -d)
+            local dirs=(A B)
+            compadd "${dirs[@]}"
+            return
+            ;;
+        -c|-m|-s)
+            return
+            ;;
+    esac
+
+    if [[ "$cur" == -* ]]; then
+        _arguments --
+    else
+        _files
+    fi
+}
+
+compdef _t2flowstat t2flowstat

@@ -1,0 +1,61 @@
+\IfFileExists{t2doc.cls}{%
+    \documentclass[documentation]{subfiles}
+}{
+    \errmessage{Error: could not find t2doc.cls}
+}
+
+\begin{document}
+
+\trantitle
+    {wavelet} % plugin name
+    {Wavelet} % short description
+    {Tranalyzer Development Team}
+
+\section{wavelet}\label{s:wavelet}
+
+\subsection{Description}
+The wavelet plugin calculates the Daubechies wavelet transformation of the IP packet length or the inter-arrival time of packets (IAT).
+
+\subsection{Configuration Flags}
+The following flags, defined in {\em define\_global.h}, can be used to control the output of the plugin:
+\begin{longtable}{>{\tt}lcl}
+    \toprule
+    {\bf Name} & {\bf Default} & {\bf Description} \\
+    \midrule\endhead%
+    WAVELET\_IAT      & 0               & Values to analyze:\\
+                      &                 & \qquad 0: Packet length,\\
+                      &                 & \qquad 1: Inter-arrival times (IAT)\\
+    WAVELET\_SIG      & 0               & Print signal\\
+    WAVELET\_PREC     & 0               & Precision:\\
+                      &                 & \qquad 0: Float,\\
+                      &                 & \qquad 1: Double\\
+    WAVELET\_THRES    & 8               & Min. number of packets for analysis\\
+    WAVELET\_MAX\_PKT & 40              & Max. number of selected packets\\
+    WAVELET\_LEVEL    & 3               & Wavelet decomposition level\\
+    WAVELET\_EXTMODE  & {\tt\small ZPD} & Extension Mode:\\
+                      &                 & \qquad {\tt NON}: No extension,\\
+                      &                 & \qquad {\tt SYM}: Symmetrization,\\
+                      &                 & \qquad {\tt ZPD}: Zero-padding\\
+    WAVELET\_TYPE     & {\tt\small DB3} & Mother Wavelet:\\
+                      &                 & \qquad {\tt DB1}: Daubechies 1 wavelet\\
+                      &                 & \qquad {\tt DB2}: Daubechies 2 wavelet\\
+                      &                 & \qquad {\tt DB3}: Daubechies 3 wavelet\\
+                      &                 & \qquad {\tt DB4}: Daubechies 4 wavelet\\
+    \bottomrule
+\end{longtable}
+
+\subsection{Flow File Output}
+The wavelet plugin outputs the following columns:
+\begin{longtable}{>{\tt}lll>{\tt\small}l}
+    \toprule
+    {\bf Name} & {\bf Type} & {\bf Description} & {\bf Flags}\\
+    \midrule\endhead%
+    waveNumPnts    & U16       & Number of points                   & \\
+    waveSig        & R(F/D)    & Packet length / IAT signal         & WAVELET\_PREC=0/1\\
+    waveNumLvl     & U32       & Number of wavelet levels           & \\
+    waveCoefDetail & R(R(F/D)) & Wavelet detail coefficients        & WAVELET\_PREC=0/1\\
+    waveCoefApprox & R(R(F/D)) & Wavelet approximation coefficients & WAVELET\_PREC=0/1\\
+    \bottomrule
+\end{longtable}
+
+\end{document}

@@ -1,0 +1,235 @@
+\IfFileExists{t2doc.cls}{
+    \documentclass[documentation]{subfiles}
+}{
+    \errmessage{Error: could not find 't2doc.cls'}
+}
+
+\begin{document}
+
+\trantitle
+    {txtSink}
+    {Text Output}
+    {Tranalyzer Development Team} % author(s)
+
+\section{txtSink}\label{s:txtSink}
+
+\subsection{Description}
+The txtSink plugin provides human readable text output which can be saved in a file {\tt PREFIX\_flows.txt}, where {\tt PREFIX} is provided via the {\tt --w} option. The generated output contains a textual representation of all plugins results. Each line in the file represents one flow. The different output statistics of the plugins are separated by a tab character to provide better post-processing with command line scripts or statistical toolsets.
+
+\subsection{Dependencies}
+
+\subsubsection{External Libraries}
+If gzip compression is activated ({\tt TFS\_GZ\_COMPRESS=1}), then {\bf zlib} must be installed.
+\begin{table}[!ht]
+    \centering
+    \begin{tabular}{>{\bf}r>{\tt}l>{\tt}l}
+        \toprule
+                                     &                      & {\bf TFS\_GZ\_COMPRESS=1}\\
+        \midrule
+        Ubuntu:                      & sudo apt-get install & zlib1g-dev\\
+        Arch:                        & sudo pacman -S       & zlib\\
+        Gentoo:                      & sudo emerge          & zlib\\
+        openSUSE:                    & sudo zypper install  & zlib-devel\\
+        Red Hat/Fedora\tablefootnote{If the {\tt dnf} command could not be found, try with {\tt yum} instead}:
+                                     & sudo dnf install     & zlib-devel\\
+        macOS\tablefootnote{Brew is a packet manager for macOS that can be found here: \url{https://brew.sh}}:
+                                     & brew install         & zlib\\
+        \bottomrule
+    \end{tabular}
+\end{table}
+
+\subsubsection{Core Configuration}
+This plugin requires the following core configuration:
+\begin{itemize}
+    \item {\em \$T2HOME/tranalyzer2/src/tranalyzer.h}:
+        \begin{itemize}
+            \item {\tt BLOCK\_BUF=0}
+        \end{itemize}
+\end{itemize}
+
+\subsection{Configuration Flags}
+The configuration flags for the txtSink plugins are separated in two files.
+
+\subsubsection{txtSink.h}
+\begin{longtable}{>{\tt}lcl}
+    \toprule
+    {\bf Name}              & {\bf Default}               & {\bf Description}\\
+    \midrule\endhead%
+    TFS\_SPLIT              & 1                           & Split the output file (Tranalyzer {\tt --W} option)\\
+    TFS\_PRI\_HDR           & 1                           & Print a row with column names at the start of the flow file\\
+    TFS\_HDR\_FILE          & 1                           & Generate a separate header file (\refs{s:tfsHeader})\\
+    TFS\_PRI\_HDR\_FW       & 0                           & Print header in every output fragment (Tranalyzer {\tt --W} option)\\
+    TFS\_GZ\_COMPRESS       & 0                           & Compress the output (gzip)\\
+    TFS\_FLOWS\_TXT\_SUFFIX & {\small\tt "\_flows.txt"}   & Suffix for the flow file\\
+    TFS\_HEADER\_SUFFIX     & {\small\tt "\_headers.txt"} & Suffix for the header file\\
+    \bottomrule
+\end{longtable}
+%The default suffixes are {\tt \_flows.txt} for the flow file and {\tt \_headers.txt} for the header file.
+%Both suffixes can be configured using {\tt TFS\_FLOWS\_TXT\_SUFFIX} and {\tt TFS\_HEADER\_SUFFIX} respectively.
+
+\subsubsection{bin2txt.h}
+{\tt bin2txt.h} controls the conversion from internal binary format to standard text output.
+
+\begin{longtable}{>{\tt}lcl}
+    \toprule
+    {\bf Name} & {\bf Default} & {\bf Description}\\
+    \midrule\endhead%
+    IP4\_FORMAT                & 0                & IPv4 addresses representation:\\
+                               &                  & \qquad 0: normal,\\
+                               &                  & \qquad 1: normalized (padded with zeros),\\
+                               &                  & \qquad 2: one 32-bits hex number\\
+                               &                  & \qquad 3: one 32-bits unsigned number\\
+    IP6\_FORMAT                & 0                & IPv6 addresses representation:\\
+                               &                  & \qquad 0: compressed,\\
+                               &                  & \qquad 1: uncompressed,\\
+                               &                  & \qquad 2: one 128-bits hex number,\\
+                               &                  & \qquad 3: two 64-bits hex numbers\\
+    MAC\_FORMAT                & 0                & MAC addresses representation:\\
+                               &                  & \qquad 0: normal (edit {\tt MAC\_SEP} to change the separator),\\
+                               &                  & \qquad 1: one 64-bits hex number,\\
+    MAC\_SEP                   & {\tt\small ":"}  & Separator to use in MAC addresses: {\tt 11:22:33:44:55:66}\\
+    B2T\_NON\_IP\_STR          & {\tt\small "-"}  & Representation of non-IPv4/IPv6 addresses in IP columns\\
+    HEX\_CAPITAL               & 0                & Hex output: 0: lower case; 1: upper case\\
+    TFS\_EXTENDED\_HEADER      & 0                & Extended header in flow file\\
+    B2T\_NANOSECS              & 0                & Time precision: 0: microsecs, 1: nanosecs\\
+    TFS\_NC\_TYPE              & 2                & Types in header file: 0: none, 1: numbers, 2: C types\\
+    TFS\_SAN\_UTF8             & 1                & Activates the UTF-8 sanitizer for strings\\
+    B2T\_TIMESTR               & 0                & Print unix timestamps as human readable dates\\
+    HDR\_CHR                   & {\tt\small "\%"} & start character(s) of comments\\
+    SEP\_CHR                   & {\tt\small "\textbackslash{}t"}
+                                                  & column separator in the flow file\\
+                               &                  & {\tt ";"}, {\tt "."}, {\tt "\_"} and {\tt "\textbackslash""} should not be used\\
+    \bottomrule
+\end{longtable}
+
+\subsubsection{Environment Variable Configuration Flags}
+The following configuration flags can also be configured with environment variables ({\tt ENVCNTRL>0}):
+\begin{itemize}
+    \item {\tt TFS\_FLOWS\_TXT\_SUFFIX}
+    \item {\tt TFS\_HEADER\_SUFFIX}
+\end{itemize}
+
+\subsection{Additional Output}
+
+\subsubsection{Header File}\label{s:tfsHeader}
+The header file {\tt PREFIX\_headers.txt} describes the columns of the flow file and provides some additional information, such as plugins loaded and PCAP file or interface used, as depicted below. The default suffix used for the header file is {\tt \_headers.txt}. This suffix can be configured using {\tt TFS\_HEADER\_SUFFIX}.
+
+\begin{lstlisting}
+# Date: 1566316839.259591 sec (Tue 5 Aug 2023 18:00:39 CEST)
+# Tranalyzer 0.9.0 (Anteater), Cobra.
+# Core configuration: L2, IPv4, IPv6
+# SensorID: 666
+# PID: 13221
+# Command line: /home/user/tranalyzer2-0.9.0/tranalyzer2/src/tranalyzer -r file.pcap
+# HW Info: hostname;sysname;release;version;machine
+# SW info: libpcap version 1.9.1
+#
+# Plugins loaded:
+#   01: protoStats, version 0.9.0
+#   02: basicFlow, version 0.9.0
+#   03: macRecorder, version 0.9.0
+#   04: portClassifier, version 0.9.0
+#   05: basicStats, version 0.9.0
+#   06: tcpFlags, version 0.9.0
+#   07: tcpStates, version 0.9.0
+#   08: icmpDecode, version 0.9.0
+#   09: connStat, version 0.9.0
+#   10: txtSink, version 0.9.0
+#
+# Col No.   Type            Name                Description
+1           C               dir                 Flow direction
+2           U64             flowInd             Flow index
+3           H64             flowStat            Flow status and warnings
+4           U64.U32         timeFirst           Date time of first packet
+5           U64.U32         timeLast            Date time of last packet
+6           U64.U32         duration            Flow duration
+7           U8              numHdrDesc          Number of different headers descriptions
+8           U16:R           numHdrs             Number of headers (depth) in hdrDesc
+9           SC:R            hdrDesc             Headers description
+10          MAC:R           srcMac              Mac source
+11          MAC:R           dstMac              Mac destination
+12          H16             ethType             Ethernet type
+13          U16:R           vlanID              VLAN IDs
+14          IPX             srcIP               Source IP address
+15          SC              srcIPCC             Source IP country
+16          S               srcIPOrg            Source IP organization
+17          U16             srcPort             Source port
+18          IPX             dstIP               Destination IP address
+19          SC              dstIPCC             Destination IP country
+20          S               dstIPOrg            Destination IP organization
+21          U16             dstPort             Destination port
+22          U8              l4Proto             Layer 4 protocol
+23          H8              macStat             macRecorder status
+...
+\end{lstlisting}
+
+The column number can be used, e.g., with {\tt awk} or \tranrefpl{tawk} to query a given column.
+For example, to extract all ICMP flows (layer 4 protocol equals 1) from a flow file:
+\begin{center}
+{\tt awk -F'\textbackslash{}t' '\$22 == 1' PREFIX\_flows.txt}
+\end{center}
+The second column indicates the type of the column (see table below).
+If the value is repetitive, the type is postfixed with {\tt :R}.
+Repetitive values can occur any number of times (from 0 to $N$).
+Each repetition is separated by a semicolon.
+The {\tt `\_'} indicates a compound, i.e., a value containing 2 or more subvalues.
+
+\begin{savenotes}
+\begin{minipage}{.28\textwidth}
+    \begin{longtable}{rll}
+        \toprule
+        {\bf \#} & {\bf Name} & {\bf Description}\\
+        \midrule\endhead%
+         1 & I8   & int8\\
+         2 & I16  & int16\\
+         3 & I32  & int32\\
+         4 & I64  & int64\\
+         5 & I128 & int128\\
+         6 & I256 & int256\\
+         7 & U8   & uint8\\
+         8 & U16  & uint16\\
+         9 & U32  & uint32\\
+        10 & U64  & uint64\\\\
+        \bottomrule
+    \end{longtable}
+\end{minipage}
+\begin{minipage}{.28\textwidth}
+    \begin{longtable}{rll}
+        \toprule
+        {\bf \#} & {\bf Name} & {\bf Description}\\
+        \midrule\endhead%
+        11 & U128 & uint128\\
+        12 & U256 & uint256\\
+        13 & H8   & hex8\\
+        14 & H16  & hex16\\
+        15 & H32  & hex32\\
+        16 & H64  & hex64\\
+        17 & H128 & hex128\\
+        18 & H256 & hex256\\
+        19 & F    & float\\
+        20 & D    & double\\\\
+        \bottomrule
+    \end{longtable}
+\end{minipage}
+\begin{minipage}{.4\textwidth}
+    \begin{longtable}{rll}
+        \toprule
+        {\bf \#} & {\bf Name} & {\bf Description}\\
+        \midrule\endhead%
+        21 & LD      & long double\\
+        22 & C       & char\\
+        23 & S       & string\\
+        24 & C       & flow direction\footnote{{\tt A}: client$\rightarrow$server, {\tt B}: server$\rightarrow$client}\\
+        25 & TS      & timestamp\footnote{U64.U32/S (See {\tt B2T\_TIMESTR} in \tranref{bin2txt.h})}\\
+        26 & U64.U32 & duration\\
+        27 & MAC     & mac address\\
+        29 & IP4     & IPv4 address\\
+        29 & IP6     & IPv6 address\\
+        30 & IPX     & IPv4 or 6 address\\
+        31 & SC      & string class\footnote{string without quotes}\\
+        \bottomrule
+    \end{longtable}
+\end{minipage}
+\end{savenotes}
+
+\end{document}

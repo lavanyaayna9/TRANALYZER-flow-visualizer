@@ -1,0 +1,67 @@
+#!/usr/bin/env bash
+
+source "$(dirname "$0")/../../../scripts/t2utils.sh"
+
+usage() {
+    echo "Usage:"
+    echo "    $SNAME [OPTION...]"
+    echo
+    echo "Optional arguments:"
+    echo "    -h, --help        Show this help, then exit"
+}
+
+if [ "$1" == "-h" ] || [ "$1" == "--help" ]; then
+    usage
+    exit 0
+fi
+
+MACDB_HOME="$($READLINK -f "$SHOME/../macdb")"
+if [ ! -d "$MACDB_HOME" ]; then
+    printerr "Directory '$MACDB_HOME' does not exist"
+    exit 1
+elif [ ! -f "$MACDB_HOME/macEthlblP.txt" ]; then
+    printerr "File '$MACDB_HOME/macEthlblP.txt' does not exist"
+    exit 1
+fi
+
+"$SHOME/spm" "$MACDB_HOME/macaddress.txt" >  a.txt || exit 1
+"$SHOME/spp" "$MACDB_HOME/iab.csv"        >> a.txt || exit 1
+"$SHOME/spp" "$MACDB_HOME/oui.csv"        >> a.txt || exit 1
+"$SHOME/spp" "$MACDB_HOME/oui36.csv"      >> a.txt || exit 1
+"$SHOME/spp" "$MACDB_HOME/cid.csv"        >> a.txt || exit 1
+"$SHOME/spp" "$MACDB_HOME/mam.csv"        >> a.txt || exit 1
+
+sort -k1,1 -k2,2 a.txt | uniq | AWKF -M '
+BEGIN {
+    m = 0xffffffffffffffff
+    s = 0xf
+}
+!/^#/ {
+    a = strtonum($1)
+    b = or(and(rshift(strtonum(m), $2), 0xffffffffffff0000), a)
+    if (a != s) {
+        gsub(/[,.]/, "", $0)
+        gsub(/[ ]+$/, "", $4)
+        print $1, $2, "0", $3 "," $5, $4 "," $5
+        printf "0x%016X\t%d\t1\t%s,%s\t%s,%s\n", b, $2, $3, $5, $4, $5
+        s = a
+    }
+}' > "$SHOME/../macEthlbl_HL.txt"
+
+cat "$SHOME/../macdb/macEthlblP.txt" >> "$SHOME/../macEthlbl_HL.txt"
+
+$SED -i '1s/^/#macEType\tmask\tbef\tshortCorp\tcorporation\n/' "$SHOME/../macEthlbl_HL.txt"
+
+if [ ! -f "$SHOME/ucv" ]; then
+    make -C "$SHOME" ucv || exit 1
+fi
+
+sort -k1,1 -k2,2 "$SHOME/../macEthlbl_HL.txt" | "$SHOME/ucv" "$SHOME/../macEthlbl_HLP.txt"
+
+if [ ! -f "$SHOME/mbm" ]; then
+    make -C "$SHOME" mbm || exit 1
+fi
+
+"$SHOME/mbm" "$SHOME/../macEthlbl_HLP.txt" "$SHOME/../macEthlbl_HLP.bin"
+
+rm a.txt

@@ -1,0 +1,62 @@
+cursor = db.flow.aggregate([
+    {
+        $match : {
+            timeFirst : { $gte : time_from },
+            timeLast  : { $lte : time_to },
+        }
+    },
+    {
+        $unwind : "$httpMimes"
+    },
+    {
+        $match : {
+            httpMimes : { $regex : /\// }
+        }
+    },
+    {
+        $project : {
+            mime : {
+                $slice : [
+                    {
+                        $split : [
+                            { $toLower : "$httpMimes" },
+                            "/"
+                        ]
+                    },
+                    1
+                ]
+            }
+        }
+    },
+    {
+        $group : {
+            _id : "$mime",
+            count : { $sum : 1 }
+        }
+    },
+    {
+        $addFields : {
+            sort_id: {
+                $multiply : [
+                    sort_order,
+                    "$count"
+                ]
+            },
+        }
+    },
+    {
+        $sort : { sort_id : -1 }
+    },
+    {
+        $limit : n
+    }
+])
+
+cursor.forEach(
+    function(e) {
+        print(
+              e._id + "\t"
+            + e.count
+        )
+    }
+)

@@ -1,0 +1,29 @@
+#!/usr/bin/env awk
+#
+# Return true if 'v' is an integer, false otherwise.
+#
+# Parameters:
+#   - v : the value to test
+#
+# Dependencies:
+#   - None
+#
+# See also:
+#   - isfloat
+#   - isnum
+#   - isset
+#   - isuint
+#
+# Examples:
+#   - tawk 'isint(2)      { print "true"  }' file.txt
+#   - tawk 'isint(-4)     { print "true"  }' file.txt
+#   - tawk 'isint(0)      { print "true"  }' file.txt
+#   - tawk 'isint(3.)     { print "false" }' file.txt
+#   - tawk 'isint(2.0)    { print "false" }' file.txt
+#   - tawk 'isint("test") { print "false" }' file.txt
+
+@include "hdr"
+
+function isint(v) {
+    return (v ~ /^-?(0|[1-9][0-9]*)$/) || (__PRIHDR__ && hdr())
+}

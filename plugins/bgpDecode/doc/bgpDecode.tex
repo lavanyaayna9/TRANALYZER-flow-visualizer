@@ -1,0 +1,648 @@
+\IfFileExists{t2doc.cls}{
+    \documentclass[documentation]{subfiles}
+}{
+    \errmessage{Error: could not find 't2doc.cls'}
+}
+
+\begin{document}
+
+\trantitle
+    {bgpDecode}
+    {Border Gateway Protocol (BGP)}
+    {Tranalyzer Development Team} % author(s)
+
+\section{bgpDecode}\label{s:bgpDecode}
+
+\subsection{Description}
+The bgpDecode plugin analyzes BGP traffic.
+
+\subsection{Dependencies}
+None.
+
+\subsection{Configuration Flags}\label{bgp:conf}
+The following flags can be used to control the output of the plugin:
+\begin{longtable}{>{\tt}lcl}
+    \toprule
+    {\bf Name} & {\bf Default} & {\bf Description}\\
+    \midrule\endhead%
+    BGP\_DEBUG           & 0   & Activate debug output\\
+    BGP\_IP\_FORMAT      & 1   & IP addresses representation:\\
+                         &     & \qquad 0: hex,\\
+                         &     & \qquad 1: IP,\\
+                         &     & \qquad 2: int\\
+    BGP\_AS\_FORMAT      & 0   & AS number representation:\\
+                         &     & \qquad 0: ASPLAIN,\\
+                         &     & \qquad 1: ASDOT,\\
+                         &     & \qquad 2: ASDOT+\\
+    BGP\_NOTIF\_FORMAT   & 0   & Notifications representation:\\
+                         &     & \qquad 0: uint8,\\
+                         &     & \qquad 1: string (code only),\\
+                         &     & \qquad 2: string (code and subcode) (not implemented)\\
+    BGP\_TRAD\_BOGONS    & 1   & Flag \hyperref[bgp:tradbogons]{traditional bogons}\\
+    BGP\_RT              & 1   & Store routing information in a hashtable \\
+                         &     & \qquad (required for MOAS detection)\\
+    BGP\_DEBUG\_RT       & 0   & Activate debug output for routing information\\
+    BGP\_OUTPUT\_RT      & 1   & Output routing tables\\
+    BGP\_RT\_MASK        & 0   & Use the mask as part of the key for the routing table\\
+
+    \\
+    \multicolumn{3}{l}{If {\tt BGP\_OUTPUT\_RT=1} then the following flags can be used:}\\
+    \\
+
+    BGP\_ORIG\_ID        & 0   & Output originator id\\
+    BGP\_AGGR            & 0   & Output aggregator\\
+    BGP\_CLUSTER         & 0   & Output cluster list\\
+    BGP\_COMMUNITIES     & 0   & Output communities\\
+    BGP\_MASK\_FORMAT    & 1   & Netmask representation:\\
+                         &     & \qquad 0: hex,\\
+                         &     & \qquad 1: IP,\\
+                         &     & \qquad 2: int\\
+                         %&     & \qquad 3: int (cidr) (not implemented)\\
+    BGP\_AS\_PATH\_AGGR  & 0   & Aggregate repetitions of the same AS\\
+    \\
+    BGP\_ASIZE           & 255 & Size of arrays for update records\\
+    \\
+    BGP\_SUFFIX          & {\tt\small "\_bgp.txt"}
+                               & Suffix to use for routing table information\\
+    BGP\_ANOM\_SUFFIX    & {\tt\small "\_bgp\_anomalies.txt"}
+                               & Suffix for anomaly file\\
+    BGP\_MOAS\_SUFFIX    & {\tt\small "\_bgp\_moas.txt"}
+                               & Suffix for multiple origin AS (MOAS) file\\
+    \bottomrule
+\end{longtable}
+
+\subsubsection{Environment Variable Configuration Flags}
+The following configuration flags can also be configured with environment variables ({\tt ENVCNTRL>0}):
+\begin{itemize}
+    \item {\tt BGP\_SUFFIX}
+    \item {\tt BGP\_ANOM\_SUFFIX}
+    \item {\tt BGP\_MOAS\_SUFFIX}
+\end{itemize}
+
+\subsection{Flow File Output}
+The bgpDecode plugin outputs the following columns:
+\begin{longtable}{>{\tt}lll>{\tt\small}l}
+    \toprule
+    {\bf Column}                        & {\bf Type}   & {\bf Description}                             & {\bf Flags}\\
+    \midrule\endhead%
+    \nameref{bgpStat}                   & H16          & BGP status                                    & \\
+    \nameref{bgpAFlgs}                  & H16          & BGP anomalies                                 & \\
+    \nameref{bgpMsgT}                   & H8           & BGP message types                             & \\
+    bgpNOpen\_                          & U32\_        & Number of BGP OPEN messages,                  & \\
+    \qquad Upd\_                        & \qquad U32\_ & \qquad UPDATE messages,                       & \\
+    \qquad Notif\_                      & \qquad U32\_ & \qquad NOTIFICATION messages,                 & \\
+    \qquad KeepAl\_                     & \qquad U32\_ & \qquad KEEPALIVE messages,                    & \\
+    \qquad RteRefr                      & \qquad U32   & \qquad ROUTE-REFRESH messages                 & \\
+    % OPEN message
+    bgpVersion                          & U8           & BGP version\\
+    bgpSrcAS\_dstAS                     & U32\_U32     & Source and destination AS                     & BGP\_AS\_FORMAT=0\\
+    bgpSrcAS\_dstAS                     & SC\_SC       & Source and destination AS                     & BGP\_AS\_FORMAT>0\\
+    bgpSrcId\_dstId                     & IP\_IP       & Source and destination BGP ID                 & BGP\_IP\_FORMAT=0\\
+    bgpSrcId\_dstId                     & U32\_U32     & Source and destination BGP ID                 & BGP\_IP\_FORMAT=1\\
+    bgpSrcId\_dstId                     & H32\_H32     & Source and destination BGP ID                 & BGP\_IP\_FORMAT=2\\
+    \nameref{bgpHTime}                  & U16          & BGP hold time (sec)                           & \\
+    \nameref{bgpCaps}                   & H16          & Capabilities                                  & \\
+    % UPDATE messages
+    \nameref{bgpPAttr}                  & H32          & Path attributes                               & \\
+    bgpNAdver                           & U32          & Total number of advertised routes             & \\
+    bgpNWdrwn                           & U32          & Total number of withdrawn routes              & \\
+    bgpMaxAdver                         & U32          & Max.\ num.\ of advertised routes per record   & \\
+    bgpAvgAdver                         & D            & Average num.\ of advertised routes per record & \\
+    bgpMaxWdrwn                         & U32          & Max.\ num.\ of withdrawn routes per record    & \\
+    bgpAvgWdrwn                         & D            & Average num.\ of withdrawn routes per record  & \\
+    \hyperref[bgpPrefMask]{bgpAdvPref}  & H32          & Advertised prefixes                           & \\
+    \hyperref[bgpPrefMask]{bgpWdrnPref} & H32          & Withdrawn prefixes                            & \\
+    bgpNIGP\_                           & U32\_        & Number of routes from origin IGP              & \\
+    \qquad EGP\_                        & \qquad U32\_ & \qquad EGP,                                   & \\
+    \qquad INC                          & \qquad U32   & \qquad INCOMPLETE                             & \\
+    bgpMinASPLen                        & U8           & Minimum AS path length                        & \\
+    bgpMaxASPLen                        & U8           & Maximum AS path length                        & \\
+    bgpAvgASPLen                        & D            & Average AS path length                        & \\
+    bgpMaxNPrepAS                       & U32          & Maximum number of prepended AS                & \\
+    bgpMinIatUp                         & D            & Minimum inter-arrival time for update         & \\
+    bgpMaxIatUp                         & D            & Maximum inter-arrival time for update         & \\
+    bgpAvgIatUp                         & D            & Average inter-arrival time for update         & \\
+    % KEEPALIVE messages
+    bgpMinIatKA                         & D            & Minimum inter-arrival time for keep-alive     & \\
+    bgpMaxIatKA                         & D            & Maximum inter-arrival time for keep-alive     & \\
+    bgpAvgIatKA                         & D            & Average inter-arrival time for keep-alive     & \\
+    % NOTIFICATION message
+    \hyperref[bgpNotifCodeSubcode]{bgpNotifCode\_Subcode}
+                                        & U8\_U8       & Notification (fatal error) code and subcode   & BGP\_NOTIF\_FORMAT=0\\
+    \hyperref[bgpNotifCodeSubcode]{bgpNotifCode\_Subcode}
+                                        & SC\_U8       & Notification (fatal error) code and subcode   & BGP\_NOTIF\_FORMAT=1\\
+    \bottomrule
+\end{longtable}
+
+\subsubsection{bgpStat}\label{bgpStat}
+The {\tt bgpStat} column is to be interpreted as follows:
+\begin{longtable}{>{\tt}rl}
+    \toprule
+    {\bf bgpStat} & {\bf Description}\\
+    \midrule\endhead%
+    0x0001 & Flow is BGP\\
+    0x0002 & Connection Not Synchronized\\
+    0x0004 & Bad Message Length\\
+    0x0008 & Bad Message Type\\
+    \\
+    0x0010 & Unsupported Version Number\\
+    %0x0020 & Bogons advertisement\\
+    %0x0020 & Bad Peer AS\\
+    0x0040 & Unacceptable Hold Time\\
+    %0x0080 & Bad BGP Identifier\\
+    0x0080 & Invalid network mask (> 32)\\
+    \\
+    %0x0100 & Unsupported Optional Parameters\\
+    0x0100 & Inter-arrival time for update or keep-alive < 0\\
+    0x0200 & AS Mismatch\\
+    0x0400 & Atomic Aggregate\\
+    %0x0800 & Prefix more specific than /24 was advertised\\
+    \\
+    %0x1000 & Possible blackhole: community with tag 666\\
+    %0x2000 & Possible loop: My AS in AS path\\
+    0x4000 & One of the array was full... increase {\tt BGP\_ASIZE}\\
+    0x8000 & Malformed packet (snapped or segmented)\\
+    \bottomrule
+\end{longtable}
+
+\subsubsection{bgpAFlgs}\label{bgpAFlgs}
+The {\tt bgpAFlgs} column is to be interpreted as follows:
+\begin{longtable}{>{\tt}rl}
+    \toprule
+    {\bf bgpAFlgs} & {\bf Description}\\
+    \midrule\endhead%
+    0x0001 & Bogons advertisement\\
+    0x0002 & Prefix more specific than /24 was advertised\\
+    0x0004 & Prefix less specific than /8 was advertised\\
+    0x0008 & Possible blackhole: community with tag 666\\
+    \\
+    0x0010 & Possible loop: My AS in AS path\\
+    0x0020 & Multiple Origin AS (same prefix announced by more than one origin AS)\\
+    0x0040 & AS prepended more than 10 times in AS path\\
+    0x0080 & AS number reserved for private use in AS path {\small (AS: 64512-65534, AS4: 4200000000-4294967294)}\\
+    \\
+    0x0100 & Route for more specific prefix advertised\\
+    \bottomrule
+\end{longtable}
+
+\subsubsection{bgpMsgT}\label{bgpMsgT}
+The {\tt bgpMsgT} column is to be interpreted as follows:
+\begin{longtable}{>{\tt}rl}
+    \toprule
+    {\bf bgpMsgT} & {\bf Description}\\
+    \midrule\endhead%
+    0x01 & ---\\
+    0x02 & OPEN Message\\
+    0x04 & UPDATE Message\\
+    0x08 & NOTIFICATION Message\\
+    \\
+    0x10 & KEEPALIVE Message\\
+    0x20 & ROUTE-REFRESH Message\\
+    0x40 & ---\\
+    0x80 & ---\\
+    \bottomrule
+\end{longtable}
+
+\subsubsection{bgpHTime}\label{bgpHTime}
+The {\tt bgpHTime} column indicates the number of seconds which can elapse without receiving a message.
+It should be three times the frequency of keep-alive messages (the default is to send one keep-alive message every 30 seconds, thus having a hold-time of 90s).
+Common values for the {\tt bgpHTime} column are:\\
+\begin{longtable}{rl}
+    \toprule
+    {\bf bgpHTime} & {\bf Description}\\
+    \midrule\endhead%
+    0    & Infinite hold-time (no keep-alive messages are sent)\\
+    1,2  & Illegal values\\
+    3    & Minimum legal value\\
+    < 20 & Warning: A hold-time of less than 20 seconds increases the chances of peer flapping\\
+    90   & Juniper\\
+    180  & Cisco\\
+    \bottomrule
+\end{longtable}
+
+\subsubsection{bgpCaps}\label{bgpCaps}
+The {\tt bgpCaps} column is to be interpreted as follows:\\
+\begin{longtable}{>{\tt}rl}
+    \toprule
+    {\bf bgpCaps} & {\bf Description}\\
+    \midrule\endhead%
+    0x0001 & Multiprotocol Extensions for BGP-4\\
+    0x0002 & Route Refresh Capability for BGP-4\\
+    0x0004 & Outbound Route Filtering Capability\\
+    0x0008 & Multiple routes to a destination capability\\
+    \\
+    0x0010 & Extended Next Hop Encoding\\
+    0x0020 & Graceful Restart Capability\\
+    0x0040 & Support for 4-octet AS number capability\\
+    0x0080 & Support for Dynamic Capability (capability specific)\\
+    \\
+    0x0100 & Multisession BGP Capability\\
+    0x0200 & ADD-PATH Capability\\
+    0x0400 & Enhanced Route Refresh Capability\\
+    0x0800 & Long-Lived Graceful Restart (LLGR) Capability\\
+    \\
+    0x1000 & FQDN Capability\\
+    0x8000 & Unhandled Capability, i.e., none of the above\\
+    \bottomrule
+\end{longtable}
+
+\subsubsection{bgpPAttr}\label{bgpPAttr}
+The {\tt bgpPAttr} column is to be interpreted as follows (bold attributes are mandatory, attributes in italic are deprecated):\\
+\begin{minipage}{0.45\textwidth}
+    \begin{longtable}{>{\tt}rl}
+        \toprule
+        {\bf bgpPAttr} & {\bf Description}\\
+        \midrule\endhead%
+        0x00000001 & {\bf ORIGIN}\\ % (mandatory)
+        0x00000002 & {\bf AS\_PATH}\\ % (mandatory)
+        0x00000004 & {\bf NEXT\_HOP}\\ % (mandatory)
+        0x00000008 & MULTI\_EXIT\_DISC (MED)\\
+        \\
+        0x00000010 & LOCAL\_PREF\\
+        0x00000020 & ATOMIC\_AGGREGATE\\
+        0x00000040 & AGGREGATOR\\
+        0x00000080 & COMMUNITIES\\
+        \\
+        0x00000100 & ORIGINATOR\_ID\\
+        0x00000200 & CLUSTER\_LIST\\
+        0x00000400 & DPA (Designation Point Attribute)\\
+        0x00000800 & ADVERTISER\\
+        \\
+        0x00001000 & RCID\_PATH / CLUSTER\_ID\\
+        0x00002000 & MP\_REACH\_NLRI\\
+        0x00004000 & MP\_UNREACH\_NLRI\\
+        0x00008000 & EXTENDED\_COMMUNITIES\\
+        \bottomrule
+    \end{longtable}
+\end{minipage}
+\hfill
+\begin{minipage}{0.45\textwidth}
+    \begin{longtable}{>{\tt}rl}
+        \toprule
+        {\bf bgpPAttr} & {\bf Description}\\
+        \midrule\endhead%
+        0x00010000 & NEW\_AS\_PATH\\
+        0x00020000 & NEW\_AGGREGATOR\\
+        0x00040000 & {\em SSA, SAFI Specific Attribute}\\ % (deprecated)\\
+        0x00080000 & Connector Attribute\\
+        \\
+        0x00100000 & {\em AS\_PATHLIMIT}\\ % (deprecated)\\
+        0x00200000 & PMSI\_TUNNEL\\
+        0x00400000 & Tunnel Encapsulation Attribute\\
+        0x00800000 & Traffic Engineering\\
+        \\
+        0x01000000 & IPv6 Address Specific Extended\\
+                   & Community\\
+        0x02000000 & --\\
+        0x04000000 & PE Distinguisher Labels\\
+        \\
+        \\
+        \\
+        \\
+        \\
+        \bottomrule
+    \end{longtable}
+\end{minipage}
+
+\subsubsection{bgpAdvPref and bgpWdrnPref}\label{bgpPrefMask}
+The {\tt bgpAdvPref} and {\tt bgpWdrnPref} columns are to be interpreted as follows:\\
+\begin{minipage}{0.3\textwidth}
+    \begin{longtable}{>{\tt}rl}
+        \toprule
+        {\bf bgpAdvPref} & {\bf Description}\\
+        \midrule\endhead%
+        0x00000001 & /1 \\
+        0x00000002 & /2 \\
+        0x00000004 & /3 \\
+        0x00000008 & /4 \\
+        \\
+        0x00000010 & /5 \\
+        0x00000020 & /6 \\
+        0x00000040 & /7 \\
+        0x00000080 & /8 \\
+        \\
+        0x00000100 & /9 \\
+        0x00000200 & /10 \\
+        0x00000400 & /11 \\
+        0x00000800 & /12 \\
+        \bottomrule
+    \end{longtable}
+\end{minipage}
+\begin{minipage}{0.3\textwidth}
+    \begin{longtable}{>{\tt}rl}
+        \toprule
+        {\bf bgpAdvPref} & {\bf Description}\\
+        \midrule\endhead%
+        0x00001000 & /13 \\
+        0x00002000 & /14 \\
+        0x00004000 & /15 \\
+        0x00008000 & /16 \\
+        \\
+        0x00010000 & /17 \\
+        0x00020000 & /18 \\
+        0x00040000 & /19 \\
+        0x00080000 & /20 \\
+        \\
+        0x00100000 & /21 \\
+        0x00200000 & /22 \\
+        0x00400000 & /23 \\
+        0x00800000 & /24 \\
+        \bottomrule
+    \end{longtable}
+\end{minipage}
+\begin{minipage}{0.3\textwidth}
+    \begin{longtable}{>{\tt}rl}
+        \toprule
+        {\bf bgpAdvPref} & {\bf Description}\\
+        \midrule\endhead%
+        0x01000000 & /25 \\
+        0x02000000 & /26 \\
+        0x04000000 & /27 \\
+        0x08000000 & /28 \\
+        \\
+        0x10000000 & /29 \\
+        0x20000000 & /30 \\
+        0x40000000 & /31 \\
+        0x80000000 & /32 \\
+        \\
+        \\
+        \\
+        \\
+        \\
+        \bottomrule
+    \end{longtable}
+\end{minipage}
+
+\subsubsection{bgpNotifCode\_Subcode}\label{bgpNotifCodeSubcode}
+The {\tt bgpNotifCode\_Subcode} column is to be interpreted as follows:
+\begin{longtable}{ccl}
+    \toprule
+    {\bf Code} & {\bf Subcode} & {\bf Description}\\
+    \midrule\endhead%
+    1 &    & Message Header Error\\
+      &  1 & \qquad Connection Not Synchronized\\
+      &  2 & \qquad Bad Message Length\\
+      &  3 & \qquad Bad Message Type\\\\
+    2 &    & OPEN Message Error\\
+      &  1 & \qquad Unsupported Version Number\\
+      &  2 & \qquad Bad Peer AS\\
+      &  3 & \qquad Bad BGP Identifier\\
+      &  4 & \qquad Unsupported Optional Parameter\\
+      &  5 & \qquad Deprecated\\
+      &  6 & \qquad Unacceptable Hold time\\
+      &  7 & \qquad Unsupported capability\\\\
+    3 &    & UPDATE Message Error\\
+      &  1 & \qquad Malformed Attribute List\\
+      &  2 & \qquad Unrecognized Well-known Attribute\\
+      &  3 & \qquad Missing Well-known Attribute\\
+      &  4 & \qquad Attribute Flags Error\\
+      &  5 & \qquad Attribute Length Error\\
+      &  6 & \qquad Invalid ORIGIN Attribute\\
+      &  7 & \qquad Deprecated\\
+      &  8 & \qquad Invalid NEXT\_HOP Attribute\\
+      &  9 & \qquad Optional Attribute Error\\
+      & 10 & \qquad Invalid Network Field\\
+      & 11 & \qquad Malformed AS\_PATH\\\\
+    4 &    & Hold Timer Expired (no subcode)\\\\
+    5 &    & Finite State Machine Error\\
+      &  1 & \qquad Receive Unexpected Message in OpenSent State\\
+      &  2 & \qquad Receive Unexpected Message in OpenConfirm State\\
+      &  3 & \qquad Receive Unexpected Message in Established State\\\\
+    6 &    & Cease\\
+      &  1 & \qquad Maximum Number of Prefixes Reached\\
+      &  2 & \qquad Administrative Shutdown\\
+      &  3 & \qquad Peer De-configured\\
+      &  4 & \qquad Administrative Reset\\
+      &  5 & \qquad Connection Rejected\\
+      &  6 & \qquad Other Configuration Change\\
+      &  7 & \qquad Connection Collision Resolution\\
+      &  8 & \qquad Out of Resources\\\\
+    7 &    & ROUTE-REFRESH Message Error\\
+      &  1 & \qquad Invalid Message Length\\
+    \bottomrule
+\end{longtable}
+
+\subsection{Additional Output}\label{bgp:cfo}
+If {\tt BGP\_OUTPUT\_RT=1}, then a {\tt PREFIX\_bgp.txt} file is created. Note that the suffix can be configured with {\tt BGP\_SUFFIX}. This file uses the configuration options defined in \refs{bgp:conf}.
+\begin{longtable}{>{\tt}lll>{\tt\small}l}
+    \toprule
+    {\bf Column} & {\bf Type} & {\bf Description} & {\bf Flags}\\
+    \midrule\endhead%
+    NLRI            & R(S)   & Target network                                        & \\
+    AS              & U32/S  & Originating AS                                        & BGP\_AS\_FORMAT\\
+    NextHop         & IP4    & Next hop                                              & \\
+    MED             & U32    & Multi Exit Discriminator (MED)                        & \\
+    LocPref         & U32    & Local Preference                                      & \\
+    Origin          & S      & Origin (IGP, EGP, INCOMPLETE, UNKNOWN)                & \\
+    OriginatorID    & IP4    & Originator ID                                         & BGP\_ORIG\_ID=1\\
+    OriginAS        & R(U32) & Origin AS                                             & \\
+    UpstreamAS      & R(U32) & Upstream AS                                           & \\
+    DestAS          & U32    & Destination AS                                        & \\
+    Aggregator      & S      & Aggregator (AS:Origin)                                & BGP\_AGGR=1\\
+    ASPath          & S      & List of AS to visit to reach target network           & \\
+    ASPathLen       & U32    & Length of the AS path                                 & \\
+    MaxNPrepAS      & U32    & Maximum number of prepended AS                        & \\
+    ClusterList     & R(IP4) & Cluster list                                          & BGP\_CLUSTER=1\\
+    ClusterListLen  & U32    & Cluster list length                                   & BGP\_CLUSTER=1\\
+    Communities     & R(S)   & List of communities (AS:tag)                          & BGP\_COMMUNITIES=1\\
+    WithdrawnRoutes & R(S)   & List of withdrawn routes                              & \\
+    flowInd         & U64    & Flow index of the advertisement                       & \\
+    pktNo           & U64    & Packet index of the advertisement                     & \\
+    RecNum          & U64    & Record index (within the packet) of the advertisement & \\
+    time            & U32    & Timestamp of the advertisement                        & \\
+    \bottomrule
+\end{longtable}
+
+\subsection{Plugin Report Output}
+The number of BGP packets and OPEN, UPDATE, NOTIFICATION, KEEP-ALIVE and ROUTE-REFRESH messages is reported. In addition, the aggregated {\tt\nameref{bgpAFlgs}} anomalies are reported.
+
+\subsection{Post-Processing}
+
+\subsubsection{bgpR}\label{bgpR}
+The {\tt bgpR} script creates a {\tt PREFIX\_bgp\_s.txt} file, which is similar to the input file, but easier to process.
+The target networks are split and sorted, redundant records are omitted and the list of countries and continents to visit to reach the target network is added ({\tt\nameref{ASPathCountries}} and {\tt\nameref{ASPathContinents}}).\\
+
+In addition, the following files are created:
+\begin{itemize}
+    \item {\tt PREFIX\_bgp\_mpath.txt}: outputs, for all networks which have more than one path, the number of distinct paths.
+    \item {\tt PREFIX\_bgp\_conf.txt}: lists possible configuration errors, e.g., an AS number prepended $N$ times, followed by AS number $N$.
+\end{itemize}
+The script can also be used to plot AS paths between AS numbers, countries and continents (\reff{fig:bgpcn}).
+
+\paragraph{Usage:}~\\
+The {\tt bgpR} script uses the {\tt PREFIX\_bgp.txt} file described in \refs{bgp:cfo} as input: {\tt ./bgpR PREFIX\_bgp.txt}\\
+For a complete list of options, use the {\tt --h} or {\tt --{}--help} option: {\tt bgpR --{}--help}.
+
+%\paragraph{Configuration Options}~\\
+%The following options can be used with the script:
+%\begin{description}
+%    \item[{\tt --d}:] toggle between a directed or undirected graph
+%    \item[{\tt --s}:] limit the number of edges to 1 between nodes
+%    \item[{\tt --u}:] do not display links from one node to itself
+%    \item[{\tt --l}:] label edges with the flow index
+%    \item[{\tt --n}:] color nodes according to the country
+%    \item[{\tt --e}:] color edges according to the flow index
+%    \item[{\tt --o}:] specify the output folder (default to the current directory)
+%    \item[{\tt --h}:] list and describe all the options
+%\end{description}
+
+\begin{figure}[!ht]
+    \centering
+    \tranimg[width=.9\textwidth]{bgp_cn}
+    \caption{Paths between AS}
+    \label{fig:bgpcn}
+\end{figure}
+
+\paragraph{Plot Configuration:}~\\
+To color specific countries, edit the {\tt bgpR} script (search for {\em colorN}), by adding a case for the missing country or by changing the color. For example, to color Switzerland in red, add the following line in the switch:
+\begin{lstlisting}
+case "CH": color = "red"; break;
+\end{lstlisting}
+For the coloring of the edges, search for {\em cstr} and edit the semi-colon separated string.
+A complete list of colors can be found at \url{http://www.graphviz.org/doc/info/colors.html}.
+
+\subsubsection{ASPathCountries}\label{ASPathCountries}
+For a list of countries, refer to {\tt countrycodes.txt} in the doc folder.
+
+\subsubsection{ASPathContinents}\label{ASPathContinents}
+The {\tt ASPathContinents} column is to be interpreted as follows:
+
+\begin{minipage}{0.6\textwidth}
+\begin{longtable}{rl}
+    \toprule
+    {\bf ASPathContinents} & {\bf Description}\\
+    \midrule\endhead%
+    afrinic & Africa Region\\
+    apnic   & Asia/Pacific Region\\
+    arin    & Canada, USA and some Caribbean Islands\\
+    ietf    & Reserved/Unknown\\
+    lacnic  & Latin America and some Caribbean Islands\\
+    ripencc & Europe, the Middle East and Central Asia\\
+    \bottomrule
+\end{longtable}
+\end{minipage}
+\hfill
+\begin{minipage}{0.3\textwidth}
+    \vspace{1.3cm}
+    \tranimg[width=\textwidth]{continents}
+\end{minipage}
+
+\clearpage
+
+\subsubsection{bgp2ng}\label{bgp2ng}
+The {\tt bgp2ng} script can be used to generate plots similar to {\tt\nameref{bgpR}} but readable by netgraph (\reff{fig:bgpng}).
+It uses the {\tt PREFIX\_bgp\_s.txt} file described in \refs{bgpR} as input:
+\begin{lstlisting}
+./bgp2ng PREFIX_bgp_s.txt
+\end{lstlisting}
+
+\begin{figure}[!ht]
+    \centering
+    \tranimg[width=.9\textwidth]{netgraph}
+    \caption{Paths between AS}
+    \label{fig:bgpng}
+\end{figure}
+
+It creates the following files:
+\begin{itemize}
+    \item {\tt PREFIX\_bgp\_netgraph0.txt}: connections between network and next hop
+    \item {\tt PREFIX\_bgp\_netgraph1.txt}: connections between first and last AS
+    \item {\tt PREFIX\_bgp\_netgraph2.txt}: connections between all AS
+    \item {\tt PREFIX\_bgp\_netgraph3.txt}: connections between first and last country
+    \item {\tt PREFIX\_bgp\_netgraph4.txt}: connections between all countries
+    \item {\tt PREFIX\_bgp\_netgraph5.txt}: connections between first and last continent
+    \item {\tt PREFIX\_bgp\_netgraph6.txt}: connections between all countries
+    \item {\tt PREFIX\_bgp\_netgraph7.txt}: connections between network, next hop, first and last AS, country and continent, ASPath
+\end{itemize}
+
+\clearpage
+
+\subsubsection{bgpMOAScn}\label{bgpMOAScn}
+The {\tt bgpMOAScn} script adds information regarding the country of the multiple origins AS (MOAS) reported in the file {\tt FILE\_moas.txt}.
+Save the results in {\tt FILE\_moas\_cn.txt}. Use {\tt bgpMOAScn --h} for more information.
+Note that it is best to validate the countries using {\tt whois} on the AS number and network to ensure the information is up to date, e.g., {\tt whois AS1234} or {\tt whois 1.2.3.4/24}.
+
+\subsection{Anomalies}
+Anomalies are summarized in the {\tt\nameref{bgpAFlgs}} columns and in {\tt FILE\_bgp\_anomalies.txt}.
+\begin{itemize}
+    \item Bogons advertisement:\\
+        {\tt awk '/\textasciicircum{}BOGON/' FILE\_bgp\_anomalies.txt}
+    \item Prefix more specific than /24:\\
+        {\tt awk '/\textasciicircum{}SPEC24/' FILE\_bgp\_anomalies.txt}
+    \item Prefix less specific than /8:\\
+        {\tt awk '/\textasciicircum{}SPEC8/' FILE\_bgp\_anomalies.txt}
+    \item Possible blackhole:\\
+        {\tt awk '/\textasciicircum{}BLACKHOLE/' FILE\_bgp\_anomalies.txt}
+    \item Possible loop:\\
+        {\tt awk '/\textasciicircum{}LOOP/' FILE\_bgp\_anomalies.txt}
+    \item Multiple Origin AS (MOAS) are reported in {\tt FILE\_moas.txt} (see also {\tt\nameref{bgpMOAScn}})
+    \item AS number prepended more than 10 times in AS path:\\
+        {\tt awk '/\textasciicircum{}NPREPAS/' FILE\_bgp\_anomalies.txt}
+    \item Private/Reserved AS numbers:\\
+        {\tt awk '/\textasciicircum{}PRIVAS/' FILE\_bgp\_anomalies.txt}
+    \item More specific prefix to existing network:\\
+        {\tt awk '/\textasciicircum{}MSPEC/' FILE\_bgp\_anomalies.txt}
+\end{itemize}
+In addition, the number of distinct paths (if bigger than one) to reach a specific network is summarized in the file {\tt\hyperref[bgpR]{FILE\_bgp\_mpath.txt}} along with some statistics regarding the different AS path lengths (minimum, maximum, range, mean, median, standard deviation and mode). The file also highlights whether a MOAS was detected for the network. Possible misconfigurations are reported in {\tt\hyperref[bgpR]{FILE\_bgp\_conf.txt}}. Note that the last two files are created by the {\tt\nameref{bgpR}} script.
+
+\subsection{Examples}
+\begin{itemize}
+    \item BGP flows can be extracted from a flow file by using the {\tt\nameref{bgpStat}} column as follows:
+\begin{center}
+    {\tt tawk 'hdr() || strtonum(\$bgpStat)' FILE\_flows.txt}
+\end{center}
+    \item BGP flows with anomalies can be extracted from a flow file by using the {\tt\nameref{bgpAFlgs}} column as follows:
+\begin{center}
+    {\tt tawk 'hdr() || strtonum(\$bgpAFlgs)' FILE\_flows.txt}
+\end{center}
+    \item More details about the anomalies listed in {\tt FILE\_bgp\_anomalies.txt} can be found by using the {\tt flowInd}, {\tt pktNo} and {\tt RecNum} columns and {\tt FILE\_bgp\_s.txt} or {\tt FILE\_bgp.txt} files as follows, e.g., for {\tt flowInd=1}, {\tt pktNo=2} and {\tt RecNum=3} (note that \tranrefpl{tawk} {\tt flow} and {\tt packet} functions could also be used):
+\begin{center}
+    {\tt tawk '\$flowInd == 1 \&\& \$pktNo == 2 \&\& \$RecNum == 3' FILE\_bgp\_s.txt}
+\end{center}
+    Alternatively, the following command can be used to achieve similar results:
+\begin{center}
+    {\tt grep -P "1\textbackslash{}t2\textbackslash{}t3" FILE\_bgp\_s.txt}
+\end{center}
+    \item Display the 10 networks which experienced the most more specific prefix advertisements:
+\begin{center}
+    {\tt tawk '/\textasciicircum{}MSPEC/ \{ a[\$ASorNet]++ \} END \{ for (i in a) print i, a[i] \}' FILE\_bgp\_anomalies.txt | sort -nrk2 | head -10}
+\end{center}
+    \item To plot the AS paths for a specific network, proceed as follows:
+\begin{enumerate}
+    \item Run the {\tt\nameref{bgpR}} script: {\tt bgpR FILE\_bgp.txt}
+    \item Run the {\tt\nameref{bgp2ng}} script: {\tt bgp2ng FILE\_bgp\_s.txt}
+    \item Use {\tt tawk} as follows, e.g., to keep network 123.123.123.0/24 only:
+\begin{verbatim}
+tawk '
+    hdr() {
+        printf "%s\t%s\t%s\n", chomp($0), "ASP1", "ASP2"
+        next
+    }
+
+    $NLRI ~ /^123\.123\.123\.0\/24$/ {
+        l = split($ASPath, asp, ";")
+        for (i = 1; i < l; i++) {
+           printf "%s\t%s\t%s\n", chomp($0), asp[i], asp[i+1]
+        }
+    }
+' FILE_bgp_netgraph7.txt
+\end{verbatim}
+    \item Open the file with Traviz/Netgraph
+\end{enumerate}
+\end{itemize}
+
+%\subsection{Known Bugs and Limitations}
+
+%\subsection{TODO}
+%\begin{itemize}
+%    \item IPv6
+%\end{itemize}
+
+\subsection{References}
+\begin{itemize}
+    \item \href{https://tools.ietf.org/html/rfc4271}{RFC4271}: A Border Gateway Protocol 4 (BGP-4)
+    \item \href{https://www.team-cymru.org/Services/Bogons/bogon-bn-agg.txt}{IPv4 traditional bogons list}\label{bgp:tradbogons}
+    \item \url{https://www.iana.org/assignments/}
+\end{itemize}
+
+\end{document}

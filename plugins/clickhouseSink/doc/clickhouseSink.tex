@@ -1,0 +1,174 @@
+\IfFileExists{t2doc.cls}{
+    \documentclass[documentation]{subfiles}
+}{
+    \errmessage{Error: could not find 't2doc.cls'}
+}
+
+\begin{document}
+
+% Declare author and title here, so the main document can reuse it
+\trantitle
+    {clickhouseSink} % Plugin name
+    {ClickHouse} % Short description
+    {Tranalyzer Development Team} % author(s)
+
+\section{clickhouseSink}\label{s:clickhouseSink}
+
+\subsection{Description}
+The clickhouseSink plugin outputs flows to a ClickHouse database.
+
+\subsection{Dependencies}
+
+\subsubsection{External Libraries}
+This plugin depends on the {\bf clickhouse-cpp} and {\bf clickhouse} libraries.\\
+
+On macOS, the {\bf clickhouse-cpp} library can be installed with Brew%
+\footnote{Brew is a packet manager for macOS that can be found here: \url{https://brew.sh}} (see below).
+Unfortunately, there is no package for the {\bf clickhouse-cpp} library on Linux, but
+you can install it from source with the following commands:
+
+\begin{verbatim}
+$ git clone https://github.com/clickhouse/clickhouse-cpp
+$ cd clickhouse-cpp
+$ mkdir build
+$ cd build
+$ cmake ..
+$ make
+$ sudo make install
+$ sudo ldconfig
+\end{verbatim}
+Make sure {\tt /usr/local/lib/} is in your library path:
+\begin{verbatim}
+$ ldconfig -p | tail -n +2 | grep -o '/.*/' | sort -u
+\end{verbatim}
+If {\tt /usr/local/lib/} is {\bf NOT} in your library path, you can add it with
+\begin{verbatim}
+$ echo "/usr/local/lib/" | sudo tee -a /etc/ld.so.conf.d/mylibs.conf
+$ sudo ldconfig
+\end{verbatim}
+
+ClickHouse packages are available, but repositories must be added in most cases:
+
+\subsubsection{Ubuntu}
+Make sure to run {\bf ALL} the commands below. Otherwise an old version of the clickhouse server (incompatible with the plugin) will be installed.
+\begin{verbatim}
+$ sudo apt install libabsl-dev
+$ sudo apt-get install apt-transport-https ca-certificates dirmngr
+$ sudo apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv E0C56BD4
+$ echo "deb https://repo.clickhouse.com/deb/stable/ main/" | sudo tee \
+        /etc/apt/sources.list.d/clickhouse.list
+$ sudo apt-get update
+$ sudo apt-get install -y clickhouse-server clickhouse-client
+$ sudo service clickhouse-server start
+\end{verbatim}
+
+\subsubsection{CentOS or RedHat}
+\begin{verbatim}
+$ sudo yum install abseil-cpp
+$ sudo yum install yum-utils
+$ sudo rpm --import https://repo.clickhouse.com/CLICKHOUSE-KEY.GPG
+$ sudo yum-config-manager --add-repo https://repo.clickhouse.com/rpm/clickhouse.repo
+$ sudo yum install clickhouse-server clickhouse-client
+$ sudo /etc/init.d/clickhouse-server start
+\end{verbatim}
+
+\subsubsection{Arch Linux}
+Replace {\tt yay} with your favorite AUR helper.
+\begin{verbatim}
+$ sudo pacman -S abseil-cpp
+$ yay -S clickhouse-server-bin clickhouse-client-bin clickhouse-common-static-bin
+$ sudo systemctl start clickhouse-server
+\end{verbatim}
+
+\subsubsection{openSUSE}
+\begin{verbatim}
+$ sudo zypper install abseil-cpp
+$ sudo zypper install clickhouse
+\end{verbatim}
+
+\subsubsection{macOS}
+\begin{verbatim}
+$ brew install clickhouse-cpp
+$ wget 'https://builds.clickhouse.com/master/macos/clickhouse'
+$ chmod a+x ./clickhouse
+$ ./clickhouse
+\end{verbatim}
+
+\subsubsection{Core Configuration}
+This plugin requires the following core configuration:
+\begin{itemize}
+    \item {\em \$T2HOME/tranalyzer2/src/tranalyzer.h}:
+    \begin{itemize}
+        \item {\tt BLOCK\_BUF=0}
+    \end{itemize}
+\end{itemize}
+
+\subsection{Configuration Flags}
+The following flags can be used to control the output of the plugin:
+\begin{longtable}{>{\tt}lcl>{\tt\small}l}
+    \toprule
+    {\bf Name}                      & {\bf Default}            & {\bf Description}\\
+    \midrule\endhead%
+    CLICKHOUSE\_OVERWRITE\_DB       & 2                        & 0: abort if DB already exists\\
+                                    &                          & 1: overwrite DB if it already exists\\
+                                    &                          & 2: reuse DB if it already exists\\
+    CLICKHOUSE\_OVERWRITE\_TABLE    & 2                        & 0: abort if table already exists\\
+                                    &                          & 1: overwrite table if it already exists\\
+                                    &                          & 2: append to table if it already exists\\
+    CLICKHOUSE\_TRANSACTION\_NFLOWS & 10000                    & 0: one transaction\\
+                                    &                          & > 0: one transaction every $n$ flows\\
+    CLICKHOUSE\_HOST                & {\tt\small "127.0.0.1"}  & Address of the database\\
+    CLICKHOUSE\_DBPORT              & 9000                     & Port the DB is listening to\\
+    CLICKHOUSE\_USER                & {\tt\small "default"}    & Username to connect to DB\\
+    CLICKHOUSE\_PASS                & {\tt\small ""}           & Password to connect to DB\\
+    CLICKHOUSE\_DBNAME              & {\tt\small "tranalyzer"} & Name of the database\\
+    CLICKHOUSE\_TABLE\_NAME         & {\tt\small "flow"}       & Name of the table\\
+    \bottomrule
+\end{longtable}
+
+\subsubsection{Environment Variable Configuration Flags}
+The following configuration flags can also be configured with environment variables ({\tt ENVCNTRL>0}):
+\begin{itemize}
+    \item {\tt CLICKHOUSE\_HOST}
+    \item {\tt CLICKHOUSE\_DBPORT}
+    \item {\tt CLICKHOUSE\_USER}
+    \item {\tt CLICKHOUSE\_PASSWORD}
+    \item {\tt CLICKHOUSE\_DBNAME}
+    \item {\tt CLICKHOUSE\_TABLE\_NAME}
+\end{itemize}
+
+\subsection{Example}
+
+{\tt\color{blue} \# Run Tranalyzer}\\
+{\tt \$ t2 -r file.pcap}\\
+
+\noindent
+{\tt\color{blue} \# Connect to the ClickHouse database}\\
+{\tt \$ clickhouse-client -d tranalyzer}\\
+
+\noindent
+{\tt\color{blue} \# Number of flows}\\
+{\tt :)\ \textcolor{darkblue}{SELECT} count(*) \textcolor{darkblue}{FROM} flow;}\\
+
+\noindent
+{\tt\color{blue} \# 10 first srcIP/dstIP pairs}\\
+{\tt :)\ \textcolor{darkblue}{SELECT} "srcIP", "dstIP" \textcolor{darkblue}{FROM} flow \textcolor{darkblue}{LIMIT} 10;}\\
+
+\noindent
+{\tt\color{blue} \# All flows from 1.2.3.4 to 1.2.3.5}\\
+{\tt :)\ \textcolor{darkblue}{SELECT} * \textcolor{darkblue}{FROM} flow \textcolor{darkblue}{WHERE} "srcIP.1" = 4 \textcolor{darkblue}{AND} "srcIP.2" = toIPv6('1.2.3.4') \textcolor{darkblue}{AND}}\\
+\indent\indent\indent\indent\indent\indent\indent\indent\indent~~ {\tt "dstIP.1" = 4 \textcolor{darkblue}{AND} "dstIP.2" = toIPv6('1.2.3.5');}\\
+
+\noindent
+For examples of more complex queries, have a look in {\tt \$T2HOME/scripts/t2fm/clickhouse/}.
+
+\subsubsection{Clean up an existing database}
+
+{\tt\color{blue} \# Connect to the ClickHouse database}\\
+{\tt \$ clickhouse-client}\\
+
+\noindent
+{\tt\color{blue} \# Drop the database}\\
+{\tt :)\ \textcolor{darkblue}{DROP DATABASE} tranalyzer;}\\
+
+\end{document}

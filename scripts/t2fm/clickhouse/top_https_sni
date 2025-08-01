@@ -1,0 +1,23 @@
+-- Top HTTPS Server Name Indication (SNI) by number of flows
+
+SELECT
+    toValidUTF8(sni),
+    COUNT(*) AS cnt
+
+FROM (
+    SELECT
+        sslServerName AS sni
+    FROM
+        flow
+    ARRAY JOIN
+        "sslServerName" AS sslServerName
+    WHERE
+        notEmpty("sslServerName")
+        AND "timeFirst" >= {time_from:DateTime64(6)}
+        AND "timeLast" <= {time_to:DateTime64(6)}
+) AS flows
+
+GROUP BY sni
+ORDER BY multiply(cnt, {sort_order:Int8})
+
+LIMIT {n:UInt64}

@@ -1,0 +1,172 @@
+#!/usr/bin/env bash
+#
+# Generates a list of files with absolute path.
+# Input can be composed of files and folders.
+#
+# Usage: t2caplist [OPTION...] files > pcap_list.txt
+
+source "$(dirname "$0")/t2utils.sh"
+
+usage() {
+    echo "Usage:"
+    echo "    $SNAME [OPTION...] <FILE|DIR>"
+    echo
+    echo "Optional arguments:"
+    echo "    -d depth          List pcaps up to the given depth"
+    echo "    -r                List pcaps recursively"
+    echo "    -L                Follow symbolic links"
+    echo
+    echo "    -x [ext...]       Filter by extension [faster]"
+    echo "                      (default: '*.pcap*' '*.cap*' '*.dmp*')"
+    echo "                      Default extensions can be overwritten as follows:"
+    echo "                      -x '*.ext1' '*.ext2*'"
+    echo
+    echo "    -R                Sort the list in reverse order"
+    echo "    -z                Sort the list by file size"
+    echo "    -t                Sort the list by time (using the first packet)"
+    echo "    -s                Do not sort the list"
+    echo
+    echo "    -v                Report invalid files to stderr"
+    echo
+    echo "Help and documentation arguments:"
+    echo "    -h, -?, --help    Show this help, then exit"
+}
+
+cleanup() {
+    [ -f "$TEMPFILE" ] && rm "$TEMPFILE"
+    exit "$ret"
+}
+
+# Default values
+DEPTH_LEVEL=1
+EXT=(
+    '*.pcap*'
+    '*.cap*'
+    '*.dmp*'
+)
+
+while [ $# -gt 0 ]; do
+    case "$1" in
+        -d|--depth)
+            validate_next_num "$1" "$2"
+            DEPTH_LEVEL="$2"
+            shift
+            ;;
+        -x|--extension)
+            BYEXT=1
+            while [ $# -gt 1 ] && [ ! -f "$2" ] && [ ! -d "$2" ] && ! arg_is_option "$2"; do
+                EXT+=("$2")
+                shift
+            done
+            ;;
+        -z|--size) SIZE=1;;
+        -t|--time) TIME=1;;
+        -s|--no-sort) NOSORT=1;;
+        -r|--recursive) RECURSIVE=1;;
+        -R|--reverse) SORDER="-r";;
+        -v|--verbose) VERBOSE=1;;
+        -L|--symlinks) SYMLINKS="$1";;
+        -h|-\?|--help) usage; exit 0;;
+        *)
+            if [ -d "$1" ]; then
+                DIRS+=("$1")
+            elif [ -f "$1" ]; then
+                FILES+=("$1")
+            else
+                abort_option_unknown "$1"
+            fi
+            ;;
+    esac
+    shift
+done
+
+# No files or directory specified
+if [ -z "$FILES" ] && [ -z "$DIRS" ]; then
+    DIRS="."
+fi
+
+if [ -z "$RECURSIVE" ]; then
+    DEPTH="-maxdepth $DEPTH_LEVEL"
+fi
+
+if [ -n "$BYEXT" ]; then
+    NAME=()
+    for ext in ${EXT[@]}; do
+        NAME+=(-iname "$ext" -o)
+    done
+    unset NAME[${#NAME[@]}-1]
+fi
+
+# Setup signal handler
+trap "trap - SIGTERM && cleanup 1" HUP INT QUIT TERM
+trap "cleanup \$?" EXIT
+
+TEMPFILE=$(mktemp)
+
+if [ -z "$BYEXT" ]; then
+    for i in "${DIRS[@]}"; do
+        find $SYMLINKS "$($READLINK -f "$i")" $DEPTH -type f -exec file {} \; | \
+            grep -wi 'capture file' | AWK -F': ' '{ print $1 }' >> "$TEMPFILE"
+    done
+else
+    for i in "${DIRS[@]}"; do
+        find $SYMLINKS "$($READLINK -f "$i")" $DEPTH "${NAME[@]}" -type f >> "$TEMPFILE"
+    done
+fi
+
+for i in "${FILES[@]}"; do
+    if [ ! -f "$i" ]; then
+        # Should not happen
+        if [ -n "$VERBOSE" ]; then
+            printwrn "'$i' is not a valid pcap file" >&2
+        fi
+        continue
+    fi
+
+    if [ -z "$BYEXT" ]; then
+        if file "$i" | grep -qwi 'capture file'; then
+            $READLINK -f "$i" >> "$TEMPFILE"
+        elif [ -n "$VERBOSE" ]; then
+            printwrn "'$i' is not a valid pcap file" >&2
+        fi
+    else
+        FILE="$($READLINK -f "$i")"
+        if [ -n "$(find "$FILE" "${NAME[@]}")" ]; then
+            echo "$FILE" >> "$TEMPFILE"
+        elif [ -n "$VERBOSE" ]; then
+            printwrn "'$i' is not a valid pcap file" >&2
+        fi
+    fi
+done
+
+if [ ! -s "$TEMPFILE" ]; then
+    printerr "No valid PCAP files found"
+    exit 1
+fi
+
+if [ -n "$NOSORT" ]; then
+    cat "$TEMPFILE"
+elif [ -n "$SIZE" ]; then
+    while IFS= read -r line
+    do
+        du "$line"
+    done < <(cat "$TEMPFILE") | sort -f $SORDER -n | AWK '{
+        $1 = "" # discard size
+        gsub("^" OFS, "")
+        print
+    }'
+elif [ -n "$TIME" ]; then
+    check_dependency capinfos wireshark
+    while IFS= read -r line
+    do
+        capinfos -T -a "$line" | tail -1
+    done < <(cat "$TEMPFILE") | sort -f $SORDER -n | AWKF '{
+        $2 = "" # discard start time
+        gsub(OFS "$", "")
+        print
+    }'
+elif [ "$(uname)" = "Darwin" ]; then
+    sort -f $SORDER "$TEMPFILE"
+else
+    sort -f -V $SORDER "$TEMPFILE"
+fi

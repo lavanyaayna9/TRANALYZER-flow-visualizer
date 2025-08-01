@@ -1,0 +1,9 @@
+Information about AS can be found using whois (Prefix the AS number to lookup with AS, e.g., whois AS1234)
+
+Route selection:
+
+Highest WEIGHT(Cisco), Highest LOCAL_PREF , AS_PATH_LEN (AS_SET = 1, AS_CONFED* = 0), ORIGIN: IGP > EGP > Incomplete, smallest MED
+
+AS Path: Last entry shows the originating AS
+
+If ORIGIN == EGP && my_as in AS_Path => loop

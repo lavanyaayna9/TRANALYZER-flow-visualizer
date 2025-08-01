@@ -1,0 +1,6 @@
+#H vtpCode | Description
+#H =============================================================================
+      0x01 | Summary Advertisement
+      0x02 | Subset Advertisement
+      0x03 | Advertisement Request
+      0x04 | Join/Prune Message

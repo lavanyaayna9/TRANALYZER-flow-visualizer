@@ -1,0 +1,29 @@
+# ZSH completion for t2voipconv
+
+_t2voipconv() {
+    #compdef t2voipconv
+
+    local cur="${words[CURRENT]}"
+    [ $CURRENT -gt 2 ] && local prev="${words[CURRENT-1]}"
+
+    local opts=(
+        {-m,--mono-dir}'[Output folder for mono files]:folder:_files -/'
+        {-s,--stereo-dir}'[Output folder for stereo files]:folder:_files -/'
+        {-o,--output-dir}'[Output folder for mono and stereo files]:folder:_files -/'
+        {-S,--no-stereo}'[Do not create stereo files]'
+        {-i,--interactive}'[Interactive mode]'
+        {-u,--yes}'[Do not ask for confirmation before executing an action]'
+        {-f,--format}'[Input format (FILE only)]:format:(amr amrnb amrwb g711a g711u g722 g723 g726 g726le g729 gsm)'
+        '--sox[Use SoX instead of ffmpeg]'
+        {-v,--verbose}'[Verbose output]'
+        '(- 1 *)-h[Show help options and exit]'
+    )
+
+    if [[ "$cur" == -* ]]; then
+        _arguments -s -S "${opts[@]}"
+    else
+        _files
+    fi
+}
+
+compdef _t2voipconv t2voipconv

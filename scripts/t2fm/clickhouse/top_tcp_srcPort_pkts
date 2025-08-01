@@ -1,0 +1,40 @@
+-- Top TCP source port by number of packets
+
+SELECT
+    port,
+    SUM(pkts) AS cnt
+
+FROM (
+    -- A flows
+    SELECT
+        "srcPort" AS port,
+        "pktsSnt" AS pkts
+    FROM
+        flow
+    WHERE
+        "dir" = 'A'
+        AND bitTest("flowStat", 0) = 0
+        AND "l4Proto" = 6
+        AND "timeFirst" >= {time_from:DateTime64(6)}
+        AND "timeLast" <= {time_to:DateTime64(6)}
+
+    UNION ALL
+
+    -- B flows
+    SELECT
+        "dstPort" AS port,
+        "pktsRcvd" AS pkts
+    FROM
+        flow
+    WHERE
+        "dir" = 'A'
+        AND bitTest("flowStat", 0) = 1
+        AND "l4Proto" = 6
+        AND "timeFirst" >= {time_from:DateTime64(6)}
+        AND "timeLast" <= {time_to:DateTime64(6)}
+) AS flows
+
+GROUP BY port
+ORDER BY multiply(cnt, {sort_order:Int8})
+
+LIMIT {n:UInt64}

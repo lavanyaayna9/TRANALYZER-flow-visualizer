@@ -1,0 +1,24 @@
+# ZSH completion for t2netID
+
+_t2netID() {
+    #compdef t2netID
+
+    local cur="${words[CURRENT]}"
+    [ $CURRENT -gt 2 ] && local prev="${words[CURRENT-1]}"
+
+    case "$prev" in
+        -O|-C)
+            _files
+            return
+            ;;
+        -s|-t)
+            return
+            ;;
+    esac
+
+    if [[ "$cur" == -* ]]; then
+        _arguments --
+    fi
+}
+
+compdef _t2netID t2netID

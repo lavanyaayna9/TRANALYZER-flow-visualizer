@@ -1,0 +1,54 @@
+#!/usr/bin/env bash
+
+source "$(dirname "$0")/../../../scripts/t2utils.sh"
+
+usage() {
+    echo "Usage:"
+    echo "    $SNAME [OPTION...]"
+    echo
+    echo "Optional arguments:"
+    echo "    -h, --help        Show this help, then exit"
+}
+
+if [ "$1" = "-h" ] || [ "$1" == "--help" ]; then
+    usage
+    exit 0
+fi
+
+FILE="$($READLINK -f "$SNAME/../macdb/macaddress.io-db.csv")"
+if [ ! -f "$FILE" ]; then
+    printerr "File '$FILE' does not exist"
+    exit 1
+fi
+
+AWK -F',' -v OFS='\t' -M '
+BEGIN {
+    T = "000000000000"
+}
+NR == 1 {
+    print "#" $1, "ethType", $2, $3, $4, $5, $6, $7, $8
+}
+NR > 1 && !/"/ {
+    gsub(":", "", $1)
+    j = length($1)
+    f = substr(T, j, 12 - j)
+    print "0x" $1 f "/" j*4, "0x0000", $2, $3, $4, $5, $6, $7, $8
+}
+/"/ {
+    gsub(";", "", $0)
+    gsub(",\"", ";", $0)
+    gsub("\",", ";", $0)
+    gsub(";;", ";", $0)
+    gsub(";,", ";", $0)
+    gsub("\"", "", $0)
+    n = split($0, A, ";")
+    gsub(",", "\t", A[1])
+    gsub(",", "\t", A[4])
+    if (n == 3) gsub(",", "\t", A[3])
+    gsub(":", "", A[1])
+    n = split(A[1], B, "\t")
+    j = length(B[1])
+    f = substr(T, j, 12 - j)
+    if (n < 3) print "0x" B[1] f "/" j*4, "0x0000", B[2], A[2], A[3], A[4]
+    else print "0x" B[1] f "/" j*4, "0x0000", B[2], B[3], A[2], A[3], A[4]
+}' "$FILE" > macaddress.txt

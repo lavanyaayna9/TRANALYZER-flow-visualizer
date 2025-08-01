@@ -1,0 +1,22 @@
+# ZSH completion for t2caplist
+
+_t2caplist() {
+    #compdef t2caplist
+
+    local cur="${words[CURRENT]}"
+    [ $CURRENT -gt 2 ] && local prev="${words[CURRENT-1]}"
+
+    case "$prev" in
+        -d)
+            return
+            ;;
+    esac
+
+    if [[ "$cur" == -* ]]; then
+        _arguments --
+    else
+        _files
+    fi
+}
+
+compdef _t2caplist t2caplist

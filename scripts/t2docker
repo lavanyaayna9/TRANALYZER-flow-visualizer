@@ -1,0 +1,541 @@
+#!/usr/bin/env bash
+
+source "$(dirname "$0")/t2utils.sh"
+
+usage() {
+    printf "Usage:\n"
+    printf "    $SNAME [OPTION...] [ACTION...]\n"
+    printf "\n"
+    printf "Actions:\n"
+    printf "    -B t2-latest.tar.gz     Build a Docker container for 't2-latest.tar.gz'\n"
+    printf "    -B latest               Download the latest version and build a Docker container for it\n"
+    printf "    -L t2docker.tar[.gz]    Load the docker image 't2docker.tar[.gz]'\n"
+    printf "    -X [image]              Get a shell in the docker image 'image' (name or ID)\n"
+    printf "                            (if used after '-B' or '-L', then 'image' must be omitted)\n"
+    printf "    -S [image]              Save a docker image 'image' (name or ID)\n"
+    printf "                            (if used after '-B', then 'image' must be omitted)\n"
+    printf "    -ls                     List the available Tranalyzer docker images\n"
+    printf "    t2-command              Tranalyzer command or t2 options, e.g.:\n"
+    printf "                                t2docker -r file.pcap -w /tmp/ -l\n"
+    printf "                                t2docker tawk -V flowStat\n"
+    printf "\n"
+    printf "Optional arguments:\n"
+    #printf "    -v list                 Bind mount a volume (option passed as is to docker run)\n"
+    printf "    -m                      Multi-stage build (smaller size, runtime dependencies only)\n"
+    printf "    --shred                 Shred (instead of rm) shared folder after execution\n"
+    printf "    -os OS                  OS to use: centos, debian, fedora, opensuse/leap,\n"
+    printf "                            opensuse/tumbleweed, ubuntu [default: $OS]\n"
+    printf "    -ov OS_VERSION          OS version to use [default: $OS_VERSION]\n"
+    printf "    --verbose               Be more verbose\n"
+    printf "\n"
+    printf "Help and documentation arguments:\n"
+    printf "    -h, --help              Show this help, then exit\n"
+}
+
+_cleanup() {
+    local ret="$1"
+    if [ ${#TEMPFILES[@]} -gt 0 ]; then
+        rm -rf "${TEMPFILES[@]}"
+    fi
+    if [ -d "$SHARED_LOCAL" ]; then
+        for i in "$SHARED_LOCAL/"*; do
+            $RM "$i"
+        done
+    fi
+    exit $ret
+}
+
+_validate_os() {
+    validate_next_arg "$1" "$2"
+    for i in ${SUPPORTED_OS[@]}; do
+        if [ "$2" = "$i" ]; then
+            return 0
+        fi
+    done
+    printerr "Invalid argument for option '$1': '$2' is not supported"
+    abort_with_help
+}
+
+t2docker_list() {
+    DOCKER_IMAGES="$(docker image ls | grep ^tranalyzer2)"
+    if [ -n "$DOCKER_IMAGES" ]; then
+        docker image ls | AWK 'NR == 1 || /^tranalyzer2/'
+    else
+        printerr "No Docker image found for Tranalyzer2"
+        printinf "Try running the following command: $SNAME -B tranalyzer2-latest.tar.gz"
+        exit 1
+    fi
+}
+
+t2docker_build() {
+    DOCKERFILE="Dockerfile"
+    TMPDIR="$(mktemp -d)"
+    cd "$TMPDIR"
+
+    if [ "$T2_TGZ" = "latest" ]; then
+        check_dependency curl
+        local _url="https://tranalyzer.com/download/tranalyzer/latest"
+        T2_TGZ="$(curl --head "$_url" 2> /dev/null | AWK -F'/' '/^[Ll]ocation:/ {
+            print gensub(/^(tranalyzer2-[0-9]+\.[0-9]+.[0-9]+)lmwf?[0-9]+(\.tar\.gz)[\r\n]+$/, "\\1\\2", "g", $NF);
+        }')"
+
+        if ! t2_wget "$_url" "$T2_TGZ"; then
+            printerr "Failed to download latest tranalyzer version."
+            exit 1
+        fi
+
+        printok "Successfully downloaded '$T2_TGZ'"
+        T2_TGZ="$("$READLINK" -f "$T2_TGZ")"
+    fi
+
+    # Extract T2 and rename
+    printinf "Extracting '$(basename "$T2_TGZ")'"
+    tar xzf "$T2_TGZ"
+
+    local _dirname=("$(tar ztf "$T2_TGZ" | cut -d'/' -f1 | sort -u)")
+    if [ ${#_dirname[@]} -ne 1 ]; then
+        _dirname="$(basename "$T2_TGZ" .tar.gz)"
+    fi
+
+    if [ ! -d "$_dirname" ]; then
+        printerr "Failed to identify top-level directory in '$T2_TGZ'"
+        exit 1
+    fi
+
+    mv "$_dirname" t2-latest
+
+    if [ $MULTISTAGE ]; then
+        echo "FROM $OS:$OS_VERSION AS build" > "$DOCKERFILE"
+    else
+        echo "FROM $OS:$OS_VERSION" > "$DOCKERFILE"
+    fi
+
+    echo "COPY t2-latest /t2-src" >> "$DOCKERFILE"
+    echo "ENV DOCKER_BUILD \"yes\"" >> "$DOCKERFILE"
+
+    local run_cmd
+    local clean_cmd
+    local prod_cmd
+    case "$OS" in
+        "debian"|"ubuntu")
+            EXTRA_PKGS=(
+                bsdextrautils # for column
+                less
+                pkg-config
+                #vim
+            )
+            echo "ENV DEBIAN_FRONTEND noninteractive" >> "$DOCKERFILE"
+            run_cmd="apt-get -y update && apt-get -y --no-install-recommends install ${EXTRA_PKGS[@]}"
+            clean_cmd="apt-get -y autoremove && apt-get clean && rm -rf /var/lib/apt/lists/*"
+            prod_cmd="apt-get update && apt-get install -y --no-install-recommends gawk libmariadb3 libmongoc-1.0-0 libpcap0.8 libpq5 libsqlite3-0 libssl3 zlib1g"
+            ;;
+        "centos")
+            EXTRA_PKGS=(
+                coreutils
+                dnf-plugins-core
+                procps-ng  # for pgrep
+                #vim-enhanced
+                which
+                https://dl.fedoraproject.org/pub/epel/epel-release-latest-8.noarch.rpm
+            )
+            run_cmd="dnf -y update && dnf -y --allowerasing install ${EXTRA_PKGS[@]} && dnf config-manager --set-enabled powertools"
+            clean_cmd="dnf clean all"
+            ;;
+        "fedora")
+            EXTRA_PKGS=(
+                less
+                procps-ng  # for pgrep
+                which
+            )
+            run_cmd="yum -y update && yum -y install ${EXTRA_PKGS[@]}"
+            clean_cmd="yum clean all"
+            ;;
+        "opensuse/leap"|"opensuse/tumbleweed")
+            EXTRA_PKGS=(
+                gzip
+                less
+                #vim
+                which
+            )
+            run_cmd="zypper --non-interactive update && zypper --non-interactive install ${EXTRA_PKGS[@]}"
+            clean_cmd="zypper clean"
+            ;;
+    esac
+
+    echo "RUN $run_cmd && /t2-src/setup.sh -T -a || true && \
+        /t2-src/autogen.sh -a -c && \
+        make -C /t2-src/utils/t2whois all clean && \
+        make -C /t2-src/utils/t2b2t all clean && \
+        make -C /t2-src/plugins/findexer/fextractor all clean && \
+        /t2-src/autogen.sh tranalyzer2 && \
+        ls /t2-src/tranalyzer2/build/ | grep -Fw tranalyzer | xargs rm -rf && \
+        rm -rf /t2-src/utils/subnet/subnet[46].txt && \
+        $clean_cmd" >> "$DOCKERFILE"
+
+    if [ $MULTISTAGE ]; then
+        echo "FROM $OS:$OS_VERSION AS prod" >> "$DOCKERFILE"
+        echo "ENV DOCKER_BUILD \"yes\"" >> "$DOCKERFILE"
+        case "$OS" in
+            "debian"|"ubuntu")
+                echo "ENV DEBIAN_FRONTEND noninteractive" >> "$DOCKERFILE"
+                ;;
+        esac
+        local to_copy=(
+            "/t2-src/scripts/"
+            "/t2-src/tranalyzer2/build/tranalyzer"
+            "/t2-src/plugins/findexer/fextractor/fextractor"
+            "/t2-src/utils/t2b2t/t2b2t"
+            "/t2-src/utils/t2whois/t2whois"
+            "/root/.tranalyzer/plugins/"
+        )
+        local i
+        for i in ${to_copy[@]}; do
+            echo "COPY --from=build $i $i" >> "$DOCKERFILE"
+        done
+        echo "RUN $prod_cmd && $clean_cmd" >> "$DOCKERFILE"
+    fi
+
+    echo "CMD [\"/t2-src/tranalyzer2/build/tranalyzer\"]" >> "$DOCKERFILE"
+
+    DOCKER_NAME="$_dirname-$OS"
+
+    docker build --no-cache -t "$DOCKER_NAME" . || {
+        printerr "Failed to build a T2 docker for $OS"
+        exit 1
+    }
+
+    printok "Successfully built T2 docker image '$DOCKER_NAME'"
+}
+
+t2docker_load() {
+    if [ "$(AWK -F'.' '{ print $NF }' <<< "$T2_TAR")" = "gz" ]; then
+        printinf "Uncompressing '$T2_TAR'..."
+        tar xzf "$T2_TAR" || {
+            printerr "Failed to uncompress T2 docker image '$T2_TAR'"
+            exit 1
+        }
+        local files=($(tar tf "$T2_TAR"))
+        if [ ${#files[@]} -eq 1 ]; then
+            T2_TAR="${files[@]}"
+        else
+            T2_TAR="$(basename "$T2_TAR" .gz)"
+        fi
+        TEMPFILES+=("$T2_TAR")
+    fi
+
+    printinf "Loading '$T2_TAR'..."
+    DOCKER_NAME="$(basename "$T2_TAR" .tar)"
+    docker load -i "$T2_TAR" || {
+        printerr "Failed to load T2 docker image '$DOCKER_NAME'"
+        exit 1
+    }
+
+    printok "Successfully loaded T2 docker image '$DOCKER_NAME'"
+}
+
+t2docker_run() {
+    if [ "$DOCKER_NAME" = "latest" ]; then
+        DOCKER_NAME="$(docker image ls | AWK '/^tranalyzer2/ { print $1; exit }')"
+        if [ -z "$DOCKER_NAME" ]; then
+            printerr "Could not find a suitable docker image..."
+            printinf "Use -B option to create a new one or -X to specify an existing one"
+            exit 1
+        fi
+    fi
+
+    local DOCKER_OPTS=()
+    if [ ${#CMD[@]} -eq 0 ]; then
+        DOCKER_OPTS+=(-it)
+        CMD+=("/bin/bash")
+    else
+        # Only prepare shared folders if required
+        if [ "${CMD[0]}" != "tawk" -o "${CMD[1]}" != "-?" ]        &&
+           [ "${CMD[0]}" != "tawk" -o "${CMD[1]}" != "-h" ]        &&
+           [ "${CMD[0]}" != "tawk" -o "${CMD[1]}" != "--help" ]    &&
+           [ "${CMD[0]}" != "tawk" -o "${CMD[1]}" != "-V" ]        &&
+           [ "${CMD[0]}" != "tawk" -o "${CMD[1]}" != "--var" ]     &&
+           [ "${CMD[0]}" != "tawk" -o "${CMD[1]}" != "-d" ]        &&
+           [ "${CMD[0]}" != "tawk" -o "${CMD[1]}" != "--doc" ]     &&
+           [ "${CMD[0]}" != "tawk" -o "${CMD[1]}" != "-g" ]        &&
+           [ "${CMD[0]}" != "tawk" -o "${CMD[1]}" != "--func" ]    &&
+           [ "${CMD[0]}" != "t2"   -o "${CMD[1]}" != "-h" ]        &&
+           [ "${CMD[0]}" != "t2"   -o "${CMD[1]}" != "--help" ]    &&
+           [ "${CMD[0]}" != "t2"   -o "${CMD[1]}" != "-V" ]        &&
+           [ "${CMD[0]}" != "t2"   -o "${CMD[1]}" != "--version" ]
+        then
+            printinf "Preparing shared folders..."
+            SHARED_LOCAL="$(mktemp -d)"
+            local shared_remote="/shared"
+            DOCKER_OPTS=(-v "$SHARED_LOCAL:$shared_remote")
+        fi
+
+        for ((i = 0; i < ${#CMD[@]}; i++)); do
+            local cur="${CMD[$i]}"
+            local next="${CMD[$((i+1))]}"
+            if [ "$cur" = "t2" ] || [ "$cur" = "tranalyzer" ]; then
+                CMD[$i]="/t2-src/tranalyzer2/build/tranalyzer"
+            elif [ "$cur" = "t2build" ]; then
+                CMD[$i]="/t2-src/autogen.sh"
+            elif [ "$cur" = "t2conf" ]; then
+                CMD[$i]="/t2-src/scripts/t2conf/t2conf"
+            elif [ "$cur" = "t2fm" ]; then
+                CMD[$i]="/t2-src/scripts/t2fm/t2fm"
+            elif [ "$cur" = "tawk" ]; then
+                CMD[$i]="/t2-src/scripts/tawk/tawk"
+            elif [ "$cur" = "t2b2t" ]; then
+                CMD[$i]="/t2-src/utils/t2b2t/t2b2t"
+            elif [ "$cur" = "t2whois" ]; then
+                CMD[$i]="/t2-src/utils/t2whois/t2whois"
+            elif [ "$cur" = "-r" ] ||
+                 [ "$cur" = "-b" ] ||
+                 [ "$cur" = "-e" ] ||
+                 [ "$cur" = "-F" ]
+            then
+                if [ -z "$next" ]; then
+                    printerr "'$cur' option requires an argument"
+                    exit 1
+                elif ! cp -i "$next" "$SHARED_LOCAL"; then
+                    printerr "Failed to copy '$next'"
+                    exit 1
+                fi
+                i=$((i+1))
+                CMD[$i]="$shared_remote/$(basename "$next")"
+            elif [ "$cur" = "-w" ] || [ "$cur" = "-W" ]; then
+                if [ -z "$next" ]; then
+                    printerr "'$cur' option requires an argument"
+                    exit 1
+                fi
+                DOCKER_OPTS+=(-v "$(dirname "$next"):/results")
+                i=$((i+1))
+                CMD[$i]="/results/$(basename "$next")"
+            elif [ "$cur" = "-R" ]; then
+                if [ -z "$next" ]; then
+                    printerr "'$cur' option requires an argument"
+                    exit 1
+                fi
+                local b_name="$(basename "$next")"
+                for f in $(AWK '!/#/ && !/^$/' "$next"); do
+                    if ! cp -i "$f" "$SHARED_LOCAL"; then
+                        printerr "Failed to copy '$f'"
+                        exit 1
+                    fi
+                done
+                AWK -F'/' -v _newpath="$shared_remote" '
+                    /^#/ || /^$/ { print; next }
+                    {  print _newpath "/" $NF }
+                ' "$next" > "$SHARED_LOCAL/$b_name"
+                i=$((i+1))
+                CMD[$i]="$shared_remote/$b_name"
+            fi
+        done
+    fi
+
+    # Allow docker to contact the localhost
+    DOCKER_OPTS+=(--network=host)
+
+    [ $VERBOSE ] && echo "docker run --rm ${DOCKER_OPTS[*]} \"$DOCKER_NAME\" ${CMD[*]}"
+    docker run --rm ${DOCKER_OPTS[*]} "$DOCKER_NAME" ${CMD[*]}
+}
+
+t2docker_save() {
+    local archive="$DOCKER_NAME.tar"
+
+    docker save "$DOCKER_NAME" > "$archive" || {
+        printerr "Failed to save T2 docker image '$DOCKER_NAME'"
+        exit 1
+    }
+
+    local final="$archive.gz"
+    printinf "Compressing '$archive' to '$final'..."
+
+    tar czf "$final" "$archive" || {
+        printerr "Failed to gzip T2 docker image '$archive'"
+        exit 1
+    }
+
+    rm -f "$archive"
+
+    local _md5
+    printinf "\nComputing checksum...\n"
+    if [ "$(uname)" = "Darwin" ]; then
+        _md5="$(md5 -q "$final")"
+    else
+        _md5="$(md5sum "$final" | AWK '{ print $1 }')"
+    fi
+
+    printok "Successfully saved T2 docker image to '$("$READLINK" -f "$PWD/$final")' (md5: $_md5)"
+}
+
+# Files to remove in _cleanup signal handler
+TEMPFILES=()
+
+# Command to use to remove temporary files
+RM="rm -rf"
+
+# Command to execute
+CMD=()
+
+SUPPORTED_OS=(
+    "centos"
+    "debian"
+    "fedora"
+    "opensuse/leap"
+    "opensuse/tumbleweed"
+    "ubuntu"
+)
+
+# default OS
+OS="ubuntu"
+OS_VERSION="latest"
+
+if [ $# -eq 0 ]; then
+    usage
+    exit 0
+fi
+
+ACTIONS=()
+
+while [ $# -ne 0 ]; do
+    case "$1" in
+
+        # Actions
+
+        -B|--build)
+            ACTIONS+=(build)
+            validate_next_arg "$1" "$2"
+            if [ "$2" = "latest" ]; then
+                T2_TGZ="$2"
+            else
+                validate_next_file "$1" "$2"
+                T2_TGZ="$("$READLINK" -f "$2")"
+            fi
+            shift
+            ;;
+        -X|--execute)
+            ACTIONS+=(run)
+            if [ -n "${T2_TGZ}${T2_TAR}" ]; then
+                DOCKER_NAME="latest"
+            else
+                validate_next_arg "$1" "$2"
+                DOCKER_NAME="$2"
+                shift
+            fi
+            ;;
+        -ls|--list)
+            ACTIONS+=(list)
+            ;;
+        -S|--save)
+            ACTIONS+=(save)
+            if [ -n "${T2_TGZ}${T2_TAR}" ]; then
+                DOCKER_NAME="latest"
+            else
+                validate_next_arg "$1" "$2"
+                DOCKER_NAME="$2"
+                shift
+            fi
+            ;;
+        -L|--load)
+            ACTIONS+=(load)
+            validate_next_file "$1" "$2"
+            T2_TAR="$("$READLINK" -f "$2")"
+            shift
+            ;;
+
+        # Optional arguments
+
+        --shred)
+            check_dependency shred coreutils
+            RM="shred -f -u"
+            ;;
+
+        -m|--multi-stage)
+            MULTISTAGE=1
+            ;;
+
+        -os|--os)
+            _validate_os "$1" "$2"
+            OS="$2"
+            shift
+            ;;
+        --centos|--debian|--fedora|--opensuse/leap|--opensuse/tumbleweed|--ubuntu)
+            OS="${1#--*}"
+            ;;
+
+        -ov|--os-version)
+            validate_next_arg "$1" "$2"
+            OS_VERSION="$2"
+            shift
+            ;;
+
+        --verbose)
+            VERBOSE=1
+            ;;
+
+        #-v|--volume)
+        #    validate_next_arg "$1" "$2"
+        #    local_file="$(dirname "$("$READLINK" -f "$2")")"
+        #    remote_file="/pcap/"
+        #    DOCKER_OPTS+=("$1" "$local_file:$remote_file")
+        #    echo "${DOCKER_OPTS[*]}"
+        #    exit
+        #    shift
+        #    ;;
+
+        -h|-\?|--help)
+            if [ -n "$CMD" ]; then
+                CMD+=($(tr ' ' '\n' <<< "$1"))
+            else
+                usage
+                exit 0
+            fi
+            ;;
+
+        *)
+            if [ -z "$CMD" ] && [ -n "$(AWK '/^-/' <<< "$1")" ]; then
+                CMD+=(t2)
+            fi
+            if ! grep -Fw run <<< "${ACTIONS[@]}" &> /dev/null; then
+                DOCKER_NAME="latest"
+                ACTIONS+=(run)
+            fi
+            CMD+=($(tr ' ' '\n' <<< "$1"))
+            ;;
+    esac
+    shift
+done
+
+if [ ${#ACTIONS[*]} -eq 0 ]; then
+    printerr "One of '-B', '-X', '-ls', '-S' or '-L' option is required"
+    abort_with_help
+elif [ -f "$T2_TGZ" ] && [ -f "$T2_TAR" ]; then
+    printerr "Cannot use -B and -L options at the same time"
+    abort_with_help
+fi
+
+if [ $MULTISTAGE ] && [ "$OS" != "ubuntu" ] && [ "$OS" != "debian" ]; then
+    printerr "Multi-stage builds are only supported with ubuntu/debian"
+    exit 1
+fi
+
+check_dependency docker
+
+# Make sure the docker daemon is running
+ERR="$( (docker version > /dev/null) 2>&1)"
+if [ $? -ne 0 ]; then
+    printerr "$ERR"
+    exit 1
+fi
+
+# Setup signal handler to take care of temporary files
+trap "trap - SIGTERM && _cleanup 1" HUP INT QUIT TERM
+trap "_cleanup \$?" EXIT
+
+for i in ${ACTIONS[@]}; do
+    case "$i" in
+        build) t2docker_build;;
+        run)   t2docker_run;;
+        list)  t2docker_list;;
+        save)  t2docker_save;;
+        load)  t2docker_load;;
+    esac
+done

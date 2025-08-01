@@ -1,0 +1,19 @@
+#!/usr/bin/env awk
+#
+# Encode a string 's' as base64.
+#
+# Dependencies:
+#   - None
+#
+# Parameters:
+#   - s: the string to encode in base64
+#
+# Examples:
+#   - tawk '{ print base64("Tranalyzer") }' file.txt
+
+function base64(s,        _cmd, _t) {
+    _cmd = "echo " s " | base64"
+    _cmd | getline _t
+    close(_cmd)
+    return _t
+}

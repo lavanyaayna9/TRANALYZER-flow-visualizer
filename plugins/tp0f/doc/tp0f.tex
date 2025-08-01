@@ -1,0 +1,115 @@
+\IfFileExists{t2doc.cls}{
+    \documentclass[documentation]{subfiles}
+}{
+    \errmessage{Error: could not find 't2doc.cls'}
+}
+
+\begin{document}
+
+\trantitle
+    {tp0f} % Plugin name
+    {OS/Application Fingerprinting based on layer 3/4 (IP/TCP) analysis} % Short description
+    {Tranalyzer Development Team} % author(s)
+
+\section{tp0f}\label{s:tp0f}
+
+\subsection{Description}
+The tp0f plugin classifies IP addresses according to OS type and version.
+It uses initial TTL and window size and can also use the rules from p0f.
+%With additional HTTP and HTTPS rules programs such as browser versions can also be classified.
+%At compilation a script {\tt tp0fL34conv} converts the supplied p0f file into a T2 readable file
+%defined by {\tt TP0F\_L34FILE} in {\em tp0f.h}.
+In order to label non-TCP flows, the plugin can store a hash of already classified IP addresses.
+
+\subsubsection{Required Files}
+If {\tt TP0FRULES=1}, then the file {\tt tp0fL34.txt} is required.
+
+\subsection{Configuration Flags}
+The following flags can be used to control the output of the plugin:
+
+\begin{longtable}{>{\tt}lcl}
+    \toprule
+    {\bf Name}    & {\bf Default}             & {\bf Description}\\
+    \midrule\endhead%
+    TP0FRULES     & 1                         & 0: Standard OS guessing\\
+                  &                           & 1: OS guessing and p0f L3/4 rules\\
+    TP0FHSH       & 1                         & 0: No IP hash\\
+                  &                           & 1: IP hash to recognize IP already classified\\
+    TP0FRC        & 0                         & 0: Only human readable\\
+                  &                           & 1: p0f rule and classifier numbers\\
+    TP0F\_L34FILE & {\tt\small "tp0fL34.txt"} & File containing converted L3/4 rules\\
+    \bottomrule
+\end{longtable}
+
+In {\em tp0flist.h}:
+
+\begin{longtable}{>{\tt}lcl}
+    \toprule
+    {\bf Name} & {\bf Default} & {\bf Description}\\
+    \midrule\endhead%
+    TCPOPTMAX  & 40            & Maximal TCP option codes to store and process\\
+    \bottomrule
+\end{longtable}
+
+\subsubsection{Environment Variable Configuration Flags}
+The following configuration flags can also be configured with environment variables ({\tt ENVCNTRL>0}):
+\begin{itemize}
+    \item {\tt TP0F\_L34FILE}
+\end{itemize}
+
+\subsection{Flow File Output}
+The p0f plugin outputs the following columns:
+\begin{longtable}{>{\tt}lll>{\tt\small}l}
+    \toprule
+    {\bf Column} & {\bf Type} & {\bf Description} & {\bf Flags}\\
+    \midrule\endhead%
+    \nameref{tp0fStat} & H8  & Status                         & \\
+    tp0fDis            & U8  & Initial TTL distance           & \\
+    tp0fRN             & U16 & Rule number that triggered     & TP0FRC=1\\
+    tp0fClass          & U8  & OS class of rule file          & TP0FRC=1\\
+    tp0fProg           & U8  & Program category of rule file  & TP0FRC=1\\
+    tp0fVer            & U8  & Version category of rule file  & TP0FRC=1\\
+    tp0fClName         & SC  & OS class name                  & \\
+    tp0fPrName         & SC  & OS/program name                & \\
+    tp0fVerName        & SC  & OS/program version name        & \\
+    \bottomrule
+\end{longtable}
+
+\subsubsection{tp0fStat}\label{tp0fStat}
+The {\tt tp0fStat} column is to be interpreted as follows:
+\begin{longtable}{>{\tt}rl}
+    \toprule
+    {\bf tp0fStat} & {\bf Description}\\
+    \midrule\endhead%
+    0x01 & SYN tp0f rule fired\\
+    0x02 & SYN-ACK tp0f rule fired\\
+    0x04 & ---\\
+    0x08 & ---\\
+    \\
+    0x10 & ---\\
+    0x20 & ---\\
+    0x40 & IP already seen by tp0f\\
+    0x80 & TCP option length or content corrupt \\
+    \bottomrule
+\end{longtable}
+
+\subsection{Plugin Report Output}
+The number of packets which fired a tp0f rule is reported.
+
+%\subsection{Example Output}
+
+%\subsection{Known Bugs and Limitations}
+
+\subsection{TODO}
+\begin{itemize}
+    \item Integrate TLS rules
+    \item Integrate HTTP rules
+\end{itemize}
+
+\subsection{References}
+\begin{itemize}
+    \item \url{http://www.netresec.com/?page=Blog&month=2011-11&post=Passive-OS-Fingerprinting}
+    \item \url{http://lcamtuf.coredump.cx/p0f3/}
+\end{itemize}
+
+\end{document}

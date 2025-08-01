@@ -1,0 +1,10 @@
+#H tftpErrC | Description
+#H =============================================================================
+          0 | File not found
+          1 | Access violation
+          2 | Disk full or allocation exceeded
+          3 | Illegal TFTP operation
+          4 | Unknown transfer ID
+          5 | File already exists
+          6 | No such user
+          7 | Terminate transfer due to option negotiation

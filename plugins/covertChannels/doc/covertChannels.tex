@@ -1,0 +1,125 @@
+\IfFileExists{t2doc.cls}{
+    \documentclass[documentation]{subfiles}
+}{
+    \errmessage{Error: could not find 't2doc.cls'}
+}
+
+\begin{document}
+
+\trantitle
+    {covertChannels}
+    {Detects covert channels in IP traffic}
+    {Tranalyzer Development Team} % author(s)
+
+\section{covertChannels}
+\label{s:covertChannels}
+
+\subsection{Description}
+The covertChannels plugin detects various types of covert channels (CCs) in IP traffic. Currently, it
+detects most publicly available covert channel tools. In the future, the goal is to also
+detect more discreet covert channels and custom implementations based on current research
+(covert timing channels, SkyDe, \ldots). This plugin produces only output to the flow file.
+Configuration is achieved by user defined compiler switches in {\tt src/covertChannels.h}.
+
+\subsection{Required Files}
+
+\subsubsection{cc\_dns\_whitelist.txt}
+
+The file {\tt cc\_dns\_whitelist.txt} contains a domain names whitelist for the DNS CCs detection.
+Domains in this file will never be flagged as a covert channel.
+
+\begin{itemize}
+    \itemsep0em
+    \item One domain name per line.
+    \item Lines starting with {\tt \%} are comments.
+    \item Suffix match is used to compare domain names against the whitelist.
+\end{itemize}
+
+\subsubsection{cc\_ping\_whitelist.txt}
+
+The file {\tt cc\_ping\_whitelist.txt} contains a whitelist of PING payloads.
+When using the ICMP whitelist detection method, all payload patterns not in this file will be considered
+as a covert channel.
+
+\begin{itemize}
+    \itemsep0em
+    \item Lines starting with {\tt \%} are comments.
+    \item One hex encoded pattern per line.
+    \item The pattern starts at the 25th byte of the ICMP payload.
+    \item Prefix match is used to compare the payload against the whitelist patterns.
+\end{itemize}
+
+For instance, to whitelist the PING packet shown in \reff{fig:cc_ping_whitelist}, the whitelist should
+contain the following pattern: {\tt 101112131415161718191a1b1c1d1e1f202122232425262728292a2b2c2d2e2f3031323334353637}
+
+\begin{figure}[hb]
+  \centering
+  \tranimg[width=0.8\textwidth]{wireshark-ping-pattern}
+  \caption{Wireshark view of whitelisted PING pattern.}
+  \label{fig:cc_ping_whitelist}
+\end{figure}
+
+\subsection{Configuration Flags}
+The following flags can be used to control the output of the plugin:
+\begin{longtable}{>{\tt}lcl}
+    \toprule
+    {\bf Name} & {\bf Default} & {\bf Description} \\
+    \midrule\endhead%
+    CC\_DETECT\_DNS        & 1 & detect CCs in DNS traffic\\
+    CC\_DETECT\_ICMP\_ASYM & 1 & detect CCs in ICMP traffic (using flow asymmetry)\\
+    CC\_DETECT\_ICMP\_WL   & 0 & detect CCs in ICMP traffic (using payload whitelist)\\
+    CC\_DETECT\_ICMP\_NP   & 0 & detect CCs in ICMP traffic (bidirectional non-ping flow)\\
+    CC\_DETECT\_HCOVERT    & 1 & detect CCs in HTTP GET requests (hcovert)\\
+    CC\_DETECT\_DEVCC      & 1 & detect CCs in TCP timestamp field (devcc)\\
+    CC\_DETECT\_IPID       & 1 & detect CCs in the IP Identification field (covert\_tcp)\\
+    CC\_DETECT\_RTP\_TS    & 0 & detect CCs in the RTP timestamp field\\
+    CC\_DETECT\_SKYDE      & 0 & detect CCs in Skype silent packets (SkyDe)\\
+    CC\_DEBUG\_MESSAGES    & 0 & activate debug output\\
+    \bottomrule
+\end{longtable}
+
+\subsection{Flow File Output}
+The covertChannels plugin outputs the following column:
+\begin{longtable}{>{\tt}lll>{\tt\small}l}
+    \toprule
+    {\bf Column} & {\bf Type} & {\bf Description} & {\bf Flags}\\
+    \midrule\endhead%
+    \nameref{covertChannels} & H16 & Detected covert channels bitfield & \\
+    \bottomrule
+\end{longtable}
+
+\subsubsection{covertChannels}\label{covertChannels}
+The covertChannels column is to be interpreted as follows:
+\begin{longtable}{>{\tt}rl}
+    \toprule
+    {\bf covertChannels} & {\bf Description} \\
+    \midrule\endhead%
+    $2^0$ (=0x0001) & DNS CC (iodine, dnstunnel, nstx, \ldots)\\
+    $2^1$ (=0x0002) & ICMP CC: asymmetric flow (hans, itun, loki, icmptx, \ldots)\\
+    $2^2$ (=0x0004) & ICMP CC: non-whitelisted payload (hans, itun, loki, icmptx, \ldots)\\
+    $2^3$ (=0x0008) & ICMP CC: bidirectional non-PING flow \\
+    \\
+    $2^4$ (=0x0010) & HTTP GET URL-encoded CC (hcovert)\\
+    $2^5$ (=0x0020) & TCP timestamp CC (devcc)\\
+    $2^6$ (=0x0040) & IP Identification CC (covert\_tcp)\\
+    $2^7$ (=0x0080) & RTP timestamp CC\\
+    \\
+    $2^8$ (=0x0100) & Skype silent packets CC (SkyDe)\\
+    \bottomrule
+\end{longtable}
+
+\subsection{Plugin Report Output}
+The following information is reported:
+\begin{itemize}
+    \item Aggregated {\tt\nameref{covertChannels}}
+    \item Number of covert channels packets
+\end{itemize}
+
+\subsection{TODO}
+
+\begin{itemize}
+    \item Smarter IPID covert channels detection (stegtunnel)
+    \item SSH/Telnet based covert timing channels detection
+\end{itemize}
+
+\end{document}

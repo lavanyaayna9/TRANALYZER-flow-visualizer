@@ -1,0 +1,28 @@
+-- Top unknown HTTPS JA4S signatures by number of flows
+
+SELECT
+    ja4hash,
+    COUNT(*) AS cnt
+
+FROM (
+    SELECT
+        ja4hash
+    FROM
+        flow
+    ARRAY JOIN
+        "sslJA4" AS ja4hash,
+        "sslJA4Desc" AS ja4desc
+    WHERE
+        notEmpty("sslJA4")
+        AND empty(ja4desc)
+        AND LENGTH(ja4hash) = 25
+        AND "timeFirst" >= {time_from:DateTime64(6)}
+        AND "timeLast" <= {time_to:DateTime64(6)}
+    SETTINGS
+        enable_unaligned_array_join = 1
+) AS flows
+
+GROUP BY ja4hash
+ORDER BY multiply(cnt, {sort_order:Int8})
+
+LIMIT {n:UInt64}

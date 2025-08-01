@@ -1,0 +1,25 @@
+-- Top blacklisted certificates
+
+SELECT
+    hash,
+    cat,
+    COUNT(*) AS cnt
+
+FROM (
+    SELECT
+        UNNEST("sslCertSha1FP") AS hash,
+        UNNEST("sslBlistCat") AS cat
+    FROM
+        flow
+    WHERE
+        ARRAY_LENGTH("sslCertSha1FP", 1) > 0
+        AND "timeFirst" >= to_timestamp(:time_from)
+        AND "timeLast" <= to_timestamp(:time_to)
+) AS flows
+
+WHERE cat != ''
+
+GROUP BY hash, cat
+ORDER BY cnt :sort_order
+
+LIMIT :n

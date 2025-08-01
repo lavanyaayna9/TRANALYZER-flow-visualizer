@@ -1,0 +1,19 @@
+# Flags to toggle
+#
+# Run the ../../../tests/test.sh script from the plugin main directory:
+#
+# cd $T2HOME/plugins/nDPI
+# ../../tests/test.sh [OPTION...]
+#
+# If run from this folder, make sure to use absolute path for the '-p' option.
+#
+# Flag name     File
+
+# ../../tranalyzer2/src/tranalyzer.h
+BLOCK_BUF           ../../tranalyzer2/src/tranalyzer.h
+
+# src/nDPI.h
+NDPI_OUTPUT_NUM     src/nDPI.h
+NDPI_OUTPUT_STR     src/nDPI.h
+NDPI_OUTPUT_STATS   src/nDPI.h
+NDPI_GUESS_UNKNOWN  src/nDPI.h

@@ -1,0 +1,41 @@
+#H bit | sslProto     | Description
+#H =============================================================================
+     0 | 0x00000001   | HTTP/0.9, HTTP/1.0 or HTTP/1.1 (ALPN starts with 'http')
+     1 | 0x00000002   | HTTP/2 ('h2' or 'h2c')
+     2 | 0x00000004   | HTTP/3 ('h3') or HTTP/0.9/1.1 over QUIC ('hq')
+     3 | 0x00000008   | SPDY/1, SPDY/2 or SPDY/3 (ALPN starts with 'spdy')
+
+     4 | 0x00000010   | IMAP
+     5 | 0x00000020   | POP3
+     6 | 0x00000040   | FTP
+     7 | 0x00000080   | XMPP jabber
+
+     8 | 0x00000100   | STUN/TURN
+     9 | 0x00000200   | Apple Push Notification Service (APNS)
+    10 | 0x00000400   | WebRTC Media and Data or Confidential WebRTC Media and Data
+    11 | 0x00000800   | Constrained Application Protocol (CoAP) (RFC8323)
+
+    12 | 0x00001000   | ManageSieve (RFC5804)
+    13 | 0x00002000   | RTP or RTCP (Guessed by the 'use-srtp' hello extension)
+    14 | 0x00004000   | OpenVPN (Guessed by being able to decode the protocol)
+    15 | 0x00008000   | OASIS Message Queuing Telemetry Transport (MQTT)
+
+    16 | 0x00010000   | acme-tls/1
+    17 | 0x00020000   | DICOM
+    18 | 0x00040000   | NNTP (reading) or NNTP (transit)
+    19 | 0x00080000   | SIP
+
+    20 | 0x00100000   | Tabular Data Stream Protocol (TDS)
+    21 | 0x00200000   | DNS over Dedicated QUIC Connections (DoQ)
+    22 | 0x00400000   | DNS-over-TLS (DoT)
+    23 | 0x00800000   | IRC
+
+    24 | 0x01000000   | SMB
+    25 | 0x02000000   | SUNRPC
+    26 | 0x04000000   | Network Time Security Key Establishment
+    27 | 0x08000000   | -
+
+    28 | 0x10000000   | -
+    29 | 0x20000000   | -
+    30 | 0x40000000   | GREASE value
+    31 | 0x80000000   | Unknown protocol (ALPN matched none of the above)

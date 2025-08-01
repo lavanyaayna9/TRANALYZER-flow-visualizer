@@ -1,0 +1,25 @@
+#!/usr/bin/env awk
+#
+# Return true if 'val' begins with the prefix 'pre' (case insensitive).
+#
+# Parameters:
+#   - val : the value to test
+#   - pre : the prefix to search for
+#
+# Dependencies:
+#   - None
+#
+# See also:
+#   - hasprefix
+#   - hassuffix
+#   - hassuffixi
+#
+# Examples:
+#   - tawk 'hasprefixi($srcIP, "192")' file.txt
+#   - tawk 'hasprefixi("Facebook", "face") { print }' file.txt
+
+@include "hasprefix"
+
+function hasprefixi(val, pre) {
+    return hasprefix(val, pre, 1)
+}

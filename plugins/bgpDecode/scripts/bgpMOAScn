@@ -1,0 +1,97 @@
+#!/usr/bin/env bash
+#
+# Add information regarding the country of the multiple origins (MOAS) reported in FILE_moas.txt
+# Save the results in FILE_moas_cn.txt
+#
+# script: ./bgpMOAScn FILE_moas.txt
+
+source "$(dirname "$0")/../../../scripts/t2utils.sh"
+
+usage() {
+    echo "Usage:"
+    echo "  $SNAME [OPTION...] FILE_moas.txt"
+    echo
+    echo "Optional arguments:"
+    echo "  -s          Do not display multiple origins from the same country"
+    echo "  -u          Do not display multiple origins from unknown countries"
+    echo
+    echo "  -h, --help  Show this help, then exit"
+}
+
+SAMECN=1 # display multiple origin from the same country
+UNKNWN=1 # display unknown origins
+
+while [ $# -ne 0 ]; do
+    case "$1" in
+        -s) SAMECN=0;;
+        -u) UNKNWN=0;;
+        -h|--help|-\?)
+            usage
+            exit 0
+            ;;
+        *)
+            if [ ! -f "$1" ]; then
+                abort_option_unknown "$1"
+            fi
+            INFILE="$1"
+            ;;
+    esac
+    shift
+done
+
+if [ ! -f "$INFILE" ]; then
+    abort_required_file
+fi
+
+OUTFILE="$($SED 's/_moas.txt$/_moas_cn.txt/' <<< "$INFILE")"
+ASNCNF="$(dirname "$($READLINK -f "$0")")/asn2cn.txt"
+
+printf "Generating '$OUTFILE'... "
+AWKF -v asn2cnfile="$ASNCNF" -v samecn="$SAMECN" -v unknwn="$UNKNWN" '
+BEGIN {
+    while ((getline l < asn2cnfile) > 0) {
+        split(l, as, "\t");
+        as2cn[as[1]] = as[3]; # Country
+    }
+}
+function asn2cn(asn,        cn, newlabel) {
+    cn = asn
+    sub(/^[^[:digit:]]*/, "", asn)
+    sub(/[^[:digit:]]*$/, "", asn)
+    if (as2cn[asn]) newlabel = as2cn[asn]
+    else newlabel = "ZZ"
+    sub(/[[:digit:]]+/, newlabel, cn)
+    return cn
+}
+function chomp(s) {
+    gsub(/^\s*/, "", s) # remove leading spaces
+    gsub(/\s*$/, "", s) # remove trailing spaces
+    return s
+}
+/^%/ {
+    # Column names
+    printf "%s", $1
+    for (i = 2; i <= NF; i++) {
+        if ($i == "flowInd") {
+            printf "\tOldCountry\tNewCountry"
+            flowInd = i
+        }
+        printf "\t%s", $i
+    }
+    printf "\n"
+    next
+}
+{
+    cn1 = asn2cn($3)
+    cn2 = asn2cn($4)
+    if (!samecn && cn1 == cn2) next
+    if (!unknwn && (cn1 == "ZZ" || cn2 == "ZZ")) next
+
+    printf "%s", $1
+    for (i = 2; i <= NF; i++) {
+        if (i == flowInd) printf "\t%s\t%s", cn1, cn2
+        printf "\t%s", $i
+    }
+    printf "\n"
+}' "$INFILE" > "$OUTFILE"
+printok "OK"

@@ -1,0 +1,28 @@
+-- Top HTTPS JA3 signatures by number of flows
+
+SELECT
+    ja3hash,
+    toValidUTF8(ja3desc),
+    COUNT(*) AS cnt
+
+FROM (
+    SELECT
+        ja3hash,
+        ja3desc
+    FROM
+        flow
+    ARRAY JOIN
+        "sslJA3Hash" AS ja3hash,
+        "sslJA3Desc" AS ja3desc
+    WHERE
+        notEmpty("sslJA3Hash")
+        AND "timeFirst" >= {time_from:DateTime64(6)}
+        AND "timeLast" <= {time_to:DateTime64(6)}
+    SETTINGS
+        enable_unaligned_array_join = 1
+) AS flows
+
+GROUP BY ja3hash, ja3desc
+ORDER BY multiply(cnt, {sort_order:Int8})
+
+LIMIT {n:UInt64}

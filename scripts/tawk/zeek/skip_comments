@@ -1,0 +1,8 @@
+#!/usr/bin/env awk
+#
+# This function is used to avoid processing Bro/Zeek meta-information before
+# the column names. Automatically loaded with --bro/--zeek options.
+
+!hdr() && /^#/ {
+    next
+}

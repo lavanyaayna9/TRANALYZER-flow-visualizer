@@ -1,0 +1,193 @@
+\IfFileExists{t2doc.cls}{
+    \documentclass[documentation]{subfiles}
+}{
+    \errmessage{Error: could not find 't2doc.cls'}
+}
+
+\begin{document}
+
+\trantitle
+    {modbus} % Plugin name
+    {Modbus} % Short description
+    {Tranalyzer Development Team} % author(s)
+
+\section{modbus}\label{s:modbus}
+
+\subsection{Description}
+The modbus plugin analyzes Modbus traffic.
+
+\subsection{Configuration Flags}
+The following flags can be used to control the output of the plugin:
+\begin{longtable}{>{\tt}lcl}
+    \toprule
+    {\bf Name} & {\bf Default} & {\bf Description}\\
+    \midrule\endhead%
+    MB\_DEBUG      & 0 & Activate debug output\\
+    \\
+    MB\_FE\_FRMT   & 0 & Function/Exception codes representation: 0: hex, 1: int\\
+    \\
+    MB\_NUM\_FUNC  & 0 & Number of function codes to store (0 to hide \hyperref[modbusFC]{modbusFC})\\
+    MB\_UNIQ\_FUNC & 0 & Aggregate multiply defined function codes\\
+    \\
+    MB\_NUM\_FEX   & 0 & Number of function codes causing exceptions to store (0 to hide \hyperref[modbusFEx]{modbusFEx})\\
+    MB\_UNIQ\_FEX  & 0 & Aggregate multiply defined function codes causing exceptions\\
+    \\
+    MB\_NUM\_EX    & 0 & Number of exception codes to store (0 to hide \hyperref[modbusExC]{modbusExC})\\
+    MB\_UNIQ\_EX   & 0 & Aggregate multiply defined exception codes\\
+    \bottomrule
+\end{longtable}
+
+\subsection{Flow File Output}
+The modbus plugin outputs the following columns:
+\begin{longtable}{>{\tt}lll>{\tt\small}l}
+    \toprule
+    {\bf Column}                      & {\bf Type} & {\bf Description}                                 & {\bf Flags}\\
+    \midrule\endhead%
+    \nameref{modbusStat}              & H16        & Status                                            & \\
+    modbusUID                         & U8         & Unit identifier                                   & \\
+    modbusNPkts                       & U32        & Number of Modbus packets                          & \\
+    modbusNumEx                       & U16        & Number of exceptions                              & \\
+    \hyperref[modbusFC]{modbusFCBF}   & H64        & Aggregated function codes                         & \\
+    \hyperref[modbusFC]{modbusFC}     & RH8        & List of function codes                            & MB\_NUM\_FUNC>0\\
+    \hyperref[modbusFEx]{modbusFExBF} & H64        & Aggregated function codes which caused exceptions & \\
+    \hyperref[modbusFEx]{modbusFEx}   & RH8        & List of function codes which caused exceptions    & MB\_NUM\_FEX>0\\
+    \hyperref[modbusExC]{modbusExCBF} & H16        & Aggregated exception codes                        & \\
+    \hyperref[modbusExC]{modbusExC}   & RH8        & List of exception codes                           & MB\_NUM\_EX>0\\
+    \bottomrule
+\end{longtable}
+
+\clearpage
+
+\subsubsection{modbusStat}\label{modbusStat}
+The {\tt modbusStat} column is to be interpreted as follows:
+\begin{longtable}{>{\tt}rl}
+    \toprule
+    {\bf modbusStat} & {\bf Description}\\
+    \midrule\endhead%
+    0x0001 & Flow is Modbus\\
+    0x0002 & Non-modbus protocol identifier\\
+    0x0004 & Unknown function code\\
+    0x0008 & Unknown exception code\\
+    \\
+    0x0010 & Multiple unit identifiers\\
+    0x0020 & ---\\
+    0x0040 & ---\\
+    0x0080 & ---\\
+    \\
+    0x0100 & List of function codes truncated\ldots increase {\tt MB\_NUM\_FUNC}\\
+    0x0200 & List of function codes which caused exceptions truncated\ldots increase {\tt MB\_NUM\_FEX}\\
+    0x0400 & List of exception codes truncated\ldots increase {\tt MB\_NUM\_EX}\\
+    0x0800 & ---\\
+    \\
+    0x1000 & ---\\
+    0x2000 & ---\\
+    0x4000 & Snapped packet\\
+    0x8000 & Malformed packet\\
+    \bottomrule
+\end{longtable}
+
+\subsubsection{modbusFC and modbusFCBF}\label{modbusFC}
+The {\tt modbusFC} and {\tt modbusFCBF} columns are to be interpreted as follows:
+\begin{longtable}{>{\tt}r>{\tt}ll}
+    \toprule
+    {\bf modbusFC} & {\bf modbusFCBF} & {\bf Description}\\
+    \midrule\endhead%
+    % Data Access
+     1 = 0x01 & 0x0000 0000 0000 0002 & Read Coils\\
+     2 = 0x02 & 0x0000 0000 0000 0004 & Read Discrete Inputs\\
+     3 = 0x03 & 0x0000 0000 0000 0008 & Read Multiple Holding Registers\\
+     \\
+     4 = 0x04 & 0x0000 0000 0000 0010 & Read Input Registers\\
+     5 = 0x05 & 0x0000 0000 0000 0020 & Write Single Coil\\
+     6 = 0x06 & 0x0000 0000 0000 0040 & Write Single Holding Register\\
+     7 = 0x07 & 0x0000 0000 0000 0080 & Read Exception Status\\
+     \\
+     8 = 0x08 & 0x0000 0000 0000 0100 & Diagnostic\\
+    11 = 0x0b & 0x0000 0000 0000 0800 & Get Com Event Counter\\
+    \\
+    12 = 0x0c & 0x0000 0000 0000 1000 & Get Com Event Log\\
+    15 = 0x0f & 0x0000 0000 0000 8000 & Write Multiple Coils\\
+    \\
+    16 = 0x10 & 0x0000 0000 0001 0000 & Write Multiple Holding Registers\\
+    17 = 0x11 & 0x0000 0000 0002 0000 & Report Slave ID\\
+    \\
+    20 = 0x14 & 0x0000 0000 0010 0000 & Read File Record\\
+    21 = 0x15 & 0x0000 0000 0020 0000 & Write File Record\\
+    22 = 0x16 & 0x0000 0000 0040 0000 & Mask Write Register\\
+    23 = 0x17 & 0x0000 0000 0080 0000 & Read/Write Multiple Registers\\
+    \\
+    24 = 0x18 & 0x0000 0000 0100 0000 & Read FIFO Queue\\
+    \\
+    43 = 0x2b & 0x0000 0800 0000 0000 & Read Decide Identification\\
+    \bottomrule
+\end{longtable}
+
+\subsubsection{modbusFEx and modbusFExBF}\label{modbusFEx}
+The {\tt modbusFEx} and {\tt modbusFExBF} columns are to be interpreted as {\tt\hyperref[modbusFC]{modbusFC}} and {\tt\hyperref[modbusFC]{modbusFCBF}}, respectively.
+
+\subsubsection{modbusExC and modbusExCBF}\label{modbusExC}
+The {\tt modbusExC} and {\tt modbusExCBF} column are to be interpreted as follows:
+\begin{longtable}{>{\tt}r>{\tt}rl}
+    \toprule
+    {\bf modbusExC} & {\bf modbusExCBF} & {\bf Description}\\
+    \midrule\endhead%
+     1 = 0x01 & 0x0002 & Illegal function code\\
+     2 = 0x02 & 0x0004 & Illegal data address\\
+     3 = 0x03 & 0x0008 & Illegal data value\\
+     \\
+     4 = 0x04 & 0x0010 & Slave device failure\\
+     5 = 0x05 & 0x0020 & Acknowledge\\
+     6 = 0x06 & 0x0040 & Slave device busy\\
+     7 = 0x07 & 0x0080 & Negative acknowledge\\
+     \\
+     8 = 0x08 & 0x0100 & Memory parity error\\
+    10 = 0x0a & 0x0400 & Gateway path unavailable\\
+    11 = 0x0b & 0x0800 & Gateway target device failed to respond\\
+    \bottomrule
+\end{longtable}
+
+\subsection{Packet File Output}
+In packet mode ({\tt --s} option), the modbus plugin outputs the following columns:
+\begin{longtable}{>{\tt}lll>{\tt\small}l}
+    \toprule
+    {\bf Column}         & {\bf Type} & {\bf Description} & {\bf Flags}\\
+    \midrule\endhead%
+    mbTranId             & U16        & Transaction Identifier & \\
+    mbProtId             & U16        & Protocol Identifier    & \\
+    mbLen                & U16        & Length                 & \\
+    mbUnitId             & U8         & Unit identifier        & \\
+    \nameref{mbFuncCode} & H8         & Function code          & MB\_FE\_FRMT=0\\
+    \nameref{mbFuncCode} & U8         & Function code          & MB\_FE\_FRMT=1\\
+    \bottomrule
+\end{longtable}
+
+\subsubsection{mbFuncCode}\label{mbFuncCode}
+If {\tt mbFuncCode} column is to be interpreted as follows:
+\begin{longtable}{>{\tt}ll}
+    \toprule
+    {\bf mbFuncCode} & {\bf Description}\\
+    \midrule\endhead%
+    $< 128$ (=0x80)    & refer to \nameref{modbusFC}\\
+    $\geq 128$ (=0x80) & subtract 128 (={\tt 0x80}) and refer to \nameref{modbusFEx}\\
+    \bottomrule
+\end{longtable}
+
+\subsection{Monitoring Output}
+In monitoring mode, the modbus plugin outputs the following columns:
+\begin{longtable}{>{\tt}lll>{\tt\small}l}
+    \toprule
+    {\bf Column} & {\bf Type} & {\bf Description} & {\bf Flags}\\
+    \midrule\endhead%
+    modbusNPkts          & U64 & Number of Modbus packets & \\
+    \nameref{modbusStat} & H16 & Status                   & \\
+    \bottomrule
+\end{longtable}
+
+\subsection{Plugin Report Output}
+The following information is reported:
+\begin{itemize}
+    \item Aggregated {\tt\nameref{modbusStat}}
+    \item Number of Modbus packets
+\end{itemize}
+
+\end{document}

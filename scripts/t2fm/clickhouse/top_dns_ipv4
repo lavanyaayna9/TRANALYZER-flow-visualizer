@@ -1,0 +1,26 @@
+-- Top DNS IPv4 address by number of flows
+
+SELECT
+    ip,
+    COUNT(*) AS cnt
+
+FROM (
+    SELECT
+        ip
+    FROM
+        flow
+    ARRAY JOIN
+        "dns4Aaddress" AS ip
+    WHERE
+        notEmpty("dns4Aaddress")
+        AND bitTest("dnsStat", 1) = 0  -- Ignore NBNS
+        AND "timeFirst" >= {time_from:DateTime64(6)}
+        AND "timeLast" <= {time_to:DateTime64(6)}
+) AS flows
+
+WHERE ip != IPv4StringToNum('0.0.0.0')
+
+GROUP BY ip
+ORDER BY multiply(cnt, {sort_order:Int8})
+
+LIMIT {n:UInt64}

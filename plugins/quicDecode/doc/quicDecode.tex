@@ -1,0 +1,208 @@
+\IfFileExists{t2doc.cls}{
+    \documentclass[documentation]{subfiles}
+}{
+    \errmessage{Error: could not find 't2doc.cls'}
+}
+
+\begin{document}
+
+\trantitle
+    {quicDecode} % Plugin name
+    {QUIC (IETF)} % Short description
+    {Tranalyzer Development Team} % author(s)
+
+\section{quicDecode}\label{s:quicDecode}
+
+\subsection{Description}
+The quicDecode plugin analyzes QUIC (IETF) traffic.
+
+\subsection{Dependencies}
+If {\tt QUIC\_DECODE\_TLS=1}, then {\bf libssl} is required.
+\begin{table}[!ht]
+    \centering
+    \begin{tabular}{>{\bf}r>{\tt}l>{\tt}l}
+        \toprule
+                                     &                      & {\bf QUIC\_DECODE\_TLS=1}\\
+        \midrule
+        Ubuntu:                      & sudo apt-get install & libssl-dev      \\
+        Arch:                        & sudo pacman -S       & openssl         \\
+        %Gentoo:                      & sudo emerge          & openssl         \\
+        openSUSE:                    & sudo zypper install  & libopenssl-devel\\
+        Red Hat/Fedora\tablefootnote{If the {\tt dnf} command could not be found, try with {\tt yum} instead}:
+                                     & sudo dnf install     & openssl-devel   \\
+        macOS\tablefootnote{Brew is a packet manager for macOS that can be found here: \url{https://brew.sh}}:
+                                     & brew install         & openssl@1.1     \\
+        \bottomrule
+    \end{tabular}
+\end{table}
+
+%\traninput{file} % use this command to input files
+%\traninclude{file} % use this command to include files
+
+%\tranimg{image} % use this command to include an image (must be located in a subfolder ./img/)
+
+%\subsubsection{External Libraries}
+%This plugin depends on the {\bf XXX} library.
+%\paragraph{Ubuntu:} {\tt sudo apt-get install XXX}
+%\paragraph{Arch:} {\tt sudo pacman -S XXX}
+%
+%\subsubsection{Other Plugins}
+%This plugin requires the {\bf XXX} plugin.
+%
+%\subsubsection{Required Files}
+%The file {\tt file.txt} is required.
+
+\subsection{Configuration Flags}
+The following flags can be used to control the output of the plugin:
+\begin{longtable}{>{\tt}lcl}
+    \toprule
+    {\bf Name} & {\bf Default} & {\bf Description}\\
+    \midrule\endhead%
+    QUIC\_SPKT\_TYPE\_STR &  1  & Format of \hyperref[quicPktTypes]{packet type} in packet mode\\
+                          &     & \qquad 0: number, 1: string\\
+    QUIC\_DECODE\_TLS     &  1  & 0: do not decrypt QUIC Initial packets\\
+                          &     & 1: decrypt TLS 1.3 handshake in QUIC Initial packets\\
+                          &     & Use with the \tranrefpl{sslDecode} plugin to extract the SNI and JA3 fingerprint\\
+    QUIC\_DEBUG           &  0  & 0: do not print any debug messages\\
+                          &     & 1: print debug messages\\
+    \bottomrule
+\end{longtable}
+
+\subsection{Flow File Output}
+The quicDecode plugin outputs the following columns:
+\begin{longtable}{>{\tt}lll>{\tt\small}l}
+    \toprule
+    {\bf Column} & {\bf Type} & {\bf Description} & {\bf Flags}\\
+    \midrule\endhead%
+    \nameref{quicStat}     & H8  & Status                                     & \\
+    \nameref{quicVersion}  & H32 & Version                                    & \\
+    \nameref{quicFlags}    & H8  & Flags                                      & \\
+    \nameref{quicPktTypes} & H8  & Packet Types                               & \\
+    quicDCID               & SC  & Destination Connection ID                  & \\
+    quicSCID               & SC  & Source Connection ID                       & \\
+    quicDCID               & SC  & Original Destination Connection ID (Retry) & \\
+    \bottomrule
+\end{longtable}
+
+\subsubsection{quicStat}\label{quicStat}
+The {\tt quicStat} column is to be interpreted as follows:
+\begin{longtable}{>{\tt}rl}
+    \toprule
+    {\bf quicStat} & {\bf Description}\\
+    \midrule\endhead%
+    0x01 & Flow is QUIC\\
+    0x02 & Handshake (Packet Type is 2)\\
+    0x04 & Version negotiation (version is 0)\\
+    0x08 & Version changed\\
+    \\
+    0x10 & Destination Connection ID changed\\
+    0x20 & Source Connection ID changed\\
+    0x40 & Original Destination Connection ID changed\\
+    0x80 & Packet was snapped (t2buf failed)\\
+    %0x80 & Packet was malformed, e.g., covert channel\\
+    \bottomrule
+\end{longtable}
+
+\subsubsection{quicVersion}\label{quicVersion}
+The {\tt quicVersion} column is to be interpreted as follows%
+\footnote{For a more exhaustive list, refer to \url{https://github.com/quicwg/base-drafts/wiki/QUIC-Versions}}:
+\begin{longtable}{>{\tt}rl}
+    \toprule
+    {\bf quicVersion}      & {\bf Description}\\
+    \midrule\endhead%
+    0x00000000[0001--ffff] & Standardized versions of QUIC\\
+    0x454747[00-ff]        & NetApp quant\\
+    0x50435130             & Private Octopus Picoquic internal test version\\
+    0x5130303[1-9]         & Google QUIC 01--09 (Q001--Q009)\\
+    0x5130313[0-9]         & Google QUIC 10--19 (Q010--Q019)\\
+    0x5130323[0-9]         & Google QUIC 20--29 (Q020--Q029)\\
+    0x5130333[0-9]         & Google QUIC 30--39 (Q030--Q039)\\
+    0x5130343[0-9]         & Google QUIC 40--49 (Q040--Q049)\\
+    0x51474f[00-ff]        & quic-go (QGO[0--255])\\
+    0x91c170[00-ff]        & quicly (qicly0[0--255])\\
+    0xabcd000[0-f]         & Microsoft WinQuic\\
+    0xf10000[00-ff]        & IETF QUIC-LB\\
+    0xf123f0c[0-f]         & Mozilla MozQuic\\
+    0xfaceb00[0-f]         & Facebook mvfst\\
+    0xff[000000-ffffff]    & IETF QUIC draft-xx\footnote{The latest draft is {\tt draft-ietf-quic-transport-34} with version {\tt 0xff000022}}\\
+    0xf0f0f0f[0--f]        & ETH Zürich Measurability experiments\\
+    0xf0f0f1f[0--f]        & Telecom Italia Measurability experiments\\
+    \bottomrule
+\end{longtable}
+
+\subsubsection{quicFlags}\label{quicFlags}
+The {\tt quicFlags} column is to be interpreted as follows:
+\begin{longtable}{>{\tt}rl}
+    \toprule
+    {\bf quicFlags} & {\bf Description}\\
+    \midrule\endhead%
+    0x03 & Packet Number Length (Long Header)\\
+    0x0c & Reserved (Long Header)\\
+    0x20 & Spin Bit (Short Header)\\
+    0x30 & Packet Type (Long Header)\\
+    0x40 & Fixed Bit\\
+    0x80 & Long Header\\
+    \bottomrule
+\end{longtable}
+
+\subsubsection{quicPktTypes}\label{quicPktTypes}
+The {\tt quicPktTypes} column is to be interpreted as follows:
+\begin{longtable}{>{\tt}rl}
+    \toprule
+    {\bf quicPktTypes} & {\bf Description}\\
+    \midrule\endhead%
+    $2^{0}$ (=0x01) & Initial\\
+    $2^{1}$ (=0x02) & 0-RTT\\
+    $2^{2}$ (=0x04) & Handshake\\
+    $2^{3}$ (=0x08) & Retry\\
+    \bottomrule
+\end{longtable}
+
+\subsection{Packet File Output}
+In packet mode ({\tt --s} option), the quicDecode plugin outputs the following columns:
+\begin{longtable}{>{\tt}lll>{\tt\small}l}
+    \toprule
+    {\bf Column} & {\bf Type} & {\bf Description} & {\bf Flags}\\
+    \midrule\endhead%
+    \nameref{quicFlags}                  & H8   & Flags                              & \\
+    \hyperref[quicPktTypes]{quicPktType} & S/U8 & Packet Type                        & \\
+    \nameref{quicVersion}                & SC   & Version                            & \\
+    quicDCID                             & SC   & Destination Connection ID          & \\
+    quicSCID                             & SC   & Source Connection ID               & \\
+    quicODCID                            & SC   & Original Destination Connection ID & \\
+    quicPktNum                           & U32  & Packet Number                      & \\
+    \bottomrule
+\end{longtable}
+
+\subsection{Plugin Report Output}
+The following information is reported:
+\begin{itemize}
+    \item Number of QUIC packets
+    \item Number of QUIC Initial packets
+    \item Number of QUIC 0-RTT packets
+    \item Number of QUIC Handshake packets
+    \item Number of QUIC Retry packets
+\end{itemize}
+
+\subsection{Known Bugs and Limitations}
+\begin{itemize}
+    \item The quicDecode plugin assumes every UDP packet on port 443 or 4433 from after 2015\footnote{QUIC was submitted for standardization to the IETF in 2015} is QUIC\ldots
+\end{itemize}
+
+\subsection{References}
+\begin{itemize}
+    \item \href{https://tools.ietf.org/html/draft-ietf-quic-applicability}{draft-ietf-quic-applicability}: Applicability of the QUIC Transport Protocol
+    \item \href{https://tools.ietf.org/html/draft-ietf-quic-bit-grease}{draft-ietf-quic-bit-grease}: Greasing the QUIC Bit
+    \item \href{https://tools.ietf.org/html/draft-ietf-quic-datagram}{draft-ietf-quic-datagram}: An Unreliable Datagram Extension to QUIC
+    \item \href{https://tools.ietf.org/html/draft-ietf-quic-http}{draft-ietf-quic-http}: Hypertext Transfer Protocol Version 3 (HTTP/3)
+    \item \href{https://tools.ietf.org/html/draft-ietf-quic-invariants}{draft-ietf-quic-invariants}: Version-Independent Properties of QUIC
+    \item \href{https://tools.ietf.org/html/draft-ietf-quic-load-balancers}{draft-ietf-quic-load-balancers}: QUIC-LB: Generating Routable QUIC Connection IDs
+    \item \href{https://tools.ietf.org/html/draft-ietf-quic-manageability}{draft-ietf-quic-manageability}: Manageability of the QUIC Transport Protocol
+    \item \href{https://tools.ietf.org/html/draft-ietf-quic-qpack}{draft-ietf-quic-qpack}: QPACK: Header Compression for HTTP/3
+    \item \href{https://tools.ietf.org/html/draft-ietf-quic-recovery}{draft-ietf-quic-recovery}: QUIC Loss Detection and Congestion Control
+    \item \href{https://tools.ietf.org/html/draft-ietf-quic-tls}{draft-ietf-quic-tls}: Using TLS to Secure QUIC
+    \item \href{https://tools.ietf.org/html/draft-ietf-quic-transport}{draft-ietf-quic-transport}: QUIC: A UDP-Based Multiplexed and Secure Transport
+    \item \href{https://tools.ietf.org/html/draft-ietf-quic-version-negotiation}{draft-ietf-quic-version-negotiation}: Compatible Version Negotiation for QUIC
+\end{itemize}
+
+\end{document}

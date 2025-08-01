@@ -1,0 +1,470 @@
+\IfFileExists{t2doc.cls}{
+    \documentclass[documentation]{subfiles}
+}{
+    \errmessage{Error: could not find 't2doc.cls'}
+}
+
+\usepackage{pgf-umlsd}
+
+\begin{document}
+
+% Declare author and title here, so the main document can reuse it
+\trantitle
+    {gsmDecode} % Plugin name
+    {Global System for Mobile Communication (GSM)} % Short description
+    {Tranalyzer Development Team} % author(s)
+
+\section{gsmDecode}\label{s:gsmDecode}
+
+\subsection{Description}
+The gsmDecode plugin analyzes GSM traffic.
+
+\subsection{Dependencies}
+
+\subsubsection{External Libraries}
+This plugin does not require any external library.
+
+%This plugin depends on the {\bf libosmocore} library.
+%\begin{table}[!ht]
+%    \centering
+%    \begin{tabular}{>{\bf}r>{\tt}l>{\tt}l}
+%        \toprule
+%                                     &                      & {\bf libosmocore}\\
+%        \midrule
+%        Ubuntu:                      & sudo apt-get install & libosmocore-dev  \\
+%        Arch:                        & sudo pacman -S       & libosmocore      \\
+%        Gentoo:                      & sudo emerge          & libosmocore      \\
+%        openSUSE:                    & sudo zypper install  & libosmocore-devel\\
+%        Red Hat/Fedora\tablefootnote{If the {\tt dnf} command could not be found, try with {\tt yum} instead}:
+%                                     & sudo dnf install     & libosmocore-devel\\
+%        macOS\tablefootnote{MacPorts is a packet manager for macOS that can be found here: \url{https://macports.org}}:
+%                                     & sudo port install    & osmocore-devel   \\
+%        \bottomrule
+%    \end{tabular}
+%\end{table}
+
+%\subsubsection{Core Configuration}
+%This plugin requires the following core configuration:
+%\begin{itemize}
+%    \item {\em \$T2HOME/tranalyzer2/src/networkHeaders.h}:
+%        \begin{itemize}
+%            \item {\tt LAPD\_ACTIVATE>0}
+%            \item {\tt LAPD\_OVER\_UDP>0}
+%            \item {\tt SCTP\_ACTIVATE>0}
+%        \end{itemize}
+%\end{itemize}
+
+\subsubsection{Required Files}
+The file {\tt tacdb.csv} is required.
+
+\subsection{Configuration Flags}
+The following flags can be used to control the output of the plugin:
+\begin{longtable}{>{\tt}lcl>{\tt\small}l}
+    \toprule
+    {\bf Name} & {\bf Default} & {\bf Description} & {\bf Flags}\\
+    \midrule\endhead%
+    GSM\_ARFCNFILE         & 1 & Save ARFCN in a separate file                      & \\
+    GSM\_CALLFILE          & 1 & Save calls in a separate file                      & \\
+    GSM\_CDFILE            & 1 & Save channels in a separate file                   & \\
+    GSM\_IMSIFILE          & 1 & Save IMSI/TMSI/IMEI/IMEISV in a separate file      & \\
+    GSM\_IMMASSFILE        & 1 & Save Immediate Assignments in a separate file      & \\
+    GSM\_OPFILE            & 1 & Save operator names in a separate file             & \\
+    GSM\_SMSFILE           & 1 & Save SMS messages in a separate file               & \\
+                           &   &                                                    & \\
+    GSM\_ROTATE\_TIME      & 0 & Create new files every $N$ seconds                 & \\
+                           &   & (use 0 to deactivate the feature)                  & \\
+                           &   &                                                    & \\
+    GSM\_SPEECHFILE        & 1 & Save audio conversations                           & \\
+    GSM\_STATFILE          & 1 & Save GSM statistics in a separate file             & \\
+    \\
+    GSM\_SPEECH\_SPLIT     & 1 & Speech frames handling:                            & \\
+                           &   & \qquad 0: Save A and B flows in the same file      & \\
+                           &   & \qquad 1: Create one file per direction            & \\
+    \\
+    GSM\_TMSI\_FORMAT      & 1 & Format for TMSI: 0: Integer, 1: Hexadecimal        & \\
+    \\
+    GSM\_SPEECH\_DIR       & {\tt\small "/tmp/gsm\_speech"}
+                               & Folder for extracted audio conversations           & GSM\_SPEECHFILE=1\\
+    GSM\_TXT\_DIR          & {\tt\small "/tmp/gsm\_txt"}
+                               & Folder for output files                            & \\
+    GSM\_RMDIR             & 1 & Empty {\tt\small GSM\_SPEECH\_DIR} before starting & GSM\_SPEECHFILE=1\\
+    \\
+    \multicolumn{4}{l}{The following flag reside in {\bf src/e164\_list.h}:}\\
+    \\
+
+    GSM\_E164\_FORMAT      & 0 & 0: Country code, 1: Country name                   & \\
+
+    \\
+    \multicolumn{4}{l}{The following flags reside in {\bf src/mcc\_list.h}:}\\
+    \\
+
+    GSM\_MCC\_FORMAT       & 0 & 0: Country code, 1: Country name                   & \\
+    GSM\_MNC\_FORMAT       & 0 & 0: Operator name, 1: Brand name                    & \\
+    GSM\_NOT\_FOUND        & {\tt\small ""} & Value to use when no entry was found  & \\
+    \bottomrule
+\end{longtable}
+
+\clearpage
+
+The suffix of the output files produced is controlled by the following flags:
+\begin{longtable}{>{\tt}lcl>{\tt\small}l}
+    \toprule
+    {\bf Name} & {\bf Default} & {\bf Description} & {\bf Flags}\\
+    \midrule\endhead%
+    GSM\_ARFCNFILE\_SUFFIX  & {\tt\small "\_gsm\_arfcn"}     & Suffix for ARFCN file                 & GSM\_ARFCNFILE=1 \\
+    GSM\_CALLFILE\_SUFFIX   & {\tt\small "\_gsm\_calls"}     & Suffix for calls file                 & GSM\_CALLFILE=1  \\
+    GSM\_CDFILE\_SUFFIX     & {\tt\small "\_gsm\_channels"}  & Suffix for channels file              & GSM\_CDFILE=1    \\
+    GSM\_IMMASSFILE\_SUFFIX & {\tt\small "\_gsm\_imm\_ass"}  & Suffix for Immediate Assignments file & GSM\_IMMASSFILE=1\\
+    GSM\_IMSIFILE\_SUFFIX   & {\tt\small "\_gsm\_imsi"}      & Suffix for IMSI file                  & GSM\_IMSIFILE=1  \\
+    GSM\_OPFILE\_SUFFIX     & {\tt\small "\_gsm\_operators"} & Suffix for operators file             & GSM\_OPFILE=1    \\
+    GSM\_SMSFILE\_SUFFIX    & {\tt\small "\_gsm\_sms"}       & Suffix for SMS file                   & GSM\_SMSFILE=1   \\
+                            &                                &                                       &                  \\
+    GSM\_FILES\_AMR\_EXT    & {\tt\small ".amr"}             & File extension for audio files        & GSM\_SPEECHFILE=1\\
+    GSM\_FILES\_TMP\_EXT    & {\tt\small ".tmp"}             & File extension for temporary files    &                  \\
+    GSM\_FILES\_TXT\_EXT    & {\tt\small ".txt"}             & File extension for text files         &                  \\
+                            &                                &                                       &                  \\
+    GSM\_STATFILE\_SUFFIX   & {\tt\small "\_gsm\_stats.txt"} & Suffix for GSM statistics file        & GSM\_STATFILE=1  \\
+    \bottomrule
+\end{longtable}
+
+The following flags produce a more verbose output and are mostly useful for debugging:
+\begin{longtable}{>{\tt}lcl>{\tt\small}l}
+    \toprule
+    {\bf Name} & {\bf Default} & {\bf Description} & {\bf Flags}\\
+    \midrule\endhead%
+    GSM\_DEBUG\_A\_RP       & 0 & Print debug messages for A-I/F RP layer       & \\
+    GSM\_DEBUG\_A\_RP\_UNK  & 0 & Report unknown values for A-I/F RP layer      & GSM\_DEBUG\_A\_RP=1\\
+    GSM\_DEBUG\_DTAP        & 0 & Print debug messages for A-I/F DTAP layer     & \\
+    GSM\_DEBUG\_DTAP\_UNK   & 0 & Report unknown values for A-I/F DTAP layer    & GSM\_DEBUG\_DTAP=1\\
+    GSM\_DEBUG\_GSMTAP      & 0 & Print debug messages for GSMTAP layer         & \\
+    GSM\_DEBUG\_GSMTAP\_UNK & 0 & Report unknown values for GSMTAP layer        & GSM\_DEBUG\_GSMTAP=1\\
+    GSM\_DEBUG\_LAPD        & 0 & Print debug messages for LAPD layer           & \\
+    GSM\_DEBUG\_LAPD\_UNK   & 0 & Report unknown values for LAPD layer          & GSM\_DEBUG\_LAPD=1\\
+    GSM\_DEBUG\_LAPDM       & 0 & Print debug messages for LAPDm layer          & \\
+    GSM\_DEBUG\_LAPDM\_UNK  & 0 & Report unknown values for LAPDm layer         & GSM\_DEBUG\_LAPDM=1\\
+    GSM\_DEBUG\_RSL         & 0 & Print debug messages for RSL layer            & \\
+    GSM\_DEBUG\_RSL\_UNK    & 0 & Report unknown values for RSL layer           & GSM\_DEBUG\_RSL=1\\
+    GSM\_DEBUG\_SMS         & 0 & Print debug messages for SMS layer            & \\
+    GSM\_DEBUG\_SMS\_UNK    & 0 & Report unknown values for SMS layer           & GSM\_DEBUG\_SMS=1\\
+    GSM\_DEBUG              & 0 & Print generic debug messages                  & \\
+    GSM\_DEBUG\_UNK         & 0 & Report unknown values for other messages      & GSM\_DEBUG=1\\
+    \bottomrule
+\end{longtable}
+
+\subsubsection{Environment Variable Configuration Flags}
+The following configuration flags can also be configured with environment variables ({\tt ENVCNTRL>0}):
+\begin{itemize}
+    \item {\tt GSM\_RMDIR}
+    \item {\tt GSM\_SPEECH\_DIR}
+    \item {\tt GSM\_TXT\_DIR}
+    \item {\tt GSM\_ARFCNFILE\_SUFFIX}
+    \item {\tt GSM\_CALLFILE\_SUFFIX}
+    \item {\tt GSM\_CDFILE\_SUFFIX}
+    \item {\tt GSM\_IMMASSFILE\_SUFFIX}
+    \item {\tt GSM\_IMSIFILE\_SUFFIX}
+    \item {\tt GSM\_OPFILE\_SUFFIX}
+    \item {\tt GSM\_SMSFILE\_SUFFIX}
+    \item {\tt GSM\_FILES\_AMR\_EXT}
+    \item {\tt GSM\_FILES\_TMP\_EXT}
+    \item {\tt GSM\_FILES\_TXT\_EXT}
+    \item {\tt GSM\_STATFILE\_SUFFIX}
+    \item {\tt GSM\_ROTATE\_TIME}
+\end{itemize}
+
+\subsection{Flow File Output}
+The gsmDecode plugin outputs the following columns:
+\begin{longtable}{>{\tt}lll>{\tt\small}l}
+    \toprule
+    {\bf Column}       & {\bf Type} & {\bf Description}                           & {\bf Flags}\\
+    \midrule\endhead%
+    \nameref{gsmStat}  & H32        & Status                                      & \\
+    gsmLapdSAPI        & U8         & LAPD Service Access Point Identifier (SAPI) & \\
+    gsmLapdTEI         & U8         & LAPD Terminal Endpoint Identifier (TEI)     & \\
+    gsmRslTN           & R(U8)      & GSM RSL Timeslot Numbers                    & \\
+    gsmAMRDuration     & FLT        & GSM Duration of AMR conversation (seconds)  & GSM\_SPEECHFILE=1\\
+    gsmNumAMRGood\_bad & U32\_U32   & GSM Number of AMR good/bad frames           & GSM\_SPEECHFILE=1\\
+    \bottomrule
+\end{longtable}
+
+\subsubsection{gsmStat}\label{gsmStat}
+The {\tt gsmStat} column is to be interpreted as follows:
+\begin{longtable}{>{\tt}rl}
+    \toprule
+    {\bf gsmStat} & {\bf Description}\\
+    \midrule\endhead%
+    0x0000 000\textcolor{magenta}{1} & LAPD Radio Signalling Link (RSL, SAPI 0)\\
+    0x0000 000\textcolor{magenta}{2} & LAPD O\&M link (SAPI 62)\\
+    0x0000 000\textcolor{magenta}{4} & LAPD Layer 2 Management (SAPI 63)\\
+    0x0000 000\textcolor{magenta}{8} & RSL Radio Link Layer Management (RLM)\\
+    \\
+    0x0000 00\textcolor{magenta}{1}0 & RSL Dedicated Channel Management (DCM)\\
+    0x0000 00\textcolor{magenta}{2}0 & RSL Common Channel Management (CCM)\\
+    0x0000 00\textcolor{magenta}{4}0 & RSL TRX Management\\
+    0x0000 00\textcolor{magenta}{8}0 & RSL Location Services\\
+    \\
+    0x0000 0\textcolor{magenta}{1}00 & RSL ip.access Vendor Specific\\
+    0x0000 0\textcolor{magenta}{2}00 & RSL HUAWEI Paging Extension\\
+    0x0000 0\textcolor{magenta}{4}00 & GSM A-I/F DTAP\\
+    0x0000 0\textcolor{magenta}{8}00 & GSM A-I/F DTAP Call Control (CC)\\
+
+    0x0000 \textcolor{magenta}{1}000 & GSM A-I/F DTAP Mobility Management (MM)\\
+    0x0000 \textcolor{magenta}{2}000 & GSM A-I/F DTAP Radio Resources Management (RR)\\
+    0x0000 \textcolor{magenta}{4}000 & GSM A-I/F DTAP SMS\\
+    0x0000 \textcolor{magenta}{8}000 & GSM A-I/F RP\\
+
+    0x000\textcolor{magenta}{1} 0000 & GSM SMS TPDU\\
+    0x000\textcolor{magenta}{2} 0000 & GSM Mobile Application (GSM MAP)\\
+    0x000\textcolor{magenta}{4} 0000 & AMR speech\\
+    0x000\textcolor{magenta}{8} 0000 & ---\\
+
+    0x00\textcolor{magenta}{1}0 0000 & Uplink\\
+    0x00\textcolor{magenta}{2}0 0000 & Downlink\\
+    0x00\textcolor{magenta}{4}0 0000 & ---\\
+    0x00\textcolor{magenta}{8}0 0000 & ---\\
+
+    0x0\textcolor{magenta}{1}00 0000 & File I/O error\\
+    0x0\textcolor{magenta}{2}00 0000 & ---\\
+    0x0\textcolor{magenta}{4}00 0000 & LAPD decoding error\\
+    0x0\textcolor{magenta}{8}00 0000 & LAPDm decoding error\\
+    \\
+    0x\textcolor{magenta}{1}000 0000 & RSL decoding error\\
+    0x\textcolor{magenta}{2}000 0000 & DTAP decoding error\\
+    0x\textcolor{magenta}{4}000 0000 & SMS decoding error\\
+    0x\textcolor{magenta}{8}000 0000 & Decoding error\\
+    \bottomrule
+\end{longtable}
+
+\subsubsection{gsmTSC}\label{gsmTSC}
+The {\tt gsmTSC} (Training Sequence Code) column is to be interpreted as follows:
+\begin{longtable}{r>{\tt}l}
+    \toprule
+    {\bf gsmTSC} & {\bf Description}\\
+    \midrule\endhead%
+    0 & 00100101110000100010010111\\
+    1 & 00101101110111100010110111\\
+    2 & 01000011101110100100001110\\
+    3 & 01000111101101000100011110\\
+    4 & 00011010111001000001101011\\
+    5 & 01001110101100000100111010\\
+    6 & 10100111110110001010011111\\
+    7 & 11101111000100101110111100\\
+    \bottomrule
+\end{longtable}
+
+\subsection{Packet File Output}
+In packet mode ({\tt --s} option), the gsmDecode plugin outputs the following columns:
+\begin{longtable}{>{\tt}lll>{\tt\small}l}
+    \toprule
+    {\bf Column} & {\bf Type} & {\bf Description} & {\bf Flags}\\
+    \midrule\endhead%
+    \nameref{gsmStat} & H32   & Status                                      & \\
+    gsmLapdSAPI       & U8    & LAPD Service Access Point Identifier (SAPI) & \\
+    gsmLapdTEI        & U8    & LAPD Terminal Endpoint Identifier (TEI)     & \\
+    gsmRslMsgType     & S     & GSM RSL Message type                        & \\
+    gsmRslTN          & U8    & GSM RSL Timeslot Number                     & \\
+    gsmRslSubCh       & U8    & GSM RSL Subchannel Number                   & \\
+    gsmRslChannel     & S     & GSM RSL Channel                             & \\
+    gsmDtapTN         & U8    & GSM A-I/F DTAP Timeslot Number              & \\
+    gsmDtapChannel    & S     & GSM A-I/F DTAP Channel                      & \\
+    gsmHandoverRef    & U8    & Handover reference                          & \\
+    gsmLAIMCC         & S     & LAI: Mobile Country Code (MCC)              & \\
+    gsmLAIMCCCountry  & S     & LAI: MCC Country                            & \\
+    gsmLAIMNC         & S     & LAI: Mobile Network Code (MNC)              & \\
+    gsmLAIMNCOperator & S     & LAI: MNC Operator                           & \\
+    gsmLAILAC         & H16   & LAI: Location Area Code (LAC)               & \\
+    gsmEncryption     & SC    & Encryption algorithm                        & \\
+    gsmContent        & S     & Content (voice or signalling)               & \\
+    gsmAMRCMR         & S     & AMR codec mode request (CMR)                & GSM\_SPEECHFILE=1\\
+    gsmAMRFrameType   & S     & AMR frame type                              & GSM\_SPEECHFILE=1\\
+    gsmAMRFrameQ      & SC    & AMR frame quality                           & GSM\_SPEECHFILE=1\\
+    \bottomrule
+\end{longtable}
+
+\subsection{Plugin Report Output}
+The following information is reported:
+\begin{itemize}
+    \item Aggregated {\tt\nameref{gsmStat}}
+    \item Number of GSMTAP packets
+    \item Number of GSM RSL packets
+    \item Number of GSM DTAP packets
+    \item Number of GSM DTAP CC packets
+    \item Number of GSM DTAP MM packets
+    \item Number of GSM DTAP RR packets
+    \item Number of GSM DTAP SMS packets
+    \item Number of GSM DTAP SS packets
+    \item Number of SMS messages
+\end{itemize}
+
+\subsection{Additional Output}
+Non-standard output:
+\begin{itemize}
+    \item {\tt PREFIX\_gsm\_arfcn.txt}: list of ARFCN, GSM band, up/down frequencies
+    \item {\tt PREFIX\_gsm\_calls.txt}: list of calls with numbers, countries, ...
+    \item {\tt PREFIX\_gsm\_channels.txt}: list of channels and their content (speech/signalling)
+    \item {\tt PREFIX\_gsm\_imm\_ass.txt}: list of immediate assignments
+    \item {\tt PREFIX\_gsm\_imsi.txt}: list of IMSI/TMSI/IMEI/IMEISV, with manufacturers, models, countries and operators.
+    \item {\tt PREFIX\_gsm\_operators.txt}: list of network operators names and time zones
+    \item {\tt PREFIX\_gsm\_sms.txt}: list of extracted SMS messages with numbers and countries
+\end{itemize}
+
+\clearpage
+
+\subsection{GSM Mobile Terminating and Mobile Originating Call Call Flow Procedures}
+\begin{figure}[!ht]
+    \raggedright
+    \begin{minipage}{.46\textwidth}
+        \begin{sequencediagram}
+            \tikzstyle{inststyle}=[rectangle,anchor=west,minimum height=0.8cm,minimum width=3.7cm,fill=white]
+            \tikzstyle{dotted}=[line width=2pt,black!10]
+
+            \newinst{ms}{MS}
+            \newinst{msc}{MSC}
+
+            \mess{msc}{SETUP}{ms}
+            \mess{ms}{CALL CONFIRMED}{msc}
+            %\filldraw[fill=black!20] (CALL CONFIRMED to) rectangle (ALERTING from) {Establishment of a speech channel}
+            \mess{ms}{ALERTING}{msc}
+            \mess{ms}{CONNECT}{msc}
+            \mess{msc}{CONNECT ACK}{ms}
+            %\filldraw[fill=black!20] (CALL CONFIRMED to) rectangle (ALERTING from) {Active call}
+            \mess{ms}{DISCONNECT}{msc}
+            \mess{msc}{RELEASE}{ms}
+            \mess{ms}{RELEASE COMPLETE}{msc}
+            %\filldraw[fill=black!20] (CALL CONFIRMED to) rectangle (ALERTING from) {Speech channel deallocated}
+        \end{sequencediagram}
+    \end{minipage}%
+    \hspace{1cm}
+    \begin{minipage}{.46\textwidth}
+        \begin{sequencediagram}
+            \tikzstyle{inststyle}=[rectangle,anchor=west,minimum height=0.8cm,minimum width=3.7cm,fill=white]
+            \tikzstyle{dotted}=[line width=2pt,black!10]
+
+            \newinst{ms}{MS}
+            \newinst{msc}{MSC}
+
+            \mess{ms}{SETUP}{msc}
+            \mess{msc}{CALL PROCEEDING}{ms}
+            %\filldraw[fill=black!20] (CALL CONFIRMED to) rectangle (ALERTING from) {Establishment of a speech channel}
+            \mess{msc}{ALERTING}{ms}
+            \mess{msc}{CONNECT}{ms}
+            \mess{ms}{CONNECT ACK}{msc}
+            %\filldraw[fill=black!20] (CALL CONFIRMED to) rectangle (ALERTING from) {Active call}
+            \mess{ms}{DISCONNECT}{msc}
+            \mess{msc}{RELEASE}{ms}
+            \mess{ms}{RELEASE COMPLETE}{msc}
+            %\filldraw[fill=black!20] (CALL CONFIRMED to) rectangle (ALERTING from) {Speech channel deallocated}
+        \end{sequencediagram}
+    \end{minipage}
+\end{figure}
+
+\subsection{Post-Processing}
+
+\subsubsection{AMR Conversion}
+The {\tt utils/amr\_conv.sh} script can be used to convert extracted AMR conversations to MP3, OGA or WAV files. In addition, the same script can be used to merge two mono AMR files into one stereo MP3, OGA or WAV file. Try {\tt utils/amr\_conv.sh --{}--help} for more information
+
+\subsubsection{Concatenated SMS messages}
+The concatenated SMS messages are currently not reassembled.
+They can be grouped in post-processing with the following {\tt tawk} command:
+\begin{center}
+    {\tt \$ tawk 't2rsort(flowInd ";" smsMsgId ";" smsMsgPart)' file\_gsm\_sms.txt}
+\end{center}
+
+\subsection{Acronyms}
+\begin{longtable}{>{\bf}ll}
+    \toprule
+    {\bf Acronym} & {\bf Definition}\\
+    \midrule\endhead%
+    ACCH    & Associated Control Channel\\
+    AGCH    & Access Grant Channel\\
+    AMR     & Adaptive Multi-Rate\\
+    ARFCN   & Absolute Radio-Frequency Channel Number\\
+    AuC     & Authentication Center\\
+    \\
+    BCCH    & Broadcast Control Channel\\
+    BSC     & Base Station Controller\\
+    BSS     & Base Station Subsystem (BTS + BSC)\\
+    BTS     & Base Transceiver Station\\
+    \\
+    CC      & Call Control\\
+    CBCH    & Cell Broadcast Channel\\
+    CCCH    & Common Control Channel\\
+    CCH     & Control Channel\\
+    CM      & Connection Management\\
+    \\
+    DCCH    & Dedicated Control Channel\\
+    DL      & Downlink\\
+    DTAP    & Direct Transfer Application Part\\
+    \\
+    EIR     & Equipment Identity Register\\
+    \\
+    FACCH   & Fast Associated Control Channel\\
+    FCCH    & Frequency Correction Channel\\
+    \\
+    GSM     & Global System for Mobile Communication\\
+    \\
+    HLR     & Home Location Register\\
+    HSN     & Hopping Sequence Number\\
+    \\
+    IMEI    & International Mobile Equipment Identity\\
+    IMEISV  & International Mobile Equipment Identity Software Version\\
+    IMSI    & International Mobile Subscriber Identity\\
+    \\
+    LAC     & Location Area Code\\
+    LAI     & Location Area Identification\\
+    LAPD    & Link Access Protocol for D Channel\\
+    \\
+    MAIO    & Mobile Allocation Index Offset\\
+    MCC     & Mobile Country Code\\
+    MM      & Mobility Management\\
+    MNC     & Mobile Network Code\\
+    MS      & Mobile Station\\
+    MSC     & Mobile Switching Center\\
+    \\
+    NMC     & Network Management Center\\
+    NSS     & Network Subsystem\\
+    \\
+    O\&M    & Operation \& Maintenance\\
+    OMC     & Operation \& Maintenance Center\\
+    OMS     & Operation \& Maintenance Subsystem\\
+    \\
+    PCH     & Paging Channel\\
+    \\
+    RACH    & Random Access Channel\\
+    RR      & Radio Resource\\
+    RSL     & Radio Signalling Link\\
+    \\
+    SACCH   & Slow Associated Control Channel\\
+    SAPI    & Service Access Point Identifier\\
+    SC      & Service Centre\\
+    SCH     & Synchronization Channel\\
+    SDCCH   & Standalone Dedicated Control Channel\\
+    SMS     & Short Message Service\\
+    SMSC    & Short Message Service Center\\
+    SS      & Supplementary Services\\
+    \\
+    TAC     & Type Allocation Code\\
+    TC      & Transcoder\\
+    TCH     & Traffic Channel\\
+    TCH/F   & Full Rate Traffic Channel\\
+    TCH/H   & Half Rate Traffic Channel\\
+    TEI     & Terminal Endpoint Identifier\\
+    TMSI    & Temporary Mobile Subscriber Identity\\
+    TN      & Timeslot Number\\
+    TRX     & Transceiver\\
+    TSC     & Training Sequence Code\\
+    \\
+    UL      & Uplink\\
+    \\
+    VLR     & Visitors Location Register\\
+    \bottomrule
+\end{longtable}
+
+\subsection{References}
+\begin{itemize}
+    \item \href{https://www.etsi.org/deliver/etsi_gts/04/0407/05.01.00_60/gsmts_0407v050100p.pdf}{GSM 04.07}: Mobile radio interface signalling layer 3 general aspects
+    \item \href{https://www.etsi.org/deliver/etsi_gts/04/0408/05.00.00_60/gsmts_0408v050000p.pdf}{GSM 04.08}: Mobile radio interface layer 3 specification
+    \item \href{https://www.etsi.org/deliver/etsi_gts/08/0856/03.01.01_60/gsmts_0856sv030101p.pdf}{GSM 08.56}: BSC-BTS interface layer 2 specification
+    \item \href{https://www.etsi.org/deliver/etsi_gts/08/0858/05.03.00_60/gsmts_0858v050300p.pdf}{GSM 08.58}: BSC-BTS interface layer 3 specification
+\end{itemize}
+
+\end{document}

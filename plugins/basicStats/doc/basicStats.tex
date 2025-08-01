@@ -1,0 +1,172 @@
+\IfFileExists{t2doc.cls}{
+    \documentclass[documentation]{subfiles}
+}{
+    \errmessage{Error: could not find 't2doc.cls'}
+}
+
+\begin{document}
+
+\trantitle
+    {basicStats}
+    {Basic Statistics}
+    {Tranalyzer Development Team} % author(s)
+
+\section{basicStats}\label{s:basicStats}
+
+\subsection{Description}
+The basicStats plugin supplies basic layer four statistics for each flow.
+
+\subsection{Configuration Flags}
+The following flags can be used to control the output of the plugin:
+\begin{longtable}{>{\tt}lcl>{\tt\small}l}
+    \toprule
+    {\bf Name} & {\bf Default} & {\bf Description} & {\bf Flags}\\
+    \midrule\endhead%
+    BS\_AGGR\_CNT  & 0 & 0: A+B counts off,                             &\\
+                   & 0 & 1: add A+B counts                              &\\
+    BS\_REV\_CNT   & 1 & 0: native send counts,                         &\\
+                   &   & 1: add reverse counts from opposite flow       &\\
+    BS\_MOD        & 0 & > 1: modulo factor of packet length; else: off &\\
+    BS\_PAD        & 1 & 1: Aggregated padding bytes                    &\\
+    \\
+    BS\_STATS      & 1 & Output statistics (min, max, average, \ldots)  &\\
+    \\
+    BS\_PL\_STATS  & 1 & 1: Packet Length statistics                    &\\
+    BS\_IAT\_STATS & 1 & 1: IAT statistics                              &\\
+
+    \\
+    \multicolumn{4}{l}{If {\tt BS\_STATS==1}, the following additional flags can be used:}\\
+    \\
+
+    BS\_VAR    & 0                       & Output the variance                             & \\
+    BS\_STDDEV & 1                       & Output the standard deviation                   & \\
+    BS\_SK     & 0                       & Skew/kurtosis calculation                       & BS\_VAR=1\\
+    BS\_XCLD   & 0                       & 0: do not exclude any value from statistics,    & \\
+               &                         & 1: include {\tt\small (BS\_XMIN, UINT16\_MAX],} & \\
+               &                         & 2: include {\tt\small [0, BS\_XMAX)},           & \\
+               &                         & 3: include {\tt\small [BS\_XMIN, BS\_XMAX]},    & \\
+               &                         & 4: exclude {\tt\small (BS\_XMIN, BS\_XMAX)}     & \\
+    BS\_XMIN   & 1                       & minimal included/excluded from statistics       & BS\_XCLD>0\\
+    BS\_XMAX   & {\tt\small UINT16\_MAX} & maximal included/excluded from statistics       & BS\_XCLD>0\\
+    \bottomrule
+\end{longtable}
+
+\subsubsection{Environment Variable Configuration Flags}
+The following configuration flags can also be configured with environment variables ({\tt ENVCNTRL>0}):
+\begin{itemize}
+    \item {\tt BS\_XMIN}
+    \item {\tt BS\_XMAX}
+\end{itemize}
+
+\clearpage
+\subsection{Flow File Output}
+The basicStats plugin outputs the following fields:
+
+\begin{longtable}{>{\tt}lll>{\tt\small}l}
+    \toprule
+    {\bf Column}    & {\bf Type} & {\bf Description}                                & {\bf Flags}\\
+    \midrule\endhead%
+    pktsSnt         & U64        & Number of transmitted packets                    & \\
+    pktsRcvd        & U64        & Number of received packets                       & BS\_REV\_CNT=1\\
+    pktsRTAggr      & U64        & Number of received + transmitted packets         & BS\_AGGR\_CNT=1\\\\
+
+    padBytesSnt     & I64        & Number of transmitted padding bytes              & BS\_PAD=1\\
+    \hyperref[bs:pktsize]{l2-7BytesSnt}
+                    & U64        & Number of transmitted layer 2-7 bytes            & \\
+    \hyperref[bs:pktsize]{l2-7BytesRcvd}
+                    & U64        & Number of received layer 2-7 bytes               & BS\_REV\_CNT=1\\
+    \hyperref[bs:pktsize]{l2-7BytesRTAggr}
+                    & U64        & Number of received + transmitted layer 2-7 bytes & BS\_AGGR\_CNT=1\\
+
+    \\
+    \multicolumn{4}{l}{If {\tt BS\_STATS=1}, the following columns, whose value depends on {\tt BS\_XCLD}, are provided}\\
+    \\
+    \multicolumn{4}{l}{If {\tt BS\_PL\_STATS=1}, the following five columns are displayed}\\
+    \\
+
+    \hyperref[bs:pktsize]{minL2-7PktSz}
+                    & U16        & Minimum layer 2-7 packet size                    & \\
+    \hyperref[bs:pktsize]{maxL2-7PktSz}
+                    & U16        & Maximum layer 2-7 packet size                    & \\
+    \hyperref[bs:pktsize]{avgL2-7PktSz}
+                    & F          & Average layer 2-7 packet size                    & \\
+    \hyperref[bs:pktsize]{stdL2-7PktSz}
+                    & F          & Standard deviation layer 2-7 packet size         & BS\_STDDEV=1\\
+    \hyperref[bs:pktsize]{varL2-7PktSz}
+                    & F          & Variance layer 2-7 packet size                   & BS\_VAR=1\\
+    \hyperref[bs:pktsize]{skewL2-7PktSz}
+                    & F          & Skewness layer 2-7 packet size                   & BS\_SK=1 \&\& BS\_VAR=1\\
+    \hyperref[bs:pktsize]{kurL2-7PktSz}
+                    & F          & Kurtosis layer 2-7 packet size                   & BS\_SK=1 \&\& BS\_VAR=1\\
+
+    \\
+    \multicolumn{4}{l}{If {\tt BS\_IAT\_STATS=1}, the following five columns are displayed}\\
+    \\
+
+    minIAT          & F          & Minimum IAT                                      & \\
+    maxIAT          & F          & Maximum IAT                                      & \\
+    avgIAT          & F          & Average IAT                                      & \\
+    varIAT          & F          & Variance IAT                                     & BS\_VAR=1\\
+    stdIAT          & F          & Standard deviation IAT                           & BS\_STDDEV=1\\
+    skewIAT         & F          & Skewness IAT                                     & BS\_SK=1 \&\& BS\_VAR=1\\
+    kurIAT          & F          & Kurtosis IAT                                     & BS\_SK=1 \&\& BS\_VAR=1\\
+    \\
+    pktps           & F          & Sent packets per second                          & \\
+    bytps           & F          & Sent bytes per second                            & \\
+    \\
+    pktAsm          & F          & Packet stream asymmetry                          & \\
+    bytAsm          & F          & Byte stream asymmetry                            & \\
+    \bottomrule
+\end{longtable}
+
+\clearpage
+\subsubsection{Packet size}\label{bs:pktsize}
+Packet sizes depend on {\tt PACKETLENGTH} in {\em tranalyzer2/src/packetCapture.h}):
+
+\begin{itemize}
+    \item {\tt PACKETLENGTH=0}:
+        \begin{itemize}
+            \item Output {\tt *L2PktSz} and {\tt *L2Bytes*} columns
+            \item Packet size include layer 2, 3 and 4 header
+        \end{itemize}
+    \item {\tt PACKETLENGTH=1}:
+        \begin{itemize}
+            \item Output {\tt *L3PktSz} and {\tt *L3Bytes*} columns
+            \item Packet size include layer 3 and 4 header
+        \end{itemize}
+    \item {\tt PACKETLENGTH=2}:
+        \begin{itemize}
+            \item Output {\tt *L4PktSz} and {\tt *L4Bytes*} columns
+            \item Packet size include layer 4 header
+        \end{itemize}
+    \item {\tt PACKETLENGTH=3}:
+        \begin{itemize}
+            \item Output {\tt *L7PktSz} and {\tt *L7Bytes*} columns
+            \item Packet size include only layer 7
+        \end{itemize}
+\end{itemize}
+
+\subsection{Packet File Output}
+In packet mode ({\tt --s} option), the basicStats plugin outputs the following columns:
+\begin{longtable}{>{\tt}lll>{\tt\small}l}
+    \toprule
+    {\bf Column} & {\bf Type} & {\bf Description}              & {\bf Flags}\\
+    \midrule\endhead%
+    pktLen       & U32        & Packet size on the wire        & \\
+    udpLen       & U16        & Length in UDP/UDP-Lite header  & \\
+    snapL4Len    & U16        & Snapped layer 4 length         & \\
+    snapL7Len    & U16        & Snapped layer 7 length         & \\
+    l7Len        & U16        & Layer 7 length                 & \\
+    pktLenMod    & U16        & Modulo factor of packet length & BS\_MOD>1\\
+    padLen       & I64        & Number of padding bytes        & \\
+    \bottomrule
+\end{longtable}
+
+\subsection{Plugin Report Output}
+The following information is reported:
+\begin{itemize}
+    \item MAC of biggest packets/bytes talker and packets/bytes counts
+    \item IP of biggest packets/bytes talker and packets/bytes counts ({\tt ANONYM\_IP=0})
+\end{itemize}
+
+\end{document}

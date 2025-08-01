@@ -1,0 +1,15 @@
+$TTL 3600       ; 1 hour
+$ORIGIN tunnel.
+@                   IN  SOA     ns.tunnel. admin.ns.tunnel. (
+                                  1263547862 ; serial
+                                  10800      ; refresh (3 hours)
+                                  3600       ; retry (1 hour)
+                                  604800     ; expire (1 week)
+                                  36000      ; minimum (10 hours)
+                                )
+                        NS      ns
+ns                      A       10.20.5.48
+
+$ORIGIN t1.tunnel.
+@                       NS      ns
+ns                      A       10.20.6.245

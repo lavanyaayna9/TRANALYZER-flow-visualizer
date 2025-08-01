@@ -1,0 +1,91 @@
+\IfFileExists{t2doc.cls}{
+    \documentclass[documentation]{subfiles}
+}{
+    \errmessage{Error: could not find 't2doc.cls'}
+}
+
+\begin{document}
+
+\trantitle
+    {syslogDecode} % name
+    {Syslog} % description
+    {Tranalyzer Development Team} % author(s)
+
+\section{syslogDecode}\label{s:syslogDecode}
+
+\subsection{Description}
+The syslogDecode plugin analyzes Syslog traffic.
+
+\subsection{Configuration Flags}
+The following flags can be used to control the output of the plugin:
+\begin{longtable}{>{\tt}lcl>{\tt\small}l}
+    \toprule
+    {\bf Name} & {\bf Default} & {\bf Description} & {\bf Flags}\\
+    \midrule\endhead%
+    {\tt SYSL\_FSN} & 0 & Format for Syslog severity/facility messages: & \\
+                    &   & \qquad 0: Numbers,                            & \\
+                    &   & \qquad 1: Names                               & \\
+    \bottomrule
+\end{longtable}
+
+\subsection{Flow File Output}
+The syslogDecode plugin outputs the following columns:
+\begin{longtable}{>{\tt}lll>{\tt\small}l}
+    \toprule
+    {\bf Column} & {\bf Type} & {\bf Description} & {\bf Flags}\\
+    \midrule\endhead%
+    \nameref{syslogStat} & H8           & Status                               & \\
+    syslogMCnt           & U32          & message count                        & \\
+    syslogSev\_Fac\_Cnt  & RU8\_U8\_U32 & Number of severity/facility messages & \\
+    \bottomrule
+\end{longtable}
+
+\subsubsection{syslogStat}\label{syslogStat}
+The {\tt syslogStat} column is to be interpreted as follows:
+\begin{longtable}{>{\tt}rl}
+    \toprule
+    {\bf syslogStat} & {\bf Description}\\
+    \midrule\endhead%
+    0x01 & Syslog detected \\
+    0x02 & --- \\
+    0x04 & --- \\
+    0x08 & --- \\
+    \\
+    0x10 & --- \\
+    0x20 & --- \\
+    0x40 & --- \\
+    0x80 & Counter for facility/severity overflowed \\
+    \bottomrule
+\end{longtable}
+
+\subsection{Packet File Output}
+In packet mode ({\tt --s} option), the syslogDecode plugin outputs the following columns:
+\begin{longtable}{>{\tt}lll>{\tt\small}l}
+    \toprule
+    {\bf Column} & {\bf Type} & {\bf Description} & {\bf Flags}\\
+    \midrule\endhead%
+    \nameref{syslogStat} & H8   & Status   & \\
+    syslogSev            & U8/S & Severity & SYSL\_FSN=0/1\\
+    syslogFac            & U8/S & Facility & SYSL\_FSN=0/1\\
+    \bottomrule
+\end{longtable}
+
+\subsection{Plugin Report Output}
+The following information is reported:
+\begin{itemize}
+    \item Aggregated {\tt\nameref{syslogStat}}
+    \item Number of Syslog packets
+    \item Number of Syslog message types
+\end{itemize}
+
+\subsection{TODO}
+\begin{itemize}
+    \item IPv6 tests
+\end{itemize}
+
+\subsection{References}
+\begin{itemize}
+    \item \url{https://tools.ietf.org/html/rfc5424}
+\end{itemize}
+
+\end{document}

@@ -1,0 +1,148 @@
+\IfFileExists{t2doc.cls}{
+    \documentclass[documentation]{subfiles}
+}{
+    \errmessage{Error: could not find 't2doc.cls'}
+}
+
+\begin{document}
+
+\trantitle
+    {popDecode}
+    {Post Office Protocol (POP)}
+    {Tranalyzer Development Team} % author(s)
+
+\section{popDecode}\label{s:popDecode}
+
+\subsection{Description}
+The popDecode plugin processes MAIL header and content information of a flow.
+The idea is to identify certain POP mail features and save content.
+
+\subsection{Configuration Flags}
+The following flags can be used to control the output of the plugin:
+\begin{longtable}{>{\tt}lcl>{\tt\small}l}
+    \toprule
+    {\bf Name} & {\bf Default} & {\bf Description} & {\bf Flags}\\
+    \midrule\endhead%
+    POP\_SAVE    &  0 & Save content to {\tt\small POP\_F\_PATH}       & \\
+    POP\_BTFLD   &  1 & Enable bitfields output                        & \\
+    POP\_MXNMLN  & 65 & Maximal name length                            & \\
+    POP\_MXUNM   &  5 & Maximal number of users                        & \\
+    POP\_MXPNM   &  5 & Maximal number of passwords/parameters         & \\
+    POP\_MXCNM   & 10 & Maximal number of content                      & \\
+
+    POP\_RMDIR   &  1 & Empty {\tt\small POP\_F\_PATH} before starting & POP\_SAVE=1\\
+    POP\_F\_PATH & {\tt\small "/tmp/POPFILES/"}
+                      & Path for extracted content                     & POP\_SAVE=1\\
+    POP\_NONAME  & {\tt\small "nudel"}
+                      & No name file name                              & POP\_SAVE=1\\
+    \bottomrule
+\end{longtable}
+
+\subsubsection{Environment Variable Configuration Flags}
+The following configuration flags can also be configured with environment variables ({\tt ENVCNTRL>0}):
+\begin{itemize}
+    \item {\tt POP\_RMDIR}
+    \item {\tt POP\_F\_PATH}
+    \item {\tt POP\_NONAME}
+\end{itemize}
+
+\subsection{Flow File Output}
+The popDecode plugin outputs the following columns:
+\begin{longtable}{>{\tt}lll>{\tt\small}l}
+    \toprule
+    {\bf Column} & {\bf Type} & {\bf Description} & {\bf Flags}\\
+    \midrule\endhead%
+    \nameref{popStat} & H16  & Status                     & \\
+    \nameref{popCBF}  & H16  & POP command codes bitfield & POP\_BTFLD=1\\
+    popCC             & RSC  & POP command codes          & \\
+    popRM             & RU16 & POP response codes         & \\
+    popUsrNum         & U8   & POP number of users        & \\
+    popUsr            & RS   & POP users                  & \\
+    popPwNum          & U8   & POP number of passwords    & \\
+    popPw             & RS   & POP passwords              & \\
+    popCNum           & U8   & POP number of parameters   & \\
+    popC              & RS   & POP content                & \\
+    \bottomrule
+\end{longtable}
+
+\subsubsection{popStat}\label{popStat}
+The {\tt popStat} column describes the errors encountered during the flow lifetime:
+\begin{longtable}{>{\tt}rl>{\tt\small}l}
+    \toprule
+    {\bf popStat} & {\bf Description} & {\bf Flags}\\
+    \midrule\endhead%
+    $2^{0}$  (=0x0001) & POP2 port found            & \\
+    $2^{1}$  (=0x0002) & POP3 port found            & \\
+    $2^{2}$  (=0x0004) & Response {\tt +OK}         & \\
+    $2^{3}$  (=0x0008) & Response {\tt -ERR}        & \\
+    \\
+    $2^{4}$  (=0x0010) & Data storage exists        & POP\_SAVE=1\\
+    $2^{5}$  (=0x0020) & Data storage in progress   & POP\_SAVE=1\\
+    $2^{6}$  (=0x0040) & Response not valid or data & \\
+    $2^{7}$  (=0x0080) & Array overflow             & \\
+    \\
+    $2^{8}$  (=0x0100) & Authentication pending     & \\
+    $2^{9}$  (=0x0200) & Return path pending        & \\
+    $2^{10}$ (=0x0400) & ---                        & \\
+    $2^{11}$ (=0x0800) & ---                        & \\
+    \\
+    $2^{12}$ (=0x1000) & ---                        & \\
+    $2^{13}$ (=0x2000) & ---                        & \\
+    $2^{14}$ (=0x4000) & ---                        & \\
+    $2^{15}$ (=0x8000) & ---                        & \\
+    \bottomrule
+\end{longtable}
+
+\subsubsection{popCBF}\label{popCBF}
+The {\tt popCBF} column describes the commands encountered during the flow lifetime:
+\begin{longtable}{>{\tt}rl}
+    \toprule
+    {\bf popCBF} & {\bf Description} \\
+    \midrule\endhead%
+    $2^{0}$  (=0x0001) & Login with MD5 signature \\
+    $2^{1}$  (=0x0002) & Authentication request \\
+    $2^{2}$  (=0x0004) & Get a list of capabilities supported by the server \\
+    $2^{3}$  (=0x0008) & Mark the message as deleted \\
+    \\
+    $2^{4}$  (=0x0010) & Get a scan listing of one or all messages \\
+    $2^{5}$  (=0x0020) & Return a {\tt +OK} reply \\
+    $2^{6}$  (=0x0040) & Cleartext password entry \\
+    $2^{7}$  (=0x0080) & Exit session. Remove all deleted messages from the server \\
+    \\
+    $2^{8}$  (=0x0100) & Retrieve the message \\
+    $2^{9}$  (=0x0200) & Remove the deletion marking from all messages \\
+    $2^{10}$ (=0x0400) & Get the drop listing \\
+    $2^{11}$ (=0x0800) & Begin a TLS negotiation \\
+    \\
+    $2^{12}$ (=0x1000) & Get the top n lines of the message \\
+    $2^{13}$ (=0x2000) & Get a unique-id listing for one or all messages \\
+    $2^{14}$ (=0x4000) & Mailbox login \\
+    $2^{15}$ (=0x8000) & \\
+    \bottomrule
+\end{longtable}
+
+\subsection{Packet File Output}
+In packet mode ({\tt --s} option), the popDecode plugin outputs the following columns:
+\begin{longtable}{>{\tt}lll>{\tt\small}l}
+    \toprule
+    {\bf Column} & {\bf Type} & {\bf Description} & {\bf Flags}\\
+    \midrule\endhead%
+    \nameref{popStat} & H16 & Status & \\
+    \bottomrule
+\end{longtable}
+
+\subsection{Plugin Report Output}
+The following information is reported:
+\begin{itemize}
+    \item POP status
+    \item Number of POP packets
+    \item Number of files extracted ({\tt POP\_SAVE=1})
+\end{itemize}
+
+\subsection{TODO}
+
+\begin{itemize}
+    \item fragmentation
+\end{itemize}
+
+\end{document}

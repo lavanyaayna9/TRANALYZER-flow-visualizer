@@ -1,0 +1,24 @@
+#!/usr/bin/env awk
+#
+# Remove trailing spaces from a string 's'.
+#
+# Parameters:
+#   - s : the string to strip
+#
+# Dependencies:
+#   - None
+#
+# See also:
+#   - lstrip
+#   - strip
+#   - chomp
+#   - quote
+#   - unquote
+#
+# Examples:
+#   - tawk '{ print rstrip("  str  ") }' file.txt
+
+function rstrip(s) {
+    gsub(/\s*$/, "", s) # remove trailing spaces
+    return s
+}

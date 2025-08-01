@@ -1,0 +1,124 @@
+\IfFileExists{t2doc.cls}{
+    \documentclass[documentation]{subfiles}
+}{
+    \errmessage{Error: could not find 't2doc.cls'}
+}
+
+\begin{document}
+
+\trantitle
+    {sqliteSink} % Plugin name
+    {SQLite} % Short description
+    {Tranalyzer Development Team} % author(s)
+
+\section{sqliteSink}\label{s:sqliteSink}
+
+\subsection{Description}
+The sqliteSink plugin outputs flows to a SQLite database.
+
+\subsection{Dependencies}
+
+\subsubsection{External Libraries}
+This plugin depends on the {\bf sqlite} library.
+\begin{table}[!ht]
+    \centering
+    \begin{tabular}{>{\bf}r>{\tt}l>{\tt}l>{\tt}l}
+        \toprule
+        %                             &                      &              \\
+        %\midrule
+        Ubuntu:                      & sudo apt-get install & libsqlite3-dev\\
+        Arch:                        & sudo pacman -S       & sqlite        \\
+        %Gentoo:                      & sudo emerge          & sqlite        \\
+        openSUSE:                    & sudo zypper install  & sqlite3-devel \\
+        Red Hat/Fedora\tablefootnote{If the {\tt dnf} command could not be found, try with {\tt yum} instead}:
+                                     & sudo dnf install     & sqlite-devel  \\
+        macOS\tablefootnote{Brew is a packet manager for macOS that can be found here: \url{https://brew.sh}}:
+                                     & brew install         & sqlite        \\
+        \bottomrule
+    \end{tabular}
+\end{table}
+
+\subsubsection{Core Configuration}
+This plugin requires the following core configuration:
+\begin{itemize}
+    \item {\em \$T2HOME/tranalyzer2/src/tranalyzer.h}:
+        \begin{itemize}
+            \item {\tt BLOCK\_BUF=0}
+        \end{itemize}
+\end{itemize}
+
+\subsection{Configuration Flags}
+The following flags can be used to control the output of the plugin:
+\begin{longtable}{>{\tt}lcl}
+    \toprule
+    {\bf Name} & {\bf Default} & {\bf Description}\\
+    \midrule\endhead%
+    SQLITE\_OVERWRITE                              & 2                                & 0: abort if table already exists\\
+                                                   &                                  & 1: overwrite table if it already exists\\
+                                                   &                                  & 2: append to table if it already exists\\
+    SQLITE\_HEX\_AS\_INT                           & 0                                & 0: store hex numbers (bitfields) as text\\
+                                                   &                                  & 1: store hex numbers (bitfields) as int\\
+    SQLITE\_TRANSACTION\_NFLOWS                    & 40000                            & 0: one transaction\\
+                                                   &                                  & > 0: one transaction every $n$ flows\\
+    SQLITE\_QRY\_LEN                               & 32768                            & Initial length for query\\
+    SQLITE\_QRY\_MAXLEN                            & 4194304                          & Maximal length for query\\
+
+    \hyperref[sqlite:dbname]{SQLITE\_DB\_SUFFIX}   & {\tt\small ".db"}                & Suffix for the database name\\
+    \hyperref[sqlite:dbname]{SQLITE\_DBNAME}       & {\tt\small "/tmp/t2.db"}         & Name of the database\\
+    SQLITE\_TABLE\_NAME                            & {\tt\small "flow"}               & Name of the table\\
+
+    \hyperref[sqlite:select]{T2\_SQLITE\_SELECT}   & 0                                & Only insert specific fields into the DB\\
+    \hyperref[sqlite:select]{SQLITE\_SELECT\_FILE} & {\tt\small "sqlite-columns.txt"} & Filename of the field selector\\
+                                                   &                                  & (one column name per line)\\
+    \bottomrule
+\end{longtable}
+
+\subsubsection{Environment Variable Configuration Flags}
+The following configuration flags can also be configured with environment variables ({\tt ENVCNTRL>0}):
+\begin{itemize}
+    \item {\tt SQLITE\_QRY\_LEN}
+    \item {\tt SQLITE\_QRY\_MAXLEN}
+    \item {\tt SQLITE\_DB\_SUFFIX}
+    \item {\tt SQLITE\_TABLE\_NAME}
+    \item {\tt SQLITE\_SELECT\_FILE}
+\end{itemize}
+
+\subsubsection{Database Name}\label{sqlite:dbname}
+The database name is extracted from Tranalyzer input and/or {\tt --w/--W} option.
+{\tt SQLITE\_DB\_SUFFIX} is simply appended.
+Alternatively, an absolute path may be provided by uncommenting the {\tt SQLITE\_DBNAME} macro in {\em src/sqliteSink.h}.
+
+\subsection{Insertion of Selected Fields Only}\label{sqlite:select}
+
+When {\small\tt T2\_SQLITE\_SELECT=1}, the columns to insert into the DB can be customized with the help of {\small\tt SQLITE\_SELECT\_FILE}.
+The filename defaults to {\tt sqlite-columns.txt} in the user plugin folder, e.g., {\em \textasciitilde{}/.tranalyzer/plugins}.
+The format of the file is simply one field name per line with lines starting with a {\tt `\#'} being ignored.
+For example, to only insert source and destination addresses and ports, create the following file:
+
+\begin{verbatim}
+# Lines starting with a '#' are ignored and can be used to add comments
+srcIP
+srcPort
+dstIP
+dstPort
+\end{verbatim}
+
+\subsection{Plugin Report Output}
+The following information is reported:
+\begin{itemize}
+    \item Number of flows discarded due to main buffer problems
+\end{itemize}
+
+\subsection{Example}
+{\tt\color{blue} \# Run Tranalyzer}\\
+{\tt \$ t2 -r file.pcap}\\
+{\tt\color{blue} \# Connect to the SQLite database}\\
+{\tt \$ sqlite3 file.db}\\
+{\tt\color{blue} \# Number of flows}\\
+{\tt sqlite> select count(*) from flow;}\\
+{\tt\color{blue} \# 10 first srcIP/dstIP pairs}\\
+{\tt sqlite> select "srcIP", "dstIP" from flow limit 10;}\\
+{\tt\color{blue} \# All flows from 1.2.3.4 to 1.2.3.5}\\
+{\tt sqlite> select * from flow where "srcIP" = '1.2.3.4' and "dstIP" = '1.2.3.5';}\\
+
+\end{document}

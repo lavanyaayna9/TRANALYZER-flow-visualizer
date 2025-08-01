@@ -1,0 +1,11 @@
+#H bit | tcpMPDSSF | Description (subtype 2)
+#H =============================================================================
+     0 | 0x01      | Data ACK is present
+     1 | 0x02      | Data ACK is 8 octets
+     2 | 0x04      | DSN, Subflow SB, Data len, Checksum present
+     3 | 0x08      | DSN is 8 octets
+
+     4 | 0x10      | DATA_FIN
+     5 | 0x20      | -
+     6 | 0x40      | -
+     7 | 0x80      | -

@@ -1,0 +1,14 @@
+# ZSH completion for t2stat
+
+_t2stat() {
+    #compdef t2stat
+
+    local cur="${words[CURRENT]}"
+    [ $CURRENT -gt 2 ] && local prev=${words[CURRENT-1]}
+
+    if [[ "$cur" == -* ]]; then
+        _arguments --
+    fi
+}
+
+compdef _t2stat t2stat

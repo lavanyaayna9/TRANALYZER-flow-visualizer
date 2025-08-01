@@ -1,0 +1,63 @@
+% test on i7-3930K : NO AVX2 or AVX512 instructions
+RE2  set1  27.26 sec    287.14 Mb/s
+HS   set1  13.91 sec    562.87 Mb/s
+RE2  10    27.79 sec    281.67 Mb/s
+HS   10    17.49 sec    447.58 Mb/s
+RE2  20    27.69 sec    282.71 Mb/s
+HS   20    17.44 sec    449.02 Mb/s
+RE2  50    32.24 sec    242.85 Mb/s
+HS   50    26.98 sec    290.15 Mb/s
+RE2  100   58.63 sec    133.54 Mb/s
+HS   100   35.86 sec    218.31 Mb/s
+RE2  150   120.83 sec   64.79 Mb/s
+HS   150   38.52 sec    203.24 Mb/s
+RE2  200   148.01 sec   52.89 Mb/s
+HS   200   40.42 sec    193.70 Mb/s
+RE2  250   219.48 sec   35.67 Mb/s
+HS   250   45.19 sec    173.25 Mb/s
+RE2  500   344.04 sec   22.76 Mb/s
+HS   500   49.45 sec    158.33 Mb/s
+RE2  1000  2648.52 sec  2.96 Mb/s
+HS   1000  91.30 sec    85.75 Mb/s
+
+% test on i7-4770K : WITH AVX2 but NO AVX512 instructions
+RE2  set1  22.15 sec   353.49 Mb/s
+HS   set1  11.38 sec   687.64 Mb/s
+RE2  10    22.87 sec   342.24 Mb/s
+HS   10    13.66 sec   572.97 Mb/s
+RE2  20    23.93 sec   327.11 Mb/s
+HS   20    14.00 sec   559.13 Mb/s
+RE2  50    28.26 sec   277.04 Mb/s
+HS   50    19.40 sec   403.62 Mb/s
+RE2  100   50.81 sec   154.08 Mb/s
+HS   100   27.01 sec   289.80 Mb/s
+RE2  150   108.52 sec  72.14 Mb/s
+HS   150   30.03 sec   260.68 Mb/s
+RE2  200   125.53 sec  62.37 Mb/s
+HS   200   31.24 sec   250.58 Mb/s
+RE2  250   197.10 sec  39.72 Mb/s
+HS   250   35.98 sec   217.60 Mb/s
+RE2  500   318.12 sec  24.61 Mb/s
+HS   500   38.49 sec   203.41 Mb/s
+% not enough RAM for RE2 with 1000 regexes on this machine
+
+% test on i5-4690K : WITH AVX2 but NO AVX512 instructions
+RE2  set1  22.46 sec   348.63 Mb/s
+HS   set1  12.14 sec   644.85 Mb/s
+RE2  10    23.33 sec   335.57 Mb/s
+HS   10    13.80 sec   567.33 Mb/s
+RE2  20    23.39 sec   334.64 Mb/s
+HS   20    14.41 sec   543.38 Mb/s
+RE2  50    27.19 sec   287.94 Mb/s
+HS   50    18.83 sec   415.80 Mb/s
+RE2  100   48.84 sec   160.29 Mb/s
+HS   100   25.34 sec   308.93 Mb/s
+RE2  150   104.16 sec  75.16 Mb/s
+HS   150   28.80 sec   271.86 Mb/s
+RE2  200   122.04 sec  64.15 Mb/s
+HS   200   29.71 sec   263.51 Mb/s
+RE2  250   178.27 sec  43.92 Mb/s
+HS   250   33.24 sec   235.51 Mb/s
+RE2  500   282.70 sec  27.69 Mb/s
+HS   500   36.02 sec   217.33 Mb/s
+% not enough RAM for RE2 with 1000 regexes on this machine

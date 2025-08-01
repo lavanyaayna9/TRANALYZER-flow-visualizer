@@ -1,0 +1,149 @@
+#!/usr/bin/env bash
+#
+# Configuration file for pcapd
+# ============================
+#
+# Usage
+# -----
+#
+# $ ./t2plconf
+#
+# Defining the configurations options
+# -----------------------------------
+#
+# If no configuration options are available, ITEMS must be set as follows:
+#   - ITEMS=(none)
+#
+# Otherwise, enter configurations items as follows:
+#   "NAME" "TYPE" "DEPENDENCIES" "DESCRIPTION"
+#
+#   - TYPE can be:
+#       - bitfield
+#       - check (boolean),
+#       - radio (set of values),
+#       - range (min <= val <= max)
+#       - text
+#
+#   - DEPENDENCIES MUST be numeric, e.g., "A == 1 && (B < 4 || C >= 1)"
+#
+#   - DESCRIPTION for type 'bitfield' MUST NOT contain '\t', ':' or ';'
+#   - DESCRIPTION for type 'check' MUST NOT contain tabs ('\t')
+#   - DESCRIPTION for type 'radio' MUST NOT contain '\t', ':' or ';'
+#   - DESCRIPTION for type 'range' MUST NOT contain '\t' or ':'
+#   - DESCRIPTION for type 'text'  MUST NOT contain '\t'
+#
+#   - DESCRIPTION MUST be formatted according to the type (see examples below):
+#       - bitfield : description ';' val1 ':' description1 ';' valN ':' descriptionN
+#       - check    : description
+#       - radio    : description ';' val1 ':' description1 ';' valN ':' descriptionN
+#       - range    : description ':' min ' ' max
+#       - text     : description
+#
+# Examples
+# --------
+#
+#ITEMS=(
+#    # An item can be specified in one line...
+#    T2PSKEL_VAR1 check "" "Description of option" # No dependencies
+#
+#    # Or span multiple lines
+#    T2PSKEL_VAR1 radio "T2PSKEL_VAR1 == 1"
+#           "Description of option; \
+#                   0: description of val 0; \
+#                   1: description of val 1; \
+#                   2: description of val 2"
+#
+#    T2PSKEL_SIZE range "T2PSKEL_VAR1 == 1 || T2PSKEL_VAR2 > 0"
+#           "Description: 0 255" # min=0, max=255
+#
+#    T2PSKEL_STR text
+#           "T2PSKEL_SIZE <= 5 && (T2PSKEL_VAR1 != 0 || T2PSKEL_VAR2 <= 1)"
+#           "Description"
+#
+#    T2PSKEL_BITFIELD bitfield ""
+#           "Description of option; \
+#                   0x01: description of bit 0; \
+#                   0x02: description of bit 1; \
+#                   0x04: description of bit 2; \
+#                   0x08: description of bit 3; \
+#                   0x10: description of bit 4; \
+#                   0x20: description of bit 5; \
+#                   0x40: description of bit 6; \
+#                   0x80: description of bit 7"
+#)
+#
+# If no configuration option is available, use the value 'none'
+#ITEMS=(none)
+#
+# Source the master t2plconf file
+# source ../../scripts/t2conf/t2plconf
+
+ITEMS=(
+    PD_MODE_PKT check ""                  "Activate packet range selection"
+    PD_STRTPKT  range "PD_MODE_PKT == 1"  "Packet at which processing starts: 0 UINT64_MAX"
+    PD_ENDPKT   range "PD_MODE_PKT == 1"  "Packet at which processing ends (use 0 for end of flow): 0 UINT64_MAX"
+
+    PD_MODE_IN radio ""
+        "Input mode; \
+            0: extract flows listed in input file (-e option); \
+            0: extract flows if alarm bit is set; \
+            1: dump all packets"
+
+    PD_EQ radio "PD_MODE_IN == 0"
+        "; \
+            0: save non matching flows; \
+            1: save matching flows"
+
+    PD_OPP check "PD_MODE_IN == 0" "Extract also the opposite flow"
+
+    PD_DIRSEL radio "PD_MODE_IN == 0"
+        "Select Flow direction, -e set; \
+            0: Off; \
+            2: A flow; \
+            3: B flow"
+
+    PD_MODE_OUT radio ""
+        "Output mode; \
+            0: one pcap; \
+            1: one pcap per flow"
+
+    PD_SPLIT check "" "Split the output file (Tranalyzer -W option)"
+
+    PD_LBSRCH radio ""
+        "Search algorithm (-e option); \
+            0: linear search; \
+            1: binary search"
+
+    PD_TSHFT    check ""                "Timeshift"
+    PD_TTSFTS   range "PD_TSHFT == 1"   "Add value to secs: 0 999999999999"
+    PD_TTSFTNMS range "PD_TSHFT == 1"   "Add value to usec/nsec (depends on TSTAMP_PREC in tranalyzer.h): 0 999999999"
+
+    PD_MACSHFT  check ""                "MAC shift last byte"
+    PD_MACSSHFT range "PD_MACSHFT == 1" "Add value to source MAC: 0 255"
+    PD_MACDSHFT range "PD_MACSHFT == 1" "Add value to destination MAC: 0 255"
+
+    PD_VLNSHFT  check ""                "VLAN ID shift"
+    PD_VLNISHFT range "PD_VLNSHFT == 1" "Add value to inner VLAN ID: 0 4096"
+
+    PD_IPSHFT   check ""                "Shift source/destination IPv4/6"
+    PD_IP4SHFT  range "PD_IPSHFT == 1"  "Add value to IPv4 32 bit network order: 0 UINT32_MAX"
+    PD_IP6SHFT  range "PD_IPSHFT == 1"  "Add value to IPv6 shift last 64 bit network order: 0 UINT64_MAX"
+
+    PD_TTLSHFT  radio ""
+        "TTL handling; \
+            0: no TTL change; \
+            1: TTL shift; \
+            2: random shift"
+    PD_TTL      range "PD_TTLSHFT == 1" "Value to subtract from TTL: 0 255"
+    PD_TTLMOD   range "PD_TTLSHFT > 0"  "TTL modulo: 0 255"
+
+    PD_CHKSUML3 check "" "Correct checksum in IPv4 header"
+
+    PD_MAX_FD range "PD_MODE_OUT == 1"
+        "Maximum number of simultaneously open file descriptors: 1 4096"
+
+    PD_SUFFIX text "" "PCAP file extension"
+)
+
+# Source the master t2plconf file
+source "$(dirname "$0")/../../scripts/t2conf/t2plconf"

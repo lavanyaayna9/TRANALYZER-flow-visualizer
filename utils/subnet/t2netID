@@ -1,0 +1,279 @@
+#!/usr/bin/env bash
+
+source "$(dirname "$0")/../../scripts/t2utils.sh"
+
+cd "$(dirname "$0")" || fatal "Failed to cd into '$(dirname "$0")'"
+
+usage() {
+    echo "Usage:"
+    echo "    $SNAME [OPTION...] <netID...>"
+    echo
+    echo "Optional arguments:"
+    echo "    -c              Only output the country code"
+    echo "    -n              Only output the country name"
+    echo "    -o              Only output the organization"
+    echo "    -T              Only output the Tor status "
+    echo
+    echo "    -S              Decode special country codes ([0-9][0-9])"
+    echo
+    echo "    -l              Output all the information on one line"
+    echo "    -H              Do not output the header with -l option"
+    echo "    -t char         Start character(s) for column header (-l option)"
+    echo "    -s char         Column separator for output [\"\\t\"]"
+    echo
+    echo "    -C file         Country file to use"
+    echo "    -O file         Organization file to use"
+    echo
+    echo "    -V              Show info about the masks and databases and exit"
+    echo
+    echo "    -h, --help      Show this help, then exit"
+}
+
+# Default values for -l option
+YES="1"     # value to use for Tor addresses
+NO="0"      # value to use for non-Tor addresses
+PRIHDR=1    # print the header
+SEP=$'\t'   # field separator
+
+# Default Organization and Country files
+ORG_FILE="whoOrgCds.txt"
+COUNTRY_FILE="whoCntryCds.txt"
+
+# Extract masks from tranalyzer.h
+COUNTRY_MASK="$(get_define CNTRY_MSK "$T2HOME/tranalyzer2/src/tranalyzer.h")"
+ORG_MASK="$(get_define ORG_MSK "$T2HOME/tranalyzer2/src/tranalyzer.h")"
+TOR_MASK="$(get_define TOR_MSK "$T2HOME/tranalyzer2/src/tranalyzer.h")"
+
+NETID=()
+while [ $# -ne 0 ]; do
+    case "$1" in
+        -h|-\?|--help) usage; exit 0;;
+        -c) COUNTRY_S=1;;
+        -n) COUNTRY_L=1;;
+        -o) ORG=1;;
+        -T) TOR=1;;
+        -S) SPECIAL=1;;
+        -V) INFO=1;;
+        -l) ONELINE=1;;
+        -H) unset PRIHDR;;
+        -t)
+            validate_next_arg "$1" "$2"
+            HDRCHR="$2"
+            shift
+            ;;
+        -s)
+            validate_next_arg "$1" "$2"
+            SEP="$2"
+            shift
+            ;;
+        -C)
+            validate_next_file "$1" "$2"
+            COUNTRY_FILE="$2"
+            shift
+            ;;
+        -O)
+            validate_next_file "$1" "$2"
+            ORG_FILE="$2"
+            shift
+            ;;
+        *)
+            if [ -z "$(AWK '/^0x[0-9A-Fa-f]+$/' <<< "$1")" ]; then
+                abort_option_unknown "$1"
+            elif [ -z "$(AWK '/^0x[0-9A-Fa-f]{8}$/' <<< "$1")" ]; then
+                printerr "A netID must be 32-bits long..."
+                abort_with_help
+            fi
+            NETID+=("$1")
+            ;;
+    esac
+    shift
+done
+
+if [ -z "${COUNTRY_S}${COUNTRY_L}${ORG}${TOR}" ]; then
+    COUNTRY_S=1
+    COUNTRY_L=1
+    ORG=1
+    TOR=1
+fi
+
+if [ -n "${COUNTRY_S}${COUNTRY_L}" ] && [ ! -f "$COUNTRY_FILE" ]; then
+    printerr "Could not find '$COUNTRY_FILE'"
+    abort_with_help
+fi
+
+if [ -n "$ORG" ] && [ ! -f "$ORG_FILE" ]; then
+    printerr "Could not find '$ORG_FILE'"
+    abort_with_help
+fi
+
+if [ -n "$INFO" ]; then
+    printf "\n${BLUE_BOLD}Masks:${NOCOLOR}\n"
+    printf "\t${BOLD}Country     :${NOCOLOR} $COUNTRY_MASK\n"
+    printf "\t${BOLD}Tor         :${NOCOLOR} $TOR_MASK\n"
+    printf "\t${BOLD}Organization:${NOCOLOR} $ORG_MASK\n\n"
+
+    if [ -f "$COUNTRY_FILE" ]; then
+        printf "${BLUE_BOLD}${COUNTRY_FILE}:${NOCOLOR}\n"
+        printf "\t${BOLD}Number of entries:${NOCOLOR} $(wc -l "$COUNTRY_FILE" | AWK '{ print $1 }')\n\n"
+    fi
+
+    if [ -n "$ORG_FILE" ]; then
+        printf "${BLUE_BOLD}${ORG_FILE}:${NOCOLOR}\n"
+        printf "\t${BOLD}Number of entries:${NOCOLOR} $(wc -l "$ORG_FILE" | AWK '{ print $1 }')\n\n"
+    fi
+
+    exit 0
+fi
+
+if [ ${#NETID[@]} -eq 0 ]; then
+    printerr "A netID is required"
+    abort_with_help
+fi
+
+if [ -n "$ONELINE" ] && [ -n "$PRIHDR" ]; then
+    printf "%s%s" "${HDRCHR}" "netID"
+    [ -n "$COUNTRY_S" ] && printf "${SEP}CountryCode"
+    [ -n "$COUNTRY_L" ] && printf "${SEP}CountryName"
+    [ -n "$ORG" ] && printf "${SEP}Organization"
+    [ -n "$TOR" ] && printf "${SEP}Tor"
+    printf "\n"
+fi
+
+[ -z "$ONELINE" ] && printf "\n"
+
+for i in "${NETID[@]}"; do
+    if [ -n "$ONELINE" ]; then
+        printf "$i"
+    else
+        printf "${BLUE_BOLD}${i}:${NOCOLOR}\n"
+    fi
+    if [ -n "${COUNTRY_S}${COUNTRY_L}" ]; then
+        AWK -F'\t' -v netID="$i" -v mask="$COUNTRY_MASK" -v short="$COUNTRY_S" -v long="$COUNTRY_L" -v special="$SPECIAL" -v oneline="$ONELINE" -v OFS="$SEP" '
+            BEGIN {
+                nid = and(strtonum(netID), strtonum(mask))
+                printf OFS
+                if (!oneline) printf "\033[1mCountry     :\033[0m "
+            }
+            {
+                cc = strtonum($1)
+            }
+            cc == nid {
+                country_s = $2
+                country_l = $3
+                if (!country_l) country_l = "-"
+                if (special) {
+                    switch (country_s) {
+                        case "00": country_l = "Unspecified address"; break;
+                        case "01": country_l = "Loopback address"; break;
+                        case "02": country_l = "Link-local address"; break;
+                        case "03": country_l = "Unique local address"; break;
+                        case "04": country_l = "Private network"; break;
+                        case "05": country_l = "Private network"; break;
+                        case "06": country_l = "Private network"; break;
+                        case "07": country_l = "Private network"; break;
+                        case "08": country_l = "Private network"; break;
+                        case "10": country_l = "Multicast"; break;
+                        case "11": country_l = "Broadcast"; break;
+                        case "20": country_l = "Shared address space"; break;
+                        case "21": country_l = "TEST-NET-1"; break;
+                        case "22": country_l = "TEST-NET-2"; break;
+                        case "23": country_l = "TEST-NET-3"; break;
+                        case "24": country_l = "Reserved"; break;
+                        case "25": country_l = "Discard prefix"; break;
+                        case "26": country_l = "ORCHIDv2"; break;
+                        case "27": country_l = "Address used in documentation and example source code"; break;
+                        case "60": country_l = "Reserved (formerly used for IPv6 to IPv4 relay)"; break;
+                        case "61": country_l = "IPv4 mapped address"; break;
+                        case "62": country_l = "IPv4 translated address"; break;
+                        case "63": country_l = "IPv4/IPv6 translation"; break;
+                        case "64": country_l = "Teredo tunneling"; break;
+                        case "65": country_l = "The 6to4 addressing scheme (now deprecated)"; break;
+                        default:
+                            break
+                    }
+                }
+                exit
+            }
+            cc > nid {
+                exit
+            }
+            END {
+                if (country_s) {
+                    if (oneline) {
+                        if (short) {
+                            printf country_s
+                        }
+                        if (long) {
+                            if (short) printf OFS
+                            printf country_l
+                        }
+                    } else {
+                        if (long) {
+                            printf "%s", country_l
+                            if (short)  printf " ("
+                        }
+                        if (short) {
+                            printf "%s", country_s
+                            if (long) printf ")"
+                        }
+                    }
+                } else if (oneline) {
+                    printf "NotFound"
+                    if (long && short) printf OFS "NotFound"
+                } else {
+                    printf "\033[0;31m%s\033[0m", "No country found" #> "/dev/stderr"
+                }
+                if (!oneline) printf "\n"
+            }
+            ' "$COUNTRY_FILE"
+    fi
+    if [ -n "$ORG" ]; then
+        AWK -F'\t' -v netID="$i" -v mask="$ORG_MASK" -v oneline="$ONELINE" -v OFS="$SEP" '
+            BEGIN {
+                nid = and(strtonum(netID), strtonum(mask))
+                printf OFS
+                if (!oneline) printf "\033[1mOrganization:\033[0m "
+            }
+            {
+                oc = strtonum($1)
+            }
+            oc == nid {
+                org = $2
+                exit
+            }
+            oc > nid {
+                exit
+            }
+            END {
+                if (org) {
+                    printf org
+                } else if (oneline) {
+                    printf "NotFound"
+                } else {
+                    printf "\033[0;31m%s\033[0m", "No organization found" #> "/dev/stderr"
+                }
+                if (!oneline) printf "\n"
+            }
+            ' "$ORG_FILE"
+    fi
+    if [ -n "$TOR" ]; then
+        AWK -v mask="$TOR_MASK" -v oneline="$ONELINE" -v OFS="$SEP" -v yes="$YES" -v no="$NO" '
+            and(strtonum($0), strtonum(mask)) {
+                if (oneline) {
+                    printf OFS yes
+                } else {
+                    printf "\t\033[1;33m%s : \033[0;33m%s\033[0m\n", "Tor address", "yes"
+                }
+                exit
+            }
+            {
+                if (oneline) {
+                    printf OFS no
+                #} else {
+                #    printf "\tTor address : no\n"
+                }
+            }
+            ' <<< "$i"
+    fi
+    printf "\n"
+done

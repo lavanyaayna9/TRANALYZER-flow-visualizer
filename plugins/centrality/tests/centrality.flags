@@ -1,0 +1,19 @@
+#
+# Run the ../../../tests/test.sh script from the plugin main directory:
+#
+# cd $T2HOME/plugins/centrality
+# ../../tests/test.sh [OPTION...]
+#
+# If run from this folder, make sure to use absolute path for the '-p' option.
+#
+# Flag name     File
+
+# ../../tranalyzer2/src/networkHeaders.h
+IPV6_ACTIVATE               ../../tranalyzer2/src/networkHeaders.h
+
+# src/centrality.h
+CENTRALITY_MATRIXENTRIES    src/centrality.h
+CENTRALITY_TIME_CALC        src/centrality.h
+CENTRALITY_IP_FORMAT        src/centrality.h
+CENTRALITY_MATRIXFILE       src/centrality.h
+CENTRALITY_TRAVIZ           src/centrality.h

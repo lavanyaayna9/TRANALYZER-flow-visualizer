@@ -1,0 +1,65 @@
+# ZSH completion for tawk
+
+_tawk() {
+    #compdef tawk
+    local cur prev file
+
+    cur="${words[CURRENT]}"
+    [ "$CURRENT" -gt 2 ] && prev="${words[CURRENT-1]}"
+
+    case "$prev" in
+        -I|--input|-x|--fextractor|-X|--xer-file|-f|--file|-i|--include)
+            _files
+            return
+            ;;
+        -d|--doc)
+            local opts=(all examples funcs t2custom t2nfdump)
+            opts+=($(find "$T2HOME/scripts/tawk/"{examples,funcs,t2custom,t2nfdump}/* -maxdepth 1 -type f ! -name '*.load' -exec basename {} \;))
+            compadd "${opts[@]}"
+            return
+            ;;
+        -V|--var)
+            local opts=($(find "$T2HOME/scripts/tawk/vars/"* -maxdepth 1 -type f -exec basename {} \;))
+            compadd "${opts[@]}"
+            return
+            ;;
+        -v|--assign)
+            local opts=("OFS")
+            compadd "${opts[@]}"
+            return
+            ;;
+    esac
+
+    # complete options
+    if [[ "$cur" == -* ]]; then
+        _arguments --
+        return
+    fi
+
+    # search for -I option
+    if [ "$CURRENT" -gt 2 ]; then
+        for i in $(seq 1 "$CURRENT"); do
+            if [ "${words[$i]}" = "-I" ] || [ "${words[$i]}" = "--input" ]; then
+                file="${words[$((i+1))]}"
+                break
+            fi
+        done
+    fi
+
+    # file could be the last argument
+    if [ -z "$file" ]; then
+        file="$(echo "${COMP_LINE:-$BUFFER}" | $AWK '{ print $NF }')"
+    fi
+
+    if [ -f "$file" ]; then
+        # functions from tawk and variable names from 'file'
+        local opts=($(find "$T2HOME/scripts/tawk/"{examples,funcs,t2custom,t2nfdump}/* -maxdepth 1 -type f ! -name '*.load' -exec basename {} \;))
+        # TODO check if -s and/or -F options have been used
+        opts+=($($AWK -F'\t' '$1 ~ /^%[[:space:]]*[[:alpha:]][[:alnum:]_]*$/ { sub(/^%[[:space:]]*/, ""); for (i = 1; i <= NF; i++) { printf " %s", $i; } exit }' "$file"))
+        compadd "${opts[@]}"
+    else
+        _files
+    fi
+}
+
+compdef _tawk tawk

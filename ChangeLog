@@ -1,0 +1,1348 @@
+Nov 2024 - 0.9.3lmw3
+	* bgpDecode:
+		* Renamed Packet/flowIndex/Timestamp to pktNo/flowInd/time in output files
+	* httpSniffer:
+		* Added antivirus information
+	* mndpDecode:
+		* Removed MNDP_SAVE configuration flag (exact same output as packet mode)
+	* ospfDecode:
+		* Renamed NumPkts to pktNo in output files
+	* sslDecode:
+		* Added support for QUIC
+		* Fixed JA4/JA4S computation for special cases (no signature algorithms, ...)
+		* Updated sslblacklist.[ct]sv
+		* Updated JA4/JA4S fingerprints
+		* Various fixes and improvements
+	* tcpFlags:
+		* Renamed tcpInitWinSz_tcpSSAOpts_tcpMSS_tcpWS to tcpJA4T (JA4T/JA4TS)
+		* Improved and extended counting of flags and flags combinations
+		* Various fixes and improvements
+	* vrrpDecode:
+		* Renamed flowIndex to flowInd in vrrp.txt file
+	* t2conf:
+		* Various fixes and improvements
+	* t2py:
+		* Various fixes and improvements
+	* t2test:
+		* Various fixes and improvements
+	* t2utils.sh:
+		* Added tests
+		* Added $PYTHON variable
+	* New plugins:
+		* centrality
+		* dfft
+		* gquicDecode
+		* gsmDecode
+		* liveXtr
+		* quicDecode
+		* regexHyperscan
+		* regex_re2
+		* telegram
+		* wechatDecode
+
+Oct 2024 - 0.9.3lmw2
+	* tranalyzer2:
+		* New macros:
+			* FLOW_DIR_C_A, FLOW_DIR_C_B
+			* FLOW_DIR_S_A, FLOW_DIR_S_B
+			* FLOW_DIR_C(), FLOW_DIR_S()
+			* OUTBUF_APPEND_IPV(), OUTBUF_APPEND_ARRAY_IPV()
+			* OUTBUF_APPEND_ARRAY_IPVX()
+	* sslDecode:
+		* Updated SSL blacklist
+	* voipDetector:
+		* Improved SIP detection resilience
+		* Extended output regarding SIP methods
+		* Renamed output columns (changed prefix from voip to {sip,sdp,rtp,rtcp}
+		* Various fixes and improvements
+	* tawk:
+		* shark:
+			* Various fixes and improvements
+	* t2conf:
+		* Various fixes and improvements
+	* New plugin:
+		* covertChannels
+
+Sep 2024 - 0.9.3lmw1
+	* tranalyzer2:
+		* Fixed print format for nanoseconds in monitoring mode
+		* Added current date to final report
+		* Added number of L2 packets to monitoring and final reports
+	* basicStats:
+		* Renamed numPkts{Rcvd,Snt,RTAggr} to pkts{Rcvd,Snt,RTAggr}
+		* Renamed numBytes{Rcvd,Snt,RTAggr} to l[2347]Bytes{Rcvd,Snt,RTAggr}
+		* Renamed {min,max,ave,var,std}PktSize to {min,max,ave,var,std}L[2347]PktSz
+		* Added BS_SK configuration flag and {skew,kur}L[2347]PktSz and {skew,kur}IAT columns
+		* Added BS_PAD configuration flag and padBytesSnt column
+	* nDPI:
+		* Updated nDPI library to version 4.10
+	* pcapd:
+		* New t2topcap script: convert pcapng files to pcap
+	* sslDecode:
+		* Updated SSL blacklist
+	* tcpFlags:
+		* Renamed tcpAveWinSz, tcpRTTAckTripAve, tcpRTTAckTripJitAve and tcpRTTAckJitAve to
+		          tcpAvgWinSz, tcpRTTAckTripAvg, tcpRTTAckTripJitAvg and tcpRTTAckJitAvg
+		* Added TCPFLGCNT configuration flag and tcpCntFIN_SYN_RST_PSH_ACK_URG_ECE_CWR column
+	* t2build:
+		* Added --no-sink option
+	* t2fm:
+		* Added -N option to generate report from NetFlow data
+		* Added progress report and time taken to generate report
+		* Various fixes and improvements
+	* t2utils.[ch]:
+		* Added T2_CONV_NUM_SFX macro
+	* t2utils.sh:
+		* Added printf{bold,err,inf,ok,wrn} functions
+		* Added test_min_version function
+	* t2_aliases:
+		* New t2topcap alias
+	* tawk:
+		* print{bold,err,inf,ok,wrn}: added parameter to omit trailing newline
+		* New functions:
+			* hrtime: convert timestamps (seconds) to human readable form
+			* printbold: print text in bold
+
+Aug 2024 - 0.9.2lmw2
+	* dnsDecode:
+		* Extended decoding of NBNS names (discard padding, add suffix, ...)
+	* mongoSink:
+		* Fixed double escaping of quotes and double quotes
+	* voipDetector:
+		* Renamed voipconv to t2voipconv
+		* t2voipconv: added support for AMR, AMR-NB, AMR-WB, G.723.1, G.726, G.726le and GSM formats
+		* Various fixes and improvements
+	* t2utils.[ch]:
+		* New functions:
+			* t2_strncpy_escape(), t2_strcpy_escape()
+	* tawk:
+		* Fixed header printing when accumulating something other than flows
+		* Added support for Termshark (-k option)
+		* shark:
+			* Added support for SDP
+			* Extended support for RTP and SIP
+		* New functions:
+			* ientropy: compute the information entropy of each column, filter out columns with low entropy
+			* isset: return true if a value is set, i.e., not empty
+			* log2: compute the binary logarithm (log base 2) of a number
+			* quote: add leading and trailing quotes to a string, escape quotes within string
+			* printinf, printok, printwrn: print text in blue, green or orange
+		* Improved documentation
+		* Various fixes and improvements
+	* t2fm:
+		* Added bottom N statistics
+		* Added --top/--bottom options to only compute top or bottom stats
+		* Do not count query names from responses when reporting top DNS queries
+		* Various fixes and improvements
+	* t2utils.sh:
+		* Added validate_next_file_or_dir function
+		* Added {BLUE_,GREEN_,ORANGE_,RED_,}{ITALIC,UNDERLINE} and STRIKETHROUGH variables
+		* Various fixes and improvements
+	* t2_aliases:
+		* New t2voipconv alias
+	* New script:
+	    * t2voipconv: convert and manipulate raw VoIP files extracted from voipDetector
+
+Jun 2024 - 0.9.2lmw1
+	* tranalyzer2:
+		* Added support for DPDK
+		* Added support for DTLS dissection
+	* clickhouseSink:
+		* Improved documentation
+	* findexer:
+		* Added support for pcap with nanosecond precision
+		* Various fixes and improvements
+	* mongoSink:
+		* Improved handling of timestamps with nanosecond precision
+		* Improved documentation
+	* ospfDecode:
+		* Added missing column names in output files
+		* Make sure each row in each file always have the same number of columns
+		* Renamed column seq# to SeqNum
+		* Bugfixes and improvements
+	* pcapd:
+		* Bugfixes and improvements
+	* psqlSink:
+		* Improved handling of timestamps with nanosecond precision
+		* Improved documentation
+	* sslDecode:
+		* Updated SSL blacklist
+	* tcpFlags:
+		* Improved performance
+	* voipDetector:
+		* Bugfixes and improvements
+	* t2fm:
+		* Added information about top known and unknown JA3 and JA3S fingerprints
+		* Added information about top known and unknown JA4 and JA4S fingerprints
+		* Added information about top blacklisted certificates
+		* Replaced -C/--color option with --{chart,table-{odd,even}}-color
+		* Replaced -c/--clickhouse option with -C/--clickhouse
+		* Various fixes and improvements
+	* t2py:
+		* Added support for t2 -m option:
+			* T2Utils.run_tranalyzer(..., monitoring_file=True)
+			* t2 = T2(..., monitoring_file=True)
+			* t2.monitoring_file()
+			* t2.monitoring()
+			* t2.print_monitoring()
+			* t2.run(..., monitoring_file=True)
+	* t2utils.sh:
+		* Added ${IS_LINUX} and ${IS_MACOS} variables
+		* Simplified find_most_recent_file function
+		* Renamed check_dependency_osx to check_dependency_macos
+		* Various fixes and improvements
+	* tawk:
+		* Added -b/--both-directions option to extract A and B flows (-x/-k options)
+		* Added support for more custom defined columns (srcMac, ethType, ...)
+		* Various fixes and improvements
+	* scripts:
+		* t2timeline: added -d option
+	* New script:
+		* t2dpdk: run N instances of Tranalyzer in DPDK multi-process mode
+
+Mar 2024 - 0.9.1lmw1
+	* tranalyzer2:
+		* Added LIVEBUFSIZE define to set libpcap internal buffer size on live captures
+		* Added T2_USEC_PREC and T2_PRI_USEC macros
+		* Added sensor ID to monitoring machine report
+		* Added support for DTLS 1.2
+		* Added -S/--snaplen and -B/--rx-bufsize command line options
+		* Added -P/--priority option to set process priority (renice)
+		* Added -M/--mon-interval option to set monitoring interval
+		* Added -m/--monfile option to redirect monitoring output to _monitoring.txt
+		* Added FLOW_IS_A() and FLOW_IS_B() macros
+		* Extended support for Q-in-Q VLAN (ethertypes 0x9100 and 0x9200)
+		* Reduced memory footprint of flow_t structure if FRAGMENTATION = 0
+		* Reduced list of L2/3 protocols to monitor (can be easily extended with MONPROTL[23])
+		* Removed B2T_NANOSECS macro, used TSTAMP_PREC instead
+		* Renamed ENABLE_IO_BUFFERING macro to IO_BUFFERING
+	* basicFlow:
+		* Added MPLS information to packet mode
+		* Added option to output MPLS labels as hexadecimal
+		* Added BFO_VLAN=3 option to output decoded VLAN headers
+		* Fixed nanoseconds representation in packet mode
+	* nDPI:
+		* Updated nDPI library to version 4.8
+	* nFrstPkts:
+		* Fixed nanoseconds representation for inter-arrival times
+	* pcapd:
+		* Added PD_CHKSUM option to correct IPv4 checksum
+	* sslDecode:
+		* Renamed SSL_PROTO_LIST to SSL_ALPN_LIST
+		* Renamed sslProtoList and sslNumProto to sslALPNList and sslNumALPNList
+		* Extract list of signature hash algorithms
+		* Extract list of ALPN, NPN and ALPS
+		* Extract list of record, handshake and supported versions
+		* Extended sslProto to flag GREASE values and more
+		* Added support for TLS 1.3 draft versions
+		* Added support for missing TLS 1.3 ciphers
+		* Added support for missing TLS 1.3 alerts
+		* Added number of TLS 1.3 draft versions flows to plugin report
+		* Added number of DTLS 1.3 flows to plugin report
+		* Added support for JA4/JA4S fingerprints
+		* Fixed handling of GREASE values in JA3 fingerprints
+		* Updated list of insecure, weak, secure and recommended ciphers
+		* Updated JA3 fingerprints
+		* Updated SSL blacklist
+	* tcpFlags:
+		* Added support for JA4T fingerprints
+	* tp0f:
+		* Added packet mode
+	* txtSink:
+		* Report process priority in headers file
+	* voipDetector:
+		* Added VOIP_SIP, VOIP_RTP, VOIP_RTCP to control protocol dissection
+		* Added VOIP_BUFMODE, RTPBUFSIZE, RTPSUBDIRS, VOIP_PERM macros
+		* Decode RTCP by default
+		* Output SIP contacts and Call-IDs
+		* Output SDP session ID
+		* Fixed description of RTP payload type 125
+		* Code hardening
+	* fsutils.[ch]:
+		* New helper macro:
+			* T2_MKPATH_WITH_FLAGS()
+	* t2buf.[ch]:
+		* New function:
+			* t2buf_ptr()
+	* t2log.h:
+		* New macros:
+			* T2_FPLOG_DIFFNUM, T2_FPLOG_DIFFNUM0
+	* t2utils.[ch]:
+		* New helper macros:
+			* DTLS12_HEADER()
+			* t2_calloc(), t2_malloc()
+		* New functions:
+			* t2_strncpy()
+			* t2_tcp_socket_connect(), t2_tcp_socket_connect_to_server(), t2_udp_socket_init()
+			* t2_calloc_fatal(), t2_malloc_fatal()
+		* Fixed nanoseconds representation in t2_log_date() and t2_log_time()
+	* API break:
+		* Renamed t2_calloc/t2_malloc to t2_[cm]alloc_fatal()
+	* tawk:
+		* tawk is now faster
+		* Inverted -t option behavior: use it to validate column names (slow)
+	* scripts:
+		* t2build:
+			* Added --lto option to enable link time optimization (meson only)
+		* t2caplist:
+			* Added -x option to filter by extension (faster, but less precise)
+			* Added -t option to sort list by first packet time
+		* t2conf:
+			* Fixed t2conf tranalyzer2 --gui
+			* Several other fixes and improvements
+		* t2fm:
+			* Added information about ASNs
+			* Added -d/--data-carving option to report EXE downloads
+		* t2fuzz:
+			* Added -S/-P/-a options to start netcat (nc) before running t2
+
+Aug 2023 - 0.9.0lmw1
+	* tranalyzer2:
+		* Switched to nanoseconds precision:
+			* New default values: TSTAMP_PREC=1, B2T_NANOSECS=1
+		* New subnet files
+		* Added ENVCNTRL flag to control plugin configuration via environment variables
+		* Added support for XXH3 (64-bits and 128-bits) hash functions
+		* Monitoring mode output field separator can now be changed with SEP_CHR
+		* Packet mode output field separator can now be changed with SEP_CHR
+		* Report sensor ID and bound CPU number (if -c option was used) in final report
+		* Report link layer type in monitoring (status) report
+		* Report snapshot length in final and monitoring (status) report
+		* Fallback to user's default plugin folder when running T2 with sudo
+		* Fixed dissection of IPv6/AH/IPv6
+		* Updated t1ha to version v2.1.4
+		* Updated wyhash to version wyhash_final4
+		* Updated xxhash to version v0.8.1
+		* New macros:
+			* OUTBUF_APPEND_*_ZERO()
+			* OUTBUF_APPEND_STR_AND_FREE()
+			* OUTBUF_APPEND_ARRAY_STR_AND_FREE()
+			* OUTBUF_APPEND_U{16,32,64}_NTOH()
+		* Minor fixes and improvements
+	* plugins/*:
+		* Added support for ENVCNTRL
+		* Renamed configuration flags
+		* Minor fixes and improvements
+	* basicFlow:
+		* Renamed ethVlanID and ethVlanHdr to vlanID and vlanHdr
+	* basicStats:
+		* Added udpLen, snapL[47]Len to packet mode
+	* connStat:
+		* Added new connG feature
+	* dnsDecode:
+		* Added geolocation information to packet mode
+	* geoip:
+		* Also output geoStat column when GEOIP_LIB=0
+	* httpSniffer:
+		* Added packet mode
+	* mndpDecode:
+		* Fixed autotools backend
+	* nDPI:
+		* Added packet mode
+		* Updated nDPI library to version 4.6
+	* netflowSink:
+		* Plugin now also working when BLOCK_BUF=1
+	* pcapd:
+		* Added possibility to modify packets before saving them:
+			* PD_TSHFT (time), PD_MACSHFT (MAC addresses),
+			  PD_VLNSHFT (VLAN ID), PD_IPSHFT (IPv4/6 addresses)
+			* More flags to control the modification process
+		* Fixed PD_MODE_OUT=1 when -e option was used
+	* portClassifier:
+		* Fixed packet mode for L2 flows
+	* sctpDecode:
+		* Improved packet mode
+	* sslDecode:
+		* Updated SSL blacklist
+	* tcpFlags:
+		* Added flag for invalid length in UDP/UDP-Lite header
+		* Output UDP length and snapped layer 4/7 length in packet mode
+	* txtSink:
+		* Report libpcap version in _headers.txt file
+	* voipDetector:
+		* Added VOIP_SIP to (de)activate SIP dissection
+		* Added support for MPEG-2 transport stream (MP2T, RTP type 33)
+		* Extract X-Real-IP from SIP header
+		* Report number of SIP, SDP, RTP and RTCP packets
+		* Fixed extraction of SIP User-Agent
+	* New plugins:
+		* bayesClassifier: classification using Naive Bayes
+		* kafkaSink: output into an Apache Kafka event streaming platform
+	* fsutils.[ch]:
+		* New helper functions:
+			* file_manager_{fprintf,fputc,fputs}()
+			* file_manager_fwrite()
+			* file_manager_fflush()
+	* iputils.[ch]:
+		* New helper functions:
+			* ipv4_to_mask(), ipv6_to_mask()
+			* mask_to_ipv4(), mask_to_ipv6()
+	* subnetHL.h:
+		* New helper macros:
+			* SUBNET_POS_UNKNOWN and SUBNET_POS_IS_UNKNOWN()
+			* SUBNET[46]_{ASN,CNTY,CTY,NETID,LAT,LNG,PREC,ORG}
+	* t2base64.[ch]:
+		* New helper functions to base64 encode data
+	* t2buf.h:
+		* New helper macro: t2buf_rewind()
+	* t2crypto.[ch]:
+		* New helper functions to compute message digests (md5, sha1, ...)
+	* t2Plugin.h:
+		* New helper macro: T2_PLUGIN_STRUCT_RESET_ITEM()
+	* t2utils.[ch]:
+		* New functions and macros for ENVCNTRL:
+			* t2_get_env(), t2_free_env()
+			* T2_ENV_KEY(), T2_ENV_VAL(),
+			* T2_SET_ENV_NUM(), T2_SET_ENV_STR()
+		* New helper macros:
+			* FLOW_IS_IP(), PACKET_IS_IP()
+			* L[2347]_HEADER()
+			* ETH_HEADER(), LAPD_HEADER()
+			* IPV4_HEADER(), IPV6_HEADER()
+			* ICMP_HEADER(), IGMP_HEADER(), PIM_HEADER(),
+			  SCTP_HEADER(), TCP_HEADER(), UDP_HEADER()
+			* L[234]_PROTO()
+			* PROTO_IS_IPV4(), PROTO_IS_IPV6()
+			* PROTO_IS_ICMP4(), PROTO_IS_ICMP6(),
+			  PROTO_IS_IGMP(), PROTO_IS_SCTP(),
+			  PROTO_IS_TCP(), PROTO_IS_UDP()
+			* T2_MKPATH()
+			* T2_MAC_STRLEN
+			* T2_FREE_CONST()
+			* T2_IPV4_TO_STR(), T2_IPV6_TO_STR()
+		* New helper functions:
+			* t2_alloc_strcat()
+			* t2_swap_mac()
+			* t2_fopen_in_dir(), t2_fopen_with_suffix()
+			* t2_discard_trailing_chars()
+	* fpsGplt:
+		* Added support for t2plot options
+	* statGplt:
+		* Added -f/--flow option to plot specific flow only
+		* Added -d/--dir option to plot specific direction only
+		* Automatically derive output filename
+		* Added support for t2plot options
+		* Minor fixes and improvements
+	* tawk:
+		* Improved texscape() function
+		* Minor fixes and improvements
+	* t2build:
+		* Fix for old meson versions (< 0.36.0)
+	* t2conf:
+		* Added -e option to list plugins currently set environment variables
+		* Added -E option to list plugins available environment variables
+		* Fixed -D option for empty strings
+		* Fixed handling of -m, --dual, --ip4 and --ip6 options
+		* Minor fixes and improvements
+	* t2docker:
+		* Improved error reporting
+		* Minor fixes and improvements
+	* t2fm:
+		* Report number of flows in 'Summary' section
+		* Report snapshot length in 'Summary' section
+		* Report unique VLAN tags in 'Summary' section
+		* Improved error reporting
+		* Minor fixes and improvements
+	* t2netID:
+		* Improved output readability
+	* t2plot:
+		* Improved support for mouse interaction
+	* t2plugin:
+		* Added -m/--minimal, -t/--t2buf and -s/--sink options
+		* Added -y/--yes option
+		* Improved plugin number testing/generation for sink plugins
+		* Minor fixes and improvements
+	* t2py:
+		* Improved readability of T2.status() and T2Plugin.status()
+	* t2test:
+		* If *.flags is empty, run t2build instead of aborting
+	* t2utils.sh:
+		* New helper functions: abort_required_dir, abort_required_file_or_dir
+	* New script:
+		* t2fuzz: corrupt PCAP files and run T2 against them
+	* API break:
+		* flow.h:
+			* Some fields in flow_t have been renamed
+		* packet.h:
+			* Most fields in packet_t have been renamed
+			* The type of some fields in packet_t has changed
+		* outputBuffer.h:
+			* Renamed OUTBUF_APPEND_OPTSTR() to OUTBUF_APPEND_OPT_STR()
+		* t2utils.h:
+			* Changed signatures of t2_alloc_filename() and t2_build_filename()
+			* t2_open_filename() was renamed to t2_fopen()
+		* binaryValue.h:
+			* bv_new_bv(): swapped parameters name and desc to match order of BV_APPEND_*() macros
+		* Renamed plugins callbacks:
+			* T2_PLUGIN_INIT()/T2_PLUGIN_INIT_WITH_DEPS():
+				* get_plugin_name                        -> t2PluginName
+				* get_plugin_version                     -> t2PluginVersion
+				* get_supported_tranalyzer_version_major -> t2SupportedT2Major
+				* get_supported_tranalyzer_version_minor -> t2SupportedT2Minor
+				* get_dependencies                       -> t2Dependencies
+			* initialize             -> t2Init
+			* printHeader            -> t2PrintHeader
+			* onFlowGenerated        -> t2OnNewFlow
+			* claimLayer2Information -> t2OnLayer2
+			* claimLayer4Information -> t2OnLayer4
+			* onFlowTerminate        -> t2OnFlowTerminate
+			* monitoring             -> t2Monitoring
+			* pluginReport           -> t2PluginReport
+			* bufferToSink           -> t2BufferToSink
+			* saveState              -> t2SaveState
+			* restoreState           -> t2RestoreState
+			* onApplicationTerminate -> t2Finalize
+		* New signatures for callbacks:
+			* t2BufferToSink() receives the binary_value_t to decode the buffer:
+			  void t2BufferToSink(outputBuffer_t *buf, binary_value_t *bv)
+			* t2OnFlowTerminate() receives the buffer to fill:
+			  void onFlowTerminate(unsigned long flowIndex, outputBuffer_t *buf)
+
+Sep 2022 - 0.8.14lmw1
+	* tranalyzer2:
+		* Added support for configuring aggregation mode with t2conf --gui
+		* Added support for bit operations in packet mode (SPKTMD_BOPS)
+		* Added number of L2/IPv4/IPv6 flows to end report
+		* Fixed reporting of ARP/RARP packets in final report
+	* descriptiveStats:
+		* Added DS_QUARTILES flag to control quartiles calculation
+		* Renamed ENABLE_{IAT,PS}_CALC to DS_{IAT,PS}_CALC
+	* nDPI:
+		* Updated nDPI library to version 4.4
+	* portClassifier:
+		* Added packet mode
+	* psqlSink:
+		* Improved documentation
+	* regex_pcre:
+		* Added packet mode
+	* sctpDecode:
+		* Improved packet mode
+		* Various fixes and improvements
+	* sslDecode:
+		* Updated SSL blacklist
+	* tcpFlags:
+		* Added MPTCP variables to packet mode
+		* Various fixes and improvements
+	* New plugins:
+		* clickhouseSink: output into a ClickHouse database
+		* mndpDecode: MikroTik Neighbor Discovery Protocol
+	* tawk:
+		* New functions: bitshift, isfloat, isint, isuint, nibble_swap
+		* Added variables descriptions (-V option) for MPTCP
+		* Various fixes and improvements
+	* t2fm:
+		* Added -c option to generate a PDF report from a ClickHouse database
+		* Various fixes and improvements
+	* scripts:
+		* setup.sh: improved error reporting
+		* t2doc: added -n option to not open the generated PDF
+		* t2timeline: bugfixes and improvements
+		* t2conf: added support for bitfields in GUI mode
+
+Mar 2022 - 0.8.13lmw2
+	* tranalyzer2:
+		* Added FLOW_IS_LAPD() macro
+		* Fixed SCTP stream aggregation
+		* New SCTP aggregation mode: Association
+	* findexer:
+		* Added -P option to extract specific packets instead of whole flows
+	* nDPI:
+		* Updated nDPI library to version 4.2
+	* ntlmsspDecode:
+		* Produce separate files for NetNTLMv1 and NetNTLMv2 hashes
+	* sctpDecode:
+		* Fixed SCTP stream aggregation in packet and flow mode
+		* Chunk parameter extraction
+	* sslDecode:
+		* Updated SSL blacklist
+	* t2conf:
+		* Adapted script for C++ plugins and *.hpp files
+	* tawk:
+		* Added -P option to extract specific packets instead of whole flows
+		* flow(), packet(): added support for filtering multiple ranges
+		* proto(): added support for filtering multiple ranges
+		* [sp]?port(): added support for filtering multiple ranges
+		* t2sort(), t2rsort(): added support for sorting by multiple columns
+		* tobits(): added option to force interpretation as hex
+	* setup.sh:
+		* Fixed t2update check for new version
+
+Feb 2022 - 0.8.13lmw1
+	* tranalyzer2:
+		* Added support for LAPD and Q.931 protocol (DLT_LAPD and DLT_LINUX_LAPD)
+		* Added SPKTMD_PCNTL flag to control start of payload in packet mode
+		* Added SPKTMD_PCNTH_PREF and SPKTMD_PCNTH_SEP to control byte prefix
+		  and separator in packet mode as hex
+		* Removed bug in alarm mode when subnet is switched off
+		* Improved error reporting
+	* arpDecode:
+		* Improved detection of ARP spoofing
+	* basicFlow:
+		* Fixed packet mode
+	* httpSniffer:
+		* Extended monitoring report
+	* modbus:
+		* Added monitoring report
+	* ntlmsspDecode:
+		* Only print decoding warnings/errors if DEBUG > 0
+	* payloadDumper:
+		* Fixed payload extraction based on port numbers
+		* Added options to dump payload of layer 2 flows
+		  (PLDUMP_L2 and PLDUMP_ETHERTYPES)
+		* Added option to start dumping L2 and UDP payload from a specific offset
+		  (PLDUMP_START_OFF)
+	* sshDecode:
+		* Added monitoring report
+		* Code hardening
+	* sslDecode:
+		* Updated SSL blacklist
+	* tcpFlags:
+		* Improved troubleshooting and anomaly info: tcpAnomaly, tcpFStat,
+		  tcpFlags, window, seq/ack number features, fault counts, etc
+		* Extended packet mode including pktTrip: packet round-trip time and flags
+	* vrrpDecode:
+		* Added monitoring report
+		* Code hardening
+	* vtpDecode:
+		* Fixed autotools backend
+	* t2test:
+		* Renamed -r/--resume option to -b/--resume
+		* Added -r/--configure option (t2build -r)
+	* tawk:
+		* Added tobits() function
+	* t2_aliases:
+		* New sortup alias (same as sortu, i.e., sort | uniq -C | sort -rn), but
+		  report the relative percentage instead of the absolute count
+	* setup.sh:
+		* Force re-generation of build files
+
+Oct 2021 - 0.8.12lmw1
+	* bgpDecode:
+		* Improved scripts and plugin report
+	* dhcpDecode:
+		* Fixed reporting of DHCP messages with types > 8
+	* ftpDecode, ircDecode, payloadDumper:
+		* Fixed handling of retransmissions and out-of-order packets
+	* payloadDumper:
+		* Added capability to dump SCTP payload
+		* Improved handling of TCP Keep-Alive packets
+		* Added packet mode
+	* sshDecode:
+		* Added packet mode
+	* sslDecode:
+		* Updated SSL blacklist
+	* tcpFlags:
+		* Flag TCP Keep-Alive packets in tcpFStat
+		* Improved detection of TCP sequence number anomalies
+	* torDetector:
+		* Improved detection for Tor version <= 0.4.5.10
+	* t2docker:
+		* Minor improvements
+	* t2fm:
+		* Added -y/--yes option
+	* t2locate:
+		* Refactoring for compatibility with macOS and older systems
+	* t2py:
+		* Added support for tawk: T2Utils.TAWK and T2Utils.tawk()
+		* Added support for following streams: T2.follow_stream() and
+		  T2Utils.follow_stream()
+		* Added support for streaming flows: T2.streaming and T2.stream()
+		* Improved error reporting for functions using the subprocess module
+		* Improved API documentation
+		* Minor improvements
+	* tawk:
+		* New base64() function
+		* New follow_stream() function
+		* New t2rsort() function to sort in reverse order
+		* Added variables descriptions (-V option) for BGP and SSL/TLS
+	* t2_aliases:
+		* Added alias for t2locate
+		* Improved Bash and ZSH completions
+
+Sep 2021 - 0.8.11lmw3
+	* tranalyzer2/basicFlow:
+		* Fixed detection of Tor addresses
+		* Moved detection of Tor addresses from basicFlow to the core
+	* torDetector:
+		* Added detection heuristics based on packet size
+		* Bug fixes and minor improvements
+	* t2py:
+		* Bug fixes and minor improvements
+
+Aug 2021 - 0.8.11lmw2
+	* torDetector:
+		* Added packet mode
+	* t2py:
+		* Improved alias and library documentation
+	* New plugin:
+		* payloadDumper (similar functionality to tcpflow)
+
+Aug 2021 - 0.8.11lmw1
+	* tranalyzer2:
+		* New T2_FPLOG_AGGR_{HEX,HEX0,H8,H16,H32,H64} macros
+		* OUTBUF_APPEND_NUMREP() can now be used with non-uint32_t variables
+		* Fixed flow direction correction for port 8080, 8081, 8088 and 8089
+		* Updated uthash to version 2.3.0
+	* geoip:
+		* Added GEOIP_ASN and GEOIP_CONNT to output source and destination AS
+		  number and connection type (only available in GeoLite2 Enterprise DB)
+		* Added name of database (GEOIP_DB_FILE{,4,6}) to configuration flags
+	* macRecorder:
+		* Faster conversion of EtherType and MAC addresses database
+	* mqttDecode:
+		* Added packet mode
+	* nDPI:
+		* Updated nDPI library to version 4.0
+	* radiusDecode:
+		* New configuration flags
+		* Added packet mode
+		* Improved flow output
+	* sshDecode:
+		* Updated HASSH fingerprints
+	* sslDecode:
+		* Added SSL_DETECT_TOR configuration flag
+		* Updated SSL blacklist
+	* New plugins:
+		* bgpDecode
+		* torDetector
+		* vtpDecode
+	* t2plugin:
+		* Added -N option to list plugin names only
+		* Added -H option to remove section headers
+	* fpsGplt/statGplt/t2plot/t2timeline/t2viz:
+		* Added --gif/--jpeg options
+	* New t2py library to control and operate T2 with Python
+
+Jun 2021 - 0.8.10lmw1
+	* tranalyzer2:
+		* Added support for IEEE 802.3br mPackets encapsulation (DLT_ETHERNET_MPACKET)
+		* flowInd is now printed by the core
+		* New OUTBUF_APPEND_ARRAY macros
+	* New plugin:
+		* ntlmsspDecode
+	* plugins/*:
+		* Improved plugin report and packet mode
+		* Improved default.config, t2plconf and documentation
+	* tcpFlags:
+		* Fixed reported number of attempted/successful scans
+	* fpsGplt/statGplt/t2plot/t2timeline/t2viz:
+		* Added --png/--svg options
+	* tawk:
+		* Added -L option to decode all variables from Tranalyzer log file
+	* t2build/autogen.sh:
+		* Added support for building/cleaning t2b2t, t2whois and fextractor
+		* Use 't2build -i tranalyzer2' to install tranalyzer in the plugin folder
+	* t2conf:
+		* Added support for querying the default value of a config flag:
+		  t2conf pluginName -G flagName -g default
+		* Added support for resetting a flag to its default value:
+		  t2conf pluginName -D flagName=default
+		* Adapted -D/-G options to set/extract values from configuration files:
+		  t2conf pluginName -g [file.config|default] -G name
+		* Added -S option to list active plugins in a loading list
+		* Use --gui with -g to graphically edit configuration files instead of
+		  headers: t2conf pluginName -g --gui
+	* t2docker:
+		* Massively reduced image size
+		* Added -m/--multi-stage option
+		* Added support for t2whois and t2b2t
+	* t2plot:
+		* Added --no-title option
+	* t2rrd:
+		* New script combining the old rrdmonitor (t2rrd -m) and rrdplot
+	* t2test:
+		* Added -W option to ignore warnings caused by '#warning' macro
+
+Mar 2021 - 0.8.9lmw1
+	* New B2T_NANOSECS flag replaces old and buggy B2T_TIME_IN_MICRO_SECS
+	* Bugfix in human readable time string (B2T_TIMESTR)
+	* tranalyzer2:
+		* Added support for long options
+		* Added support for t1ha hash functions (meson build backend only)
+		* PLLIST (plugin loading list) can now be specified as absolute path
+		  (previously only possible via tranalyzer '-b' option)
+		* Removed global.h:
+			* C plugins should include "t2Plugin.h" instead
+			* C++ plugins should include "t2Plugin.hpp" instead
+		* Updated MUM-hash to version 3
+		* Updated uthash to version 2.1.0
+		* Updated wyhash to final (?) version (Aug. 2020)
+		* Updated xxhash to version 0.8.0
+		* Improved computation of padding bytes for IPv4/6 and LLC
+		* Bugfix in IPv6 fragmentation handling
+	* t2Plugin.h:
+		* Added T2_PLUGIN_STRUCT_NEW() macro
+	* arpDecode:
+		* Flag ARP Probes and Announcements
+	* ftpDecode:
+		* Improved data carving capabilities
+		* Improved plugin report
+		* Fixed name of carved data
+	* ircDecode:
+		* Extensive refactoring
+		* Extended flow output
+		* Improved data carving and decoding capabilities
+	* macRecorder:
+		* Extended MR_MACLBL to output MAC labels as int, hex or string
+		* Added src/dstMacLbl to packet mode
+		* Fixed output of manufacturers in packet mode
+	* mongoSink, mysqlSink:
+		* Store MAC and IPv4/6 addresses as requested in bin2txt.h
+		  (MAC_FORMAT, MAC_SEP, IP4_FORMAT and IP6_FORMAT)
+	* nDPI:
+		* Updated nDPI library to version 3.4
+	* ospfDecode:
+		* Added support for OSPFv3
+		* Improved rospf script to map the network with graphviz
+	* telnetDecode:
+		* Improved data carving and decoding capabilities
+	* tftpDecode:
+		* Improved plugin report
+		* Fixed typos in column names
+		* Extended output of flow and packet mode
+	* voipDetector:
+		* Improved plugin report
+	* New plugin:
+		* mqttDecode
+	* t2b2t:
+		* Added '-l' option to list the column names from a binary file
+	* t2conf:
+		* '-L' option (edit plugin loading list) does not require '--gui' option
+		  anymore
+	* t2whois:
+		* Added T2WHOIS_RANDOM flag in t2whois.h to (de)activate testing of
+		  random IPs (and drop the dependency to libbsd)
+	* t2build/autogen.sh:
+		* Changed default build backend to 'meson' (with a fallback to
+		  autotools-out-of-tree')
+		* Deprecated 'autotools' build backend
+	* tawk:
+		* Improved shark() function (query T2 with wireshark/tshark syntax)
+		* Added more variables descriptions (-V option): ethType, l4Proto, ...
+	* New t2docker script:
+		* create and manage Tranalyzer Docker containers
+		* run T2 commands inside Docker containers
+	* fpsGplt:
+		* Added -P/--plot option to directly plot the packet signal
+	* statGplt:
+		* Added -P/--plot option to directly plot the signals
+		* Added --iat/--ps/--ps-iat options to generate specific distributions
+	* t2plugin:
+		* Renamed from new_plugin
+		* Create new C, C++ or Rust plugins
+		* List existing plugins
+
+Jul 2020 - 0.8.8lmw4
+	* tranalyzer2:
+		* Improved error reporting
+	* macRecorder:
+		* Updated manuf.txt
+	* sslDecode:
+		* Updated sslblacklist.[ct]sv
+	* t2flowstat:
+		* Improved and extended replacement of flowstat
+	* t2whois:
+		* Fixed '-k' option to generate KML files
+	* setup.sh:
+		* Added missing 'libbsd-devel' and 'readline-devel' dependencies for
+		  CentOS/Fedora/Red Hat
+
+Jun 2020 - 0.8.8lmw3
+	* tranalyzer2:
+		* Updated subnet files
+	* dnsDecode:
+		* New DNS_WHO configuration flag to add geo info to DNS A and AAA records
+		* Added type and class of query
+	* macRecorder:
+		* Updated manuf.txt
+	* nDPI:
+		* Replaced buggy kerberos.c with latest development version from ntop/nDPI
+	* nFrstPkts:
+		* Bugfix in absolute time computation (NFRST_IAT=2)
+	* sslDecode:
+		* Updated sslblacklist.[ct]sv
+	* t2conf:
+		* Added --gui option
+	* tawk:
+		* Added t2whois() function
+		* Added passivedns() function (loaded with tawk -e)
+
+Jun 2020 - 0.8.8lmw2
+	* setup.sh: added -C option to check for new releases
+	* tranalyzer2: (thx to D.Aladdin to test this feature)
+		* Corrected FDURLIMIT mode for unusual bursty traffic
+		* Added FDLSFINDEX: sub flows can have now the same findex
+	* dnsDecode: updated maldomain.txt
+	* icmpDecode:
+		* Improved packet mode
+		* Report aggregated icmpStat in final and monitoring report
+		* Detect covert channels such as Loki or OpenSSH in ICMP
+	* macRecorder: updated manuf.txt
+	* sslDecode: updated sslblacklist.[ct]sv
+	* autogen.sh/t2build:
+		* Added -B option to change build backend:
+			- autotools
+			- autotools-out-of-tree
+			- cmake
+			- meson
+		* Added -G option to select CMake generator
+	* t2fm: added --reset option
+
+Apr 2020 - 0.8.8lmw1
+	* tranalyzer2, basicFlow, utils:
+		* Subnet control moved from basicFlow to tranalyzer2
+		* Subnet routines moved from basicFlow to utils/subnet
+		* New subnet aggregation mode
+		* IPv4/6 Tor address labeling
+		* Updated subnet files
+		* Fixed subnet, Tor generation
+	* basicFlow, basicStats, connStat:
+		* Added support for subnet aggregation mode
+	* tranalyzer2:
+		* Fixed bug in SCTP engine
+	* {dns,ssl}Decode,httpSniffer,tcpStates:
+		* Used field name in 'Aggregated ...' report (easier to grep and decode)
+	* {json,mongo,mysql,psql,sqlite}Sink:
+		* Added {JSON,MONGO,MYSQL,PSQL,T2_SQLITE}_SELECT options to only
+		  output/insert specific fields into the DB
+	* sqliteSink:
+		* Automatically grow query buffer as required
+		* Replaced SQLITE_QRY_LEN with SQLITE_QRY_MAXLEN to control maximum
+		  size of query buffer
+		* Discard flows which could not de be de-serialized instead of exiting
+		* Use Tranalyzer -w option as database name
+	* dnsDecode:
+		* Report percentage of flows with alarms
+		* Updated domains blacklist
+	* entropy:
+		* Added end report
+	* fnameLabel:
+		* Added configuration flags: FNL_LBL, FNL_HASH, FNL_FLNM and FNL_FREL
+	* geoip:
+		* Replaced GEOIP_LEGACY configuration flag with GEOIP_LIB=[0,1,2]
+		* Faster direct MaxMindDB access
+		* t2mmdb: fast direct request to MaxMindDB
+		* t2mmdba: convert MaxMindDB to T2 subnet format
+	* macRecorder:
+		* Improved MAC labeling
+		* Updated manufacturers list
+		* Reduced memory usage
+	* nDPI:
+		* Updated nDPI library to version 3.2
+	* regex_pcre:
+		* Report percentage of flows with alarms
+	* sshDecode:
+		* Added SSH_ALGO to display chosen algorithms
+		* Added SSH_LISTS to display lists of supported algorithms
+		* Added SSH_FINGERPRINT to output fingerprints as MD5 or SHA256
+		* Improved detection of Elliptic Curve Diffie-Hellman Key Exchange
+	* sslDecode:
+		* Updated blacklist
+	* bin2txt:
+		* Added B2T_NON_IP_STR macro to configure representation of non-IPv4/6
+		  addresses in IP columns
+	* t2whois:
+		* Added '-D' option to run as a server
+	* t2netID:
+		* Decode T2 hexadecimal country organization codes (refer to
+		  basicFlow and BFO_SUBNET_HEX=1)
+	* scripts:
+		* t2_aliases:
+			* New t2mmdb and t2netID aliases
+		* t2build/autogen.sh:
+			* New -U option to update databases, blacklists, ...
+		* t2fm:
+			* Added top organizations section
+			* Added SSH section with top connections and known HASSH signatures
+			* Added --hide-{user,pass,user-pass} options to obfuscate usernames/passwords
+			* Added --no-* options to discard specific sections of the report
+			* New -NUM (-0, -1, ...) option to control the number of queries
+			  to run in parallel
+		* t2plot:
+			* Allow for '*' in -s[xyz] options, e.g., -sx '0:*'
+		* t2utils.sh:
+			* New helper functions: find_most_recent_{dir,file}, t2_wget[_n],
+			  t2_build_exec, ask_default_{no,yes}
+
+Nov 2019 - 0.8.7lmw1
+	* scripts:
+		* t2conf, t2test, t2fm, tawk: bugfixes and improvements
+		* Simplified configuration:
+			* Reset: t2conf pluginName --reset
+			* Generate: t2conf pluginName -g myPluginName.conf
+			* Apply: t2conf pluginName -C myPluginName.conf
+	* tranalyzer2:
+		* Flag and handle IP packets with payload length > framing length
+		* Flag IPv4 packets with header length < 20 bytes
+		* Fixed column names for REPORT_HIST=1
+		* Fixed l7Len for OSPFv2
+		* Added support for Ethernet over MPLS
+	* arpDecode: fixed detection of gratuitous ARP
+	* basicFlow: new subnet files, hex coding for country now 9 bits
+	* ospfDecode: bugfixes, code hardening
+	* tcpFlags:
+		* MPTCP new features, thx to Theresa TU Berlin
+		* Flag and handle corrupt IPv4 options with length = 0
+	* regex_pcre: New engine and regfile format
+
+Oct 2019 - 0.8.6lmw1
+	* basicFlow:
+		* t2whois: new program to query Tranalyzer databases
+		* New subnet files, county city configurable
+	* basicStats: report L2 and L3 biggest talkers
+	* geoip: updated GeoLite2 database
+	* macRecorder:
+		* Report min, max and average MAC pairs per flow
+		* Updated manuf database
+	* nDPI: updated nDPI library to version 3.0
+	* {radius,smtp}Decode: bugfixes
+	* sctpDecode: merged SCTP_CHNKVAL and SCTP_CHNKSTR
+	* sshDecode: compute and lookup HASSH fingerprints
+	* sslDecode: updated blacklist
+	* t2caplist: added -z and -R options, various fixes
+	* t2conf: added bash/zsh completion for -D and -G options
+	* t2plot:
+		* Added support for drawing histograms (-H and -D options)
+		* Added -c option to customize chart color
+	* Tester.py:
+		* Make sure to restore default configuration when toggle test failed
+		* New options -S1, -S2 and -J (bit shift and Johnson counter)
+		* New option -e to ignore compilation errors caused by '#error' macro
+		* New 't2test' alias to run the tester from anywhere
+	* fpsGplt:
+		* fpsEst was merged into fpsGplt as '-j' option
+		* Improved '-d' option: -d 0|1 is now -d A|B
+	* protStat:
+		* Added -C option to not output percentages
+		* Added -r option to sort in reverse order
+		* Added -H, -HR and -HH options to control the formatting of numbers
+		* Added --color[=WHEN] option (default: no color if output redirected)
+	* t2b2t:
+		* Utility to convert T2 binary files (renamed from tranalyzer-b2t)
+		* Automatically compiled when building binSink or socketSink
+		  (CONTENT_TYPE=0)
+	* t2_aliases: new t2b2t and t2whois alias
+	* setup.sh: added -u/-U option to (not) update the databases
+
+Sep 2019 - 0.8.5lmw2
+	* mysqlSink: added support for MariaDB backend
+
+Aug 2019 - 0.8.5lmw1
+	* Windows 10 version
+	* tranalyzer2: bugfix in packetCapture: fragment hash lookup missing l4proto
+	* tcpFlags: Bugfixes
+		* ipFlags: Fragmentation and OSPF checksum calculation
+		* ipFlags: Min frag flag not at last packet
+		* Limit pseudo header calculation, OSPF has not pseudo header
+		* Packet Mode: relative seq/ack number calculation
+		* TCP time option: fix of uptime clock estimation
+		* Window scale value
+		* Scan detector
+	* httpSniffer: robust against corrupted chunked pages
+
+Jul 2019 - 0.8.4lm3
+	* basicFlow: report revision of subnet files as date
+	* dnsDecode: improved scripts
+	* httpSniffer: improved data carving
+	* i[cg]mpDecode/nDPI/protoStats: improved format of output files
+	* sslDecode: flag ALPN 'hq' as HTTP over QUIC
+	* scripts:
+		* protStat: script can now also be used for ICMP and IGMP files
+		* t2conf: -D option can now also be used to configure utils/*.h
+
+Jul 2019 - 0.8.4lm2
+	* basicFlow: improved subnet files
+	* dnsDecode: updated blacklists
+	* geoip: updated GeoLite2 database
+	* macRecorder: updated manuf database
+	* sslDecode: updated certificate blacklist
+
+Jun 2019 - 0.8.4lm1
+	* Reorganization of source code
+		* Plugins moved into plugins/ subfolder
+	* tranalyzer2:
+		* Improved ALARM and FORCE mode
+		* Added new hash functions
+	* basicFlow:
+		* Simplified configuration for EtherType, MAC, VLAN and MPLS
+		* Added src/dst-Mac to flow output (BFO_MAC=1)
+		* New improved subnet files and tor labeling
+	* dhcpDecode: added DHCP_FLAG_MAC flag
+		* Added dhcpSrcMac and dhcpDstMac columns
+	* geoip: favour GeoLite2 over Legacy databases
+	* nDPI: updated nDPI library to version 2.8.0
+	* protoStats/nDPI: added number of bytes for each protocol
+	* Improved scripts: protStats, t2stat, setup.sh
+
+Apr 2019 - 0.8.3lm2
+	* Improved scripts: setup.sh, t2fm, t2plot
+	* tranalyzer2: do not flag land attacks for layer 2 flows
+	* tawk: do not test for wireshark/xdg-open if no X server is running
+
+Mar 2019 - 0.8.3lm1
+	* Improved scripts: protStat, t2plot, t2timeline, t2viz
+	* pktSIATHisto: restored default configuration
+	* dnsDecode: improved options handling
+	* sctpDecode: new modes and new features
+	* Improved installation scripts
+
+Feb 2019 - 0.8.2lm2
+	* Fix for macOS
+
+Feb 2019 - 0.8.2lm1
+	* New plugin: findexer
+	* basicFlow:
+		* Updated IPv4/6 databases
+		* Flag Tor addresses
+	* dnsDecode: blacklisted domain names detection
+	* geoip: updated databases
+	* nDPI: updated nDPI library to 2.6.0
+	* pwX: improved detection of HTTP based credentials
+	* sslDecode: updated JA3/JA3S database and SSL blacklist
+	* ftpDecode: bugfixes
+	* tranalyzer2:
+		* Improved final and monitoring reports
+		* Improved network aggregation mode IPv4/6
+	* autogen.sh:
+		* Faster parallel compilation
+		* New -P/--profile option
+	* Simpler control of MAC addresses representation (utils/bin2txt.h):
+		* MAC_FORMAT: 0: string, 1: hex
+		* MAC_SEP: separator for MAC addresses as string (default: ":")
+	* Avoid unnecessary dependency to zlib (*Sink)
+	* tawk: removed deprecated function bitisset
+		* Use bitsanyset and bitsallset instead
+	* Bugfixes and code hardening
+
+Nov 2018 - 0.8.1lm5
+	* Improved monitoring mode
+	* New req/reply flow asymmetry measure
+	* Fixed monitoring bandwidth calculation
+	* t2conf
+
+Nov 2018 - 0.8.1lm4
+	* t2conf: facilitated configuration of .h files
+	* basicFlow: bugfixes in teredo
+	* Improved fpsStat mining script
+	* Output function refactoring
+	* Doc fixed
+
+Nov 2018 - 0.8.1lm3
+	* nFrstPkts: more TM features in scripts
+	* tcpFlags: minwinsz detection, doc
+	* telnetDecode: bugfixes
+
+Oct 2018 - 0.8.1lm2
+	* Fix for older distributions where zlib version < 1.2.9
+
+Oct 2018 - 0.8.1lm1
+	* New plugins: sslDecode, p0f
+	* txtSink: added option to compress (gzip) the output
+	* Improved t2fm: create PDF report from MongoDB or PostgreSQL database
+	* nFrstPkt: new signal preprocessing features
+	* Core improvements
+	* -s packet mode geo labeling
+	* New t2plot, traffic mining scripts
+	* Several post processing script updates
+	* Memory efficient dnsDecode
+
+Jun 2018 - 0.8.0lm1
+	* Concurrent triple mode IPv4, IPv6, L2
+	* basicFlow: subnet CIDR or Range labeling, new subnet binary files with org
+	* pktSIATHisto: add a new Encrypted Traffic Mining measure
+	* New plugin sshDecode
+	* Improved final report
+	* New DB output plugins: mongoSink, mysqlSink, psqlSink, sqliteSink
+	* New sink plugin:
+		* netflowSink: Logging to nfcapd (nfdump): NetFlow 9/10
+	* Interface buffering refactored
+
+May 16 2018 - 0.7.6lm5
+	* tranalyzer2: improved end report, global pkt asym can now become negative
+	* nFrstPkts: add relative time for mining purposes
+	* pktSIATHisto: add modulo pkt Len for mining purposes
+	* basicFlow: new IP labeling, exportable to other plugins, rm bogeys from subnet file
+	* basicStats: fixed bug at pktSize = 0
+	* txtSink: comment ID at beginning of line can now be more than one char.
+	* geoip: new DB
+
+Apr 12 2018 - 0.7.6lm4
+	* bt_time renamed to bt_duration
+	* bt_unix_time renamed to bt_timestamp
+		* B2T_TIMESTR in utils/bin2txt.h to control representation:
+		  (0: unix timestamp, 1: human readable date time (string))
+
+Mar 27 2018 - 0.7.5lm4
+	* basicStats: improved IAT statistics
+	* basicFlow: add owner in IP labeling
+	* pktSIATHisto: extended statistics vectors
+
+Feb 27 2018 - 0.7.5lm3
+	* pktSIATHisto: bugfix
+
+Feb 7 2018 - 0.7.5lm2
+	* voipDetector: bugfix in carving mode
+
+Jan 22 2018 - 0.7.5lm1
+	* tranalyzer2:
+		* Added support for L2TPv3
+		* Added DUPIPID bit to flowStat
+		* Improved final report
+		* Mac OS X & 32-bit HW compatible
+		* Improved packet mode
+		* Core code refactored
+		* Updated doc
+		* setup.sh:
+			* Detect whether another t2_aliases file was previously installed
+	* basicFlow:
+		* Fast IPv4/6 geo labeling
+	* tcpFlags:
+		* Improved packet mode for sequence numbers
+	* httpSniffer:
+		* seq number bug removed for video stream data carving
+	* telnetDecode:
+		* obsolete, but people wanted something, so here is a first version
+	* dhcpDecode
+		* swap flow invert to flow generated
+	* Improved tawk
+
+Nov 27 2017 - 0.7.4lm2
+	* tranalyzer2: added support for LWAPP
+
+Nov 20 2017 - 0.7.4lm1
+	* New plugins:
+		* cdpDecode
+		* lldpDecode
+		* radiusDecode
+
+Oct 20 2017 - 0.7.3lm1
+	* tranalyzer2:
+		* hash autopilot
+		* UDP-Lite checksum
+
+Sep 12 2017 - 0.7.2lm1
+	* tranalyzer2:
+		* added support for GENEVE, VXLAN-GPE and NSH
+		* added support for WCCP, JUNIPER_PPPOE and JUMBO_LLC
+		* added support for DLT_PPP_SERIAL
+
+Jul 4 2017 - 0.7.1lm3
+	* tranalyzer2:
+		* added support for ERSPAN
+		* added support for DLT_JUNIPER_ETHERNET and DLT_JUNIPER_ATM1
+		* added full EoIP support for IPv4/6
+
+Jun 23 2017 - 0.7.1lm2
+	* tranalyzer2:
+		* Added support for CAPWAP
+		* New default for plugins loading list (USE_PLLIST=1)
+		* Removed LINKTYPE_PPI define (always active)
+		* Improved flow creation (UDP-Lite, GRE and unhandled proto (NHRP, ...)
+		* Detection of PPP over VXLAN
+		* Detect 'Mysterious OLPC stuff' and LLC 2-bytes control field (capwap)
+		* Detect Cisco HDLC and MPLS over (linkType) PPP
+		* Separate UTC/localtime config for PCAP info, e.g., dump start, and
+		  local info, e.g., remaining time (TSTAMP_UTC/TSTAMP_R_UTC)
+	* ftpDecode: SCTP capable and file extraction for STOR
+	* httpSniffer: SCTP capable and SIP
+	* macRecorder: added src/dstManuf in packet mode
+	* packetCapture: intro of packetL7Length
+
+Jun 6, 2017 - 0.7.1lm1
+	* tranalyzer2: Added support for AYIYA, Teredo, GTP and VXLAN
+	* basicFlow: Added column hdrDesc for packet and flow output
+	* basicFlow: Packet mode: change columns order: flowInd and flowStat first
+	* basicFlow: subnet versioning, automated update scripts
+	* tranalyzer2: improved readability of final report
+	* tawk: Added support for packet files (-x/-k) and -X option
+
+May 8, 2017 - 0.7.0lm1
+	* autogen.sh: parallel building of plugins, ./autogen.sh pluginName
+	* basicFlow: more accurate subnet file, faster loading and searching
+	* basicFlow/tcpFlags/macRecorder: column names start with lowercase
+	* connStat: improved end report
+	* httpSniffer: extraction of files and fields related to antivirus
+	* geoip: added accuracy
+	* jsonFSink: renamed to jsonSink
+	* nDPI: improved classification, changed plugin number from 125 to 112
+	* scripts: added t2utils and t2wizard, refactoring, renaming
+	* scripts/antivir: extraction of sent samples, tracking of antivirus ID
+	* tawk:
+		* added support for IPv6, urldecode and base64 decode
+		* added -x and -k options: fextractor/wireshark
+	* tcpFlags -s option: combined hex, char content output
+	* tranalyzer2: refactoring of Tranalyzer core and sctp functionality
+
+Feb 8, 2017 - 0.6.10lm3
+	* dnsDecode/httpSniffer: output integrity checked
+	* tranalyzer2: improved end report
+	* Report scripts: t2fm for human readable pdf reporting
+
+Feb 1, 2017 - 0.6.10lm2
+	* dnsDecode: query field improvements, bugfix
+	* Updated post-processing scripts
+	* New faster jsonFSink
+	* tranalyzer2: improved monitoring machine mode
+	* txtSink/jsonFSink: added support for UTF-8
+
+Jan 18, 2017 - 0.6.10lm1
+	* Updated doc
+	* tranalyzer2: default FRAG_HLST_CRFT=1 in tranalyzer.h, even the weirdest
+	               fragments cannot harm T2
+	* httpSniffer: several new HTML features + Antivirus info
+	* dnsDecode: code hardening
+	* entropy: new plugin
+	* ircDecode: code hardening
+	* Post-processing script/program added
+
+Dec 3, 2016 - 0.6.9lm5
+	* Updated doc
+	* Added links to README.md and documentation.pdf to the root folder
+	* tranalyzer2: Default FRAG_HLST_CRFT=0 in tranalyzer.h
+	* New default: IPVX_INTERPRET=0: do not interpret IPv5 or crafted IP
+	               headers like IPv4 or IPv6
+
+Dec 2, 2016 - 0.6.9lm4
+	* socketSink: prefixed public functions with 'sock_'
+
+Nov 25, 2016 - 0.6.9lm3
+	* dnsDecode: more hardening against sinister packets
+	* Severe fuzzing
+	* Code hardening for routing plugins
+	* macRecorder: limit size of records, to harden against bogus packets
+
+Nov 18, 2016 - 0.6.9lm2
+	* dnsDecode: fixed corrupted/crafted name length bug with recursive pointer
+	* Several content plugins: code hardening against corrupted/crafted packets
+
+Nov 14, 2016 - 0.6.9lm1
+	* Bug in core: L7 length negative, aka very big, if L4 header truncated
+	* New organization of end report and monitoring
+	* httpSniffer: added x-forwarded-for
+
+Nov 9, 2016 - 0.6.8lm6
+	* t2conf pluginName
+	* Renamed plugins:
+		* standardFileSink -> binSink
+		* textFileSink -> txtSink
+
+Oct 26, 2016 - 0.6.8lm4
+	* tranalyzer2:
+		* -f option: hash factor (change hash table size)
+		* -F option: read BPF from file
+		* -W option: specify number of flows per fragment
+		* tranalyzer.h: Removed redundant SENSORMODE
+	* New plugin: ircDecode
+	* basicFlow: added sensorID information
+	* textFileSink:
+		* _header.txt: added information (command line used, ...)
+	* tcpFlags: improved packet mode
+	* scripts:
+		* trandoc: renamed as t2doc
+		* t2plconf: ncurses-based UI for plugin configuration
+		* tawk: new functions: port, proto, host, ...
+	* Statistical state save mode with flow index (documentation.pdf, S.2.8.14)
+	* Timezone information for string dates (UTC/localtime)
+	* Improved end report
+	* Better error/warning reporting
+	* Bugfixes and various improvements

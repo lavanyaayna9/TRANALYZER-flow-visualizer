@@ -1,0 +1,7 @@
+#H bit | gquicStat | Description
+#H =============================================================================
+     0 | 0x01      | Flow is GQUIC
+     1 | 0x02      | Handshake (Stream number is 1)
+#W   2 | 0x04      | Connection ID changed
+#W   6 | 0x40      | Packet was snapped (t2buf failed)
+#W   7 | 0x80      | Packet was malformed, e.g., covert channel

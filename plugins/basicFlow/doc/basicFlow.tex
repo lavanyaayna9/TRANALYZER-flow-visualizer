@@ -1,0 +1,712 @@
+\IfFileExists{t2doc.cls}{
+    \documentclass[documentation]{subfiles}
+}{
+    \errmessage{Error: could not find 't2doc.cls'}
+}
+
+\begin{document}
+
+\trantitle
+    {basicFlow}
+    {Overall Flow Information}
+    {Tranalyzer Development Team} % author(s)
+
+\section{basicFlow}\label{s:basicFlow}
+
+\subsection{Description}
+The basicFlow plugin provides host identification fields and timing information.
+
+\subsection{Configuration Flags}
+
+\subsubsection{basicFlow.h}
+The following flags can be used to control the output of the plugin:
+\begin{longtable}{>{\tt}lcl>{\tt\small}l}
+    \toprule
+    {\bf Name} & {\bf Default} & {\bf Description} & {\bf Flags}\\
+    \midrule\endhead%
+
+    BFO\_SENSORID             & 0 & Output sensorID                                       & \\
+    \\
+    BFO\_HDRDESC\_PKTCNT      & 0 & Include packet count for header description           & \\
+    \\
+    BFO\_MAC                  & 1 & Output MAC addresses                                  & \\
+    BFO\_ETHERTYPE            & 1 & Output EtherType                                      & IPV6\_ACTIVATE=2||\\
+                              &   &                                                       & ETH\_ACTIVATE>0\\
+    \\
+    BFO\_VLAN                 & 1 & 0: Do not output VLAN information,                    & \\
+                              &   & 1: Output VLAN numbers,                               & \\
+                              &   & 2: Output VLAN headers as hex                         & \\
+                              &   & 3: Output decoded VLAN headers as                     & \\
+                              &   & \qquad {\tt\small TPID\_PCP\_DEI\_VID}                & \\
+    \\
+    BFO\_MPLS                 & 0 & 0: Do not output MPLS information,                    & \\
+                              &   & 1: Output MPLS labels,                                & \\
+                              &   & 2: Output MPLS labels as hex,                         & \\
+                              &   & 3: Output MPLS headers as hex,                        & \\
+                              &   & 4: Output decoded MPLS headers                        & \\
+    \\
+    BFO\_GRE                  & 0 & Enable GRE output                                     & \\
+    BFO\_L2TP                 & 0 & Enable L2TP output                                    & \\
+    BFO\_PPP                  & 0 & Enable PPP output                                     & \\
+    BFO\_LAPD                 & 0 & Enable LAPD output                                    & LAPD\_ACTIVATE=1\\
+    BFO\_TEREDO               & 0 & Enable Teredo output                                  & \\
+    \\
+    BFO\_SUBNET\_IPLIST       & 0 & Display a list of IP aggregated                       & \\
+
+    BFO\_SUBNET\_TEST         & 1 & Enable subnet test                                    & \\
+    BFO\_SUBNET\_TEST\_GRE    & 0 & Enable subnet test on GRE addresses                   & IPV6\_ACTIVATE!=1\\
+    BFO\_SUBNET\_TEST\_L2TP   & 0 & Enable subnet test on L2TP addresses                  & IPV6\_ACTIVATE!=1\\
+    BFO\_SUBNET\_TEST\_TEREDO & 0 & Enable subnet test on Teredo addresses                & \\
+    \\
+    BFO\_SUBNET\_HEX          & 0 & Output the country code and organization              & \\
+                              &   & \qquad as one 32-bit hex number                       & \\
+    BFO\_SUBNET\_ASN          & 0 & Output Autonomous System Numbers (ASN)                & \\
+    BFO\_SUBNET\_LL           & 0 & Output position (latitude, longitude and reliability) & \\
+    \\
+    BFO\_MAX\_HDRDESC         & 4 & Max. number of headers descriptions to store          & T2\_PRI\_HDRDESC=1\\
+    BFO\_MAX\_MAC             & 2 & Max. different MAC addresses to store                 & \\
+    BFO\_MAX\_IP              & 2 & Max. different IP addresses to store                  & \\
+    BFO\_MAX\_MPLS            & 3 & Max. MPLS headers/tags to store                       & \\
+    BFO\_MAX\_VLAN            & 3 & Max. VLAN headers/numbers to store                    & \\
+    \bottomrule
+\end{longtable}
+
+\subsubsection{bin2txt.h}
+Additional configuration options can be found in {\tt \$T2HOME/utils/bin2txt.h}.
+Refer to \tranrefpl{tranalyzer2} documentation for more details.
+
+\subsubsection{subnetHL.h}
+Additional configuration options can be found in {\tt \$T2HOME/utils/subnetHL.h}.
+Refer to \tranrefpl{tranalyzer2} documentation for more details.
+
+\subsection{Flow File Output}
+The basicFlow plugin outputs the following columns:
+\begin{longtable}{>{\tt}lll>{\tt\small}l}
+    \toprule
+    {\bf Column}       & {\bf Type} & {\bf Description}                                            & {\bf Flags}\\
+    \midrule\endhead%
+
+    dir                & C          & Flow direction A / B                                         & \\
+    \nameref{flowInd}  & U64        & Flow index                                                   & \\
+    sensorID           & U32        & Sensor ID                                                    & BFO\_SENSORID=1\\
+    \nameref{flowStat} & H64        & Flow status and warnings                                     & \\
+    \\
+
+    % Time
+    timeFirst          & TS         & Date time of first packet                                    & \\
+    timeLast           & TS         & Date time of last packet                                     & \\
+    duration           & U64.U32    & Flow duration                                                & \\
+
+    \\
+    \multicolumn{4}{l}{If {\tt T2\_PRI\_HDRDESC=1} and {\tt BFO\_MAX\_HDRDESC>0}, the following columns are displayed:}\\
+    \\
+
+    \hyperref[hdrDesc]{numHdrDesc}
+                       & U8         & Number of different headers descriptions                     & \\
+    \hyperref[hdrDesc]{numHdrs}
+                       & R(U16)     & Number of headers (depth) in \hyperref[hdrDesc]{\tt hdrDesc} & \\
+    \hyperref[hdrDesc]{hdrDesc}
+                       & RS         & Headers description                                          & BFO\_HDRDESC\_PKTCNT=0\\
+    \hyperref[hdrDesc]{hdrDesc\_pktCnt}
+                       & R(S\_U64)  & Headers description and packet count                         & BFO\_HDRDESC\_PKTCNT=1\\
+    \\
+
+    srcMac             & R(MAC)     & Source MAC address                                           & BFO\_MAC=1\\
+    dstMac             & R(MAC)     & Destination MAC address                                      & BFO\_MAC=1\\
+    ethType            & H16        & Ethernet type                                                & BFO\_ETHERTYPE=1\&\&\\
+                       &            &                                                              & (ETH\_ACTIVATE>0||\\
+                       &            &                                                              & IPV6\_ACTIVATE=2)\\
+
+    \\
+    \midrule
+    \\
+
+    % VLAN
+    \multicolumn{4}{l}{If {\tt BFO\_VLAN>0} and {\tt BFO\_MAX\_VLAN>0}, the columns described in Section \ref{s:bfo:vlan} are displayed here.}\\\\
+
+    % MPLS
+    \multicolumn{4}{l}{If {\tt BFO\_MPLS>0} and {\tt BFO\_MAX\_MPLS>0}, the columns described in Section \ref{s:bfo:mpls} are displayed here.}\\\\
+
+    % PPP
+    \multicolumn{4}{l}{If {\tt BFO\_PPP=1}, the columns described in Section \ref{s:bfo:ppp} are displayed here.}\\\\
+
+    % LAPD
+    \multicolumn{4}{l}{If {\tt LAPD\_ACTIVATE=1} and {\tt BFO\_LAPD=1}, the columns described in Section \ref{s:bfo:lapd} are displayed here.}\\\\
+
+    % L2TP
+    \multicolumn{4}{l}{If {\tt BFO\_L2TP=1}, the columns described in Section \ref{s:bfo:l2tp} are displayed here.}\\\\
+
+    % GRE
+    \multicolumn{4}{l}{If {\tt BFO\_GRE=1}, the columns described in Section \ref{s:bfo:gre} are displayed here.}\\\\
+
+    % Teredo
+    \multicolumn{4}{l}{If {\tt BFO\_TEREDO=1}, the columns described in Section \ref{s:bfo:teredo} are displayed here.}\\\\
+
+    \midrule\\
+
+    % IP
+    \multicolumn{4}{c}{\bf Standard five tuple output including geo-information}\\
+
+    \\
+    \midrule
+    \\
+
+    srcIP                       & IP      & Source IP address                      & BFO\_SUBNET\_IPLIST=0\\
+    srcIP                       & R(IP)   & Source IP addresses                    & BFO\_SUBNET\_IPLIST=1\\
+
+    \\
+    \multicolumn{4}{l}{If {\tt BFO\_SUBNET\_TEST=1}, the following columns are displayed:}\\
+    \\
+
+    srcIPASN                    & U32     & Source IP ASN                          & BFO\_SUBNET\_ASN=1\\
+    \hyperref[subnet]{srcIPCOC} & H32     & Source IP country organization code    & BFO\_SUBNET\_HEX=1\\
+    \hyperref[subnet]{srcIPCC}  & SC      & Source IP country                      & \\
+    srcIPCnty                   & S       & Source IP county                       & CNTYCTY=1\\
+    srcIPCity                   & S       & Source IP city                         & CNTYCTY=1\\
+    srcIPOrg                    & S       & Source IP organization                 & BFO\_SUBNET\_ORG=1\\
+    srcIPLat\_Lng\_relP         & F\_F\_F & Source IP lat., long.\ and reliability & BFO\_SUBNET\_LL=1\\
+    \\
+    srcPort                     & U16     & Source Port                            & \\
+    \\
+    dstIP                       & IP      & Destination IP address                 & BFO\_SUBNET\_IPLIST=0\\
+    dstIP                       & R(IP)   & Destination IP addresses               & BFO\_SUBNET\_IPLIST=1\\
+
+    \\
+    \multicolumn{4}{l}{If {\tt BFO\_SUBNET\_TEST=1}, the following columns are displayed:}\\
+    \\
+
+    dstIPASN                    & U32     & Dest. IP ASN                           & BFO\_SUBNET\_ASN=1\\
+    \hyperref[subnet]{dstIPCOC} & H32     & Dest. IP country organization code     & BFO\_SUBNET\_HEX=1\\
+    \hyperref[subnet]{dstIPCC}  & SC      & Dest. IP country                       & \\
+    dstIPCnty                   & S       & Dest. IP county                        & CNTYCTY=1\\
+    dstIPCity                   & S       & Dest. IP city                          & CNTYCTY=1\\
+    dstIPOrg                    & S       & Dest. IP organization                  & BFO\_SUBNET\_ORG=1\\
+    dstIPLat\_Lng\_relP         & F\_F\_F & Dest. IP lat., long.\ and reliability  & BFO\_SUBNET\_LL=1\\
+    \\
+    dstPort                     & U16     & Destination port                       & \\
+    \\
+    l4Proto                     & U8      & Layer4 protocol                        & \\
+    \bottomrule
+\end{longtable}
+
+\subsubsection{VLAN}\label{s:bfo:vlan}
+
+If {\tt BFO\_VLAN>0} and {\tt BFO\_MAX\_VLAN>0}, the following additional column is displayed:
+
+\begin{longtable}{>{\tt}lll>{\tt\small}l}
+    \toprule
+    {\bf Column}        & {\bf Type}    & {\bf Description}                     & {\bf Flags}\\
+    \midrule\endhead%
+    vlanID              & R(U16)        & VLAN IDs                              & BFO\_VLAN=1\\
+    vlanHdr             & R(H32)        & VLAN headers (hex)                    & BFO\_VLAN=2\\
+    vlanTPID\_          & R(H16\_       & VLAN tag protocol identifier (TPID),  & BFO\_VLAN=3\\
+    \qquad PCP\_        & \qquad U8\_   & \qquad priority code point (PCP),     & \\
+    \qquad DEI\_        & \qquad U8\_   & \qquad drop eligible indicator (DEI), & \\
+    \qquad VID          & \qquad U16)   & \qquad VLAN identifier (VID)          & \\
+    \bottomrule
+\end{longtable}
+
+\subsubsection{MPLS}\label{s:bfo:mpls}
+
+If {\tt BFO\_MPLS>0} and {\tt BFO\_MAX\_MPLS>0}, the following additional column is displayed:
+
+\begin{longtable}{>{\tt}lll>{\tt\small}l}
+    \toprule
+    {\bf Column}           & {\bf Type}         & {\bf Description}    & {\bf Flags}\\
+    \midrule\endhead%
+    mplsLabels             & R(U32)             & MPLS labels          & BFO\_MPLS=1\\
+    mplsLabelsHex          & R(H32)             & MPLS labels (hex)    & BFO\_MPLS=2\\
+    mplsHdrsHex            & R(H32)             & MPLS headers (hex)   & BFO\_MPLS=3\\
+    mplsLabel\_ToS\_S\_TTL & R(U32\_U8\_U8\_U8) & MPLS headers details & BFO\_MPLS=4\\
+    \bottomrule
+\end{longtable}
+
+\subsubsection{PPP}\label{s:bfo:ppp}
+
+If {\tt BFO\_PPP=1}, the following additional column is displayed:
+
+\begin{longtable}{>{\tt}lll>{\tt\small}l}
+    \toprule
+    {\bf Column} & {\bf Type} & {\bf Description} & {\bf Flags}\\
+    \midrule\endhead%
+    pppHdr       & H32        & PPP header        & \\
+    \bottomrule
+\end{longtable}
+
+\subsubsection{LAPD}\label{s:bfo:lapd}
+
+If {\tt BFO\_LAPD=1} and {\tt LAPD\_ACTIVATE=1}, the following additional column is displayed:
+
+\begin{longtable}{>{\tt}lll>{\tt\small}l}
+    \toprule
+    {\bf Column} & {\bf Type} & {\bf Description} & {\bf Flags}\\
+    \midrule\endhead%
+    lapdSAPI     & U8         & LAPD SAPI         & \\
+    lapdTEI      & U8         & LAPD TEI          & \\
+    \bottomrule
+\end{longtable}
+
+\subsubsection{L2TP}\label{s:bfo:l2tp}
+
+If {\tt BFO\_L2TP=1}, the following additional columns are displayed:
+
+\begin{longtable}{>{\tt}lll>{\tt\small}l}
+    \toprule
+    {\bf Column}                    & {\bf Type} & {\bf Description}                           & {\bf Flags}\\
+    \midrule\endhead%
+
+    l2tpHdr                         & H16        & L2TP header                                 & \\
+    l2tpTID                         & U16        & L2TP tunnel ID                              & \\
+    l2tpSID                         & U16        & L2TP session ID                             & \\
+    l2tpCCSID                       & U32        & L2TP control connection/session ID          & \\
+    l2tpSrcIP                       & IP4        & L2TP source IP address                      & \\
+
+    \\
+    \multicolumn{4}{l}{If {\tt BFO\_SUBNET\_TEST\_L2TP=1}, the following columns are displayed:}\\
+    \\
+
+    l2tpSrcIPASN                    & U32        & L2TP source IP ASN                          & BFO\_SUBNET\_ASN=1\\
+    \hyperref[subnet]{l2tpSrcIPCOC} & H32        & L2TP source IP country organization code    & BFO\_SUBNET\_HEX=1\\
+    \hyperref[subnet]{l2tpSrcIPCC}  & SC         & L2TP source IP country                      & \\
+    l2tpSrcIPCnty                   & S          & L2TP source IP county                       & CNTYCTY=1\\
+    l2tpSrcIPCity                   & S          & L2TP source IP city                         & CNTYCTY=1\\
+    l2tpSrcIPOrg                    & S          & L2TP source IP organization                 & BFO\_SUBNET\_ORG=1\\
+    l2tpSrcIPLat\_Lng\_relP         & F\_F\_F    & L2TP source IP lat., long.\ and reliability & BFO\_SUBNET\_LL=1\\
+    \\
+    l2tpDstIP                       & IP4        & L2TP destination IP address                 & \\
+
+    \\
+    \multicolumn{4}{l}{If {\tt BFO\_SUBNET\_TEST\_L2TP=1}, the following columns are displayed:}\\
+    \\
+
+    l2tpDstIPASN                    & U32        & L2TP dest. IP ASN                           & BFO\_SUBNET\_ASN=1\\
+    \hyperref[subnet]{l2tpDstIPCOC} & H32        & L2TP dest. IP country organization code     & BFO\_SUBNET\_HEX=1\\
+    \hyperref[subnet]{l2tpDstIPCC}  & SC         & L2TP dest. IP country                       & \\
+    l2tpDstIPCnty                   & S          & L2TP dest. IP county                        & CNTYCTY=1\\
+    l2tpDstIPCity                   & S          & L2TP dest. IP city                          & CNTYCTY=1\\
+    l2tpDstIPOrg                    & S          & L2TP dest. IP organization                  & BFO\_SUBNET\_ORG=1\\
+    l2tpDstIPLat\_Lng\_relP         & F\_F\_F    & L2TP dest. IP lat., long.\ and reliability  & BFO\_SUBNET\_LL=1\\
+    \bottomrule
+\end{longtable}
+
+\subsubsection{GRE}\label{s:bfo:gre}
+
+If {\tt BFO\_GRE=1}, the following additional columns are displayed:
+
+\begin{longtable}{>{\tt}lll>{\tt\small}l}
+    \toprule
+    {\bf Column}                   & {\bf Type} & {\bf Description}                          & {\bf Flags}\\
+    \midrule\endhead%
+
+    greHdr                         & H32        & GRE header                                 & \\
+    greSrcIP                       & IP4        & GRE source IP address                      & \\
+
+    \\
+    \multicolumn{4}{l}{If {\tt BFO\_SUBNET\_TEST\_GRE=1}, the following columns are displayed:}\\
+    \\
+
+    greSrcIPASN                    & U32        & GRE source IP ASN                          & BFO\_SUBNET\_ASN=1\\
+    \hyperref[subnet]{greSrcIPCOC} & H32        & GRE source IP country organization code    & BFO\_SUBNET\_HEX=1\\
+    \hyperref[subnet]{greSrcIPCC}  & SC         & GRE source IP country                      & \\
+    greSrcIPCnty                   & S          & GRE source IP county                       & CNTYCTY=1\\
+    greSrcIPCity                   & S          & GRE source IP city                         & CNTYCTY=1\\
+    greSrcIPOrg                    & S          & GRE source IP organization                 & BFO\_SUBNET\_ORG=1\\
+    greSrcIPLat\_Lng\_relP         & F\_F\_F    & GRE source IP lat., long.\ and reliability & BFO\_SUBNET\_LL=1\\
+    \\
+    greDstIP                       & IP4        & GRE destination IP address                 & \\
+
+    \\
+    \multicolumn{4}{l}{If {\tt BFO\_SUBNET\_TEST\_GRE=1}, the following columns are displayed:}\\
+    \\
+
+    greDstIPASN                    & U32        & GRE dest. IP ASN                           & BFO\_SUBNET\_ASN=1\\
+    \hyperref[subnet]{greDstIPCOC} & H32        & GRE dest. IP country organization code     & BFO\_SUBNET\_HEX=1\\
+    \hyperref[subnet]{greDstIPCC}  & SC         & GRE dest. IP country                       & \\
+    greDstIPCnty                   & S          & GRE dest. IP county                        & CNTYCTY=1\\
+    greDstIPCity                   & S          & GRE dest. IP city                          & CNTYCTY=1\\
+    greDstIPOrg                    & S          & GRE dest. IP organization                  & BFO\_SUBNET\_ORG=1\\
+    greDstIPLat\_Lng\_relP         & F\_F\_F    & GRE dest. IP lat., long.\ and reliability  & BFO\_SUBNET\_LL=1\\
+    \bottomrule
+\end{longtable}
+
+\newpage
+\subsubsection{Teredo}\label{s:bfo:teredo}
+
+If {\tt BFO\_TEREDO=1}, the following additional columns are displayed:
+
+\begin{longtable}{>{\tt}lll>{\tt\small}l}
+    \toprule
+    {\bf Column}                         & {\bf Type} & {\bf Description}                             & {\bf Flags}\\
+    \midrule\endhead%
+
+    trdoDstIP                            & IP4        & Next Teredo flow: dest IPv4 address           & \\
+
+    \\
+    \multicolumn{4}{l}{If {\tt BFO\_SUBNET\_TEST\_TEREDO=1}, the following columns are displayed:}\\
+    \\
+
+    trdoDstIPASN                         & U32        & Teredo dest. IP ASN                           & BFO\_SUBNET\_ASN=1\\
+    \hyperref[subnet]{trdoDstIPCOC}      & H32        & Teredo dest. IP country organization code     & BFO\_SUBNET\_HEX=1\\
+    \hyperref[subnet]{trdoDstIPCC}       & SC         & Teredo dest. IP country                       & \\
+    trdoDstIPCnty                        & S          & Teredo dest. IP county                        & CNTYCTY=1\\
+    trdoDstIPCity                        & S          & Teredo dest. IP city                          & CNTYCTY=1\\
+    trdoDstIPOrg                         & S          & Teredo dest. IP organization                  & BFO\_SUBNET\_ORG=1\\
+    trdoDstIPLat\_Lng\_relP              & F\_F\_F    & Teredo dest. IP lat., long.\ and reliability  & BFO\_SUBNET\_LL=1\\
+    \\
+    trdoDstPort                          & U16        & Next Teredo flow: destination port            & \\
+
+    \\
+    \multicolumn{4}{l}{If {\tt IPV6\_ACTIVATE=0}, then no further column is displayed.}\\
+    \\
+
+    \midrule
+    \multicolumn{4}{c}{\bf Teredo IPv6 source address decode}\\
+    \midrule
+    \\
+
+    \hyperref[trdoFlags]{trdo6SrcFlgs}   & H8         & Flags       & \\
+    trdo6SrcSrvIP4                       & IP4        & Server IPv4 & \\
+
+    \\
+    \multicolumn{4}{l}{If {\tt BFO\_SUBNET\_TEST\_TEREDO=1}, the following columns are displayed:}\\
+    \\
+
+    trdo6SrcSrvIP4ASN                    & U32        & Server IP ASN                                 & BFO\_SUBNET\_ASN=1\\
+    \hyperref[subnet]{trdo6SrcSrvIP4COC} & H32        & Server IP country organization code           & BFO\_SUBNET\_HEX=1\\
+    \hyperref[subnet]{trdo6SrcSrvIP4CC}  & SC         & Server IP country                             & \\
+    trdo6SrcSrvIP4Cnty                   & S          & Server IP county                              & CNTYCTY=1\\
+    trdo6SrcSrvIP4City                   & S          & Server IP city                                & CNTYCTY=1\\
+    trdo6SrcSrvIP4Org                    & S          & Server IP organization                        & BFO\_SUBNET\_ORG=1\\
+    trdo6SrcSrvIP4Lat\_Lng\_relP         & F\_F\_F    & Server IP lat., long.\ and reliability        & BFO\_SUBNET\_TEST\_LL=1\\
+    \\
+    trdo6SrcCPIP4                        & IP4        & Client public IPv4                            & \\
+
+    \\
+    \multicolumn{4}{l}{If {\tt BFO\_SUBNET\_TEST\_TEREDO=1}, the following columns are displayed:}\\
+    \\
+
+    trdo6SrcCPIP4ASN                     & U32        & Client public IP ASN                          & BFO\_SUBNET\_ASN=1\\
+    \hyperref[subnet]{trdo6SrcCPIP4COC}  & H32        & Client public IP country organization code    & BFO\_SUBNET\_HEX=1\\
+    \hyperref[subnet]{trdo6SrcCPIP4CC}   & SC         & Client public IP country                      & \\
+    trdo6SrcCPIP4Cnty                    & S          & Client public IP county                       & CNTYCTY=1\\
+    trdo6SrcCPIP4City                    & S          & Client public IP city                         & CNTYCTY=1\\
+    trdo6SrcCPIP4Org                     & S          & Client public IP organization                 & BFO\_SUBNET\_ORG=1\\
+    trdo6SrcCPIP4Lat\_Lng\_relP          & F\_F\_F    & Client public IP lat., long.\ and reliability & BFO\_SUBNET\_LL=1\\
+    \\
+    trdo6SrcCPPort                       & U16        & Client public port                            & \\
+
+    \\
+    \midrule
+    \multicolumn{4}{c}{\bf Teredo IPv6 destination address decode}\\
+    \midrule
+    \\
+
+    \hyperref[trdoFlags]{trdo6DstFlgs}   & H8         & Flags                                         & \\
+    trdo6DstSrvIP4                       & IP4        & Server IPv4                                   & \\
+
+    \\
+    \multicolumn{4}{l}{If {\tt BFO\_SUBNET\_TEST\_TEREDO=1}, the following columns are displayed:}\\
+    \\
+
+    trdo6DstSrvIP4ASN                    & U32        & Server IP ASN                                 & BFO\_SUBNET\_ASN=1\\
+    \hyperref[subnet]{trdo6DstSrvIP4COC} & H32        & Server IP country organization code           & BFO\_SUBNET\_HEX=1\\
+    \hyperref[subnet]{trdo6DstSrvIP4CC}  & SC         & Server IP country                             & \\
+    trdo6DstSrvIP4Cnty                   & S          & Server IP county                              & CNTYCTY=1\\
+    trdo6DstSrvIP4City                   & S          & Server IP city                                & CNTYCTY=1\\
+    trdo6DstSrvIP4Org                    & S          & Server IP organization                        & BFO\_SUBNET\_ORG=1\\
+    trdo6DstSrvIP4Lat\_Lng\_relP         & F\_F\_F    & Server IP lat., long.\ and reliability        & BFO\_SUBNET\_LL=1\\
+    \\
+    trdo6DstCPIP4                        & IP4        & Client public IPv4                            & \\
+
+    \\
+    \multicolumn{4}{l}{If {\tt BFO\_SUBNET\_TEST\_TEREDO=1}, the following columns are displayed:}\\
+    \\
+
+    trdo6DstCPIP4ASN                     & U32        & Client public IP ASN                          & BFO\_SUBNET\_ASN=1\\
+    \hyperref[subnet]{trdo6DstCPIP4COC}  & H32        & Client public IP country organization code    & BFO\_SUBNET\_HEX=1\\
+    \hyperref[subnet]{trdo6DstCPIP4CC}   & SC         & Client public IP country                      & \\
+    trdo6DstCPIP4Cnty                    & S          & Client public IP county                       & CNTYCTY=1\\
+    trdo6DstCPIP4City                    & S          & Client public IP city                         & CNTYCTY=1\\
+    trdo6DstCPIP4Org                     & S          & Client public IP organization                 & BFO\_SUBNET\_ORG=1\\
+    trdo6DstCPIP4Lat\_Lng\_relP          & F\_F\_F    & Client public IP lat., long.\ and reliability & BFO\_SUBNET\_LL=1\\
+    \\
+    trdo6DstCPPort                       & U16        & Client public port                            & \\
+    \bottomrule
+\end{longtable}
+
+\subsubsection{flowInd}\label{flowInd}
+It is useful to identify flows when post processing operations, such as sort or
+filters are applied to a flow file and only a {\tt B} or an {\tt A} flow is selected. Moreover a packet
+file generated with the {\tt --s} option supplies the flow index which simplifies the mapping of singular
+packets to the appropriate flow.
+
+\subsubsection{flowStat}\label{flowStat}
+The {\tt flowStat} column is to be interpreted as follows:
+\begin{longtable}{>{\tt}rl}
+    \toprule
+    {\bf flowStat}                                       & {\bf Description}\\
+    \midrule\endhead%
+    $2^{00}$ (=0x00000000 0000000\textcolor{magenta}{1}) & Inverted flow, did not initiate connection\\
+    $2^{01}$ (=0x00000000 0000000\textcolor{magenta}{2}) & No Ethernet header\\
+    $2^{02}$ (=0x00000000 0000000\textcolor{magenta}{4}) & Pure L2 flow\\
+    $2^{03}$ (=0x00000000 0000000\textcolor{magenta}{8}) & Point to Point Protocol over Ethernet Discovery (PPPoED)\\
+    \\
+    $2^{04}$ (=0x00000000 000000\textcolor{magenta}{1}0) & Point to Point Protocol over Ethernet Service (PPPoES)\\
+    $2^{05}$ (=0x00000000 000000\textcolor{magenta}{2}0) & Link Layer Discovery Protocol (LLDP)\\
+    $2^{06}$ (=0x00000000 000000\textcolor{magenta}{4}0) & ARP\\
+    $2^{07}$ (=0x00000000 000000\textcolor{magenta}{8}0) & Reverse ARP\\
+    \\
+    $2^{08}$ (=0x00000000 00000\textcolor{magenta}{1}00) & VLANs\\
+    $2^{09}$ (=0x00000000 00000\textcolor{magenta}{2}00) & MPLS unicast\\
+    $2^{10}$ (=0x00000000 00000\textcolor{magenta}{4}00) & MPLS multicast\\
+    $2^{11}$ (=0x00000000 00000\textcolor{magenta}{8}00) & L2TP v2/3\\
+    \\
+    $2^{12}$ (=0x00000000 0000\textcolor{magenta}{1}000) & GRE v1/2\\
+    $2^{13}$ (=0x00000000 0000\textcolor{magenta}{2}000) & PPP header after L2TP or GRE\\
+    $2^{14}$ (=0x00000000 0000\textcolor{magenta}{4}000) & IPv4 flow\\
+    $2^{15}$ (=0x00000000 0000\textcolor{magenta}{8}000) & IPv6 flow\\
+    \\
+    $2^{16}$ (=0x00000000 000\textcolor{magenta}{1}0000) & IPvX bogus packet\\
+    $2^{17}$ (=0x00000000 000\textcolor{magenta}{2}0000) & IPv4/6 in IPv4/6\\
+    $2^{18}$ (=0x00000000 000\textcolor{magenta}{4}0000) & Ethernet over IP\\
+    $2^{19}$ (=0x00000000 000\textcolor{magenta}{8}0000) & Teredo tunnel\\
+    \\
+    $2^{20}$ (=0x00000000 00\textcolor{magenta}{1}00000) & Anything in Anything (AYIYA) tunnel\\
+    $2^{21}$ (=0x00000000 00\textcolor{magenta}{2}00000) & GPRS Tunneling Protocol (GTP)\\
+    $2^{22}$ (=0x00000000 00\textcolor{magenta}{4}00000) & Virtual eXtensible Local Area Network (VXLAN)\\
+    $2^{23}$ (=0x00000000 00\textcolor{magenta}{8}00000) & Control and Provisioning of Wireless Access Points (CAPWAP),\\
+                                                         & Lightweight Access Point Protocol (LWAPP)\\
+    \\
+    $2^{24}$ (=0x00000000 0\textcolor{magenta}{1}000000) & Stream Control Transmission Protocol (SCTP)\\
+    $2^{25}$ (=0x00000000 0\textcolor{magenta}{2}000000) & SSDP/UPnP\\
+    $2^{26}$ (=0x00000000 0\textcolor{magenta}{4}000000) & Encapsulated Remote Switch Packet ANalysis (ERSPAN)\\
+    $2^{27}$ (=0x00000000 0\textcolor{magenta}{8}000000) & Cisco Web Cache Communication Protocol (WCCP)\\
+    \\
+    $2^{28}$ (=0x00000000 \textcolor{magenta}{1}0000000) & SIP/RTP\\
+    $2^{29}$ (=0x00000000 \textcolor{magenta}{2}0000000) & Generic Network Virtualization Encapsulation (GENEVE)\\
+    $2^{30}$ (=0x00000000 \textcolor{magenta}{4}0000000) & IPsec Authentication Header (AH)\\
+    $2^{31}$ (=0x00000000 \textcolor{magenta}{8}0000000) & IPsec Encapsulating Security Payload (ESP)\\
+    \\
+    $2^{32}$ (=0x0000000\textcolor{magenta}{1} 00000000) & Acquired packet length < minimal L2 datagram\\
+    $2^{33}$ (=0x0000000\textcolor{magenta}{2} 00000000) & Acquired packet length < packet length in L3 header\\
+    $2^{34}$ (=0x0000000\textcolor{magenta}{4} 00000000) & Acquired packet length < minimal L3 header\\
+    $2^{35}$ (=0x0000000\textcolor{magenta}{8} 00000000) & Acquired packet length < minimal L4 header\\
+    \\
+    $2^{36}$ (=0x000000\textcolor{magenta}{1}0 00000000) & IPv4 fragmentation present\\
+    $2^{37}$ (=0x000000\textcolor{magenta}{2}0 00000000) & IPv4 fragmentation error (refer to the \tranrefpl{tcpFlags} plugin for more details)\\
+    $2^{38}$ (=0x000000\textcolor{magenta}{4}0 00000000) & IPv4 1.\ fragment out of sequence or missing\\
+    $2^{39}$ (=0x000000\textcolor{magenta}{8}0 00000000) & Packet fragmentation pending or\\
+                                                         & Fragmentation sequence not completed when flow timed-out\\
+    \\
+    $2^{40}$ (=0x00000\textcolor{magenta}{1}00 00000000) & Flow timeout instead of protocol termination\\
+    $2^{41}$ (=0x00000\textcolor{magenta}{2}00 00000000) & Alarm mode: remove this flow instantly\\
+    $2^{42}$ (=0x00000\textcolor{magenta}{4}00 00000000) & Autopilot: flow removed to free space in main hash map\\
+    $2^{43}$ (=0x00000\textcolor{magenta}{8}00 00000000) & Stop dissecting, error or unhandled protocol\\
+    \\
+    $2^{44}$ (=0x0000\textcolor{magenta}{1}000 00000000) & Consecutive duplicate IP ID\\
+    $2^{45}$ (=0x0000\textcolor{magenta}{2}000 00000000) & PPPL3 header not readable, compressed\\
+    $2^{46}$ (=0x0000\textcolor{magenta}{4}000 00000000) & IPv4 header length < 20 bytes\\
+    $2^{47}$ (=0x0000\textcolor{magenta}{8}000 00000000) & IP payload length > framing length\\
+    \\
+    $2^{48}$ (=0x000\textcolor{magenta}{1}0000 00000000) & Header description overrun\\
+    $2^{49}$ (=0x000\textcolor{magenta}{2}0000 00000000) & \tranrefpl{pcapd} and {\tt PD\_ALARM=1}: if set dumps the packets from this flow to a new pcap\\
+    $2^{50}$ (=0x000\textcolor{magenta}{4}0000 00000000) & Land attack: same srcIP \&\& dstIP \&\& srcPort \&\& dstPort\\
+    $2^{51}$ (=0x000\textcolor{magenta}{8}0000 00000000) & Timestamp jump, probably due to multi-path delay or NTP operation\\
+    \\
+    $2^{52}$ (=0x00\textcolor{magenta}{1}00000 00000000) & RESERVED, do not use\\
+    $2^{55}$ (=0x00\textcolor{magenta}{8}00000 00000000) & Subnet tested for that flow\\
+    \\
+    $2^{56}$ (=0x0\textcolor{magenta}{1}000000 00000000) & Tor address detected\\
+    $2^{57}$ (=0x0\textcolor{magenta}{2}000000 00000000) & A packet had a priority tag (VLAN tag with ID 0)\\
+    $2^{58}$ (=0x0\textcolor{magenta}{4}000000 00000000) & IPv4 packet\\
+    $2^{59}$ (=0x0\textcolor{magenta}{8}000000 00000000) & IPv6 packet\\
+    \\
+    $2^{62}$ (=0x\textcolor{magenta}{4}0000000 00000000) & Flow duration limit, same findex for all subflows\\
+    $2^{63}$ (=0x\textcolor{magenta}{8}0000000 00000000) & PCAP packet length > {\tt MAX\_MTU} in {\em ioBuffer.h}, caplen reduced\\
+    \bottomrule
+\end{longtable}
+
+\subsubsection{hdrDesc}\label{hdrDesc}
+The {\tt hdrDesc} column describes the protocol stack in the flow in a human readable way.
+Note that it gives the user a lookahead of what is to be expected, even if not in the appropriate IPv4/6 mode.
+For example, in IPv4 several different headers stacks can be displayed by one flow if Teredo or different fragmentation is involved.
+T2 then dissects only to the last header above the said protocol and sets the {\em Stop dissecting} bit in the flow status ($2^{41}$ (={\tt 0x00000400 00000000})).
+
+\subsubsection{lapdFType}\label{lapdFType}
+The {\tt lapdFType} column is to be interpreted as follows:
+\begin{longtable}{rl}
+    \toprule
+    {\bf lapdFType} & {\bf Description}\\
+    \midrule\endhead%
+    0               & Information frame\\
+    1               & Supervisory frame\\
+    3               & Unnumbered frame\\
+    \bottomrule
+\end{longtable}
+
+\subsubsection{lapdFunc}\label{lapdFunc}
+The {\tt lapdFunc} column is to be interpreted as follows:
+\begin{longtable}{>{\tt}rl}
+    \toprule
+    {\bf lapdFunc} & {\bf Description}\\
+    \midrule\endhead%
+    REJ            & Supervisory frame -- REJect\\
+    RNR            & Supervisory frame -- Receive Not Ready\\
+    RR             & Supervisory frame -- Receive Ready\\
+    CFGR           & Unnumbered frame -- ConFiGuRe\\
+    DISC           & Unnumbered frame -- DISConnect\\
+    DM             & Unnumbered frame -- Disconnected Mode\\
+    FRMR           & Unnumbered frame -- FRaMe Reject\\
+    SABME          & Unnumbered frame -- Set Asynchronous Balanced Mode Extended\\
+    SIM            & Unnumbered frame -- Set Initialization Mode\\
+    TEST           & Unnumbered frame -- Test\\
+    UA             & Unnumbered frame -- Unnumbered Acknowledgement\\
+    UI             & Unnumbered frame -- Unnumbered Information\\
+    UP             & Unnumbered frame -- Unnumbered Poll\\
+    XID            & Unnumbered frame -- eXchange IDentification\\
+    \bottomrule
+\end{longtable}
+
+\subsubsection{trdo6SrcFlgs and trdo6DstFlgs}\label{trdoFlags}
+The {\tt trdo6SrcFlgs} and {\tt trdo6DstFlgs} columns are to be interpreted as follows:
+\begin{longtable}{>{\tt}rl}
+    \toprule
+    {\bf trdo6\{Src,Dst\}Flgs}           & {\bf Description}\\
+    \midrule\endhead%
+    $2^{0}$ (=0x0\textcolor{magenta}{1}) & Group/individual\\
+    $2^{1}$ (=0x0\textcolor{magenta}{2}) & Universal/local\\
+    $2^{2}$ (=0x0\textcolor{magenta}{4}) & ---\\
+    $2^{3}$ (=0x0\textcolor{magenta}{8}) & ---\\
+    \\
+    $2^{4}$ (=0x\textcolor{magenta}{1}0) & ---\\
+    $2^{5}$ (=0x\textcolor{magenta}{2}0) & ---\\
+    $2^{6}$ (=0x\textcolor{magenta}{4}0) & Currently unassigned\\
+    $2^{7}$ (=0x\textcolor{magenta}{8}0) & Behind NAT, new versions do not set this bit anymore\\
+    \bottomrule
+\end{longtable}
+
+\subsubsection{Geo labeling}\label{subnet}
+
+The country and organization coding scheme are defined in the following files:\\
+
+\begin{minipage}{.48\textwidth}
+    \begin{itemize}
+        \item {\tt utils/subnet/whoCntryCds.txt}
+        \item[]
+    \end{itemize}
+\end{minipage}
+\hfill
+\begin{minipage}{.48\textwidth}
+    \begin{itemize}
+        \item {\tt utils/subnet/whoOrgCds.txt}
+        \item[]
+    \end{itemize}
+\end{minipage}
+
+The special country code (CC) values {\tt [0-9][0-9]} are used to represent private addresses or special address ranges such as Teredo or multicast:
+
+\begin{center}
+    \begin{tabular}{>{\tt}r>{\tt}c>{\tt}cl}
+        \toprule
+        {\bf CC} & {\bf IPv4 addresses} & {\bf IPv6 addresses} & {\bf Description}\\
+        \midrule
+        00       & 0.0.0.0/32           & ::/128               & Unspecified address\\
+        01       & 127.0.0.0/8          & ::1/128              & Loopback address\\
+        02       & 169.254.0.0/16       & fe80::/10            & Link-local address\\
+        03       &                      & fc00::/7             & Unique local address\\
+        04       & 10.0.0.0/8           &                      & Private network\\
+        05       & 172.16.0.0/12        &                      & Private network\\
+        06       & 192.0.0.0/24         &                      & Private network\\
+        07       & 192.168.0.0/16       &                      & Private network\\
+        08       & 198.18.0.0/15        &                      & Private network\\
+        10       & 224.0.0.0/4          & ff00::/8             & Multicast\\
+        11       & 255.255.255.255/32   &                      & Broadcast\\
+        20       & 100.64.0.0/10        &                      & Shared address space\\
+        21       & 192.0.2.0/24         &                      & TEST-NET-1\\
+        22       & 198.51.100.0/16      &                      & TEST-NET-2\\
+        23       & 203.0.113.0/24       &                      & TEST-NET-3\\
+        24       & 240.0.0.0/4          &                      & Reserved\\
+        25       &                      & 100::/64             & Discard prefix\\
+        26       &                      & 2001:20::/28         & ORCHIDv2\\
+        27       &                      & 2001:db8::/32        & Address used in documentation and example source code\\
+        60       & 192.88.99.0/24       &                      & Reserved (formerly used for IPv6 to IPv4 relay)\\
+        61       &                      & ::ffff:0:0/96        & IPv4 mapped address\\
+        62       &                      & ::ffff:0:0:0/96      & IPv4 translated address\\
+        63       &                      & 64:ff9b::/96         & IPv4/IPv6 translation\\
+        64       &                      & 2001::/32            & Teredo tunneling\\
+        65       &                      & 2002::/16            & The 6to4 addressing scheme (now deprecated)\\
+        \bottomrule
+    \end{tabular}
+\end{center}
+
+The country organization codes ({\tt BFO\_SUBNET\_HEX=1}) can be decoded with {\tt t2netID}, e.g., {\tt t2netID 0x138020a5}.
+Try {\tt t2netID --{}--help} for more information.
+
+\subsection{Packet File Output}
+In packet mode ({\tt --s} option), the basicFlow plugin outputs the following columns:
+\begin{longtable}{>{\tt}lll>{\tt\small}l}
+    \toprule
+    {\bf Column}                & {\bf Type}    & {\bf Description}                                  & {\bf Flags}\\
+    \midrule\endhead%
+    \nameref{flowInd}           & U64           & Flow index                                         & \\
+    \nameref{flowStat}          & H64           & Flow status                                        & \\
+    time                        & TS            & Date time of packet                                & \\
+    relTime                     & U64.U32       & Duration since start of pcap or                    & RELTIME=1\\
+                                &               & \qquad interface sniffing                          & \\
+    pktIAT                      & F             & Packet inter-arrival time                          & \\
+    pktTrip                     & F             & Packet round-trip time                             & \\
+    flowDuration                & F             & Flow duration                                      & \\
+    \hyperref[hdrDesc]{numHdrs} & U16           & Number of headers (depth) in {\tt hdrDesc}         & T2\_PRI\_HDRDESC=1\\
+    \hyperref[hdrDesc]{hdrDesc} & S             & Headers description                                & T2\_PRI\_HDRDESC=1\\
+    vlanTPID\_                  & H16\_         & VLAN tag protocol identifier (TPID),               & BFO\_VLAN=3\\
+    \qquad PCP\_                & \qquad U8\_   & \qquad priority code point (PCP),                  & \\
+    \qquad DEI\_                & \qquad U8\_   & \qquad drop eligible indicator (DEI),              & \\
+    \qquad VID                  & \qquad U16    & \qquad VLAN identifier (VID)                       & \\
+    vlanHdr                     & H32           & VLAN headers                                       & BFO\_VLAN=2\\
+    vlanID                      & U16           & VLAN numbers                                       & BFO\_VLAN=1\\
+    \\
+    \multicolumn{4}{l}{If {\tt BFO\_MPLS>0} and {\tt BFO\_MAX\_MPLS>0}, one of the following column is displayed:}\\
+    \\
+    mplsLabels                  & R(U32)        & MPLS labels                                        & BFO\_MPLS=1\\
+    mplsLabelsHex               & R(H32)        & MPLS labels (hex)                                  & BFO\_MPLS=2\\
+    mplsHdrsHex                 & R(H32)        & MPLS headers (hex)                                 & BFO\_MPLS=3\\
+    mplsLabel\_ToS\_S\_TTL      & R(U32\_U8\_U8\_U8)
+                                                & MPLS headers details                               & BFO\_MPLS=4\\
+    srcMac                      & MAC           & Source MAC address                                 & \\
+    dstMac                      & MAC           & Destination MAC address                            & \\
+    ethType                     & H16           & Ethernet type                                      & \\
+    \\
+    \multicolumn{4}{l}{If {\tt LAPD\_ACTIVATE=1} and {\tt BFO\_LAPD=1}, the following six columns are displayed:}\\
+    \\
+    lapdSAPI                    & U8            & LAPD SAPI                                          & \\
+    lapdTEI                     & U8            & LAPD TEI                                           & \\
+    \nameref{lapdFType}         & U8            & LAPD frame type                                    & \\
+    \nameref{lapdFunc}          & S             & LAPD command (U-Frame) or                          & \\
+                                &               & \qquad Supervisory frame type                      & \\
+    lapdNR                      & U8            & LAPD Receive Sequence Number                       & \\
+    lapdNS                      & U8            & LAPD Send Sequence Number                          & \\
+    \\
+    srcIP                       & IP            & Source IP address                                  & \\
+    \hyperref[subnet]{srcIPCC}  & SC            & Source IP country                                  & BFO\_SUBNET\_TEST=1\\
+    srcIPOrg                    & S             & Source IP organization                             & BFO\_SUBNET\_TEST=1\&\&\\
+                                &               &                                                    & BFO\_SUBNET\_ORG=1\\
+    srcPort                     & U16           & Source port                                        & \\
+    dstIP                       & IP            & Destination IP address                             & \\
+    \hyperref[subnet]{dstIPCC}  & SC            & Destination IP country                             & BFO\_SUBNET\_TEST=1\\
+    dstIPOrg                    & S             & Destination IP organization                        & BFO\_SUBNET\_TEST=1\&\&\\
+                                &               &                                                    & BFO\_SUBNET\_ORG=1\\
+    dstPort                     & U16           & Destination port                                   & \\
+    l4Proto                     & U8            & Layer 4 protocol                                   & \\
+    \bottomrule
+\end{longtable}
+
+\subsection{Post-Processing}
+The {\tt t2whois} program provides an offline whois and geolocation query option using T2 subnet files.
+It can be found in {\tt\$T2HOME/utils/t2whois/} and can be compiled by typing {\tt make}.
+The use of the program is straightforward:
+\begin{center}
+{\tt t2whois 1.2.3.4}
+\end{center}
+Try {\tt t2whois -h} for more information.
+
+\end{document}

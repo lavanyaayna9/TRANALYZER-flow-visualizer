@@ -1,0 +1,27 @@
+#!/usr/bin/env awk
+#
+# Return true if the flow contains IPv4 traffic.
+#
+# Parameters:
+#   - None
+#
+# Dependencies:
+#   - basicFlow
+#
+# See also:
+#   - ip
+#   - ipv6
+#
+# Examples:
+#   - tawk 'ipv4()' file.txt
+#   - tawk 'ipv4() { print tuple2() }' file.txt
+
+@include "hdr"
+@include "bitsallset"
+@include "_validate_col"
+
+function ipv4(        _c) {
+    _c = _validate_col("flowStat")
+    if (hdr()) return __PRIHDR__
+    return bitsallset($_c, 0x4000)
+}

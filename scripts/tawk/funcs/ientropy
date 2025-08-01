@@ -1,0 +1,157 @@
+#!/usr/bin/env awk
+#
+# Compute the Shannon entropy of each column
+# (refer to the Theory section for more details).
+#
+# If 'num' is omitted or 0, return the full list, otherwise the
+# top ('num' > 0) or bottom ('num' < 0) 'num' results.
+#
+# By default, results are sorted from highest to lowest entropy.
+# If 'sc = 1', results are sorted by column number (lowest to highest)
+# If 'sc = 2', results are sorted by column name (lowest to highest)
+# Set 'rev' to reverse the sort order.
+#
+# Set 'imin' to filter out columns with low information entropy.
+#
+# Parameters:
+#
+#   - [num]  : number of records to return [default: all]
+#   - [sc]   : sort the results according to 1: column number, 2: column name, *: entropy
+#   - [rev]  : sort in reverse order
+#   - [imin] : if set and >= 0, remove all columns whose information entropy is <= 'imin'
+#
+# Dependencies:
+#
+#   - None
+#
+# Examples:
+#
+#   - tawk 'ientropy()' file.txt
+#   - tawk 'http() { ientropy() }' file.txt
+#   - tawk 'ientropy(0, 0, 0, 1)' file.txt > file_ent_ge_1.txt
+#
+# Theory:
+#
+#   Shannon entropy is defined as:
+#
+#       H(X) = - \sum_{x \in X} p(x) log_2 p(x)
+#
+#   Where p(x) is the probability of event x
+#
+#   An entropy of 0 means that the event is a certainty.
+
+@include "hdr"
+@include "isset"
+@include "log2"
+
+function _iientropy(m,        _c, _colno, _i, _line, _lineno, _n, _p) {
+    while (getline _line < FILENAME) {
+        _lineno++
+        _n = split(_line, _c)
+        _p = 0
+        for (_i = 1; _i <= _n; _i++) {
+            if (__IENTROPYV__[COL[_i]] > m) {
+                _colno++
+                if (_p) {
+                    printf "%s", OFS
+                } else if (_lineno == 1 && _colno == 1) {
+                    printf "%s", __HDRSEP__
+                }
+                printf "%s", _c[_i]
+                _p = 1
+            }
+        }
+        printf "\n"
+    }
+}
+
+function ientropy(num, sc, rev, imin,        _i) {
+    if (hdr()) next
+
+    if (!isset(__IENTROPYN__)) {
+        if (num < 0) {
+            __IENTROPYN__ = -num
+        } else {
+            __IENTROPYN__ = num
+            __IENTROPYS__ = "r" # reverse sort
+        }
+
+        if (sc == 1 || sc == 2) {
+            __IENTROPYNS__ = sc
+            __IENTROPYS__ = "r" # reverse sort
+        }
+
+        if (rev) {
+            if (__IENTROPYS__) {
+                __IENTROPYS__ = ""
+            } else {
+                __IENTROPYS__ = "r"
+            }
+        }
+
+        if (isset(imin)) {
+            __IENTROPY_REMOVE__ = imin
+        }
+    }
+
+    for (_i = 1; _i <= NF; _i++) {
+        __IENTROPY__[COL[_i] OFS $_i]++
+    }
+}
+
+function _calcientropy(        _key, _kv, _prob) {
+    for (_key in __IENTROPY__) {
+        split(_key, _kv, OFS)
+        __TOT__[_kv[1]] += __IENTROPY__[_key]
+    }
+
+    for (_key in __IENTROPY__) {
+        split(_key, _kv, OFS)
+        _prob = __IENTROPY__[_key] / __TOT__[_kv[1]]
+        __IENTROPYV__[_kv[1]] += _prob * log2(_prob)
+    }
+
+    for (_key in __IENTROPYV__) {
+        _prob = __IENTROPYV__[_key]
+        if (_prob != 0) {
+            __IENTROPYV__[_key] = -_prob
+        }
+    }
+}
+
+function _priientropy(        _key, _line, _linenum, _sortcmd) {
+    if (__IENTROPYNS__ == 2) {
+        _sortcmd = "sort -t'" OFS "' -" __IENTROPYS__ "k" __IENTROPYNS__
+    } else {
+        _sortcmd = "sort -t'" OFS "' -n" __IENTROPYS__ "k" __IENTROPYNS__
+    }
+
+    for (_key in __IENTROPYV__) {
+        printf "%d%s%s%s%.06f\n", COL[_key], OFS, _key, OFS, __IENTROPYV__[_key] |& _sortcmd
+    }
+
+    close(_sortcmd, "to")
+
+    if (__PRIHDR__) print "colNum" OFS "colName" OFS "iEntropy"
+
+    while ((__IENTROPYN__ == 0 || _linenum < __IENTROPYN__) && (_sortcmd |& getline _line) > 0) {
+        print _line
+        _linenum++
+    }
+
+    close(_sortcmd)
+}
+
+END {
+    if (length(__IENTROPY__) > 0) {
+        if (__IENTROPYNS__ != 1 && __IENTROPYNS__ != 2) {
+            __IENTROPYNS__ = 3
+        }
+        _calcientropy()
+        if (isset(__IENTROPY_REMOVE__)) {
+            _iientropy(__IENTROPY_REMOVE__)
+        } else {
+            _priientropy()
+        }
+    }
+}

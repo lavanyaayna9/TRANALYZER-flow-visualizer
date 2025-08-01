@@ -1,0 +1,56 @@
+# Bash completion for t2py
+
+_t2py() {
+    local cur prev words cword
+
+    if type -t _init_completion &> /dev/null; then
+        _init_completion -n = || return
+    else
+        COMPREPLY=()
+        cur="${COMP_WORDS[COMP_CWORD]}"
+        prev="${COMP_WORDS[COMP_CWORD-1]}"
+    fi
+
+    case "$prev" in
+        -f)
+            if type -t _filedir &> /dev/null; then
+                _filedir
+            else
+                compopt -o filenames 2> /dev/null
+                COMPREPLY=($(compgen -f -- "$cur"))
+            fi
+            return
+            ;;
+        -i|-r|-R|-w|-p|-b)
+            _t2
+            return
+            ;;
+    esac
+
+    local plugins=("tranalyzer2")
+    for i in "$T2PLHOME/"*; do
+        local b=$(basename "$i")
+        if [ -d "$i" ] && [ "$b" != "t2PSkel" ]; then
+            plugins+=($b)
+        fi
+    done
+
+    local args=(
+        -q
+        -f
+        -t2
+        -i
+        -r
+        -R
+        -w
+        -p
+        -b
+        -m
+        -s
+        -h --help
+    )
+
+    COMPREPLY=($(compgen -W "${plugins[*]} ${args[*]}" -- "$cur"))
+}
+
+complete -F _t2py t2py

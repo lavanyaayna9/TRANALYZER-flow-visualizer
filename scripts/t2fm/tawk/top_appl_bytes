@@ -1,0 +1,10 @@
+#!/usr/bin/env awk
+
+hdr() {
+    next
+}
+
+!bitsallset($flowStat, 1) {
+    ndpiclass = gensub(/\..*/, "", 1, unquote($nDPIclass)) # master protocol only
+    aggr(ndpiclass, $l7BytesSnt + $l7BytesRcvd, n)
+}

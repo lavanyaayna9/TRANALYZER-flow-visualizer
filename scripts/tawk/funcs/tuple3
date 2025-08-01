@@ -1,0 +1,27 @@
+#!/usr/bin/env awk
+#
+# Return the 3 tuple (source IP, destination IP and port).
+#
+# Parameters:
+#   - None
+#
+# Dependencies:
+#   - basicFlow
+#
+# See also:
+#   - tuple2
+#   - tuple4
+#   - tuple5
+#   - tuple6
+#
+# Examples:
+#   - tawk '{ print tuple3() }' file.txt
+
+@include "_validate_col"
+
+function tuple3(        _dp, _dip, _sip) {
+    _sip = _validate_col("srcIP;srcIP4;srcIP6", _my_srcIP)
+    _dip = _validate_col("dstIP;dstIP4;dstIP6", _my_dstIP)
+    _dp  = _validate_col("dstPort", _my_dstPort)
+    return $_sip OFS $_dip OFS $_dp
+}

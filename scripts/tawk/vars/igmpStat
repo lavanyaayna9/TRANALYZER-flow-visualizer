@@ -1,0 +1,11 @@
+#H bit | igmpStat | Description
+#H =============================================================================
+#W   0 | 0x01     | IGMP message had invalid length
+#W   1 | 0x02     | IGMP message had invalid checksum
+#W   2 | 0x04     | IGMP message had invalid TTL (!= 1)
+#W   3 | 0x08     | IGMP message was invalid for other reasons
+
+     4 | 0x10     | -
+     5 | 0x20     | -
+     6 | 0x40     | -
+     7 | 0x80     | -

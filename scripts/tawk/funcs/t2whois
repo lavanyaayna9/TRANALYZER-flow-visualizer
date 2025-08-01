@@ -1,0 +1,50 @@
+#!/usr/bin/env awk
+#
+# Wrapper to call t2whois from tawk.
+#
+# 'o_opt' can be used to only request specific fields (see t2whois -o option).
+# 'o_opt' may be any combination of the following values (comma separated):
+#   ip      : IP
+#   netmask : Network/Mask
+#   net     : Network
+#   mask    : Mask
+#   range   : Range
+#   org     : Organization
+#   country : Country
+#   county  : County
+#   city    : City
+#   asn     : ASN
+#   lat     : Latitude
+#   lng     : Longitude
+#   prec    : Precision
+#   netid   : NetID
+#
+# Parameters:
+#   - ip   : IPv4/6 address to query
+#   - o_opt: t2whois -o option (default: org,country)
+#            (run t2whois -L or see above for more details)
+#
+# Examples:
+#   - tawk '{ print t2whois($dstIP) }' file.txt
+#   - tawk '{ print t2whois("1.2.3.4") }' file.txt
+#   - tawk '{ print t2whois("1.2.3.4", "country") }' file.txt
+#   - tawk '{ print t2whois("fe80::", "country,org,asn") }' file.txt
+
+@include "hdr"
+@include "strip"
+
+function t2whois(ip, o_opt,        _cmd, _opth, _res) {
+    if (!o_opt) o_opt = "org,country"
+    if (__PRIHDR__ && hdr()) {
+        _opth = o_opt
+        gsub(/,/, OFS, _opth)
+        return _opth
+    } else {
+        _cmd = "'" __TAWKHOME__ "/../../utils/t2whois/t2whois'"
+        _cmd = _cmd " -l -H -o " o_opt
+        _cmd = _cmd " '" strip(ip) "'"
+        _cmd | getline _res
+        close(_cmd)
+        return _res
+    }
+}

@@ -1,0 +1,42 @@
+#!/usr/bin/env awk
+#
+# Provides access to column names through their indexes
+# and to column indexes through their names.
+#
+# Parameters:
+#   - N/A
+#
+# Dependencies:
+#   - None
+#
+# Examples:
+#   - tawk '{ print COL[l4Proto] }' file.txt
+#   - tawk '{ print COL[3] }' file.txt
+#   - tawk -v colnum=3 '{ print COL[colnum] }' file.txt
+#   - tawk '{ print $COL["l4Proto"] }' file.txt
+#   - tawk -v colname="l4Proto" '{ print $COL[colname] }' file.txt
+
+@include "hdr"
+@include "strip"
+
+hdr() {
+    __HDRROW__ = NR
+    _hdr = $0
+    gsub("^" __HDRSEP__ "\\s*", "", _hdr)
+    _n = split(_hdr, _name, FS)
+    for (_i = 1; _i <= _n; _i++) {
+        COL[_i] = _name[_i]
+        COL[_i] = strip(COL[_i])
+        COL[COL[_i]] = _i
+    }
+    _i = 0
+    _n = 0
+    # Use default Tranalyzer header format for Zeek files
+    if (__ZEEK__) {
+        __HDRSEP__ = "%"
+        $0 = __HDRSEP__ _hdr
+    }
+    _hdr = ""
+    delete _name
+    if (!__PRIHDR__) next
+}

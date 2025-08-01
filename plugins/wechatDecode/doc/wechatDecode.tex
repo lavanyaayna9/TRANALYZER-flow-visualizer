@@ -1,0 +1,92 @@
+\IfFileExists{t2doc.cls}{
+    \documentclass[documentation]{subfiles}
+}{
+    \errmessage{Error: could not find 't2doc.cls'}
+}
+
+\begin{document}
+
+\trantitle
+    {wechatDecode}
+    {WeChat}
+    {Tranalyzer Development Team}
+
+\section{wechatDecode}\label{s:wechatDecode}
+
+\subsection{Description}
+
+The wechatDecode plugin detects and decodes JCE encoded data found in observed HTTP traffic and writes the results as JSON into a file.\\
+
+To identify relevant packets to decode, the HTTP payload is searched for the string {\tt "TMASDK\_"}.
+If this string is found, the HTTP payload is processed using a JCE decoder.\\
+
+Decryption and decompression of the body are handled automatically.\\
+
+\subsection{Dependencies}
+
+\subsubsection{External Libraries}
+This plugin depends on the {\bf zlib} library.
+\begin{table}[!ht]
+    \centering
+    \begin{tabular}{>{\bf}r>{\tt}l>{\tt}l}
+        \toprule
+        %                             &                      &\\
+        %\midrule
+        Ubuntu:                      & sudo apt-get install & zlib1g-dev\\
+        Arch:                        & sudo pacman -S       & zlib\\
+        Gentoo:                      & sudo emerge          & zlib\\
+        openSUSE:                    & sudo zypper install  & zlib-devel\\
+        Red Hat/Fedora\tablefootnote{If the {\tt dnf} command could not be found, try with {\tt yum} instead}:
+                                     & sudo dnf install     & zlib-devel\\
+        macOS\tablefootnote{Brew is a packet manager for macOS that can be found here: \url{https://brew.sh}}:
+                                     & brew install         & zlib\\
+        \bottomrule
+    \end{tabular}
+\end{table}
+
+\subsection{Configuration Flags}
+The following flags can be used to control the output of the plugin:
+\begin{longtable}{>{\tt}lcl}
+    \toprule
+    {\bf Name} & {\bf Default} & {\bf Description}\\
+    \midrule\endhead%
+    WECHAT\_JSON\_SUFFIX                & {\tt\small "\_wechat.json"} & Suffix appended to the base output file name\\
+    WECHAT\_JSON\_ARRAY                 & 0                           & 0: Output a single JSON array\\
+                                        &                             & 1: Output a line-delimited JSON\\
+    WECHAT\_INITIAL\_JSON\_BUFFER\_SIZE & 2048                        & Initial size of output buffer (increased dynamically)\\
+    WECHAT\_MAX\_HTTP\_HDR\_FIELD\_LEN  & 1024                        & Maximum length of a HTTP header field\\
+    WECHAT\_MAX\_QUA\_MATCH\_LEN        & 255                         & Max.\ length of a matching group in the QUA string\\
+    WECHAT\_VERBOSITY\_LEVEL            & 0                           & Verbosity level:\\
+                                        &                             & \qquad 0: Quiet mode (only warnings and errors)\\
+                                        &                             & \qquad 1: Debug mode\\
+    \bottomrule
+\end{longtable}
+
+\subsection{Flow File Output}
+This plugin does not output any columns in the flow file. It writes the decoded data directly to the JSON output file.
+
+\subsection{Custom File Output}
+The wechatDecode plugin produces JSON output in the file {\tt PREFIX\_wechat.json}, where {\tt PREFIX} is provided via the Tranalyzer option {\tt --w} or {\tt --W} and the {\tt \_wechat.json} suffix can be overridden via the configuration flag {\tt WECHAT\_JSON\_SUFFIX}.
+
+\subsubsection{JSON format}
+
+For each packet detected to contain JCE data, the HTTP payload is decoded, decrypted and, if necessary, decompressed. The extracted data is then written as one JSON object per packet.\\
+
+Each JSON object is divided into three sections, i.e., keys: {\tt flow}, {\tt requestHeader} and {\tt body}. The flow section contains the six-tuple and the {\tt firstSeen} timestamp of the flow. The requestHeader contains any information extracted from the {\tt reqHead} part of the JCE payload, including any optional fields. The {\tt body} section contains the decrypted and decoded information found in the body part of the decoded HTTP payload.\\
+
+Numerical values in the {\tt requestHeader} extracted from the {\tt reqHead} are printed as quoted JSON strings as there are no static guarantees on the bounds of the matched numbers. This avoids integer overflows and unexpected incorrect results.\\
+
+The following currently understood body types are supported:
+
+\begin{itemize}
+    \item {\tt ReportLog}
+    \item {\tt GetSettings}
+    \item {\tt GetConfig}
+    \item {\tt StatReport}
+\end{itemize}
+
+If the configuration flag {\tt WECHAT\_JSON\_ARRAY} is set to {\tt 0}, the JSON objects are output as line-delimited JSON, i.e. one JSON object per line. Note that in this mode, a JSON object may not contain a newline character as it is already used as a delimiter between individual JSON objects.\\
+
+If {\tt WECHAT\_JSON\_ARRAY} is {\tt 1}, the JSON objects are enclosed in a JSON array and separated with a comma to yield valid JSON output. The line-delimited JSON mode is more robust as it does not rely on proper termination of the application to write the closing square bracket.
+
+\end{document}

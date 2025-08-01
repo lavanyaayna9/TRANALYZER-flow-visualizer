@@ -1,0 +1,21 @@
+#H bit | dhcpStat | Description
+#H =============================================================================
+     0 | 0x0001   | DHCP detected
+     1 | 0x0002   | Boot request
+     2 | 0x0004   | Boot reply
+     3 | 0x0008   | Broadcast
+
+#W   4 | 0x0010   | Client ID (option 61) different from Client MAC address (DHCP header)
+     5 | 0x0020   | Option overload: server host name and/or boot file name carry options
+     6 | 0x0040   | Seconds elapsed probably encoded as little endian
+     7 | 0x0080   | Non Ethernet hardware
+
+#W   8 | 0x0100   | Option list truncated increase DHCPOPTMAX or DHCPMSGMAX
+#W   9 | 0x0200   | Client HW address, domain or host name list truncated... increase DHCPNMMAX
+    10 | 0x0400   | -
+#W  11 | 0x0800   | Unknown message type
+
+#E  12 | 0x1000   | DHCP invalid length
+#E  13 | 0x2000   | DHCP magic number corrupt
+#E  14 | 0x4000   | DHCP options corrupt
+#W  15 | 0x8000   | Something is weird...

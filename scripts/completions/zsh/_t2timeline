@@ -1,0 +1,26 @@
+# ZSH completion for t2timeline
+
+_t2timeline() {
+    #compdef t2timeline
+
+    local cur="${words[CURRENT]}"
+    [ $CURRENT -gt 2 ] && local prev="${words[CURRENT-1]}"
+
+    case "$prev" in
+        -e|-ts|-ls|-ks|-v|-ws|-tx|-ty|-t|-s)
+            return
+            ;;
+        --gif|--jpeg|--png|--svg)
+            _files
+            return
+            ;;
+    esac
+
+    if [[ "$cur" == -* ]]; then
+        _arguments --
+    else
+        _files
+    fi
+}
+
+compdef _t2timeline t2timeline

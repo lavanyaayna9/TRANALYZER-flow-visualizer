@@ -1,0 +1,11 @@
+#H bit | mqttStat | Description
+#H =============================================================================
+     0 | 0x01     | Flow is MQTT
+     1 | 0x02     | -
+     2 | 0x04     | -
+     3 | 0x08     | -
+
+#W   4 | 0x10     | Reserved Control Packet Type (0 or 15) was used
+     5 | 0x20     | -
+     6 | 0x40     | -
+#W   7 | 0x80     | Packet snapped

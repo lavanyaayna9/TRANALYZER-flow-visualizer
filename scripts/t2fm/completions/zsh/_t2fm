@@ -1,0 +1,57 @@
+# ZSH completion for t2fm
+
+_t2fm() {
+    #compdef t2fm
+
+    local opts=(
+        '(-i --iface -r --pcap -R --pcap-list -F --flow-file -C --clickhouse -m --mongo -p --postgres -N --netflow --nfdump)'{-i,--iface}'[Interface to capture traffic from]:interface:_net_interfaces'
+        '(-i --iface -r --pcap -R --pcap-list -F --flow-file -C --clickhouse -m --mongo -p --postgres -N --netflow --nfdump)'{-r,--pcap}'[PCAP file to analyze]:file:_files'
+        '(-i --iface -r --pcap -R --pcap-list -F --flow-file -C --clickhouse -m --mongo -p --postgres -N --netflow --nfdump)'{-R,--pcap-list}'[List of PCAP files to analyze]:file:_files'
+        '(-i --iface -r --pcap -R --pcap-list -F --flow-file -C --clickhouse -m --mongo -p --postgres -N --netflow --nfdump)'{-F,--flow-file}'[Flow file to analyze]:file:_files'
+        '(-i --iface -r --pcap -R --pcap-list -F --flow-file -C --clickhouse -m --mongo -p --postgres -N --netflow --nfdump)'{-C,--clickhouse}'[ClickHouse database name]:name:'
+        '(-i --iface -r --pcap -R --pcap-list -F --flow-file -C --clickhouse -m --mongo -p --postgres -N --netflow --nfdump)'{-m,--mongo}'[Mongo database name]:name:'
+        '(-i --iface -r --pcap -R --pcap-list -F --flow-file -C --clickhouse -m --mongo -p --postgres -N --netflow --nfdump)'{-p,--postgres}'[PostgreSQL database name]:name:'
+        '(-i --iface -r --pcap -R --pcap-list -F --flow-file -C --clickhouse -m --mongo -p --postgres -N --netflow --nfdump)'{-N,--netflow,--nfdump}'[NetFlow records (file or directory)]:file:_files'
+        {-A,--open-pdf}'[Automatically open the generated PDF]'
+        {-w,--output-prefix}'[Append PREFIX to any output file produced]:output prefix:_files'
+        #'-T[Only consider data between FROM and TO (-m and -p only)]:1: from 2: to:'
+        {-b,--build}'[Configure and build Tranalyzer2 and the plugins]'
+        '--reset[Reset T2 and the plugins configuration at the end]'
+        {-f,--hash-factor}'[hashfactor]:Tranalyzer multiplication factor for hash table (int):'
+        {-d,--data-carving}'[Carve HTTP objects (high memory usage, required to report EXE downloads and their checksums)]'
+        '--hide-user[Do not output usernames for cleartext passwords]'
+        '--hide-pass[Do not output passwords for cleartext passwords]'
+        '--hide-user-pass[Do not output usernames or passwords for cleartext passwords]'
+        '--top[Only compute top statistics]'
+        '--bottom[Only compute bottom statistics]'
+        '--no-countries[Do not output countries statistics]'
+        '--no-organizations[Do not output organizations statistics]'
+        '--no-non-std-ports[Do not output non-standard ports statistics]'
+        '--no-dns[Do not output DNS statistics]'
+        '--no-http[Do not output HTTP statistics]'
+        '--no-https[Do not output HTTPS statistics]'
+        '--no-ssh[Do not output SSH statistics]'
+        '--no-passwords[Do not output cleartext passwords]'
+        '--no-warnings[Do not output the warnings section]'
+        {-t,--title}'[title]:Set the report title:'
+        {-a,--author}'[author]:Set the report author:'
+        '--char-color[color]:Set the chart color:'
+        '--table-odd-color[color]:Set the tables odd rows color:'
+        '--table-even-color[color]:Set the tables even rows color:'
+        {-L,--no-log-axis}'[Do not use logarithmic scale for axis]'
+        {-n,--table-n}'[num]:Compute top/bottom num statistics for tables (int):'
+        {-c,--chart-n}'[num]:Compute top/bottom num statistics for charts (int):'
+        {-H,--raw-numbers}'[Output raw numbers instead of human readable]'
+        {-HH,--raw-and-hdrnum}'[Output raw and human readable numbers]'
+        #'(-0 -1)'{-0,-0}'[Run all queries in parallel]'
+        #'(-0 -1)'{-1,-1}'[Do not run queries in parallel (slow)]'
+        '--copyright[text]:Print a copyright notice at the bottom of every page:'
+        '--watermark[text]:Print a watermark on every page'
+        {-y,--yes}'[Do not ask for confirmation before executing an action]'
+        '(- 1 *)'{-h,--help}'[Show help options and exit]'
+    )
+
+    _arguments -s -S "${opts[@]}"
+}
+
+compdef _t2fm t2fm

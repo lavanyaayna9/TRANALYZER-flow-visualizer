@@ -1,0 +1,29 @@
+# ZSH completion for t2whois
+
+_t2whois() {
+    #compdef t2whois
+
+    local opts=(
+        '-r[Read IP address(es) from file]:file:_files'
+        '-R[Test a random IPv4 or IPv6]:version:(0 4 6)'
+        '-D[Run as a server/daemon on 127.0.0.1:6666]'
+        '-a[Server address]'
+        '-p[Server port]'
+        '-d[Binary subnet file to use for IPv4]:file:_files'
+        '-e[Binary subnet file to use for IPv6]:file:_files'
+        '-o[Field(s) to output (in order). Many fields can be selected by using multiple -o options or by separating the fields with a comma, e.g., -o field1,field2. Valid field names are ip, netmask, net, mask, range, org, country, county, city, asn, lat, lng, prec, netid]:field:(ip netmask net mask range org country county city asn lat lng prec netid)'
+        '-q[Do not display an interactive prompt when reading from stdin]'
+        '-k[Generate a KML file]:file:_files'
+        '-l[Output one line per IP]'
+        '-H[Do not output the header with -l option]'
+        '-t[Start character(s) for column header (-l option) (default: "%")]'
+        '-s[Column separator for output (default: "\t")]'
+        '(- 1 *)-L[Describe the available fields and exit]'
+        '(- 1 *)-V[Show info about the database (version, ...) and exit]'
+        '(- 1 *)-h[Show help options and exit]'
+    )
+
+    _arguments -s -S "${opts[@]}"
+}
+
+compdef _t2whois t2whois

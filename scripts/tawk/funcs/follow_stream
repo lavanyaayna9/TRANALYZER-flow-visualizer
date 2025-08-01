@@ -1,0 +1,457 @@
+#!/usr/bin/env awk
+#
+# Return the payload of flow with index 'f'.
+#
+# Parameters:
+#   - f: flow index to follow.
+#   - [of]: output format [default: 0]:
+#           0: Payload only,
+#           1: Prefix each payload with packet/flow info,
+#           2: JSON,
+#           3: Reconstruct (pipe the output to 'xxd -p -r' to reproduce the binary file).
+#   - [d]: direction to follow ("A" or "B") [default: "" (A and B)]
+#   - [pf]: payload format [default: 0]:
+#           0: ASCII,
+#           1: Hexdump,
+#           2: Raw/Binary,
+#           3: Base64.
+#   - [r]: do not analyze TCP sequence numbers (no TCP reassembly and reordering) [default: 0]
+#   - [nc]: do not output colors [default: 0]
+#
+# Dependencies:
+#   - basicFlow
+#   - basicStats
+#   - tcpFlags
+#
+# Examples:
+#   # follow stream 1 with payload as ASCII.
+#   $ tawk 'follow_stream(1)' file.txt
+#
+#   # follow stream 2 with packet/flow info and payload as ASCII.
+#   $ tawk 'follow_stream(2, 1)' file.txt
+#
+#   # follow stream 3 with packet/flow info as JSON and payload as ASCII.
+#   $ tawk 'follow_stream(3, 2)' file.txt
+#
+#   # follow stream 4, direction B only, without packet/flow info and
+#   # reconstruct payload (original raw data) as binary into 'out.data'.
+#   $ tawk 'tawk 'follow_stream(4, 3, "B")' file.txt | xxd -p -r > out.data
+#
+#   # follow stream 5, direction A only, without packet/flow info and payload as hexdump
+#   $ tawk 'follow_stream(5, 0, "A", 1)' file.txt
+#
+#   # follow stream 6, both directions as JSON and payload as base64.
+#   $ tawk 'follow_stream(6, 2, "", 3)' file.txt
+#
+#   # follow stream 7, both directions with packet/flow info and payload as binary.
+#   $ tawk 'follow_stream(7, 1, "AB", 2)' file.txt
+#
+#   # follow stream 8 with payload as ASCII, without packet/flow info, with TCP
+#   # sequence number analysis and without colors, and redirect output to 'out.txt'.
+#   $ tawk 'follow_stream(8, 0, "", 0, 0, 1)' file.txt > out.txt
+#
+#   # follow stream 9 with payload as hexdump, with packet/flow info,
+#   # but without TCP sequence numbers analysis and colors.
+#   $ tawk 'follow_stream(9, 1, "", 1, 1, 1)' file.txt
+
+@include "base64"
+@include "bitsanyset"
+@include "dhost"
+@include "dport"
+@include "hdr"
+@include "isnum"
+@include "printerr"
+@include "proto2str"
+@include "shost"
+@include "sport"
+@include "_validate_col"
+
+function _follow_stream_ascii(content, start, color,        _nocolor, _s) {
+    _s = ""
+    if (color) {
+        _s = color
+        _nocolor = __FOLLOW_STREAM_COLORS__["NC"]
+    }
+    content = substr(content, start)
+    if (__FOLLOW_STREAM_OUTPUT_FORMAT__ != 2) {
+        gsub(/\\r\\n/, _nocolor "\n" color, content)
+        gsub(/\\n/, _nocolor "\n" color, content)
+        gsub(/\\r/, _nocolor "\n" color, content)
+        gsub(/\\t/, "\t", content)
+    }
+    _s = _s "" content "" _nocolor
+    if (__FOLLOW_STREAM_OUTPUT_FORMAT__ == 1) {
+        _s = _s "\n"
+    }
+    return _s
+}
+
+function _follow_stream_base64(content, start, color,        _c, _i, _l, _s) {
+    _s = ""
+    _l = split(content, _c, " ")
+    for (_i = start; _i <= _l; _i++) {
+        _s = _s "" sprintf("%02x", strtonum(_c[_i]))
+    }
+    _s = base64(_s)
+    if (color) {
+        _s = color "" _s "" __FOLLOW_STREAM_COLORS__["NC"]
+    }
+    if (__FOLLOW_STREAM_OUTPUT_FORMAT__ != 2) {
+        _s = _s "\n"
+    }
+    return _s
+}
+
+function _follow_stream_binary(content, start, color,        _c, _i, _l, _s) {
+    _s = ""
+    _l = split(content, _c, " ")
+    for (_i = start; _i <= _l; _i++) {
+        _s = _s "" sprintf("%02x", strtonum(_c[_i]))
+    }
+    if (color) {
+        _s = color "" _s "" __FOLLOW_STREAM_COLORS__["NC"]
+    }
+    if (__FOLLOW_STREAM_OUTPUT_FORMAT__ < 2) {
+        _s = _s "\n"
+    }
+    return _s
+}
+
+function _follow_stream_hex_to_ascii(content, start, color,        _c, _i, _l, _s, _x, _y, _nocolor) {
+    _s = ""
+    if (color) {
+        _s = color
+        _nocolor = __FOLLOW_STREAM_COLORS__["NC"]
+    }
+    _l = split(content, _c, " ")
+    for (_i = start; _i <= _l; _i++) {
+        _x = strtonum(_c[_i])
+        _y = ((_i+1 <= _l) ? strtonum(_c[_i+1]) : 0)
+        if (__FOLLOW_STREAM_OUTPUT_FORMAT__ == 2) {
+            if (_x >= 32 && _x <= 126) _s = _s "" sprintf("%c", _x)
+            else if (_x == 0x0d) _s = _s "\\r"
+            else if (_x == 0x0a) _s = _s "\\n"
+            else if (_x == 0x09) _s = _s "\\t"
+            else if (_x == 0x5c) _s = _s "\\"
+            else _s = _s "."
+        } else {
+            if (_x >= 32 && _x <= 126) _s = _s "" sprintf("%c", _x)
+            else if (_x == 0x0d && _y == 0x0a) continue # \r\n
+            else if (_x == 0x0d || _x == 0x0a) _s = _s "" _nocolor "\n" color
+            else if (_x == 0x09) _s = _s "\t"
+            else if (_x == 0x5c) _s = _s "\\"
+            else _s = _s "."
+        }
+    }
+    if (color) {
+        _s = _s "" _nocolor
+    }
+    if (__FOLLOW_STREAM_OUTPUT_FORMAT__ == 1) {
+        _s = _s "\n"
+    }
+    return _s
+}
+
+function _follow_stream_hexdump(content, start, color, d, dir,        _c, _i, _ii, _j, _l, _s, _x) {
+    if (!__FOLLOW_STREAM_LAST_OFFSET__[dir]) {
+        __FOLLOW_STREAM_LAST_OFFSET__[dir] = 0
+    }
+    _i = 1
+    _s = ""
+    content = substr(content, start)
+    _l = split(content, _c, " ")
+    while (_i <= _l) {
+        if (__FOLLOW_STREAM_OUTPUT_FORMAT__ == 0 && ((!d || d == "AB") && dir == "B")) {
+            _s = _s "    "
+        }
+
+        # Offset
+        _s = _s "" sprintf("%s%08X ", color, __FOLLOW_STREAM_LAST_OFFSET__[dir])
+
+        _ii = _i
+
+        # Hex
+        for (_j = 0; _j < 16; _j++) {
+            if (_i > _l) {
+                _s = _s "   "
+            } else {
+                _s = _s " " sprintf("%02x", strtonum(_c[_i]))
+            }
+            if (_j == 7) {
+                _s = _s " "
+            }
+            _i++
+        }
+
+        _s = _s "   "
+
+        # ASCII
+        for (_j = 0; _j < 16 && _ii <= _l; _j++) {
+            _x = strtonum(_c[_ii])
+            if (_x < 32 || _x > 126) {
+                _x = "."
+            }
+            _s = _s "" sprintf("%c", _x)
+            if (_j == 7) {
+                _s = _s " "
+            }
+            _ii++
+        }
+
+        __FOLLOW_STREAM_LAST_OFFSET__[dir] += _j
+        if (color) {
+            _s = _s "" __FOLLOW_STREAM_COLORS__["NC"]
+        }
+        if (__FOLLOW_STREAM_OUTPUT_FORMAT__ != 2) {
+            _s = _s "\n"
+        }
+    }
+    return _s
+}
+
+function follow_stream(f, of, d, pf, r, nc,        _uid, _content, _dir, _l7Len, _color, _l, _c, _i, _ii, _j, _x) {
+    _uid = _validate_col("flowInd", _my_flowInd)
+    _validate_col("flowStat")
+    if (pf || of == 3) _content = _validate_col("l7HexContent")
+    else _content = _validate_col("l7Content;l7HexContent")
+    __FOLLOW_STREAM_DATA_FORMAT__ = _content
+
+    if (of < 0 || of > 3 || (of && !isnum(of))) {
+        printerr("Invalid value for output format: expected [0-3], found " of)
+        exit(1)
+    }
+
+    if (pf < 0 || pf > 3 || (pf && !isnum(pf))) {
+        printerr("Invalid value for payload format: expected [0-3], found " pf)
+        exit(1)
+    }
+
+    __FOLLOW_STREAM_OUTPUT_FORMAT__ = of
+    __FOLLOW_STREAM_PAYLOAD_FORMAT__ = pf
+
+    if (__FOLLOW_STREAM_OUTPUT_FORMAT__ == 2) {
+        if (__FOLLOW_STREAM_PAYLOAD_FORMAT__ == 1) {
+            printerr("JSON output with hexdump payload is not supported.")
+            exit(1)
+        }
+    } else if (__FOLLOW_STREAM_OUTPUT_FORMAT__ == 3) {
+        if (!d || (d != "A" && d != "B")) {
+            printerr("Payload reconstruction (output format 3) requires a direction (\"A\" or \"B\").")
+            exit(1)
+        }
+        __FOLLOW_STREAM_PAYLOAD_FORMAT__ = 2
+    } else if (!nc && !__FOLLOW_STREAM_COLORS__["NC"]) {
+        __FOLLOW_STREAM_COLORS__["A"]  = "\033[0;31m"  # red
+        __FOLLOW_STREAM_COLORS__["B"]  = "\033[0;34m"  # blue
+        __FOLLOW_STREAM_COLORS__["NC"] = "\033[0m"     # no colors
+    }
+
+    if (hdr() || $_uid != f || length($_content) == 0) return
+
+    _dir = bitsanyset($flowStat, 1) ? "B" : "A"
+    if ((d && d != "AB") && d != _dir) return
+
+    if (_dir == "A") {
+        __FOLLOW_STREAM_CLI_PKTS__++
+    } else {
+        __FOLLOW_STREAM_SRV_PKTS__++
+    }
+
+    if (__FOLLOW_STREAM_LAST_DIR__ && __FOLLOW_STREAM_LAST_DIR__ != _dir) {
+        __FOLLOW_STREAM_TURNS__++
+    }
+
+    __FOLLOW_STREAM_LAST_DIR__ = _dir
+
+    if (!__FOLLOW_STREAM_LAST_NEXT__[_dir]) {
+        if (!r) {
+            _validate_col("seq")
+            _validate_col("l7Len")
+        }
+        if (__FOLLOW_STREAM_OUTPUT_FORMAT__ == 1 || __FOLLOW_STREAM_OUTPUT_FORMAT__ == 2) {
+            _validate_col("pktNo", _my_pktNo)
+        }
+    }
+
+    _seq = ((!r) ? strtonum($seq) : $pktNo ":" $flowInd ":" _dir)
+    _proto = proto2str(proto())
+
+    # No reassembly if proto != TCP
+    if (!r && _proto != "TCP") {
+        r = 1
+    }
+
+    # Ignore retransmissions
+    if (!r && __FOLLOW_STREAM_DATA_LEN__[_dir][_seq] && __FOLLOW_STREAM_DATA_LEN__[_dir][_seq] >= $l7Len) next
+
+    __FOLLOW_STREAM_DATA_NUM__[_dir][_seq] = $pktNo
+    __FOLLOW_STREAM_DATA_LEN__[_dir][_seq] = $l7Len
+    __FOLLOW_STREAM_DATA__[_dir][_seq] = $_content
+
+    if (__FOLLOW_STREAM_OUTPUT_FORMAT__ == 1) {
+        _len = ((l7Len) ? " (" $l7Len " bytes)" : "")
+        __FOLLOW_STREAM_DATA_INFO__[_dir][_seq] = \
+                "Packet " $pktNo "" _len ": " \
+                "flow " $_uid " " _dir " " \
+                shost() ":" sport() " -> " dhost() ":" dport() " " _proto "" \
+                ((vlanID && $vlanID) ? " VLAN " $vlanID : "") \
+                ((seq && _proto == "TCP") ? " seq: " $seq : "")
+    } else if (__FOLLOW_STREAM_OUTPUT_FORMAT__ == 2) {
+        _data = $_content
+        switch (__FOLLOW_STREAM_PAYLOAD_FORMAT__) {
+            case 1: _payload = _follow_stream_hexdump(_data, 1, "", d, _dir); break
+            case 2: _payload = _follow_stream_binary(_data, 1, ""); break
+            case 3: _payload = _follow_stream_base64(_data, 1, ""); break
+            default:
+                if (_content == l7HexContent) {
+                    _payload = _follow_stream_hex_to_ascii(_data, 1, "")
+                } else {
+                    _payload = _follow_stream_ascii(_data, 1, "")
+                }
+                break;
+        }
+        __FOLLOW_STREAM_DATA_JSON__[_dir][_seq] = \
+                "\"flow\":" $flowInd "," \
+                "\"packet\":" $pktNo "," \
+                "\"timestamp\":" $time "," \
+                ((vlanID && $vlanID) ? "\"vlan\":\"" $vlanID "\"," : "") \
+                "\"srcIP\":\"" shost() "\"," \
+                "\"srcPort\":" sport() "," \
+                "\"dstIP\":\"" dhost() "\"," \
+                "\"dstPort\":" dport() "," \
+                "\"proto\":\"" _proto "\"," \
+                ((l7Len) ? "\"length\":" $l7Len "," : "") \
+                ((seq && _proto == "TCP") ? "\"seq\":" $seq "," : "")
+    }
+
+    if (!r && __FOLLOW_STREAM_LAST_NEXT__[_dir] && _seq > __FOLLOW_STREAM_LAST_NEXT__[_dir]) {
+        # out of order...
+        next
+    }
+
+    _follow_stream_process_data(_dir, r)
+}
+
+function _follow_stream_process_data(dir, r, from_END,        _color, _data, _i, _ii, _l7Len, _ll, _seq, _start, _stream) {
+    _color = __FOLLOW_STREAM_COLORS__[dir]
+    _ll = asorti(__FOLLOW_STREAM_DATA_LEN__[dir], _stream)
+
+    for (_ii = 1; _ii <= _ll; _ii++) {
+        _start = 1
+        _seq = _stream[_ii]
+
+        if (!r && __FOLLOW_STREAM_LAST_NEXT__[dir] && _seq > __FOLLOW_STREAM_LAST_NEXT__[dir]) {
+            # out of order...
+            if (!from_END) next
+        }
+
+        _l7Len = __FOLLOW_STREAM_DATA_LEN__[dir][_seq]
+
+        # Discard TCP keep-alive
+        if (!r && _seq == __FOLLOW_STREAM_LAST_NEXT__[dir] - 1 && (_l7Len == 0 || _l7Len == 1)) {
+            delete __FOLLOW_STREAM_DATA__[dir][_seq]
+            delete __FOLLOW_STREAM_DATA_LEN__[dir][_seq]
+            delete __FOLLOW_STREAM_DATA_NUM__[dir][_seq]
+            delete __FOLLOW_STREAM_DATA_INFO__[dir][_seq]
+            delete __FOLLOW_STREAM_DATA_JSON__[dir][_seq]
+            continue
+        }
+
+        # Discard retransmissions
+        if (!r && _seq + _l7Len <= __FOLLOW_STREAM_LAST_NEXT__[dir]) {
+            delete __FOLLOW_STREAM_DATA__[dir][_seq]
+            delete __FOLLOW_STREAM_DATA_LEN__[dir][_seq]
+            delete __FOLLOW_STREAM_DATA_NUM__[dir][_seq]
+            delete __FOLLOW_STREAM_DATA_INFO__[dir][_seq]
+            delete __FOLLOW_STREAM_DATA_JSON__[dir][_seq]
+            continue
+        }
+
+        if (!r && __FOLLOW_STREAM_LAST_SEQ__[dir] == _seq) {
+            # Partly ACK'd data
+            if (__FOLLOW_STREAM_LAST_NEXT__[dir] - __FOLLOW_STREAM_LAST_SEQ__[dir] == 1) {
+                _start = 2
+            } else {
+                delete __FOLLOW_STREAM_DATA__[dir][_seq]
+                delete __FOLLOW_STREAM_DATA_LEN__[dir][_seq]
+                delete __FOLLOW_STREAM_DATA_NUM__[dir][_seq]
+                delete __FOLLOW_STREAM_DATA_INFO__[dir][_seq]
+                delete __FOLLOW_STREAM_DATA_JSON__[dir][_seq]
+                continue
+            }
+        }
+
+        if (!r \
+            && __FOLLOW_STREAM_OUTPUT_FORMAT__ == 3 \
+            && __FOLLOW_STREAM_LAST_NEXT__[dir] \
+            && __FOLLOW_STREAM_LAST_NEXT__[dir] != _seq \
+            && _start == 1 \
+        ) {
+            for (_i = __FOLLOW_STREAM_LAST_NEXT__[dir]; _i < _seq; _i++) {
+                printf "00"
+            }
+        }
+
+        if (__FOLLOW_STREAM_OUTPUT_FORMAT__ == 1) {
+            printf "\n================================================================================\n"
+            printf __FOLLOW_STREAM_DATA_INFO__[dir][_seq]
+            printf "\n================================================================================\n\n"
+        }
+
+        _data = __FOLLOW_STREAM_DATA__[dir][_seq]
+
+        _s = ""
+        switch (__FOLLOW_STREAM_PAYLOAD_FORMAT__) {
+            case 1: _s = _follow_stream_hexdump(_data, _start, _color, d, dir); break
+            case 2: _s = _follow_stream_binary(_data, _start, _color); break
+            case 3: _s = _follow_stream_base64(_data, _start, _color); break
+            default:
+                if (__FOLLOW_STREAM_DATA_FORMAT__ == l7HexContent) {
+                    _s = _follow_stream_hex_to_ascii(_data, _start, _color)
+                } else {
+                    _s = _follow_stream_ascii(_data, _start, _color)
+                }
+                break;
+        }
+
+        if (__FOLLOW_STREAM_OUTPUT_FORMAT__ == 2) {
+            printf "{%s\"payload\":\"%s\"}\n", __FOLLOW_STREAM_DATA_JSON__[dir][_seq], _s
+        } else {
+            printf "%s", _s
+        }
+
+        __FOLLOW_STREAM_LAST_SEQ__[dir] = _seq
+        __FOLLOW_STREAM_LAST_NEXT__[dir] = _seq + _l7Len
+
+        delete __FOLLOW_STREAM_DATA__[dir][_seq]
+        delete __FOLLOW_STREAM_DATA_LEN__[dir][_seq]
+        delete __FOLLOW_STREAM_DATA_NUM__[dir][_seq]
+        delete __FOLLOW_STREAM_DATA_INFO__[dir][_seq]
+        delete __FOLLOW_STREAM_DATA_JSON__[dir][_seq]
+
+        _seq = __FOLLOW_STREAM_LAST_NEXT__[dir]
+    }
+}
+
+END {
+    _a_remaining = length(__FOLLOW_STREAM_DATA__["A"])
+    _b_remaining = length(__FOLLOW_STREAM_DATA__["B"])
+    if (_a_remaining && !_b_remaining) {
+        _follow_stream_process_data("A", 1, 1)
+    } else if (_b_remaining && !_a_remaining) {
+        _follow_stream_process_data("B", 1, 1)
+    } else if (_a_remaining && _b_remaining) {
+        _follow_stream_process_data("A", 1, 1)
+        _follow_stream_process_data("B", 1, 1)
+    }
+
+    if (__FOLLOW_STREAM_OUTPUT_FORMAT__ == 1) {
+        _cli = __FOLLOW_STREAM_COLORS__["A"] "client" __FOLLOW_STREAM_COLORS__["NC"]
+        _srv = __FOLLOW_STREAM_COLORS__["B"] "server" __FOLLOW_STREAM_COLORS__["NC"]
+        printf "\n================================================================================\n"
+        printf "%d %s packets, %d %s packets, %d turns.\n",
+                __FOLLOW_STREAM_CLI_PKTS__, _cli,
+                __FOLLOW_STREAM_SRV_PKTS__, _srv,
+                __FOLLOW_STREAM_TURNS__
+    }
+}

@@ -1,0 +1,100 @@
+\IfFileExists{t2doc.cls}{
+    \documentclass[documentation]{subfiles}
+}{
+    \errmessage{Error: could not find 't2doc.cls'}
+}
+
+\begin{document}
+
+% Declare author and title here, so the main document can reuse it
+\trantitle
+    {mndpDecode} % Plugin name
+    {MikroTik Neighbor Discovery Protocol (MNDP)} % Short description
+    {Tranalyzer Development Team} % author(s)
+
+\section{mndpDecode}\label{s:mndpDecode}
+
+\subsection{Description}
+The mndpDecode plugin analyzes MNDP traffic.
+
+\subsection{Configuration Flags}
+The following flags can be used to control the output of the plugin:
+\begin{longtable}{>{\tt}lcl>{\tt\small}l}
+    \toprule
+    {\bf Name}   & {\bf Default} & {\bf Description}                & {\bf Flags}\\
+    \midrule\endhead%
+    MNDP\_DEBUG  & 0             & Print debug messages             & \\
+    MNDP\_LSTLEN & 5             & Max number of elements for lists & \\
+    MNDP\_STRLEN & 32            & Max length for strings           & \\
+    \bottomrule
+\end{longtable}
+
+\subsection{Flow File Output}
+The mndpDecode plugin outputs the following columns:
+\begin{longtable}{>{\tt}lll>{\tt\small}l}
+    \toprule
+    {\bf Column}       & {\bf Type} & {\bf Description}       & {\bf Flags}\\
+    \midrule\endhead%
+    \nameref{mndpStat} & H8         & Status                  & \\
+    mndpMAC            & R(MAC)     & MAC-Address             & MNDP\_LSTLEN>0\\
+    mndpIdentity       & R(STR)     & Identity                & MNDP\_LSTLEN>0\\
+    mndpVersion        & R(STR)     & Version                 & MNDP\_LSTLEN>0\\
+    mndpPlatform       & R(STR)     & Platform                & MNDP\_LSTLEN>0\\
+    %mndpUptime         & R(U32)     & Uptime (seconds)        & MNDP\_LSTLEN>0\\
+    mndpSoftwareID     & R(STR)     & Software-ID             & MNDP\_LSTLEN>0\\
+    mndpBoard          & R(STR)     & Board                   & MNDP\_LSTLEN>0\\
+    mndpUnpack         & R(U8)      & Packet compression type & MNDP\_LSTLEN>0\\
+    mndpIface          & R(STR)     & Interface name          & MNDP\_LSTLEN>0\\
+    mndpIPv4           & R(IP4)     & IPv4-Address            & MNDP\_LSTLEN>0\\
+    mndpIPv6           & R(IP6)     & IPv6-Address            & MNDP\_LSTLEN>0\\
+    \bottomrule
+\end{longtable}
+
+\subsubsection{mndpStat}\label{mndpStat}
+The {\tt mndpStat} column is to be interpreted as follows:
+\begin{longtable}{>{\tt}rl}
+    \toprule
+    {\bf mndpStat} & {\bf Description}\\
+    \midrule\endhead%
+    0x0\textcolor{magenta}{1} & Flow is MNDP\\
+    0x0\textcolor{magenta}{2} & IPv4 address\\
+    0x0\textcolor{magenta}{4} & IPv6 address\\
+    0x0\textcolor{magenta}{8} & Unknown TLV type\\
+    \\
+    0x\textcolor{magenta}{1}0 & Invalid TLV length, e.g., length of MAC address > 6\\
+    0x\textcolor{magenta}{2}0 & List was truncated... increase {\tt MNDP\_LSTLEN}\\\\
+    0x\textcolor{magenta}{4}0 & String was truncated... increase {\tt MNDP\_STRLEN}\\
+    0x\textcolor{magenta}{8}0 & Packet was snapped\\
+    \bottomrule
+\end{longtable}
+
+\subsection{Packet File Output}
+In packet mode ({\tt --s} option), the mndpDecode plugin outputs the following columns:
+\begin{longtable}{>{\tt}lll>{\tt\small}l}
+    \toprule
+    {\bf Column}       & {\bf Type} & {\bf Description} & {\bf Flags}\\
+    \midrule\endhead%
+    \nameref{mndpStat} & H8  & Status\\
+    mndpSeqNo          & U16 & Sequence Number\\
+    mndpMAC            & STR & MAC-Address\\
+    mndpIdentity       & STR & Identity\\
+    mndpVersion        & STR & Version\\
+    mndpPlatform       & STR & Platform\\
+    mndpUptime         & U32 & Uptime (seconds)\\
+    mndpSoftwareID     & STR & Software-ID\\
+    mndpBoard          & STR & Board\\
+    mndpUnpack         & U8  & Packet compression type\\
+    mndpIface          & STR & Interface name\\
+    mndpIPv4           & IP4 & IPv4-Address\\
+    mndpIPv6           & IP6 & IPv6-Address\\
+    \bottomrule
+\end{longtable}
+
+\subsection{Plugin Report Output}
+The following information is reported:
+\begin{itemize}
+    \item Aggregated {\tt\nameref{mndpStat}}
+    \item Number of MNDP packets
+\end{itemize}
+
+\end{document}

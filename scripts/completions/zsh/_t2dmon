@@ -1,0 +1,22 @@
+# ZSH completion for t2dmon
+
+_t2dmon() {
+    #compdef t2dmon
+
+    local cur="${words[CURRENT]}"
+    [ $CURRENT -gt 2 ] && local prev="${words[CURRENT-1]}"
+
+    case "$prev" in
+        -i|-m)
+            return
+            ;;
+    esac
+
+    if [[ "$cur" == -* ]]; then
+        _arguments --
+    else
+        _files -/
+    fi
+}
+
+compdef _t2dmon t2dmon

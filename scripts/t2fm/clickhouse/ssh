@@ -1,0 +1,21 @@
+-- Return a list of SSH connections
+
+SELECT
+    toUnixTimestamp64Micro("timeFirst") / 1000000,
+    toUnixTimestamp64Micro("duration") / 1000000,
+    replaceRegexpOne(IPv6NumToString("srcIP".2), '^::ffff:', ''),
+    replaceRegexpOne(IPv6NumToString("dstIP".2), '^::ffff:', ''),
+    "l7BytesSnt",
+    toValidUTF8(ssh_version)
+FROM
+    flow
+ARRAY JOIN
+    "sshVersion" AS ssh_version
+WHERE
+    ("sshStat" != 0 OR match("nDPIclass", 'SSH'))
+    AND "duration" > 0
+    AND "l7BytesSnt" > 0
+    AND "timeFirst" >= {time_from:DateTime64(6)}
+    AND "timeLast" <= {time_to:DateTime64(6)}
+
+LIMIT {n:UInt64}

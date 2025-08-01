@@ -1,0 +1,83 @@
+\IfFileExists{t2doc.cls}{
+    \documentclass[documentation]{subfiles}
+}{
+    \errmessage{Error: could not find 't2doc.cls'}
+}
+
+\begin{document}
+
+\trantitle
+    {connStat}
+    {Connection Statistics}
+    {Tranalyzer Development Team} % author(s)
+
+\section{connStat}\label{s:connStat}
+
+\subsection{Description}
+The connStat plugin counts the connections between different IPs and ports per flow and during the pcap lifetime
+in order to produce an operational picture for anomaly detection. %This plugin is more elaborate as connectionCounter
+%because it uses the findex to determine which flow started the communication, but uses more hash space.
+
+\subsection{Configuration Flags}
+The following flags can be used to control the output of the plugin:
+\begin{longtable}{>{\tt}lcl}
+    \toprule
+    {\bf Name} & {\bf Default} & {\bf Description} \\
+    \midrule\endhead%
+    CS\_HSDRM     & 1 & Decrement IP counters when flows die \\
+    CS\_SDIPMAX   & 1 & 0: Number of src dst IP connections, \\
+                  &   & 1: IP src dst connection with the highest count\\
+    CS\_MR\_SPOOF & 0 & 1: Activate MAC spoof detector\\
+    CS\_PBNMAX    & 1 & 1: Report packet/byte biggest talker\\
+    \bottomrule
+\end{longtable}
+
+\subsection{Flow File Output}
+The connStat plugin outputs the following columns:
+\begin{longtable}{>{\tt}lll>{\tt\small}l}
+    \toprule
+    {\bf Column} & {\bf Type} & {\bf Description} & {\bf Flags}\\
+    \midrule\endhead%
+    connSip     & U32 & Number of unique source IPs                                       & \\
+    connDip     & U32 & Number of unique destination IPs                                  & \\
+    connSipDip  & U32 & Number of connections between source and destination IPs          & \\
+    connSipDprt & U32 & Number of connections between source IP and destination port      & \\
+    connMacSpf  & U32 & Number of MAC addresses per source IP                             & CS\_MR\_SPOOF=1\\
+    connF       &   F & The $f$ number: {\tt connSipDprt}/{\tt connSip} [EXPERIMENTAL]    & \\
+    connG       &   F & The $g$ number: {\tt connSipDprt}/{\tt connSipDip} [EXPERIMENTAL] & \\
+    connNumPCnt & U64 & Number of unique IP's source packet count                         & CS\_PBNMAX=1\\
+    connNumBCnt & U64 & Number of unique IP's source byte count                           & CS\_PBNMAX=1\\
+    \bottomrule
+\end{longtable}
+
+\subsection{Monitoring Output}
+In monitoring mode, the connStat plugin outputs the following columns:
+\begin{longtable}{>{\tt}lll>{\tt\small}l}
+    \toprule
+    {\bf Column} & {\bf Type} & {\bf Description} & {\bf Flags}\\
+    \midrule\endhead%
+    connSip     & U32 & Number of unique source IPs                                       & \\
+    connDip     & U32 & Number of unique destination IPs                                  & \\
+    connSipDip  & U32 & Number of connections between source and destination IPs          & \\
+    connSipDprt & U32 & Number of connections between source IP and destination port      & \\
+    connF       &   F & The $f$ number: {\tt connSipDprt}/{\tt connSip} [EXPERIMENTAL]    & \\
+    connG       &   F & The $g$ number: {\tt connSipDprt}/{\tt connSipDip} [EXPERIMENTAL] & \\
+    \bottomrule
+\end{longtable}
+
+\subsection{Plugin Report Output}
+The following information is reported:
+\begin{itemize}
+    \item Number of unique source IPs
+    \item Number of unique destination IPs
+    \item Number of unique source/destination IPs connections
+    \item Max unique number of source IP / destination port connections
+    \item IP connF=connSipDprt/connSip
+    \item IP connG=connSipDprt/connSipDip
+    \item Source IP with max connections ({\tt ANONYM\_IP=0})
+    \item Destination IP with max connections ({\tt ANONYM\_IP=0})
+    \item Biggest L3 packets talker ({\tt CS\_PBNMAX=1})
+    \item Biggest L3 bytes talker ({\tt CS\_PBNMAX=1})
+\end{itemize}
+
+\end{document}

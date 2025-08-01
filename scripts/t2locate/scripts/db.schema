@@ -1,0 +1,39 @@
+CREATE TABLE IF NOT EXISTS locations(
+    id INTEGER NOT NULL PRIMARY KEY,
+    name TEXT,
+    asciiname TEXT,
+    alternatenames TEXT,
+    latitude REAL,
+    longitude REAL,
+    featureclass TEXT,
+    featurecode TEXT,
+    countrycode TEXT,
+    cc2 TEXT,
+    admin1code TEXT,
+    admin2code TEXT,
+    admin3code TEXT,
+    admin4code TEXT,
+    population INTEGER,
+    elevation INTEGER,
+    dem INTEGER,
+    timezone TEXT,
+    modificationdate TEXT);
+
+CREATE INDEX IF NOT EXISTS admin1_index ON locations (countrycode, admin1code) WHERE featurecode='ADM1';
+CREATE INDEX IF NOT EXISTS admin2_index ON locations (countrycode, admin2code) WHERE featurecode='ADM2';
+CREATE INDEX IF NOT EXISTS admin3_index ON locations (countrycode, admin3code) WHERE featurecode='ADM3';
+CREATE INDEX IF NOT EXISTS admin4_index ON locations (countrycode, admin4code) WHERE featurecode='ADM4';
+
+CREATE VIRTUAL TABLE IF NOT EXISTS locations_index USING rtree(
+    id,
+    minLat, maxLat,
+    minLong, maxLong);
+
+CREATE TABLE IF NOT EXISTS locations_info(
+    id INTEGER NOT NULL PRIMARY KEY,
+    country TEXT,
+    admin1 TEXT,
+    admin2 TEXT,
+    admin3 TEXT,
+    admin4 TEXT,
+    name TEXT);

@@ -1,0 +1,146 @@
+\IfFileExists{t2doc.cls}{
+    \documentclass[documentation]{subfiles}
+}{
+    \errmessage{Error: could not find 't2doc.cls'}
+}
+
+\begin{document}
+
+\trantitle
+    {tftpDecode}
+    {Trivial File Transfer Protocol (TFTP)}
+    {Tranalyzer Development Team} % author(s)
+
+\section{tftpDecode}\label{s:tftpDecode}
+
+\subsection{Description}
+The {\tt tftpDecode} plugin analyzes TFTP traffic.
+User defined compiler switches are in {\em tftpDecode.h}.
+
+\subsection{Configuration Flags}
+The following flags can be used to control the output of the plugin:
+\begin{longtable}{>{\tt}lcl>{\tt\small}l}
+    \toprule
+    {\bf Name} & {\bf Default} & {\bf Description} & {\bf Flags}\\
+    \midrule\endhead%
+    TFTP\_SAVE      &  0 & Save content to {\tt\small TFTP\_F\_PATH}       & \\
+    TFTP\_RMDIR     &  1 & Empty {\tt\small TFTP\_F\_PATH} before starting & TFTP\_SAVE=1\\
+    TFTP\_CMD\_AGGR &  1 & Aggregate TFTP commands/errors                  & \\
+    TFTP\_BTFLD     &  1 & Bitfield coding of TFTP commands                & \\
+    TFTP\_MXNMLN    & 15 & Maximal name length                             & \\
+    TFTP\_MAXCNM    &  2 & Maximal length of command field                 & \\
+    TFTP\_F\_PATH   & {\tt\small "/tmp/TFTPFILES/"}
+                         & Path for extracted content                      & \\
+    \bottomrule
+\end{longtable}
+
+\subsubsection{Environment Variable Configuration Flags}
+The following configuration flags can also be configured with environment variables ({\tt ENVCNTRL>0}):
+\begin{itemize}
+    \item {\tt TFTP\_RMDIR}
+    \item {\tt TFTP\_F\_PATH}
+\end{itemize}
+
+\subsection{Flow File Output}
+The tftpDecode plugin outputs the following columns:
+\begin{longtable}{>{\tt}lll>{\tt\small}l}
+    \toprule
+    {\bf Column} & {\bf Type} & {\bf Description} & {\bf Flags}\\
+    \midrule\endhead%
+    \nameref{tftpStat}                & H16  & Status               & \\
+    tftpPFlow                         & U64  & Parent flow          & \\
+    \hyperref[tftpOpCBF]{tftpOpCBF}   & H8   & Opcode bitfield      & TFTP\_BITFIELD=1\\
+    \hyperref[tftpErrCBF]{tftpErrCBF} & H8   & Error code bitfield  & TFTP\_BITFIELD=1\\
+    tftpNumOpcode                     & U8   & Number of opcodes    & \\
+    \hyperref[tftpOpCBF]{tftpOpcode}  & RSC  & Opcodes              & TFTP\_MAXCNM>0\\
+    tftpNumParam                      & U8   & Number of parameters & \\
+    tftpParam                         & RS   & Parameters           & TFTP\_MAXCNM>0\\
+    tftpNumError                      & U8   & Number of errors     & \\
+    \hyperref[tftpErrCBF]{tftpErrC}   & RU16 & Error codes          & TFTP\_MAXCNM>0\\
+    \bottomrule
+\end{longtable}
+
+\subsubsection{tftpStat}\label{tftpStat}
+The {\tt tftpStat} column is to be interpreted as follows:
+\begin{longtable}{>{\tt}rl>{\tt\small}l}
+    \toprule
+    {\bf tftpStat}     & {\bf Description}                                        & {\bf Flags}\\
+    \midrule\endhead%
+    $2^{0}$  (=0x0001) & TFTP flow found                                          & \\
+    $2^{1}$  (=0x0002) & TFTP data read                                           & \\
+    $2^{2}$  (=0x0004) & TFTP data write                                          & \\
+    $2^{3}$  (=0x0008) & File open error                                          & TFTP\_SAVE=1\\
+    \\
+    $2^{4}$  (=0x0010) & Error in block send sequence                             & \\
+    $2^{5}$  (=0x0020) & Error in block ack sequence                              & \\
+    $2^{6}$  (=0x0040) & Error or TFTP protocol error or not TFTP                 & \\
+    $2^{7}$  (=0x0080) & Array overflow\ldots increase {\tt TFTP\_MAXCNM}         & \\
+    \\
+    $2^{8}$  (=0x0100) & String truncated\ldots increase {\tt TFTP\_MXNMLN}       & \\
+    $2^{9}$  (=0x0200) & ---                                                      & \\
+    $2^{10}$ (=0x0400) & ---                                                      & \\
+    $2^{11}$ (=0x0800) & Crafted packet or TFTP read/write parameter length error & \\
+    \\
+    $2^{12}$ (=0x1000) & TFTP active                                              & \\
+    $2^{13}$ (=0x2000) & TFTP passive                                             & \\
+    $2^{14}$ (=0x4000) & ---                                                      & \\
+    $2^{15}$ (=0x8000) & ---                                                      & \\
+    \bottomrule
+\end{longtable}
+
+\subsubsection{tftpOpcode and tftpOpCBF}\label{tftpOpCBF}
+The {\tt tftpOpCBF} column is to be interpreted as follows:
+\begin{longtable}{>{\tt}r>{\tt}cl}
+    \toprule
+    {\bf tftpOpCBF} & {\bf tftpOpcode} & {\bf Description} \\
+    \midrule\endhead%
+    $2^0$ (=0x01)   & RRQ              & Read request \\
+    $2^1$ (=0x02)   & WRQ              & Write request \\
+    $2^2$ (=0x04)   & DTA              & Read or write the next block of data \\
+    $2^3$ (=0x08)   & ACK              & Acknowledgment \\
+    $2^4$ (=0x10)   & ERR              & Error message \\
+    $2^5$ (=0x20)   & OAK              & Option acknowledgment \\
+    $2^6$ (=0x40)   & --{}--{}--       & --- \\
+    $2^7$ (=0x80)   & --{}--{}--       & --- \\
+    \bottomrule
+\end{longtable}
+
+\subsubsection{tftpErrC and tftpErrCBF}\label{tftpErrCBF}
+The {\tt tftpErrCBF} column is to be interpreted as follows:
+\begin{longtable}{c>{\tt}rl}
+    \toprule
+    {\bf tftpErrC} & {\bf tftpErrCBF} & {\bf Description} \\
+    \midrule\endhead%
+       & 0x00 & No Error \\
+     0 & 0x01 & File not found \\
+     1 & 0x02 & Access violation \\
+     2 & 0x04 & Disk full or allocation exceeded \\
+     3 & 0x08 & Illegal TFTP operation \\
+     4 & 0x10 & Unknown transfer ID \\
+     5 & 0x20 & File already exists \\
+     6 & 0x40 & No such user \\
+     7 & 0x80 & Terminate transfer due to option negotiation \\
+    \bottomrule
+\end{longtable}
+
+\clearpage
+
+\subsection{Packet File Output}
+In packet mode ({\tt --s} option), the tftpDecode plugin outputs the following columns:
+\begin{longtable}{>{\tt}lll>{\tt\small}l}
+    \toprule
+    {\bf Column} & {\bf Type} & {\bf Description} & {\bf Flags}\\
+    \midrule\endhead%
+    \hyperref[tftpOpCBF]{tftpOpcode} & SC & TFTP opcode & \\
+    \bottomrule
+\end{longtable}
+
+\subsection{Plugin Report Output}
+The following information is reported:
+\begin{itemize}
+    \item Aggregated {\tt\nameref{tftpStat}}
+    \item Number of TFTP packets
+    \item Number of files extracted ({\tt TFTP\_SAVE=1})
+\end{itemize}
+
+\end{document}

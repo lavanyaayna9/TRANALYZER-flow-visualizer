@@ -1,0 +1,11 @@
+#H bit | arpStat | Description
+#H =============================================================================
+     0 | 0x01    | ARP detected
+#I   1 | 0x02    | Gratuitous ARP (sender IP same as target IP)
+#I   2 | 0x04    | ARP Probe
+#I   3 | 0x08    | ARP Announcement
+
+     4 | 0x10    | -
+#W   5 | 0x20    | MAC/IP list truncated... increase ARP_MAX_IP
+     6 | 0x40    | -
+#W   7 | 0x80    | ARP spoofing (same MAC assigned to multiple IPs)

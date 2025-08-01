@@ -1,0 +1,44 @@
+#H sslRecVer | Description
+#H =============================================================================
+      0x0200 | SSL 2.0
+      0x0300 | SSL 3.0
+      0x0301 | TLS 1.0
+      0x0302 | TLS 1.1
+      0x0303 | TLS 1.2
+      0x0304 | TLS 1.3
+      0x0a0a | GREASE value
+      0x1a1a | GREASE value
+      0x2a2a | GREASE value
+      0x3a3a | GREASE value
+      0x4a4a | GREASE value
+      0x5a5a | GREASE value
+      0x6a6a | GREASE value
+      0x7a7a | GREASE value
+      0x7f0e | TLS 1.3 (draft 14)
+      0x7f0f | TLS 1.3 (draft 15)
+      0x7f10 | TLS 1.3 (draft 16)
+      0x7f11 | TLS 1.3 (draft 17)
+      0x7f12 | TLS 1.3 (draft 18)
+      0x7f13 | TLS 1.3 (draft 19)
+      0x7f14 | TLS 1.3 (draft 20)
+      0x7f15 | TLS 1.3 (draft 21)
+      0x7f16 | TLS 1.3 (draft 22)
+      0x7f17 | TLS 1.3 (draft 23)
+      0x7f18 | TLS 1.3 (draft 24)
+      0x7f19 | TLS 1.3 (draft 25)
+      0x7f1a | TLS 1.3 (draft 26)
+      0x7f1b | TLS 1.3 (draft 27)
+      0x7f1c | TLS 1.3 (draft 28)
+      0x8a8a | GREASE value
+      0x9a9a | GREASE value
+      0xaaaa | GREASE value
+      0xbaba | GREASE value
+      0xcaca | GREASE value
+      0xdada | GREASE value
+      0xeaea | GREASE value
+      0xfafa | GREASE value
+      0xfb17 | TLS 1.3 (Facebook draft 23)
+      0xfb1a | TLS 1.3 (Facebook draft 26)
+      0xfefc | DTLS 1.3
+      0xfefd | DTLS 1.2
+      0xfeff | DTLS 1.0

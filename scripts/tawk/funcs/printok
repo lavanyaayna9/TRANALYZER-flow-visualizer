@@ -1,0 +1,26 @@
+#!/usr/bin/env awk
+#
+# Print the string 's' in green with an added newline.
+# If 'n' is set, the trailing newline is omitted.
+#
+# Parameters:
+#   - s: the string to print
+#   - n: omit the trailing newline if 'n > 0'
+#
+# Dependencies:
+#   - None
+#
+# See also:
+#   - printbold
+#   - printerr
+#   - printinf
+#   - printwrn
+#
+# Examples:
+#   - tawk '$pktsSnt == 42 { printok("42 packets sent") }' file.txt
+#   - tawk '{ printok("Hello ", 1); printok("World") }' file.txt
+
+function printok(s, n,        _n) {
+    _n = (n ? "" : "\n")
+    printf "\033[0;32m%s\033[0m%s", s, _n
+}

@@ -1,0 +1,178 @@
+\IfFileExists{t2doc.cls}{
+    \documentclass[documentation]{subfiles}
+}{
+    \errmessage{Error: could not find t2doc.cls}
+}
+
+\begin{document}
+
+\trantitle
+    {ntpDecode}
+    {Network Time Protocol (NTP)}
+    {Tranalyzer Development Team}
+
+\section{ntpDecode}\label{s:ntpDecode}
+
+\subsection{Description}
+The ntpDecode plugin produces a flow based view of NTP operations between computers for anomaly detection
+and troubleshooting.
+
+\subsection{Configuration Flags}
+The following flags can be used to control the output of the plugin:
+\begin{longtable}{>{\tt}lcl>{\tt\small}l}
+    \toprule
+    {\bf Name} & {\bf Default} & {\bf Description} & {\bf Flags}\\
+    \midrule\endhead%
+    NTP\_TS        & 1 & 0: no time stamps,                 & \\
+                   &   & 1: print NTP time stamps           & \\
+    NTP\_LIVM\_HEX & 0 & Leap indicator, version and mode:  & \\
+                   &   & \qquad 0: split into three values, & \\
+                   &   & \qquad 1: aggregated hex number    & \\
+    \bottomrule
+\end{longtable}
+
+\subsection{Flow File Output}
+The ntpDecode plugin outputs the following columns:
+\begin{longtable}{>{\tt}llll>{\tt\small}ll}
+    \toprule
+    {\bf Name}                      & {\bf Type} & {\bf Description}                              & {\bf Flags}\\
+    \midrule\endhead%
+    \nameref{ntpStat}               & H8         & NTP status, warnings and errors                & \\
+    \nameref{ntpLiVM}               & H8         & NTP leap indicator, version number and mode    & NTP\_LIVM\_HEX=1\\
+    \hyperref[ntpLiVM]{ntpLi\_V\_M} & U8\_U8\_U8 & NTP leap indicator, version number and mode    & NTP\_LIVM\_HEX=0\\
+    \nameref{ntpStrat}              & H8         & NTP stratum                                    & \\
+    ntpRefClkId                     & IP4        & NTP root reference clock ID (stratum $\geq$ 2) & \\
+    \nameref{ntpRefStrId}           & SC         & NTP root reference string (stratum $\leq$ 1)   & \\
+    ntpPollInt                      & U32        & NTP poll interval                              & \\
+    ntpPrec                         & F          & NTP precision                                  & \\
+    ntpRtDelMin                     & F          & NTP root delay minimum                         & \\
+    ntpRtDelMax                     & F          & NTP root delay maximum                         & \\
+    ntpRtDispMin                    & F          & NTP root dispersion minimum                    & \\
+    ntpRtDispMax                    & F          & NTP root dispersion maximum                    & \\
+    ntpRefTS                        & TS         & NTP reference timestamp                        & NTP\_TS=1\\
+    ntpOrigTS                       & TS         & NTP originate timestamp                        & NTP\_TS=1\\
+    ntpRecTS                        & TS         & NTP receive timestamp                          & NTP\_TS=1\\
+    ntpTranTS                       & TS         & NTP transmit timestamp                         & NTP\_TS=1\\
+    \bottomrule
+\end{longtable}
+
+\clearpage
+
+\subsubsection{ntpStat}\label{ntpStat}
+The {\tt ntpStat} column is to be interpreted as follows:
+\begin{longtable}{>{\tt}rl}
+    \toprule
+    {\bf ntpStat} & {\bf Description}\\
+    \midrule\endhead%
+    $2^0$ (=0x01) & NTP port detected \\
+    $2^1$ (=0x02) & --- \\
+    $2^2$ (=0x04) & --- \\
+    $2^3$ (=0x08) & --- \\
+    \\
+    $2^4$ (=0x10) & --- \\
+    $2^5$ (=0x20) & --- \\
+    $2^6$ (=0x40) & --- \\
+    $2^7$ (=0x80) & --- \\
+    \bottomrule
+\end{longtable}
+
+\subsubsection{ntpLiVM}\label{ntpLiVM}
+The {\tt ntpLiVM} column is to be interpreted as follows (refer to \refs{ntp:examples} for some examples):
+\begin{longtable}{>{\tt}rl}
+    \toprule
+    {\bf ntpLiVM} & {\bf Description}\\
+    \midrule\endhead%
+    xx.. ....  & Leap indicator\\
+    ..xx~ x... & Version number\\ % XXX tilda is a hack to fix the output
+    .... .xxx  & Mode\\
+    \bottomrule
+\end{longtable}
+
+The {\tt Leap Indicator} bits are to be interpreted as follows:
+\begin{longtable}{>{\tt}rl}
+    \toprule
+    {\bf Leap Indicator} & {\bf Description}\\
+    \midrule\endhead%
+    0x0 & No warning\\
+    0x1 & Last minute has 61 seconds\\
+    0x2 & Last minute has 59 seconds\\
+    0x3 & Alarm condition, clock not synchronized\\
+    \bottomrule
+\end{longtable}
+
+The {\tt Mode} bits are to be interpreted as follows:
+\begin{longtable}{>{\tt}rl}
+    \toprule
+    {\bf Mode} & {\bf Description}\\
+    \midrule\endhead%
+    0x0 & Reserved\\
+    0x1 & Symmetric active\\
+    0x2 & Symmetric passive\\
+    0x3 & Client\\
+    0x4 & Server\\
+    0x5 & Broadcast\\
+    0x6 & NTP control message\\
+    0x7 & Private use\\
+    \bottomrule
+\end{longtable}
+
+\subsubsection{ntpStrat}\label{ntpStrat}
+The {\tt ntpStrat} column is to be interpreted as follows:
+\begin{longtable}{>{\tt}rl}
+    \toprule
+    {\bf ntpStrat} & {\bf Description}\\
+    \midrule\endhead%
+    0x00       & Unspecified \\
+    0x01       & Primary reference\\
+    0x02--0xff & Secondary reference\\
+    \bottomrule
+\end{longtable}
+
+\subsubsection{ntpRefStrId}\label{ntpRefStrId}
+The interpretation of the {\tt ntpRefStrId} column depends on the value of \nameref{ntpStrat}.
+The following table lists some suggested identifiers:
+\begin{longtable}{>{\tt}r>{\tt}rl}
+    \toprule
+    {\bf ntpStrat} & {\bf ntpRefStrId} & {\bf Description}\\
+    \midrule\endhead%
+    0x00 & DCN      & DCN routing protocol\\
+    0x00 & NIST     & NIST public modem\\
+    0x00 & TSP      & TSP time protocol\\
+    0x00 & DTS      & Digital Time Service\\
+    0x01 & ATOM     & Atomic clock (calibrated)\\
+    0x01 & VLF      & VLF radio\\
+    0x01 & callsign & Generic radio\\
+    0x01 & LORC     & LORAN-C\\
+    0x01 & GOES     & GOES UHF environment satellite\\
+    0x01 & GPS      & GPS UHF positioning satellite\\
+    \bottomrule
+\end{longtable}
+
+\subsection{Monitoring Output}
+In monitoring mode, the ntpDecode plugin outputs the following columns:
+\begin{longtable}{>{\tt}lll>{\tt\small}l}
+    \toprule
+    {\bf Column} & {\bf Type} & {\bf Description} & {\bf Flags}\\
+    \midrule\endhead%
+    ntpPkts & U64 & Number of NTP packets & \\
+    \bottomrule
+\end{longtable}
+
+\subsection{Plugin Report Output}
+The following information is reported:
+\begin{itemize}
+    \item Aggregated {\tt\nameref{ntpStat}}
+    \item Number of NTP packets
+\end{itemize}
+
+\subsection{Examples}\label{ntp:examples}
+\begin{itemize}
+    \item Extract the NTP leap indicator:\\
+          {\tt tawk 'NR > 1 \{ print rshift(and(strtonum(\$ntpLiVM), 0xc0), 6) \}' out\_flows.txt}
+    \item Extract the NTP version:\\
+          {\tt tawk 'NR > 1 \{ print rshift(and(strtonum(\$ntpLiVM), 0x38), 3) \}' out\_flows.txt}
+    \item Extract the NTP mode:\\
+            {\tt tawk 'NR > 1 \{ printf "\%\#x\textbackslash{}n", and(strtonum(\$ntpLiVM), 0x7) \}' out\_flows.txt}
+\end{itemize}
+
+\end{document}

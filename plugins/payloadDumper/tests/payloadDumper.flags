@@ -1,0 +1,27 @@
+# Flags to toggle
+#
+# Run the ../../../tests/test.sh script from the plugin main directory:
+#
+# cd $T2HOME/plugins/payloadDumper
+# ../../tests/test.sh [OPTION...]
+#
+# If run from this folder, make sure to use absolute path for the '-p' option.
+#
+# Flag name     File
+
+# ../../tranalyzer2/src/networkHeaders.h
+SCTP_ACTIVATE       ../../tranalyzer2/src/networkHeaders.h
+IPV6_ACTIVATE       ../../tranalyzer2/src/networkHeaders.h
+
+# ../../tranalyzer2/src/tranalyzer.h
+ENVCNTRL            ../../tranalyzer2/src/tranalyzer.h
+
+# src/payloadDumper.h
+PLDUMP_RMDIR        src/payloadDumper.h
+PLDUMP_NAMES        src/payloadDumper.h
+PLDUMP_MAX_BYTES    src/payloadDumper.h
+PLDUMP_START_OFF    src/payloadDumper.h
+PLDUMP_SCTP         src/payloadDumper.h
+PLDUMP_TCP          src/payloadDumper.h
+PLDUMP_UDP          src/payloadDumper.h
+PLDUMP_L2           src/payloadDumper.h

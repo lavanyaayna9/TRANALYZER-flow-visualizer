@@ -1,0 +1,21 @@
+#H bit | bgpStat | Description
+#H =============================================================================
+     0 | 0x0001  | Flow is BGP
+#W   1 | 0x0002  | Connection Not Synchronized
+#W   2 | 0x0004  | Bad Message Length
+#W   3 | 0x0008  | Bad Message Type
+
+#W   4 | 0x0010  | Unsupported Version Number
+     5 | 0x0020  | -
+#W   6 | 0x0040  | Unacceptable Hold Time
+#W   7 | 0x0080  | Invalid network mask (> 32)
+
+#W   8 | 0x0100  | IAT for update or keep-alive < 0
+#W   9 | 0x0200  | Mismatch
+    10 | 0x0400  | Atomic Aggregate
+    11 | 0x0800  | -
+
+    12 | 0x1000  | -
+    13 | 0x2000  | -
+#W  14 | 0x4000  | One of the array was full... increase BGP_ASIZE
+#W  15 | 0x8000  | Malformed packet (snaplen)

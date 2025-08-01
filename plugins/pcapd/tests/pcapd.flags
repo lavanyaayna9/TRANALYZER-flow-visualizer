@@ -1,0 +1,29 @@
+# Flags to toggle
+#
+# Run the ../../../tests/test.sh script from the plugin main directory:
+#
+# cd $T2HOME/plugins/pcapd
+# ../../tests/test.sh [OPTION...]
+#
+# If run from this folder, make sure to use absolute path for the '-p' option.
+#
+# Flag name     File
+
+# ../../tranalyzer2/src/tranalyzer.h
+ENVCNTRL        ../../tranalyzer2/src/tranalyzer.h
+
+# src/pcapd.h
+PD_MODE_PKT     src/pcapd.h
+PD_MODE_IN      src/pcapd.h
+PD_EQ           src/pcapd.h
+PD_OPP          src/pcapd.h
+PD_DIRSEL       src/pcapd.h
+PD_MODE_OUT     src/pcapd.h
+PD_SPLIT        src/pcapd.h
+PD_LBSRCH       src/pcapd.h
+PD_TSHFT        src/pcapd.h
+PD_MACSHFT      src/pcapd.h
+PD_VLNSHFT      src/pcapd.h
+PD_IPSHFT       src/pcapd.h
+PD_TTLSHFT      src/pcapd.h
+PD_CHKSUML3     src/pcapd.h

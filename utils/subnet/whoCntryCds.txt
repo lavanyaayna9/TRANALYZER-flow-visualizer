@@ -1,0 +1,282 @@
+0x00000000	00	-
+0x00800000	01	IPv4 private
+0x01000000	01	IPv6 private
+0x01800000	02	IPv4 private
+0x02000000	02	IPv6 private
+0x02800000	03	IPv6 private
+0x03000000	04	IPv4 private
+0x03800000	05	IPv4 private
+0x04000000	06	IPv4 private
+0x04800000	07	IPv4 private
+0x05000000	08	IPv4 private
+0x05800000	10	IPv4 private
+0x06000000	10	IPv6 private
+0x06800000	11	IPv4 private
+0x07000000	20	IPv4 private
+0x07800000	21	IPv4 private
+0x08000000	22	IPv4 private
+0x08800000	23	IPv4 private
+0x09000000	24	IPv4 private
+0x09800000	25	IPv6 private
+0x0a000000	26	IPv6 private
+0x0a800000	27	IPv6 private
+0x0b000000	60	IPv4 private
+0x0b800000	61	IPv6 private
+0x0c000000	62	IPv6 private
+0x0c800000	63	IPv6 private
+0x0d000000	64	IPv6 private
+0x0d800000	65	IPv6 private
+0x0e000000	ad	Andorra
+0x0e800000	ae	United Arab Emirates
+0x0f000000	af	Afghanistan
+0x0f800000	ag	Antigua and Barbuda
+0x10000000	ai	Anguilla
+0x10800000	al	Albania
+0x11000000	am	Armenia
+0x11800000	an	Netherlands Antilles
+0x12000000	ao	Angola
+0x12800000	aq	Antarctica
+0x13000000	ar	Argentina
+0x13800000	as	American Samoa
+0x14000000	at	Austria
+0x14800000	au	Australia
+0x15000000	aw	Aruba
+0x15800000	ax	Åland Islands
+0x16000000	az	Azerbaijan
+0x16800000	ba	Bosnia and Herzegovina
+0x17000000	bb	Barbados
+0x17800000	bd	Bangladesh
+0x18000000	be	Belgium
+0x18800000	bf	Burkina Faso
+0x19000000	bg	Bulgaria
+0x19800000	bh	Bahrain
+0x1a000000	bi	Burundi
+0x1a800000	bj	Benin
+0x1b000000	bl	Saint Barthélemy
+0x1b800000	bm	Bermuda
+0x1c000000	bn	Brunei Darussalam
+0x1c800000	bo	Bolivia (Plurinational State of)
+0x1d000000	bq	Bonaire Sint Eustatius and Saba
+0x1d800000	br	Brazil
+0x1e000000	bs	Bahamas
+0x1e800000	bt	Bhutan
+0x1f000000	bv	Bouvet Island
+0x1f800000	bw	Botswana
+0x20000000	by	Belarus
+0x20800000	bz	Belize
+0x21000000	ca	Canada
+0x21800000	cc	Cocos (Keeling) Islands
+0x22000000	cd	Congo Democratic Republic of the
+0x22800000	cf	Central African Republic
+0x23000000	cg	Congo
+0x23800000	ch	Switzerland
+0x24000000	ci	Côte d'Ivoire
+0x24800000	ck	Cook Islands
+0x25000000	cl	Chile
+0x25800000	cm	Cameroon
+0x26000000	cn	China
+0x26800000	co	Colombia
+0x27000000	cr	Costa Rica
+0x27800000	cu	Cuba
+0x28000000	cv	Cabo Verde
+0x28800000	cw	Curaçao
+0x29000000	cx	Christmas Island
+0x29800000	cy	Cyprus
+0x2a000000	cz	Czechia
+0x2a800000	de	Germany
+0x2b000000	dj	Djibouti
+0x2b800000	dk	Denmark
+0x2c000000	dm	Dominica
+0x2c800000	do	Dominican Republic
+0x2d000000	dz	Algeria
+0x2d800000	ec	Ecuador
+0x2e000000	ee	Estonia
+0x2e800000	eg	Egypt
+0x2f000000	eh	Western Sahara
+0x2f800000	er	Eritrea
+0x30000000	es	Spain
+0x30800000	et	Ethiopia
+0x31000000	eu	European Union
+0x31800000	fi	Finland
+0x32000000	fj	Fiji
+0x32800000	fk	Falkland Islands (Malvinas)
+0x33000000	fm	Micronesia (Federated States of)
+0x33800000	fo	Faroe Islands
+0x34000000	fr	France
+0x34800000	ga	Gabon
+0x35000000	gb	United Kingdom of Great Britain and Northern Ireland
+0x35800000	gd	Grenada
+0x36000000	ge	Georgia
+0x36800000	gf	French Guiana
+0x37000000	gg	Guernsey
+0x37800000	gh	Ghana
+0x38000000	gi	Gibraltar
+0x38800000	gl	Greenland
+0x39000000	gm	Gambia
+0x39800000	gn	Guinea
+0x3a000000	gp	Guadeloupe
+0x3a800000	gq	Equatorial Guinea
+0x3b000000	gr	Greece
+0x3b800000	gs	South Georgia and the South Sandwich Islands
+0x3c000000	gt	Guatemala
+0x3c800000	gu	Guam
+0x3d000000	gw	Guinea-Bissau
+0x3d800000	gy	Guyana
+0x3e000000	hk	Hong Kong
+0x3e800000	hm	Heard Island and McDonald Islands
+0x3f000000	hn	Honduras
+0x3f800000	hr	Croatia
+0x40000000	ht	Haiti
+0x40800000	hu	Hungary
+0x41000000	id	Indonesia
+0x41800000	ie	Ireland
+0x42000000	il	Israel
+0x42800000	im	Isle of Man
+0x43000000	in	India
+0x43800000	io	British Indian Ocean Territory
+0x44000000	iq	Iraq
+0x44800000	ir	Iran (Islamic Republic of)
+0x45000000	is	Iceland
+0x45800000	it	Italy
+0x46000000	je	Jersey
+0x46800000	jm	Jamaica
+0x47000000	jo	Jordan
+0x47800000	jp	Japan
+0x48000000	ke	Kenya
+0x48800000	kg	Kyrgyzstan
+0x49000000	kh	Cambodia
+0x49800000	ki	Kiribati
+0x4a000000	km	Comoros
+0x4a800000	kn	Saint Kitts and Nevis
+0x4b000000	kp	Korea (Democratic People's Republic of)
+0x4b800000	kr	Korea Republic of
+0x4c000000	kw	Kuwait
+0x4c800000	ky	Cayman Islands
+0x4d000000	kz	Kazakhstan
+0x4d800000	la	Lao People's Democratic Republic
+0x4e000000	lb	Lebanon
+0x4e800000	lc	Saint Lucia
+0x4f000000	li	Liechtenstein
+0x4f800000	lk	Sri Lanka
+0x50000000	lr	Liberia
+0x50800000	ls	Lesotho
+0x51000000	lt	Lithuania
+0x51800000	lu	Luxembourg
+0x52000000	lv	Latvia
+0x52800000	ly	Libya
+0x53000000	ma	Morocco
+0x53800000	mc	Monaco
+0x54000000	md	Moldova Republic of
+0x54800000	me	Montenegro
+0x55000000	mf	Saint Martin (French part)
+0x55800000	mg	Madagascar
+0x56000000	mh	Marshall Islands
+0x56800000	mk	North Macedonia
+0x57000000	ml	Mali
+0x57800000	mm	Myanmar
+0x58000000	mn	Mongolia
+0x58800000	mo	Macao
+0x59000000	mp	Northern Mariana Islands
+0x59800000	mq	Martinique
+0x5a000000	mr	Mauritania
+0x5a800000	ms	Montserrat
+0x5b000000	mt	Malta
+0x5b800000	mu	Mauritius
+0x5c000000	mv	Maldives
+0x5c800000	mw	Malawi
+0x5d000000	mx	Mexico
+0x5d800000	my	Malaysia
+0x5e000000	mz	Mozambique
+0x5e800000	na	Namibia
+0x5f000000	nc	New Caledonia
+0x5f800000	ne	Niger
+0x60000000	nf	Norfolk Island
+0x60800000	ng	Nigeria
+0x61000000	ni	Nicaragua
+0x61800000	nl	Netherlands
+0x62000000	no	Norway
+0x62800000	np	Nepal
+0x63000000	nr	Nauru
+0x63800000	nu	Niue
+0x64000000	nz	New Zealand
+0x64800000	om	Oman
+0x65000000	pa	Panama
+0x65800000	pe	Peru
+0x66000000	pf	French Polynesia
+0x66800000	pg	Papua New Guinea
+0x67000000	ph	Philippines
+0x67800000	pk	Pakistan
+0x68000000	pl	Poland
+0x68800000	pm	Saint Pierre and Miquelon
+0x69000000	pn	Pitcairn
+0x69800000	pr	Puerto Rico
+0x6a000000	ps	Palestine State of
+0x6a800000	pt	Portugal
+0x6b000000	pw	Palau
+0x6b800000	py	Paraguay
+0x6c000000	qa	Qatar
+0x6c800000	re	Réunion
+0x6d000000	ro	Romania
+0x6d800000	rs	Serbia
+0x6e000000	ru	Russian Federation
+0x6e800000	rw	Rwanda
+0x6f000000	sa	Saudi Arabia
+0x6f800000	sb	Solomon Islands
+0x70000000	sc	Seychelles
+0x70800000	sd	Sudan
+0x71000000	se	Sweden
+0x71800000	sg	Singapore
+0x72000000	sh	Saint Helena Ascension and Tristan da Cunha
+0x72800000	si	Slovenia
+0x73000000	sj	Svalbard and Jan Mayen
+0x73800000	sk	Slovakia
+0x74000000	sl	Sierra Leone
+0x74800000	sm	San Marino
+0x75000000	sn	Senegal
+0x75800000	so	Somalia
+0x76000000	sr	Suriname
+0x76800000	ss	South Sudan
+0x77000000	st	Sao Tome and Principe
+0x77800000	su	Soviet Union
+0x78000000	sv	El Salvador
+0x78800000	sx	Sint Maarten (Dutch part)
+0x79000000	sy	Syrian Arab Republic
+0x79800000	sz	Eswatini
+0x7a000000	tc	Turks and Caicos Islands
+0x7a800000	td	Chad
+0x7b000000	tf	French Southern Territories
+0x7b800000	tg	Togo
+0x7c000000	th	Thailand
+0x7c800000	ti	East Timor (new code)
+0x7d000000	tj	Tajikistan
+0x7d800000	tk	Tokelau
+0x7e000000	tl	Timor-Leste
+0x7e800000	tm	Turkmenistan
+0x7f000000	tn	Tunisia
+0x7f800000	to	Tonga
+0x80000000	tr	Turkey
+0x80800000	tt	Trinidad and Tobago
+0x81000000	tv	Tuvalu
+0x81800000	tw	Taiwan Province of China
+0x82000000	tz	Tanzania United Republic of
+0x82800000	ua	Ukraine
+0x83000000	ug	Uganda
+0x83800000	uk	Scotland
+0x84000000	um	United States Minor Outlying Islands
+0x84800000	us	United States of America
+0x85000000	uy	Uruguay
+0x85800000	uz	Uzbekistan
+0x86000000	va	Holy See
+0x86800000	vc	Saint Vincent and the Grenadines
+0x87000000	ve	Venezuela (Bolivarian Republic of)
+0x87800000	vg	Virgin Islands (British)
+0x88000000	vi	Virgin Islands (U.S.)
+0x88800000	vn	Viet Nam
+0x89000000	vu	Vanuatu
+0x89800000	wf	Wallis and Futuna
+0x8a000000	ws	Samoa
+0x8a800000	ye	Yemen
+0x8b000000	yt	Mayotte
+0x8b800000	za	South Africa
+0x8c000000	zm	Zambia
+0x8c800000	zw	Zimbabwe

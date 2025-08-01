@@ -1,0 +1,56 @@
+#!/usr/bin/env awk
+#
+# Convert the output to JSON.
+#
+# The first record is used as column names.
+#
+# Parameters:
+#   - [s] : the string to convert (default: $0)
+#
+# Dependencies:
+#   - None
+#
+# See also:
+#   - texscape
+#
+# Examples:
+#   - tawk 'json()' file.txt
+#   - tawk 'json(tuple5())' file.txt
+#   - tawk 'json($srcIP FS $dstIP)' file.txt
+#   - tawk 'aggr(tuple2())' file.txt | tawk 'json($0)'
+
+@include "isnum"
+@include "quote"
+
+function json(s,        _f, _i, _l, _str, _val) {
+    if (!__JSONCOLNAME__[1]) {
+        if (length() == 0) next
+        split(s ? s : $0, __JSONCOLNAME__, FS)
+        gsub("^" __HDRSEP__, "", __JSONCOLNAME__[1]) # remove leading character, e.g., percent
+        print "["
+        next
+    } else {
+        _l = split(s ? s : $0, _f, FS)
+        if (_l == 0) next
+        if (__JSON_NR__ > 0) {
+            print ","
+        }
+        __JSON_NR__++
+        _str = "{" # start of JSON object
+        for (_i = 1; _i <= _l; _i++) {
+            # Print numbers and strings as such
+            if (isnum(_f[_i]) || _f[_i] ~ /^".*"$/) _val = _f[_i]
+            # Surround other values with quotes
+            else _val = quote(_f[_i])
+            _str = _str " " quote(__JSONCOLNAME__[_i]) ": " _val ","
+        }
+        gsub(/,$/, "", _str) # discard trailing comma
+        printf "%s }", _str  # end of JSON object
+    }
+}
+
+END {
+    if (__JSONCOLNAME__[1] > 0) {
+        print "\n]"
+    }
+}

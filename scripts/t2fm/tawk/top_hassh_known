@@ -1,0 +1,9 @@
+#!/usr/bin/env awk
+
+hdr() {
+    next
+}
+
+!strisempty($sshHasshDesc) {
+    aggr($sshHassh OFS unquote($sshHasshDesc), "flows", n)
+}

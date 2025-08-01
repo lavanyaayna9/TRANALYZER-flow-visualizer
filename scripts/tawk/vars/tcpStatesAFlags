@@ -1,0 +1,11 @@
+#H bit | tcpStatesAFlags | Description
+#H =============================================================================
+#W   0 | 0x01            | Malformed connection establishment
+#W   1 | 0x02            | Malformed teardown
+#W   2 | 0x04            | Malformed flags during established connection
+#W   3 | 0x08            | Packets detected after teardown
+
+#W   4 | 0x10            | Packets detected after reset
+     5 | 0x20            | -
+#W   6 | 0x40            | Reset from sender
+#W   7 | 0x80            | Potential evil behavior (scan)

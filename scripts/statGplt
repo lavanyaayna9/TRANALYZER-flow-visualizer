@@ -1,0 +1,378 @@
+#!/usr/bin/env bash
+#
+# Transform packet size (PS) and inter-arrival times (IAT) statistics in
+# flow file to gnuplot format
+
+source "$(dirname "$0")/t2utils.sh"
+
+usage() {
+    echo "Usage:"
+    echo "    $SNAME [OPTION...] <FILE_flows.txt>"
+    echo
+    echo "Optional arguments:"
+    echo "    --iat            Generate inter-arrival times (IAT) distribution only"
+    echo "    --ps             Generate packet size (PS) distribution only"
+    echo "    --ps-iat         Generate PS-IAT distribution only"
+    echo
+    echo "    -P               Plot the signals"
+    echo
+    echo "    -f flowInd       Only plot flow with 'flowInd'"
+    echo "    -d A|B           Flow direction: A or B only [default: A and B]"
+    echo
+    echo "    --gif            Generate a GIF file"
+    echo "    --jpeg           Generate a JPEG file"
+    echo "    --png            Generate a PNG file"
+    echo "    --svg            Generate a SVG file"
+    echo
+    echo "t2plot arguments:"
+    echo "    $SNAME supports t2plot options."
+    echo "    Run t2plot --help for more information."
+    echo
+    echo "Help and documentation arguments:"
+    echo "    -h, --help       Show this help, then exit"
+}
+
+generate_2d_signal() {
+    local idx1 idx2 outfile
+    local name="$1"
+    if [ "$name" = "IAT" ]; then
+        idx1=2
+        idx2=5
+        outfile="$IAT_FILE"
+    else
+        idx1=1
+        idx2=4
+        outfile="$PS_FILE"
+    fi
+    printf "Generating '$outfile'... "
+    printf "$name\tCount\n" > "$outfile"
+    $TAWK -H '{ print $Ps_Iat_Cnt_PsCnt_IatCnt }' "$INFILE" | tr ';' '\n' |
+        AWK -v idx1=$idx1 -v idx2=$idx2 '!/^#|^%|.*:.*|^$/ {
+            split($1, A, "_")
+            printf "%d\t%d\n", A[idx1], A[idx2]
+        }' | sort -n | uniq | AWKF '
+            NR == 1 {
+                A = $1
+            }
+            $1 == A {
+                sum += $2
+                A = $1
+                next
+            }
+            {
+                print A, sum
+                A = $1
+                sum = $2
+            }
+            END {
+                print A, sum
+            }
+        ' >> "$outfile"
+    printok "OK"
+}
+
+generate_3d_signal() {
+    local name1="$1"
+    local name2="$2"
+    local idx1=1
+    local idx2=2
+    local idx3=3
+    local outfile="$PS_IAT_FILE"
+    printf "Generating '$outfile'... "
+    printf "$name1\t$name2\tCount\n" > "$outfile"
+    $TAWK -H '{ print $Ps_Iat_Cnt_PsCnt_IatCnt }' "$INFILE" | tr ';' '\n' |
+        AWK -v idx1=$idx1 -v idx2=$idx2 -v idx3=$idx3 '!/^#|^%|.*:.*|^$/ {
+            split($1, A, "_")
+            printf "%d\t%d\t%d\n", A[idx1], A[idx2], A[idx3]
+        }' | sort -n | uniq | AWKF '
+            NR == 1 {
+                A = $1
+                B = $2
+            }
+            $1 == A && $2 == B {
+                sum += $3
+                A = $1
+                B = $2
+                next
+            }
+            {
+                print A, B, sum
+                A = $1
+                B = $2
+                sum = $3
+            }
+            END {
+                print A, B, sum
+            }
+        ' >> "$outfile"
+    printok "OK"
+}
+
+T2PLOT_OPTS=()
+while [ $# -ne 0 ]; do
+    case "$1" in
+        --iat) IAT=1;;
+        --ps) PS=1;;
+        --ps-iat) PS_IAT=1;;
+        -P|--plot) PLOT=1;;
+        --gif|--jpeg|--png|--svg)
+            if [ -n "$IMG_OPTS" ]; then
+                printerr "Can only generate one file format at a time"
+                abort_with_help
+            fi
+            IMG_OPTS="$1"
+            IMG_EXT="${1#*--}"
+            PLOT=1
+            ;;
+        -f|--flow)
+            validate_next_num "$1" "$2"
+            FLOWIND="$2"
+            shift
+            ;;
+        -d|--dir)
+            validate_next_arg "$1" "$2"
+            if [ -n "$(tr -d 'AB' <<< "$2")" ]; then
+                printerr "Invalid argument for option '$1': expected 'A' or 'B'; found '$2'"
+                abort_with_help
+            fi
+            case "$2" in
+                A) DIR="$2";;
+                B) DIR="$2";;
+                AB) ;;
+            esac
+            shift
+            ;;
+
+        # t2plot options
+        -s|--subtitle|-t|--title)
+            validate_next_arg "$1" "$2"
+            T2PLOT_OPTS+=("$1" "$2")
+            shift
+            ;;
+        --no-title)
+            T2PLOT_OPTS+=("$1")
+            ;;
+        -sx|--xrange)
+            validate_next_arg_exists "$1" "$2"
+            if [ -n "$(perl -pe 's/^(?:-?[0-9]+(?:.[0-9]*)?|\*):(?:-?[0-9]+(?:.[0-9]*)?|\*)$//' <<< "$2")" ]; then
+                printerr "Invalid argument for option '$1': expected begin:end; found '$2'"
+                abort_with_help
+            fi
+            T2PLOT_OPTS+=("$1" "$2")
+            shift
+            ;;
+        -sy|--yrange)
+            validate_next_arg_exists "$1" "$2"
+            if [ -n "$(perl -pe 's/^(?:-?[0-9]+(?:.[0-9]*)?|\*):(?:-?[0-9]+(?:.[0-9]*)?|\*)$//' <<< "$2")" ]; then
+                printerr "Invalid argument for option '$1': expected begin:end; found '$2'"
+                abort_with_help
+            fi
+            T2PLOT_OPTS+=("$1" "$2")
+            shift
+            ;;
+        -sz|--zrange)
+            validate_next_arg_exists "$1" "$2"
+            if [ -n "$(perl -pe 's/^(?:-?[0-9]+(?:.[0-9]*)?|\*):(?:-?[0-9]+(?:.[0-9]*)?|\*)$//' <<< "$2")" ]; then
+                printerr "Invalid argument for option '$1': expected begin:end; found '$2'"
+                abort_with_help
+            fi
+            T2PLOT_OPTS+=("$1" "$2")
+            shift
+            ;;
+        -v|--rotate)
+            validate_next_arg "$1" "$2"
+            if [ -n "$(perl -pe 's/^[0-9]+(.[0-9]*)?,[0-9]+(.[0-9]*)?$//' <<< "$2")" ]; then
+                printerr "Invalid argument for option '$1': expected rotx,rotz; found '$2'"
+                abort_with_help
+            fi
+            T2PLOT_OPTS+=("$1" "$2")
+            shift
+            ;;
+        -rx|--rotate-x-labels|-ry|--rotate-y-labels)
+            validate_next_int "$1" "$2"
+            T2PLOT_OPTS+=("$1" "$2")
+            shift
+            ;;
+        -ts|--tsize|--t-size|--title-size)
+            validate_next_num "$1" "$2"
+            T2PLOT_OPTS+=("$1" "$2")
+            shift
+            ;;
+        -ls|--lsize|--l-size|--label-size)
+            validate_next_num "$1" "$2"
+            T2PLOT_OPTS+=("$1" "$2")
+            shift
+            ;;
+        -ks|--ksize|--k-size|--key-size|--tics-size)
+            validate_next_num "$1" "$2"
+            T2PLOT_OPTS+=("$1" "$2")
+            shift
+            ;;
+        -ws|--wsize|--win-size|--window-size)
+            validate_next_arg "$1" "$2"
+            if [ -n "$(perl -pe 's/^[1-9][0-9]*,[1-9][0-9]*$//' <<< "$2")" ]; then
+                printerr "Invalid argument for option '$1': expected width,height; found '$2'"
+                abort_with_help
+            fi
+            T2PLOT_OPTS+=("$1" "$2")
+            shift
+            ;;
+        -fs|--fullscreen)
+            T2PLOT_OPTS+=("$1")
+            ;;
+        -c|--color)
+            validate_next_arg "$1" "$2"
+            if [ -n "$(perl -pe 's/^#[a-fA-F0-9]{6}$//' <<< "$2")" ]; then
+                printerr "Invalid argument for option '$1': expected #rrggbb; found '$2'"
+                abort_with_help
+            fi
+            T2PLOT_OPTS+=("$1" "$2")
+            shift
+            ;;
+        -g|--grid)
+            T2PLOT_OPTS+=("$1")
+            ;;
+        -lx|--log-x|-ly|--log-y|-lz|--log-z)
+            T2PLOT_OPTS+=("$1")
+            ;;
+        -pl|--lines|-pt|--points)
+            T2PLOT_OPTS+=("$1")
+            ;;
+        -r|--refresh)
+            T2PLOT_OPTS+=("$1")
+            if [ -n "$2" ] && [ -z "$(tr -d '0-9' <<< "$2")" ]; then
+                T2PLOT_OPTS+=("$2")
+                shift
+            fi
+            ;;
+
+        -h|-\?|--help) usage; exit 0;;
+        *)
+            if [ ! -f "$1" ]; then
+                abort_option_unknown "$1"
+            fi
+            FILE="$1"
+            ;;
+    esac
+    shift
+done
+
+if [ ! -f "$FILE" ]; then
+    abort_required_file
+fi
+
+# If no distribution was specified, generate them all
+if [ -z "${PS}${IAT}${PS_IAT}" ]; then
+    PS=1
+    IAT=1
+    PS_IAT=1
+fi
+
+# Make sure the column we need does exist
+$TAWK 'BEGIN {
+    _validate_col("Ps_Iat_Cnt_PsCnt_IatCnt")
+    exit 0
+}' "$FILE" || exit 1
+
+if [ -z "${FLOWIND}${DIR}" ]; then
+    INFILE="$FILE"
+else
+    INFILE=$(mktemp)
+    $TAWK -v flowIndex="$FLOWIND" -v _dir="$DIR" '
+    BEGIN {
+        _validate_col("flowInd");
+        _validate_col("dir");
+    }
+    {
+        if (flowIndex != "" && $flowInd != flowIndex) next
+        if (_dir != "" && $dir != _dir) next
+        print
+    }' "$FILE" > "$INFILE"
+fi
+
+if [ -n "$PS" ]; then
+    if [ -n "$FLOWIND" ]; then
+        PS_FILE="$(replace_suffix "$FILE" "s.txt" "_${FLOWIND}${DIR}_ps.txt")"
+    else
+        PS_FILE="$(replace_suffix "$FILE" ".txt" "_ps.txt")"
+    fi
+    generate_2d_signal "PS"
+fi
+
+if [ -n "$IAT" ]; then
+    if [ -n "$FLOWIND" ]; then
+        IAT_FILE="$(replace_suffix "$FILE" "s.txt" "_${FLOWIND}${DIR}_iat.txt")"
+    else
+        IAT_FILE="$(replace_suffix "$FILE" ".txt" "_iat.txt")"
+    fi
+    generate_2d_signal "IAT"
+fi
+
+if [ -n "$PS_IAT" ]; then
+    if [ -n "$FLOWIND" ]; then
+        PS_IAT_FILE="$(replace_suffix "$FILE" "s.txt" "_${FLOWIND}${DIR}_ps_iat.txt")"
+    else
+        PS_IAT_FILE="$(replace_suffix "$FILE" ".txt" "_ps_iat.txt")"
+    fi
+    generate_3d_signal "PS" "IAT"
+fi
+
+if [ -n "$PLOT" ]; then
+    # Plot inter-arrival times (IAT) distribution
+    if [ -n "$PS" ] && [ -f "$PS_FILE" ]; then
+        if [ -n "$IMG_EXT" ]; then
+            PS_IMG_FILE="$(replace_suffix "$PS_FILE" ".txt" ".${IMG_EXT}")"
+            PS_OPTS=("$IMG_OPTS" "$PS_IMG_FILE")
+            printf "Generating '$PS_IMG_FILE'... "
+        fi
+
+        "$T2PLOT" "${T2PLOT_OPTS[@]}" "${PS_OPTS[@]}" "$PS_FILE"
+        if [ -n "$IMG_EXT" ]; then
+            if [ $? -eq 0 ]; then
+                printok "OK"
+            else
+                printok "FAILED"
+            fi
+        fi
+    fi
+
+    # Plot packet size (PS) distribution
+    if [ -n "$IAT" ] && [ -f "$IAT_FILE" ]; then
+        if [ -n "$IMG_EXT" ]; then
+            IAT_IMG_FILE="$(replace_suffix "$IAT_FILE" ".txt" ".${IMG_EXT}")"
+            IAT_OPTS=("$IMG_OPTS" "$IAT_IMG_FILE")
+            printf "Generating '$IAT_IMG_FILE'... "
+        fi
+
+        "$T2PLOT" "${T2PLOT_OPTS[@]}" "${IAT_OPTS[@]}" "$IAT_FILE"
+        if [ -n "$IMG_EXT" ]; then
+            if [ $? -eq 0 ]; then
+                printok "OK"
+            else
+                printok "FAILED"
+            fi
+        fi
+    fi
+
+    # Plot PS-IAT distribution
+    if [ -n "$PS_IAT" ] && [ -f "$PS_IAT_FILE" ]; then
+        if [ -n "$IMG_EXT" ]; then
+            PS_IAT_IMG_FILE="$(replace_suffix "$PS_IAT_FILE" ".txt" ".${IMG_EXT}")"
+            PS_IAT_OPTS=("$IMG_OPTS" "$PS_IAT_IMG_FILE")
+            printf "Generating '$PS_IMG_FILE'... "
+        fi
+
+        "$T2PLOT" "${T2PLOT_OPTS[@]}" "${PS_IAT_OPTS[@]}" "$PS_IAT_FILE"
+        if [ -n "$IMG_EXT" ]; then
+            if [ $? -eq 0 ]; then
+                printok "OK"
+            else
+                printok "FAILED"
+            fi
+        fi
+    fi
+fi
+
+if [ -n "${FLOWIND}${DIR}" ]; then
+    rm "$INFILE"
+fi

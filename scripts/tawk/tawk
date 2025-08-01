@@ -1,0 +1,879 @@
+#!/usr/bin/env bash
+#
+# TODO
+#   - check for duplicate column names?
+#   - pass options to tshark: -T fields -e ...?
+
+source "$(dirname "$0")/../t2utils.sh"
+
+if [[ -n "${DISPLAY}" || "$(uname)" == "Darwin" ]]; then
+    readonly HAS_GUI=1
+fi
+
+usage() {
+    echo "Usage:"
+    echo "    ${SNAME} [OPTION...] 'program' file_flows.txt"
+    echo "    ${SNAME} [OPTION...] -I file_flows.txt 'program'"
+    echo
+    echo "Input arguments:"
+    echo "    -I file             Alternative way to specify the input file"
+    echo
+    echo "Optional arguments:"
+    echo "    -N num              Row number where column names are to be found"
+    echo "    -s char             First character for the row listing the columns name"
+    echo "    -F fs               Use 'fs' as input field separator"
+    echo "    -O fs               Use 'fs' as output field separator"
+    echo "    --csv               Set input and output separators to ',' and"
+    echo "                        extract names from first row"
+    echo "    --zeek              Configure tawk to work with Bro/Zeek log files"
+    echo "    -f file             Read (t)awk program from file"
+    echo "    -n                  Load nfdump functions"
+    echo "    -e                  Load examples functions"
+    echo "    -H                  Do not output the header (column names)"
+    echo "    -c[=u]              Output command line as a comment"
+    echo "                        (use -c=u for UTC instead of localtime)"
+    echo "    -t                  Validate column names (slow)"
+    echo "    -r                  Try renaming invalid columns (suffix them with '_') (slow)"
+    echo
+    echo "Tranalyzer specific arguments:"
+    if [[ -n "${HAS_GUI}" ]]; then
+        echo "    -k                  Run Wireshark on the extracted data"
+    elif hash termshark 2> /dev/null; then
+        echo "    -k                  Run Termshark on the extracted data"
+    else
+        echo "    -k                  Run TShark on the extracted data"
+    fi
+    echo "    -x outfile          Create a PCAP file with the selected flows/packets"
+    echo "    -X xerfile          Specify the '.xer' file to use with -k and -x options"
+    echo "    -P                  Extract specific packets instead of whole flows"
+    echo "    -b                  Always extract both directions (A and B flows)"
+    echo
+    echo "    -V vname[=value]    Display Tranalyzer variable 'vname' documentation"
+    echo "    -L                  Decode all variables from Tranalyzer log file"
+    echo
+    echo "Help and documentation arguments:"
+    echo "    -l[=n], --list[=n]  List column names and numbers"
+    echo "    -g[=n], --func[=n]  List available functions"
+    echo
+    echo "    -d fname            Display function 'fname' documentation"
+    echo
+    if [[ -n "${HAS_GUI}" ]]; then
+        echo "    -D                  Display tawk PDF documentation"
+        echo
+    fi
+    echo "    -?, -h, --help      Show help options and exit"
+}
+
+_get_wireshark() {
+    local wshark
+    if [[ -z "${HAS_GUI}" ]]; then
+        wshark="termshark"
+        for exec in "${wshark}" "tshark"; do
+            if type "${exec}" &> /dev/null; then
+                wshark="${exec}"
+                break
+            fi
+        done
+    else
+        wshark="wireshark"
+        for exec in "${wshark}" "wireshark-qt" "wireshark-gtk" "termshark" "tshark"; do
+            if type "${exec}" &> /dev/null; then
+                wshark="${exec}"
+                break
+            fi
+        done
+    fi
+    echo "${wshark}"
+}
+
+_setup_wireshark() {
+    local wshark
+    wshark="$(_get_wireshark)"
+    check_dependency "${wshark}"
+    WIRESHARK="$(which "${wshark}")"
+    if [[ "${wshark}" == "termshark" || "${wshark}" == "tshark" ]]; then
+        WSHARK_OPTS=(-r -)
+    else
+        WSHARK_OPTS=(-k -i -)
+    fi
+}
+
+_setup_fextractor() {
+    FEXTRACTOR="$(find_most_recent_file "${T2PLHOME}/findexer" "fextractor")"
+    if [[ ! -f "${FEXTRACTOR}" ]]; then
+        fatal "fextractor not found"
+    fi
+
+    FEX_OPTS+=(-f -i -)
+    PRIHDR=0
+}
+
+# $1: return code
+_cleanup() {
+    local ret="${1}"
+
+    #printinf "Cleaning temporary files"
+    rm -f "${TEMPFILE}"
+
+    exit "${ret}"
+}
+
+# Set TAWKHOME
+TAWKHOME="$(dirname "$(${READLINK} -f "${BASH_SOURCE[0]}")")"
+
+list_names() {
+    local cnt=1
+    local d="${1:-1}"
+    for name in "${names[@]}"; do
+        printf "%3d\t%s" "${cnt}" "${name}"
+        if (( d <= 1 || cnt % d == 0 )); then
+            printf "\n"
+        else
+            printf "\t"
+        fi
+        cnt="$((cnt+1))"
+    done | column -t -s $'\t'
+}
+
+list_funcs() {
+    local cnt=1
+    local d="${1:-1}"
+    local dir=(
+        "${TAWKHOME}/funcs/"
+        "${TAWKHOME}/t2custom/"
+    )
+
+    [[ -n "${NFDUMP}" ]] && dir+=("${TAWKHOME}/t2nfdump/")
+    [[ -n "${EXAMPLES}" ]] && dir+=("${TAWKHOME}/examples/")
+
+    local funcs=()
+    if hash readarray &> /dev/null; then
+        readarray -t funcs < <(find "${dir[@]}" -maxdepth 1 -type f ! -name '*.load' ! -name '.*' -exec basename {} \; | sort)
+    elif hash mapfile &> /dev/null; then
+        mapfile -t funcs < <(find "${dir[@]}" -maxdepth 1 -type f ! -name '*.load' ! -name '.*' -exec basename {} \; | sort)
+    else
+        local funcname
+        while IFS= read -r funcname; do
+            funcs+=("${funcname}")
+        done < <(find "${dir[@]}" -maxdepth 1 -type f ! -name '*.load' ! -name '.*' -exec basename {} \; | sort)
+    fi
+
+    if [[ "${#funcs[@]}" -eq 0 ]]; then
+        fatal "No functions available"
+    fi
+
+   for func in "${funcs[@]}"; do
+       printf "%s" "${func}"
+       if (( d <= 1 || cnt % d == 0 )); then
+           printf "\n"
+       else
+           printf "\t"
+       fi
+       cnt="$((cnt+1))"
+   done | column -t -s $'\t'
+}
+
+validate_names() {
+    local i
+    local n
+    local array=()
+
+    # Extract all variable names from 'program'
+    for i in "${ARGS[@]}"; do
+        while grep -q "\$[a-zA-Z0-9_]\+" <<< "${i}"; do
+            n="$("${SED}" 's/.*\$\([a-zA-Z0-9_]\+\).*/\1/' <<< "${i}")"
+            i="$("${SED}" 's/\(.*\)\$[a-zA-Z0-9_]\+\(.*\)/\1\2/' <<< "${i}")"
+            if [[ -z "$("${SED}" 's/^[0-9]\+$//' <<< "${n}")" || "${n}" == "NF" ]]; then
+                # do not validate $0, $1, ..., $NF
+                continue
+            fi
+            array+=("${n}")
+        done
+    done
+
+    # Make sure all variables exist
+    for ((i = $((${#array[@]}-1)); i >= 0; i--)); do
+        local j
+        for j in "${names[@]}"; do
+            if [[ "${array[i]}" == "${j}" ]]; then
+                unset "array[i]"
+                break
+            fi
+        done
+    done
+
+    if [[ "${#array[@]}" -ne 0 ]]; then
+        for col in "${array[@]}"; do
+            printerr "Column '${col}' not found"
+            for name in "${names[@]}"; do
+                if grep -qFi "${col}" <<< "${name}"; then
+                    printinf "Did you mean '${name}'?"
+                fi
+            done
+        done
+        exit 1
+    fi
+}
+
+funcdoc() {
+    local fname="${1}"
+    local func
+    # Extract the function name and parameters excluding the local variables (separated from the parameters by 8 spaces)
+    func="$("${SED}" -n "s/^function\s\+\(${fname}(.*\)).*/\1/p" "${TAWKHOME}/"*"/${fname}" | AWK -F"        " '{ gsub(",$", "", $1); print $1 ")" }')"
+    if [[ -z "${func}" ]]; then
+        func="${fname}"
+    fi
+    for folder in "funcs" "t2nfdump" "examples" "t2custom"; do
+        if [[ -f "${TAWKHOME}/${folder}/${fname}" ]]; then
+            printf "${ORANGE_BOLD}${func}:${NOCOLOR}\n\n"
+            AWK '
+                /^[^#]/ { exit }
+                NR > 2 {
+                    gsub(/^#/, " ")
+                    # Replace strings in italic (Description and Parameters sections only)
+                    if (!d || p) {
+                        _dquote = "\042"  # double quote
+                        $0 = gensub("(" _dquote "[^" _dquote "]+" _dquote ")",
+                            "\033[3m\\1\033[0m", "g", $0)
+                        _squote = "\047"  # single quote
+                        $0 = gensub("(" _squote "[^" _squote "]+" _squote ")",
+                            "\033[3m\\1\033[0m", "g", $0)
+                    }
+                    if (/^\s+(Parameters|Dependencies|Examples|See also|Theory):\s*$/) {
+                        d = 1
+                        p = 0
+                        printf "\033[1m%s\033[0m\n", $0   # bold headers
+                    } else {
+                        print
+                    }
+                    if (/^\s+Parameters:\s*$/) {
+                        p = 1
+                    }
+                }
+            ' "${TAWKHOME}/${folder}/${fname}"
+        fi
+    done
+}
+
+doc() {
+    local fnames="${1}"
+
+    if [[ "${1}" == "all" || "${fnames}" == "funcs" ]]; then
+        fnames="$(find "${TAWKHOME}/funcs/" -maxdepth 1 -type f ! -name 'funcs.load' -exec basename {} \; | tr '\n' ',')"
+    fi
+
+    if [[ ( "${1}" == "all" && -n "${NFDUMP}" ) || "${fnames}" == "t2nfdump" ]]; then
+        fnames="${fnames},$(find "${TAWKHOME}/t2nfdump/" -maxdepth 1 -type f ! -name 't2nfdump.load' -exec basename {} \; | tr '\n' ',')"
+    fi
+
+    if [[ ( "${1}" == "all" && -n "${EXAMPLES}" ) || "${fnames}" == "examples" ]]; then
+        fnames="${fnames},$(find "${TAWKHOME}/examples/" -maxdepth 1 -type f ! -name 'examples.load' -exec basename {} \; | tr '\n' ',')"
+    fi
+
+    if [[ "${1}" == "all" || "${fnames}" == "t2custom" ]]; then
+        local loadfile="${TAWKHOME}/t2custom/t2custom.load"
+        if [[ ! -f "${loadfile}" ]]; then
+            [[ "${fnames}" == "t2custom" ]] && printwrn "${loadfile} does not exist"
+        else
+            local ncustom
+            ncustom="$(AWK '/^@include/' "${loadfile}" | wc -l)"
+            if [[ "${#ncustom[@]}" -eq 0 ]]; then
+                [[ "${fnames}" == "t2custom" ]] && printwrn "No functions included in t2custom.load"
+            else
+                fnames="${fnames},$(find "${TAWKHOME}/t2custom/" -maxdepth 1 -type f ! -name 't2custom.load' -exec basename {} \; | tr '\n' ',')"
+            fi
+        fi
+    fi
+
+    for i in $(tr ',' ' ' <<< "${fnames}"); do
+        if [[ "${i}" == "funcs" || "${i}" == "t2nfdump" || "${i}" == "examples" || "${i}" == "t2custom" ]]; then
+            continue
+        fi
+        if [[
+            -f "${TAWKHOME}/funcs/${i}"    ||
+            -f "${TAWKHOME}/t2nfdump/${i}" ||
+            -f "${TAWKHOME}/examples/${i}" ||
+            -f "${TAWKHOME}/t2custom/${i}"
+        ]]
+        then
+            funcdoc "${i}"
+        else
+            printerr "No documentation available for function '${i}'"
+        fi
+    done
+}
+
+vardoc() {
+    local vname="${1}"
+    local name
+    local val
+    name="$(cut -d= -f1 <<< "${vname}")"
+    val="$(cut -s -d= -f2 <<< "${vname}")"
+    if [[ ! -f "${TAWKHOME}/vars/${name}" ]]; then
+        fatal "No documentation available for variable '${name}'"
+    fi
+
+    # variable name in bold and orange
+    printf "\nThe ${ORANGE_BOLD}${name}${NOCOLOR} column "
+    if [[ -n "${val}" ]]; then
+        printf "with value ${BOLD}${val}${NOCOLOR} "
+    fi
+    printf "is to be interpreted as follows:\n\n"
+    local awk_opts=(
+        -v OFS='|'
+        -F'|'
+        -v val="${val}"
+        -i "${TAWKHOME}/funcs/strip"
+    )
+    if _awk_has_bignum; then
+        awk_opts+=(-M -v PREC=256)
+    fi
+    AWK "${awk_opts[@]}" '
+        function isnum(v) { return (v == v + 0 || v ~ /0x[0-9a-fA-F]+/) }
+        BEGIN {
+            nval = split(val, _aval, /_/)
+            vval = isnum(val) ? strtonum(val) : val
+        }
+        /^#H/   { COLOR = "\033[1m"    } # Header, bold
+        /^#I/   { COLOR = "\033[0;34m" } # Info, blue
+        /^#W/   { COLOR = "\033[0;33m" } # Warning, orange
+        /^#E/   { COLOR = "\033[0;31m" } # Error, red
+        /^[^#]/ { COLOR = "\033[0m"    } # Default
+        {
+            gsub(/^#./, "  ")
+            # Print headers and all the rows if no value specified
+            pri = (NR < 3 || !length(val))
+            if (!pri) {
+                # Only two columns: value and description
+                if (NF == 2 || (NF == 3 && $2 !~ /0[xX][a-fA-F0-9]+/)) {
+                    _val = strip($1)
+                    if (_val ~ /^0x[0-9a-fA-F]+-0x[0-9a-fA-F]+/ || _val ~ /^[0-9]+-[0-9]+/) {
+                        split(_val, _v, /-/)
+                        if (_v[1] ~ /^0x/) _v[1] = strtonum(_v[1])
+                        if (_v[2] ~ /^0x/) _v[2] = strtonum(_v[2])
+                        pri = (_v[1] <= vval && vval <= _v[2])
+                    } else {
+                        if (_val ~ /^0x/) _val = strtonum(_val)
+                        pri = (_val == vval)
+                    }
+                # Five columns: bit, hex value, bit, hex value and description
+                } else if (NF == 5) {
+                    tmp2 = gensub(/\s+/, "", "g", $2)
+                    if (length(tmp2) == 0) {
+                        tmp2 = last_tmp2
+                    }
+                    hex = strtonum(tmp2)
+                    last_tmp2 = hex
+                    pri = and(hex, strtonum(_aval[1]))
+                    tmp4 = gensub(/\s+/, "", "g", $4)
+                    if (pri && nval == 2 && length(tmp4) > 0) {
+                        hex = strtonum(tmp4)
+                        pri = and(hex, strtonum(_aval[2]))
+                    }
+                # Three columns: bit, hex value and description
+                } else {
+                    hex = strtonum(gensub(/\s+/, "", "g", $2))
+                    if ($2 && vval == 0 && hex == 0) {
+                        pri = 1
+                    } else {
+                        pri = and(hex, vval)
+                    }
+                }
+            }
+            if (pri) {
+                printf "%s%s\033[0m\n", COLOR, $0
+            }
+        }
+        END {
+            printf "\n"
+        }
+    ' "${TAWKHOME}/vars/${name}"
+}
+
+# Default values
+HDRSEP="%" # First character for the row listing the columns name
+FS=$'\t'   # Field Separator
+OFS=$'\t'  # Output Field Separator
+PRIHDR=1   # Keep the column names
+FEX_OPTS=()
+XER_SUFFIX="_flows"
+
+while [[ "${#}" -gt 0 ]]; do
+    case "${1}" in
+        -F|--field-separator)
+            validate_next_arg "${1}" "${2}"
+            FS="${2}"
+            shift
+            ;;
+        -F*)
+            FS="${1#*F}"
+            ;;
+        -O|--output-field-separator|--ofs)
+            validate_next_arg "${1}" "${2}"
+            OFS="${2}"
+            shift
+            ;;
+        -O=*|--ofs=*|--output-field-separator=*)
+            OFS="${1#*=}"
+            ;;
+        -O*)
+            OFS="${1#*O}"
+            ;;
+        -N[0-9]*)
+            HDRROW="${1#*N}"
+            ;;
+        -N=*|--header-row=*)
+            HDRROW="${1#*=}"
+            if [[ -n "$(tr -d '0-9' <<< "${HDRROW}")" ]]; then
+                printerr "Option '${1%=*}' requires a numeric argument"
+                abort_with_help
+            fi
+            ;;
+        -N|--header-row)
+            validate_next_arg "${1}" "${2}"
+            if [[ -n "$(tr -d '0-9' <<< "${2}")" ]]; then
+                printerr "Option '${1}' requires a numeric argument"
+                abort_with_help
+            fi
+            HDRROW="${2}"
+            shift
+            ;;
+        -s|--special-header)
+            # Comment out the following line to force the row with
+            # the column names to start with a special character
+            #validate_next_arg "$1" "$2"
+            HDRSEP="${2}"
+            shift
+            ;;
+        -s*)
+            HDRSEP="${1#*s}"
+            ;;
+        -c|-c=*|--comment=*|--comment)
+            COMMENT=1
+            if [[ "${1#*=}" = "u" ]]; then
+                UTC="-u"
+            fi
+            ;;
+        --csv)
+            FS=","
+            OFS=","
+            HDRROW=1
+            unset HDRSEP
+            ;;
+        --bro|--zeek)
+            ZEEK=1
+            VALIDATE_NAMES=1
+            FIX_NAMES=1
+            HDRSEP="#fields"
+            ;;
+        -H|--no-header)
+            PRIHDR=0
+            ;;
+        -r|--rename)
+            VALIDATE_NAMES=1
+            FIX_NAMES=1
+            ;;
+        -t|--validate-names)
+            VALIDATE_NAMES=1
+            ;;
+        -e|--examples)
+            EXAMPLES=1
+            ;;
+        -n|--nfdump)
+            NFDUMP=1
+            ;;
+        -l|--list)
+            LIST_NAMES=1
+            ;;
+        -l=*|--list=*)
+            LIST_NAMES="${1#*=}"
+            if [[ -z "${LIST_NAMES}" || -n "$(tr -d '0-9' <<< "${LIST_NAMES}")" ]]; then
+                printerr "Option '${1%=*}' requires a numeric argument"
+                abort_with_help
+            fi
+            ;;
+        -g|--func)
+            LIST_FUNCS=1
+            ;;
+        -g=*|--func=*)
+            LIST_FUNCS="${1#*=}"
+            if [[ -n "$(tr -d '0-9' <<< "${LIST_FUNCS}")" ]]; then
+                printerr "Option '${1%=*}' requires a numeric argument"
+                abort_with_help
+            fi
+            ;;
+        -k|--wireshark|--termshark|--tshark)
+            _setup_wireshark
+            _setup_fextractor
+            ;;
+        -X|--xer-file)
+            validate_next_file "${1}" "${2}"
+            XER_FILE="${2}"
+            shift
+            ;;
+        -x|--fextractor)
+            validate_next_arg "${1}" "${2}"
+            _setup_fextractor
+            OUT_FILE="${2}"
+            shift
+            ;;
+        -b|--both-directions)
+            FEX_OPTS+=(-b)
+            ;;
+        -P|--packets)
+            FEX_OPTS+=(-P)
+            XER_SUFFIX="_packets"
+            ;;
+        -d|--doc)
+            validate_next_arg "${1}" "${2}"
+            DOC+=("${2}")
+            shift
+            ;;
+        -V|--var)
+            validate_next_arg "${1}" "${2}"
+            VDOC+=("${2}")
+            shift
+            ;;
+        -L|--decode-log)
+            DECODE_LOG=1
+            ;;
+        -I|--input)
+            validate_next_file "${1}" "${2}"
+            FILE+=("${2}")
+            IOPTION=1
+            shift
+            ;;
+        -D|--pdf)
+            if [[ -z "${HAS_GUI}" ]]; then
+                fatal "Option '${1}' requires a running X server"
+            fi
+            if [[ ! -f "${TAWKHOME}/doc/tawk.pdf" ]]; then
+                if ! hash make 2> /dev/null; then
+                    fatal "tawk.pdf not found in ${TAWKHOME}/doc/"
+                elif ! make -C "${TAWKHOME}/doc"; then
+                    fatal "Failed to build documentation for 'tawk'"
+                fi
+                printok "Successfully generated 'tawk.pdf'"
+            fi
+            "${OPEN}" "${TAWKHOME}/doc/tawk.pdf"
+            exit 0
+            ;;
+        -\?|-h|--help)
+            usage
+            exit 0
+            ;;
+        # awk options with file as arguments
+        -i|--include|-f|--file)
+            ARGS+=("${1}")
+            if [[ -f "${2}" ]]; then
+                ARGS+=("${2}")
+                shift
+            fi
+            ;;
+        *)
+            if [[ -f "${1}" && "${#FILE[@]}" -eq 0 && "${#}" -eq 1 ]]; then
+                FILE=("${1}")
+            else
+                ARGS+=("${1}")
+            fi
+            ;;
+    esac
+    shift
+done
+
+if [[ -n "${OUT_FILE}" && -n "${WIRESHARK}" ]]; then
+    printerr "Cannot use '-k' and '-x' options simultaneously"
+    abort_with_help
+fi
+
+if [[ "${#DOC[@]}" -gt 0 ]]; then
+    for i in "${DOC[@]}"; do
+        doc "${i}"
+    done
+    exit 0
+fi
+
+if [[ -n "${LIST_FUNCS}" ]]; then
+    list_funcs "${LIST_FUNCS}"
+    exit 0
+fi
+
+# Gawk >= 4.2 is required for tawk (gawk -i and -M options)
+_check_awk_version
+
+if [[ "${#VDOC[@]}" -gt 0 ]]; then
+    for i in "${VDOC[@]}"; do
+        vardoc "${i}"
+    done
+    exit 0
+fi
+
+if [[ -t 0 && -p /dev/stdin ]]; then
+    if [[ "${#FILE[@]}" -eq 0 ]]; then
+        printerr "Input file is required"
+        abort_with_help
+    elif [[ ! -f "${FILE[0]}" ]]; then
+        printerr "${FILE[0]} does not exist or is not a regular file"
+        abort_with_help
+    fi
+fi
+
+if [[ -n "${DECODE_LOG}" ]]; then
+    AWK '{
+        for (i = 1; i <= NF; i++) {
+            if ($i ~ /[^=]=[^=]/) {
+                gsub(/,$/, "", $i)
+                print "-V " $i
+            }
+        }
+    }' "${FILE[0]}" | xargs "${TAWK}"
+    exit 0
+fi
+
+if [[ -f "${FILE[0]}" ]]; then
+    names=()
+    while IFS='' read -r line; do
+        # If a name starts with a digit, prefix it with an underscore
+        if [[ "${line:0:1}" =~ [0-9] ]]; then
+            line="_${line}"
+        fi
+        names+=("${line}")
+    done < <(AWK -i "${TAWKHOME}/funcs/hdr" \
+                 -i "${TAWKHOME}/funcs/printerr" \
+                 -i "${TAWKHOME}/funcs/strip" \
+                 -v __HDRROW__="${HDRROW}" \
+                 -v __HDRSEP__="${HDRSEP}" \
+                 -F"${FS}" -v OFS=$'\t' '
+        hdr() {
+            # Remove leading __HDRSEP__
+            gsub("^" __HDRSEP__ "\\s*", "", $0)
+            _n = split($0, _name, FS)
+            for (_i = 1; _i <= _n; _i++) {
+                _name[_i] = strip(_name[_i])
+                if (length(_name[_i]) == 0) {
+                    printerr("Column " _i " has an empty name")
+                    exit 1
+                }
+                print _name[_i]
+            }
+            exit
+        }' "${FILE[0]}" | tr ' (){}[] -./' '_')
+    ret="$?"
+    if [[ ( "${ret}" -ne 0 || ${#names[@]} -eq 0 ) && ( -n "${LIST_NAMES}" || -n "${VALIDATE_NAMES}" ) ]]; then
+        [[ "${ret}" -eq 0 ]] && printerr "Column names not found"
+        if [[ -z "${LIST_NAMES}" ]]; then
+            printinf "Remove '-t' option to ignore this error"
+        fi
+        exit 1
+    fi
+
+    if [[ -n "${VALIDATE_NAMES}" ]]; then
+        # FIXME Check that no column name matches a function name (slow)
+        FUNCS="$(list_funcs | AWK 'NR > 1 { printf "," } { printf "\"" $0 "\"" }
+            END {
+                # builtin/reserved awk names
+                printf ", \"break\"" \
+                       ", \"continue\"" \
+                       ", \"delete\"" \
+                       ", \"do\"" \
+                       ", \"else\"" \
+                       ", \"exit\"" \
+                       ", \"for\"" \
+                       ", \"getline\"" \
+                       ", \"gsub\"" \
+                       ", \"gensub\"" \
+                       ", \"index\"" \
+                       ", \"in\"" \
+                       ", \"int\"" \
+                       ", \"if\"" \
+                       ", \"length\"" \
+                       ", \"match\"" \
+                       ", \"next\"" \
+                       ", \"nextfile\"" \
+                       ", \"print\"" \
+                       ", \"printf\"" \
+                       ", \"rand\"" \
+                       ", \"return\"" \
+                       ", \"split\"" \
+                       ", \"sprintf\"" \
+                       ", \"srand\"" \
+                       ", \"sub\"" \
+                       ", \"substr\"" \
+                       ", \"system\"" \
+                       ", \"switch\"" \
+                       ", \"tolower\"" \
+                       ", \"toupper\"" \
+                       ", \"while\""
+            }')"
+        NAMES="$(echo "${names[*]}" | "${SED}" 's/\s\+/","/g; s/^/"/; s/$/"/')"
+        PYTHON="$(which python3 python python2 2> /dev/null | head -1)"
+        if [[ -z "${PYTHON}" ]]; then
+            fatal "None of python3, python or python2 could be found"
+        fi
+        INVALID="$("${PYTHON}" <<< "print({${NAMES}}.intersection({${FUNCS}}))" | "${SED}" -r 's/^set\(\[?//; s/\]?\)$//')"
+        if [[ -n "${INVALID}" ]]; then
+            if [[ -z "${FIX_NAMES}" ]]; then
+                printerr "The following column names clash with gawk/tawk builtins: ${INVALID}"
+                printinf "Try renaming them differently or use 'tawk -r' option"
+                exit 1
+            else
+                for i in "${!names[@]}"; do
+                    if grep -q -w -F "${names[i]}" <<< "${INVALID}"; then
+                        #printerr "A function named '${names[i]}' already exists."
+                        # Append an underscore to avoid name collision
+                        names[i]+="_"
+                    fi
+                done
+            fi
+        fi
+    fi
+
+    if [[ -n "${LIST_NAMES}" ]]; then
+        list_names "${LIST_NAMES}"
+        exit 0
+    fi
+
+    if [[ -n "${VALIDATE_NAMES}" ]]; then
+        validate_names
+    fi
+
+    if [[ ( -n "${FEXTRACTOR}" || -n "${WIRESHARK}" ) && -z "${XER_FILE}" ]]; then
+        XER_FILE="$(AWK -F. -v OFS=. -v XER_SUFFIX="${XER_SUFFIX}" 'NF > 1 {
+            # _packets.txt -> _flows.xer
+            gsub(/_packets$/, XER_SUFFIX, $(NF-1))
+            # _packets_cc.txt -> _flows.xer
+            # _flows_dns.txt  -> _flows.xer
+            gsub(/_(flows|packets)_[^_]+$/, XER_SUFFIX, $(NF-1))
+            # Keep trailing numbers (-W option)
+            match($NF, /([0-9]+)$/, idx)
+            $NF = "xer" idx[1]
+        } { print }' <<< "${FILE[0]}")"
+        if [[ ! -f "${XER_FILE}" ]]; then
+            fatal "Could not find '${XER_FILE}'"
+        fi
+    fi
+fi
+
+if [[ -f "${FILE[0]}" && -n "${IOPTION}" && ! -t 0 ]]; then
+    # Reading from stdin
+    unset FILE
+fi
+
+if [[ "${#ARGS[@]}" -eq 0 ]]; then
+    if [[ -n "${LIST_NAMES}" ]]; then
+        printerr "Input file is required"
+    else
+        printerr "Program is required"
+    fi
+    abort_with_help
+fi
+
+# Default gawk options
+OPTS=()
+
+if _awk_has_bignum; then
+    OPTS+=(-M -v PREC=256)
+fi
+
+OPTS+=(
+    -v __PRIHDR__="${PRIHDR}"
+    -v __UNAME__="$(uname)"
+    -v __HDRROW__="${HDRROW}"
+    -v __TAWKHOME__="${SHOME}"
+)
+
+trap "trap - SIGTERM && _cleanup 1" HUP INT QUIT TERM
+trap "_cleanup \$?" EXIT
+
+# Prepare mapping between columns name and number
+TEMPFILE="$(mktemp)" || TEMPFILE=/tmp/tawk$$
+echo "BEGIN {" > "${TEMPFILE}"
+CNT=1
+for i in "${names[@]}"; do
+    echo "${i} = ${CNT}"
+    echo "COL[\"${i}\"] = ${CNT}"
+    echo "COL[${CNT}] = \"${i}\""
+    CNT=$((CNT+1))
+done >> "${TEMPFILE}"
+echo "}" >> "${TEMPFILE}"
+
+# Load mapping column names/numbers
+OPTS+=(-i "${TEMPFILE}")
+
+if [[ -n "${ZEEK}" ]]; then
+    OPTS+=(
+        -v __ZEEK__=1
+        -i "${TAWKHOME}/zeek/vars"
+        -i "${TAWKHOME}/zeek/skip_comments"
+    )
+fi
+
+# Load tawk functions
+AWKPATH="${TAWKHOME}/funcs/"
+OPTS+=(-i "${TAWKHOME}/funcs/funcs.load")
+
+if [[ -n "${NFDUMP}" ]]; then
+    AWKPATH="${AWKPATH}:${TAWKHOME}/t2nfdump/"
+    OPTS+=(-i "${TAWKHOME}/t2nfdump/t2nfdump.load")
+fi
+
+if [[ -n "${EXAMPLES}" ]]; then
+    AWKPATH="${AWKPATH}:${TAWKHOME}/examples/"
+    OPTS+=(-i "${TAWKHOME}/examples/examples.load")
+fi
+
+if [[ -f "${TAWKHOME}/t2custom/t2custom.load" && -n "$(AWK '/^@include/' "${TAWKHOME}/t2custom/t2custom.load")" ]]; then
+    AWKPATH="${AWKPATH}:${TAWKHOME}/t2custom/"
+    OPTS+=(-i "${TAWKHOME}/t2custom/t2custom.load")
+fi
+
+if [[ -n "${COMMENT}" ]]; then
+    if [[ "${#FILE[@]}" -eq 0 ]]; then
+        INPUT="stdin"
+    else
+        INPUT="${FILE[0]}"
+    fi
+    printf "# Generated with ${SNAME} from '${INPUT}'\n"
+    printf "# Date: $(date ${UTC} +"%FT%T%z")"
+    if grep -q -F -e '-v ' -e '-i ' <<< "${ARGS[*]}"; then
+        printf "\n# Variables and libraries used:"
+        for i in "${ARGS[@]}"; do
+            if [[ "${i}" == '-i' || "${i}" == '-v' ]]; then
+                _v=1
+                printf " %s" "${i}"
+            elif [[ -n "${_v}" ]]; then
+                name="$(cut -d= -f1 <<< "${i}")"
+                value="$(cut -d= -f2 <<< "${i}")"
+                printf " %s=\"%s\"" "${name}" "${value}"
+                unset _v
+            fi
+        done
+    fi
+    printf "\n# Filter used:"
+    for i in "${ARGS[@]}"; do
+        if [[ "${i}" == '-i' || "${i}" == '-v' ]]; then
+            _v=1
+        elif [[ -n "${_v}" ]]; then
+            unset _v
+        else
+            printf " %s" "${i}"
+        fi
+    done
+    printf "\n"
+fi
+
+export AWKPATH
+
+if [[ -z "${FEXTRACTOR}" && -z "${WIRESHARK}" ]]; then
+    AWK "${OPTS[@]}" -F"${FS}" -v OFS="${OFS}" -v __HDRSEP__="${HDRSEP}" "${ARGS[@]}" "${FILE[@]}"
+elif [[ ! -f "${FILE[0]}" ]]; then
+    printerr "Input file is required"
+    abort_with_help
+elif [[ -z "${WIRESHARK}" ]]; then
+    AWK "${OPTS[@]}" -F"${FS}" -v OFS="${OFS}" -v __HDRSEP__="${HDRSEP}" "${ARGS[@]}" "${FILE[@]}" | \
+        "${FEXTRACTOR}" "${FEX_OPTS[@]}" -r "${XER_FILE}" -w "${OUT_FILE}"
+else
+    AWK "${OPTS[@]}" -F"${FS}" -v OFS="${OFS}" -v __HDRSEP__="${HDRSEP}" "${ARGS[@]}" "${FILE[@]}" | \
+        "${FEXTRACTOR}" "${FEX_OPTS[@]}" -r "${XER_FILE}" -w - | \
+        "${WIRESHARK}" "${WSHARK_OPTS[@]}"
+fi

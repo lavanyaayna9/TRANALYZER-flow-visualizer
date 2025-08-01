@@ -1,0 +1,297 @@
+#!/usr/bin/env bash
+
+source "$(dirname "$0")/../scripts/t2utils.sh"
+
+usage() {
+    echo "Usage:"
+    echo "    $SNAME [OPTION...] [TEST...]"
+    echo
+    echo "Available tests:"
+    echo "    all               Run all the tests (default)"
+    echo "    coverage          Test whether all flags listed in src/*.h exist in t2plconf, default.config and doc/*.tex"
+    echo "    default           Test whether all flags listed in default.config exist in src/*.h"
+    echo "    flags             Test whether all flags listed in tests/*.flags exist in src/*.h"
+    echo "    t2plconf          Test whether all flags listed in t2plconf exist in src/*.h"
+    echo
+    echo "Optional arguments:"
+    echo "    plugin            Name of a plugin to test"
+    echo "    -f                Abort on error"
+    echo "    -v                Verbose"
+    echo
+    echo "Help and documentation arguments:"
+    echo "    -h, --help        Show this help, then exit"
+}
+
+test_coverage() {
+    local _plugin="$1"
+    if [ -z "$1" ]; then
+        printerr "Usage: test_coverage pluginName"
+        exit 1
+    fi
+    local _phome
+    if [ "$_plugin" = "tranalyzer2" ] || [ "$_plugin" = "utils" ]; then
+        _phome="$T2HOME/$_plugin"
+    else
+        _phome="$T2PLHOME/$_plugin"
+    fi
+    for _flag in $(AWK '
+        /---- USER CONFIGURATION FLAGS ----/ {
+            p = 1
+            next
+        }
+        p == 1 && /^#define\s/ {
+            print $2
+            next
+        }
+        p == 2 {
+            P++
+            next
+        }
+        p == 3 && /-----------------------/ {
+            p = 1
+        }
+        /---- DO NOT EDIT THE FOLLOWING BLOCKS ----/ {
+            p = 2
+            next
+        }
+        /---- DO NOT EDIT BELOW HERE ----/ {
+            exit
+        }' "$_header")
+    do
+        [ -n "$VERBOSE" ] && printinf "Testing for '$_flag' from '$_header' in '$_plugin/{default.config,t2plconf,doc/$_plugin.tex}'"
+        if ! grep -Fw "$_flag" "$_phome/default.config" &> /dev/null; then
+            printerr "'$_flag' listed in '$_header', but not in '$_plugin/default.config'"
+            [ -n "$FATAL" ] && exit 1
+        fi
+        if ! grep -Fw "$_flag" "$_phome/t2plconf" &> /dev/null; then
+            printerr "'$_flag' listed in '$_header', but not in '$_plugin/t2plconf'"
+            [ -n "$FATAL" ] && exit 1
+        fi
+        if [ "$_plugin" = "utils" ]; then
+            # No doc folder in utils yet...
+            if ! grep -Fw "$($TAWK '{ print texscape($0) }' <<< "$_flag")" "tranalyzer2/doc/"*.tex &> /dev/null; then
+                printerr "'$_flag' listed in '$_header', but not in 'tranalyzer2/doc/*.tex'"
+                [ -n "$FATAL" ] && exit 1
+            fi
+        else
+            if ! grep -Fw "$($TAWK '{ print texscape($0) }' <<< "$_flag")" "$_phome/doc/"*.tex &> /dev/null; then
+                printerr "'$_flag' listed in '$_header', but not in '$_plugin/doc/*.tex'"
+                [ -n "$FATAL" ] && exit 1
+            fi
+        fi
+    done
+}
+
+TESTS=()
+PLUGINS=()
+IGNORE=(
+    -e t2PSkel
+)
+
+while [ $# -gt 0 ]; do
+    case "$1" in
+        all)
+            ALL=1
+            ;;
+        coverage|default|flags|t2plconf)
+            TESTS+=("$1")
+            ;;
+        -f|--fatal)
+            FATAL=1
+            ;;
+        -v|--verbose)
+            VERBOSE=1
+            ;;
+        -\?|-h|--help)
+            usage
+            exit 0
+            ;;
+        -*)
+            abort_option_unknown "$1"
+            ;;
+        *)
+            if [ "$1" = "tranalyzer2" ] || [ "$1" = "utils" ] || [ -f "$T2PLHOME/$1/autogen.sh" ]; then
+                PLUGINS+=("$1")
+            else
+                abort_option_unknown "$1"
+            fi
+            ;;
+    esac
+    shift
+done
+
+if [ -n "$ALL" ] || [ ${#TESTS[@]} -eq 0 ]; then
+    TESTS=(coverage default flags t2plconf)
+fi
+
+cd "$T2HOME" || fatal "Failed to cd into '$T2HOME'"
+
+for _test in "${TESTS[@]}"; do
+    case "$_test" in
+        coverage)
+            # Make sure all flags in src/*.h exist in default.config, t2plconf and doc/*.tex
+            _headers=()
+            if [ ${#PLUGINS[@]} -eq 0 ]; then
+                _headers=($(ls tranalyzer2/src/*.h tranalyzer2/src/proto/*.h utils/*.h plugins/*/src/*.h | grep -v "${IGNORE[@]}"))
+            else
+                for _plugin in "${PLUGINS[@]}"; do
+                    if [ "$_plugin" = "tranalyzer2" ]; then
+                        _headers+=($(ls "$_plugin/src/"*.h "$_plugin/src/proto/"*.h))
+                    elif [ "$_plugin" = "utils" ]; then
+                        _headers+=($(ls "$_plugin/"*.h))
+                    else
+                        _headers+=($(ls "plugins/$_plugin/src/"*.h))
+                    fi
+                done
+            fi
+            for _header in "${_headers[@]}"; do
+                _plugin="$(cut -d/ -f1 <<< "$_header")"
+                if [ "$_plugin" = "plugins" ]; then
+                    _plugin="$(cut -d/ -f2 <<< "$_header")"
+                fi
+                [ -n "$VERBOSE" ] && printinf "Testing coverage for '$_header'"
+                test_coverage "$_plugin" "$_header"
+            done
+            ;;
+
+        default)
+            # Make sure all flags in default.config exist in src/*.h
+            _files=()
+            if [ ${#PLUGINS[@]} -eq 0 ]; then
+                _files=($(ls tranalyzer2/default.config utils/default.config plugins/*/default.config | grep -v "${IGNORE[@]}"))
+            else
+                for _plugin in "${PLUGINS[@]}"; do
+                    if [ "$_plugin" = "tranalyzer2" ] || [ "$_plugin" = "utils" ]; then
+                        _files+=("$_plugin/default.config")
+                    else
+                        _files+=("plugins/$_plugin/default.config")
+                    fi
+                done
+            fi
+            for _file in "${_files[@]}"; do
+                FLAGS=($(AWK -F= '!/^#/ && !/^\s*$/ { print $1 }' "$_file" | tr -d ' \t'))
+                if [ "$_file" = "tranalyzer2/default.config" ] || [ "$_file" = "utils/default.config" ]; then
+                    _plugin="$(cut -d/ -f1 <<< "$_file")"
+                else
+                    _plugin="$(cut -d/ -f2 <<< "$_file")"
+                fi
+                for _flag in "${FLAGS[@]}"; do
+                    [ -n "$VERBOSE" ] && printinf "Testing for '$_flag' from '$_file' in '$_plugin'"
+                    if ! $T2CONF -G "$_flag" "$_plugin" &> /dev/null; then
+                        printerr "Flag '$_flag' listed in '$_file' does not exist for '$_plugin'"
+                        [ -n "$FATAL" ] && exit 1
+                    fi
+                done
+            done
+            ;;
+
+        flags)
+            # Make sure all flags in tests/*.flags exist in src/*.h
+            _files=()
+            if [ ${#PLUGINS[@]} -eq 0 ]; then
+                _files=($(ls tranalyzer2/tests/tranalyzer2.flags plugins/*/tests/*.flags | grep -v "${IGNORE[@]}"))
+            else
+                for _plugin in "${PLUGINS[@]}"; do
+                    if [ "$_plugin" = "tranalyzer2" ]; then
+                        _files+=("$_plugin/tests/$_plugin.flags")
+                    else
+                        _files+=("plugins/$_plugin/tests/$_plugin.flags")
+                    fi
+                done
+            fi
+            for _file in "${_files[@]}"; do
+                [ -n "$VERBOSE" ] && printinf "Testing flags in '$_file'"
+                T2_FLAGS=($(AWK '!/^#/ && !/^\s*$/ && $2 ~ /tranalyzer2\/src/ { print $1 }' "$_file" | tr -d ' \t'))
+                FLAGS=($(AWK '!/^#/ && !/^\s*$/ && $2 ~ /^src\// { print $1 }' "$_file" | tr -d ' \t'))
+                EXTFLAGS=($(AWK '!/^#/ && !/^\s*$/ && $2 !~ /tranalyzer2\/src/ && $2 !~ /^src\// { print $1 "," $2 }' "$_file" | tr -d ' \t'))
+                # Tests flags in tranalyzer2
+                for _flag in "${T2_FLAGS[@]}"; do
+                    [ -n "$VERBOSE" ] && printinf "Testing for '$_flag' from '$_file' in 'tranalyzer2'"
+                    if ! $T2CONF -G "$_flag" tranalyzer2 &> /dev/null; then
+                        printerr "Flag '$_flag' listed in '$_file' does not exist in tranalyzer2"
+                        [ -n "$FATAL" ] && exit 1
+                    fi
+                done
+                # Tests flags in plugins/utils
+                if [ "$_file" != "tranalyzer2/tests/tranalyzer2.flags" ]; then
+                    _plugin="$(cut -d/ -f2 <<< "$_file")"
+                    for _flag in "${FLAGS[@]}"; do
+                        [ -n "$VERBOSE" ] && printinf "Testing for '$_flag' from '$_file' in '$_plugin'"
+                        if ! $T2CONF -G "$_flag" "$_plugin" &> /dev/null; then
+                            printerr "Flag '$_flag' listed in '$_file' does not exist for '$_plugin'"
+                            [ -n "$FATAL" ] && exit 1
+                        fi
+                    done
+                    # Tests flags in other plugins
+                    for _flag in "${EXTFLAGS[@]}"; do
+                        _name="$(cut -d, -f1 <<< "$_flag")"
+                        _dest="$(cut -d/ -f2 <<< "$(cut -d, -f2 <<< "$_flag")")"
+                        [ -n "$VERBOSE" ] && printinf "Testing for '$_name' from '$_file' in '$_dest'"
+                        if ! $T2CONF -G "$_name" "$_dest" &> /dev/null; then
+                            printerr "Flag '$_name' listed in '$_file' does not exist for '$_dest'"
+                            [ -n "$FATAL" ] && exit 1
+                        fi
+                    done
+                fi
+            done
+            ;;
+
+        t2plconf)
+            # Make sure all flags in t2plconf exist in src/*.h
+            _files=()
+            if [ ${#PLUGINS[@]} -eq 0 ]; then
+                _files=($(ls tranalyzer2/t2plconf utils/t2plconf plugins/*/t2plconf | grep -v "${IGNORE[@]}"))
+            else
+                for _plugin in "${PLUGINS[@]}"; do
+                    if [ "$_plugin" = "tranalyzer2" ] || [ "$_plugin" = "utils" ]; then
+                        _files+=("$_plugin/t2plconf")
+                    else
+                        _files+=("plugins/$_plugin/t2plconf")
+                    fi
+                done
+            fi
+            for _file in "${_files[@]}"; do
+                if [ "$_file" = "tranalyzer2/t2plconf" ] || [ "$_file" = "utils/t2plconf" ]; then
+                    _plugin="$(cut -d/ -f1 <<< "$_file")"
+                else
+                    _plugin="$(cut -d/ -f2 <<< "$_file")"
+                fi
+                [ -n "$VERBOSE" ] && printinf "Testing flags in '$_file'"
+                FLAGS=($(AWK '
+                    /^ITEMS=(none)$/ { exit }
+                    /^ITEMS=/ { p = 1; next }
+                    /^\s*#/ || /^\s*$/ || !p { next }
+                    p {
+                        switch ($2) {
+                            case "check":
+                            case "radio":
+                            case "range":
+                            case "text":
+                                if ($1 ~ /^\s*"/) {
+                                    break
+                                } else {
+                                    print $1
+                                    next
+                                }
+                            default:
+                                break
+                        }
+                    }
+                    p && /^source\s\+/ {
+                        exit
+                    }
+                ' "$_file" | tr -d ' \t'))
+                for _flag in "${FLAGS[@]}"; do
+                    [ -n "$VERBOSE" ] && printinf "Testing for '$_flag' from '$_file' in '$_plugin'"
+                    if ! $T2CONF -G "$_flag" "$_plugin" &> /dev/null; then
+                        printerr "Flag '$_flag' listed in '$_file' does not exist for '$_plugin'"
+                        [ -n "$FATAL" ] && exit 1
+                    fi
+                done
+            done
+            ;;
+        *)
+            printerr "Unknown test '$_test'"
+            abort_with_help
+    esac
+done

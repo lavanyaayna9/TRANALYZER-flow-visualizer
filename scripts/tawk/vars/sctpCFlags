@@ -1,0 +1,11 @@
+#H bit | sctpCFlags | Description
+#H =============================================================================
+     0 | 0x01       | Last segment
+     1 | 0x02       | First segment
+     2 | 0x04       | Ordered delivery
+     3 | 0x08       | Possibly delay SACK
+
+     4 | 0x10       | -
+     5 | 0x20       | -
+#E   6 | 0x40       | Transmission sequence number error
+#E   7 | 0x80       | Association sequence number error

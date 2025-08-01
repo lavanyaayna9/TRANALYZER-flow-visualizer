@@ -1,0 +1,225 @@
+#!/usr/bin/env bash
+#
+# Configuration file for httpSniffer
+# ==================================
+#
+# Usage
+# -----
+#
+# $ ./t2plconf
+#
+# Defining the configurations options
+# -----------------------------------
+#
+# If no configuration options are available, ITEMS must be set as follows:
+#   - ITEMS=(none)
+#
+# Otherwise, enter configurations items as follows:
+#   "NAME" "TYPE" "DEPENDENCIES" "DESCRIPTION"
+#
+#   - TYPE can be:
+#       - bitfield
+#       - check (boolean),
+#       - radio (set of values),
+#       - range (min <= val <= max)
+#       - text
+#
+#   - DEPENDENCIES MUST be numeric, e.g., "A == 1 && (B < 4 || C >= 1)"
+#
+#   - DESCRIPTION for type 'bitfield' MUST NOT contain '\t', ':' or ';'
+#   - DESCRIPTION for type 'check' MUST NOT contain tabs ('\t')
+#   - DESCRIPTION for type 'radio' MUST NOT contain '\t', ':' or ';'
+#   - DESCRIPTION for type 'range' MUST NOT contain '\t' or ':'
+#   - DESCRIPTION for type 'text'  MUST NOT contain '\t'
+#
+#   - DESCRIPTION MUST be formatted according to the type (see examples below):
+#       - bitfield : description ';' val1 ':' description1 ';' valN ':' descriptionN
+#       - check    : description
+#       - radio    : description ';' val1 ':' description1 ';' valN ':' descriptionN
+#       - range    : description ':' min ' ' max
+#       - text     : description
+#
+# Examples
+# --------
+#
+#ITEMS=(
+#    # An item can be specified in one line...
+#    T2PSKEL_VAR1 check "" "Description of option" # No dependencies
+#
+#    # Or span multiple lines
+#    T2PSKEL_VAR1 radio "T2PSKEL_VAR1 == 1"
+#           "Description of option; \
+#                   0: description of val 0; \
+#                   1: description of val 1; \
+#                   2: description of val 2"
+#
+#    T2PSKEL_SIZE range "T2PSKEL_VAR1 == 1 || T2PSKEL_VAR2 > 0"
+#           "Description: 0 255" # min=0, max=255
+#
+#    T2PSKEL_STR text
+#           "T2PSKEL_SIZE <= 5 && (T2PSKEL_VAR1 != 0 || T2PSKEL_VAR2 <= 1)"
+#           "Description"
+#
+#    T2PSKEL_BITFIELD bitfield ""
+#           "Description of option; \
+#                   0x01: description of bit 0; \
+#                   0x02: description of bit 1; \
+#                   0x04: description of bit 2; \
+#                   0x08: description of bit 3; \
+#                   0x10: description of bit 4; \
+#                   0x20: description of bit 5; \
+#                   0x40: description of bit 6; \
+#                   0x80: description of bit 7"
+#)
+#
+# If no configuration option is available, use the value 'none'
+#ITEMS=(none)
+#
+# Source the master t2plconf file
+# source ../../scripts/t2conf/t2plconf
+
+ITEMS=(
+    HTTP_MIME radio ""
+        "MIME type information; \
+            0: Print # of mime types only; \
+            1: Print mime type in flow file"
+
+    HTTP_MIMEAGA check "HTTP_MIME == 1" "Aggregate mime responses"
+
+    HTTP_STAT radio ""
+        "Status code information; \
+            0: Print # of status codes only; \
+            1: Print status code in flow file"
+
+    HTTP_STATAGA check "HTTP_STAT == 1" "Aggregate status responses"
+
+    HTTP_MCNT check "" "Output the number of GET and POST requests"
+
+    HTTP_HOST radio ""
+        "Hosts information; \
+            0: Print # of hosts only; \
+            1: Print hosts in flow file"
+
+    HTTP_HOSTAGA check "HTTP_HOST == 1" "Aggregate hosts"
+
+    HTTP_URL radio ""
+        "URL information; \
+            0: Print # of URL only; \
+            1: Print URL in flow file"
+
+    HTTP_URLAGA check "HTTP_URL == 1" "Aggregate URLs"
+
+    HTTP_COOKIE radio ""
+        "Cookies information; \
+            0: print # of cookies only; \
+            1: print cookies in flow file"
+
+    HTTP_IMAGE radio ""
+        "Images information; \
+            0: Print # of images only; \
+            1: Print image name in flow file"
+
+    HTTP_VIDEO radio ""
+        "Videos information; \
+            0: Print # of videos only; \
+            1: Print video name in flow file"
+
+    HTTP_AUDIO radio ""
+        "Audio information; \
+            0: Print # of audios only; \
+            1: Print audio name in flow file"
+
+    HTTP_MSG radio ""
+        "Message information; \
+            0: Print # of messages only; \
+            1: Print message name in flow file"
+
+    HTTP_APPL radio ""
+        "Applications information; \
+            0: Print # of applications only; \
+            1: Print application name in flow file"
+
+    HTTP_TEXT radio ""
+        "Text information; \
+            0: Print # of texts only; \
+            1: Print text name in flow file"
+
+    HTTP_PUNK radio ""
+        "POST/unknown and all else; \
+            0: Print # of POST/unknown/else only; \
+            1: Print POST/unknown/else name in flow file"
+
+    HTTP_BODY  check "" "Print anomaly bits in flow file (body exam)"
+    HTTP_BDURL check "" "Print body URL name in flow file"
+
+    HTTP_USRAG  check ""                "Print User-Agents in flow file"
+    HTTP_USRAGA check "HTTP_USRAG == 1" "Aggregate User-Agents"
+
+    HTTP_XFRWD  check ""                "Print X-Forwarded-For in flow file"
+    HTTP_XFRWDA check "HTTP_XFRWD == 1" "Aggregate X-Forwarded-For"
+
+    HTTP_REFRR  check ""                "Print Referer in flow file"
+    HTTP_REFRRA check "HTTP_REFRR == 1" "Aggregate Referer"
+
+    HTTP_VIA  check ""              "Print Via info in flow file"
+    HTTP_VIAA check "HTTP_VIA == 1" "Aggregate Via"
+
+    HTTP_LOC  check ""              "Print Location info in flow file"
+    HTTP_LOCA check "HTTP_LOC == 1" "Aggregate Location"
+
+    HTTP_SERV  check ""               "Print Server info in flow file"
+    HTTP_SERVA check "HTTP_SERV == 1" "Aggregate Server"
+
+    HTTP_PWR  check ""              "Print X-Powered-By info in flow file"
+    HTTP_PWRA check "HTTP_PWR == 1" "Aggregate X-Powered-By"
+
+    HTTP_ANTVIR radio ""
+        "Antivirus information; \
+            0: No antivirus flags in httpCFlags; \
+            1: Activate antivirus detector"
+
+    HTTP_AVAST_CID check "" "Print Avast client ID"
+    HTTP_ESET_UID  check "" "Print ESET update ID"
+
+    HTTP_SAVE_IMAGE check "" "Save images in HTTP_IMAGE_PATH"
+    HTTP_SAVE_VIDEO check "" "Save videos in HTTP_VIDEO_PATH"
+    HTTP_SAVE_AUDIO check "" "Save audios in HTTP_AUDIO_PATH"
+    HTTP_SAVE_MSG   check "" "Save messages in HTTP_MSG_PATH"
+    HTTP_SAVE_TEXT  check "" "Save texts in HTTP_TEXT_PATH"
+    HTTP_SAVE_APPL  check "" "Save applications in HTTP_APPL_PATH"
+    HTTP_SAVE_PUNK  check "" "Save PUT/else content in HTTP_PUNK_PATH"
+
+    HTTP_PUNK_AV_ONLY radio "HTTP_SAVE_PUNK == 1"
+        "Files to save in HTTP_PUNK_PATH; \
+            0: All PUNK files are saved; \
+            1: Only saves antivirus related files"
+
+    HTTP_RMDIR check
+        "HTTP_SAVE_IMAGE == 1 || HTTP_SAVE_VIDEO == 1 || HTTP_SAVE_AUDIO == 1 || HTTP_SAVE_MSG == 1 || HTTP_SAVE_TEXT == 1 || HTTP_SAVE_APPL == 1"
+        "Remove directories in order to prevent appending to existing files"
+
+    HTTP_PATH text
+        "HTTP_SAVE_IMAGE == 1 || HTTP_SAVE_VIDEO == 1 || HTTP_SAVE_AUDIO == 1 || HTTP_SAVE_MSG == 1 || HTTP_SAVE_TEXT == 1 || HTTP_SAVE_APPL == 1"
+        "Root folder for extracted files"
+
+    HTTP_IMAGE_PATH text "HTTP_SAVE_IMAGE == 1" "Path for extracted pictures"
+    HTTP_VIDEO_PATH text "HTTP_SAVE_VIDEO == 1" "Path for extracted videos"
+    HTTP_AUDIO_PATH text "HTTP_SAVE_AUDIO == 1" "Path for extracted audios"
+    HTTP_MSG_PATH   text "HTTP_SAVE_MSG   == 1" "Path for extracted messages"
+    HTTP_TEXT_PATH  text "HTTP_SAVE_TEXT  == 1" "Path for extracted texts"
+    HTTP_APPL_PATH  text "HTTP_SAVE_APPL  == 1" "Path for extracted applications"
+
+    HTTP_NONAME text
+        "HTTP_SAVE_IMAGE == 1 || HTTP_SAVE_VIDEO == 1 || HTTP_SAVE_AUDIO == 1 || HTTP_SAVE_MSG == 1 || HTTP_SAVE_TEXT == 1 || HTTP_SAVE_APPL == 1"
+        "Name of files without name"
+
+    HTTP_DATA_C_MAX range "" "Maximum dimension of storage arrays per flow: 1 255"
+    HTTP_MXFILE_LEN range "" "Maximum storage name length: 1 255"
+    HTTP_MXUA_LEN   range "HTTP_USRAG == 1" "User-Agent length: 1 255"
+    HTTP_MXXF_LEN   range "HTTP_XFRWD == 1" "X-Forwarded-For length: 1 255"
+    HTTP_AVID_LEN   range "HTTP_AVAST_CID == 1 || HTTP_ESET_UID == 1"
+        "Maximum length for Antivirus ID: 0 UINT16_MAX"
+)
+
+# Source the master t2plconf file
+source "$(dirname "$0")/../../scripts/t2conf/t2plconf"

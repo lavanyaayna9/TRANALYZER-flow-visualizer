@@ -1,0 +1,26 @@
+# Flags to toggle
+#
+# Run the ../../../tests/test.sh script from the plugin main directory:
+#
+# cd $T2HOME/plugins/telegram
+# ../../tests/test.sh [OPTION...]
+#
+# If run from this folder, make sure to use absolute path for the '-p' option.
+#
+# Flag name     File
+
+# ../../tranalyzer2/src/networkHeaders.h
+ETH_ACTIVATE        ../../tranalyzer2/src/networkHeaders.h
+
+# ../../tranalyzer2/src/tranalyzer.h
+BLOCK_BUF           ../../tranalyzer2/src/tranalyzer.h
+DEBUG               ../../tranalyzer2/src/tranalyzer.h
+SUBNET_ON           ../../tranalyzer2/src/tranalyzer.h
+
+# ../basicFlow/src/basicFlow.h
+BFO_SUBNET_TEST     ../basicFlow/src/basicFlow.h
+
+# src/telegram.h
+TG_SAVE             src/telegram.h
+TG_DEOBFUSCATE      src/telegram.h
+TG_DEBUG_MESSAGES   src/telegram.h

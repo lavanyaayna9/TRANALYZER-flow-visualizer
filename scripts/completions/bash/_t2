@@ -1,0 +1,92 @@
+# Bash completion for t2, gt2, st2 and tranalyzer
+
+_t2() {
+    local cur prev words cword
+
+    if type -t _init_completion &> /dev/null; then
+        _init_completion -n = || return
+    else
+        COMPREPLY=()
+        cur="${COMP_WORDS[COMP_CWORD]}"
+        prev="${COMP_WORDS[COMP_CWORD-1]}"
+    fi
+
+    case "$prev" in
+        -i|--interface)
+            if type -t _available_interfaces &> /dev/null; then
+                # active interfaces only
+                _available_interfaces -a
+            fi
+            return
+            ;;
+        -b | --plugin-list   | \
+        -e | --pcapd         | \
+        -r | --pcap          | \
+        -R | --pcap-list     | \
+        -D | --input-regex   | \
+        -F | --bpf-file      | \
+        -w | --output-prefix | \
+        -W | --output-regex)
+            if type -t _filedir &> /dev/null; then
+                _filedir
+            else
+                compopt -o filenames 2> /dev/null
+                COMPREPLY=($(compgen -f -- "$cur"))
+            fi
+            return
+            ;;
+        -p|--plugin-folder)
+            if type -t _filedir &> /dev/null; then
+                _filedir -d
+            else
+                compopt -o dirnames 2> /dev/null
+                COMPREPLY=($(compgen -d -- "$cur"))
+            fi
+            return
+            ;;
+        -c|--cpu)
+            COMPREPLY=($(compgen -W "$(seq 0 $(_ncpus))" -- "$cur"))
+            return
+            ;;
+        -f | --hash-factor  | \
+        -x | --sensor-id    | \
+        -S | --snaplen      | \
+        -B | --rx-bufsize   | \
+        -P | --priority     | \
+        -M | --mon-interval)
+            return
+            ;;
+    esac
+
+    local args=(
+        -i --interface
+        -r --pcap
+        -R --pcap-list
+        -D --input-regex
+        -w --output-prefix
+        -W --output-regex
+        -l --logfile
+        -m --monfile
+        -s --packets
+        -p --plugin-folder
+        -b --plugin-list
+        -e --pcapd
+        -f --hash-factor
+        -x --sensor-id
+        -S --snaplen
+        -B --rx-bufsize
+        -P --priority
+        -M --mon-interval
+        -F --bpf-file
+        -V --version
+        -h --help
+    )
+
+    if [[ "$OSTYPE" != darwin* ]]; then
+        args+=(-c --cpu)
+    fi
+
+    COMPREPLY=($(compgen -W "${args[*]}" -- "$cur"))
+}
+
+complete -F _t2 t2 gt2 st2 tranalyzer

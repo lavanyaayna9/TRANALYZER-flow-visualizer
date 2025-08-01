@@ -1,0 +1,16 @@
+-- Top IP protocols by number of packets
+
+SELECT
+    "l4Proto" AS proto,
+    SUM("pktsSnt") AS cnt
+FROM
+    flow
+WHERE
+    bitTestAny("flowStat", 14, 15) > 0  -- IPv4/6 only
+    AND "timeFirst" >= {time_from:DateTime64(6)}
+    AND "timeLast" <= {time_to:DateTime64(6)}
+
+GROUP BY proto
+ORDER BY multiply(cnt, {sort_order:Int8})
+
+LIMIT {n:UInt64}

@@ -1,0 +1,34 @@
+# Flags to toggle
+#
+# Run the ../../../tests/test.sh script from the plugin main directory:
+#
+# cd $T2HOME/plugins/dnsDecode
+# ../../tests/test.sh [OPTION...]
+#
+# If run from this folder, make sure to use absolute path for the '-p' option.
+#
+# Flag name     File
+
+# ../../tranalyzer2/src/networkHeaders.h
+ETH_ACTIVATE    ../../tranalyzer2/src/networkHeaders.h
+IPV6_ACTIVATE   ../../tranalyzer2/src/networkHeaders.h
+
+# ../../tranalyzer2/src/tranalyzer.h
+BLOCK_BUF       ../../tranalyzer2/src/tranalyzer.h
+DIFF_REPORT     ../../tranalyzer2/src/tranalyzer.h
+FORCE_MODE      ../../tranalyzer2/src/tranalyzer.h
+SUBNET_ON       ../../tranalyzer2/src/tranalyzer.h
+#USE_T2BUS       ../../tranalyzer2/src/tranalyzer.h
+
+# src/dnsDecode.h
+DNS_MODE        src/dnsDecode.h
+DNS_HEXON       src/dnsDecode.h
+DNS_AGGR        src/dnsDecode.h
+DNS_WHO         src/dnsDecode.h
+DNS_MAL_TEST    src/dnsDecode.h
+DNS_MAL_TYPE    src/dnsDecode.h
+DNS_HDRMD       src/dnsDecode.h
+DNS_TYPE        src/dnsDecode.h
+
+# src/malsite.h
+#DNS_MAL_DOMAIN  src/malsite.h

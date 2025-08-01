@@ -1,0 +1,134 @@
+\IfFileExists{t2doc.cls}{
+    \documentclass[documentation]{subfiles}
+}{
+    \errmessage{Error: could not find 't2doc.cls'}
+}
+
+\begin{document}
+
+\trantitle
+    {payloadDumper} % Plugin name
+    {Dump the payload of layer 2, TCP, UDP or SCTP flows to files} % Short description
+    {Tranalyzer Development Team} % author(s)
+
+\section{payloadDumper}\label{s:payloadDumper}
+
+\subsection{Description}
+The payloadDumper plugin dumps the payload of layer 2, TCP, UDP or SCTP flows to files.
+It provides features similar to \href{https://github.com/simsong/tcpflow}{tcpflow}.
+
+\subsection{Configuration Flags}
+The following flags can be used to control the output of the plugin:
+\begin{longtable}{>{\tt}lcl>{\tt\small}l}
+    \toprule
+    {\bf Name} & {\bf Default} & {\bf Description} & {\bf Flags}\\
+    \midrule\endhead%
+    PLDUMP\_L2          & 0 & Extract payload for layer 2 flows                             & ETH\_ACTIVATE>0\\
+    PLDUMP\_ETHERTYPES  & {\tt\small \{\}}
+                            & Only extract L2 payloads for those ethertypes                 & PLDUMP\_L2=1\\
+                        &   & \qquad e.g., {\tt\small \{0x2000,0x2003\}}                    & \\
+    \\
+    PLDUMP\_TCP         & 1 & Extract payload for TCP flows                                 & \\
+    PLDUMP\_TCP\_PORTS  & {\tt\small \{\}}
+                            & Only extract TCP payloads on those ports,                     & PLDUMP\_TCP=1\\
+                        &   & \qquad e.g., {\tt\small \{80,8080\}}                          & \\
+    \\
+    PLDUMP\_UDP         & 1 & Extract payload for UDP flows                                 & \\
+    PLDUMP\_UDP\_PORTS  & {\tt\small \{\}}
+                            & Only extract UDP payloads on those ports,                     & PLDUMP\_UDP=1\\
+                        &   & \qquad e.g., {\tt\small \{80,8080\}}                          & \\
+    \\
+    PLDUMP\_SCTP        & 0 & Extract payload for TCP flows                                 & SCTP\_ACTIVATE=1\\
+    PLDUMP\_SCTP\_PORTS & {\tt\small \{\}}
+                            & Only extract SCTP payloads on those ports,                    & PLDUMP\_SCTP=1\&\&\\
+                        &   & \qquad e.g., {\tt\small \{80,8080\}}                          & SCTP\_ACTIVATE=1\\
+    \\
+    PLDUMP\_MAX\_BYTES  & 0 & Max.\ number of bytes per flow to dump                        & \\
+                        &   & \qquad (use 0 for no limits)                                  & \\
+    \\
+    PLDUMP\_START\_OFF  & 0 & Start dumping bytes at a specific offset                      & PLDUMP\_L2=1||\\
+                        &   & (Layer 2 and UDP only)                                        & PLDUMP\_UDP=1\\
+    \\
+    PLDUMP\_RMDIR       & 1 & Empty {\tt\small PLDUMP\_FOLDER} before starting              & \\
+    PLDUMP\_NAMES       & 0 & Format for filenames:                                         & \\
+                        &   & \qquad 0: {\tt\small flowInd\_[AB]}                           & \\
+                        &   & \qquad 1: {\tt\small srcIP.srcPort-dstIP.dstPort-l4Proto}     & \\
+                        &   & \qquad\quad Extra suffix for SCTP: {\tt\small \_sctpStream}   & \\
+                        &   & \qquad\quad For L2: {\tt\small srcMac-dstMac-etherType}       & \\
+                        &   & \qquad 2: Same as 1, but prefixed with {\tt\small timestampT} & \\
+    \\
+    PLDUMP\_FOLDER      & {\tt\footnotesize "/tmp/payloadDumper/"}
+                            & Output folder for saved files                                 & \\
+    PLDUMP\_PREFIX      & {\tt\small ""}
+                            & Prefix for output files                                       & \\
+    PLDUMP\_SUFFIX      & {\tt\small ""}
+                            & Suffix for output files                                       & \\
+    \bottomrule
+\end{longtable}
+
+\subsubsection{Environment Variable Configuration Flags}
+The following configuration flags can also be configured with environment variables ({\tt ENVCNTRL>0}):
+\begin{itemize}
+    \item {\tt PLDUMP\_RMDIR}
+    \item {\tt PLDUMP\_FOLDER}
+    \item {\tt PLDUMP\_PREFIX}
+    \item {\tt PLDUMP\_SUFFIX}
+\end{itemize}
+
+\subsection{Flow File Output}
+The payloadDumper plugin outputs the following columns:
+\begin{longtable}{>{\tt}lll>{\tt\small}l}
+    \toprule
+    {\bf Column} & {\bf Type} & {\bf Description} & {\bf Flags}\\
+    \midrule\endhead%
+    \nameref{pldStat} & H8 & Status & \\
+    \bottomrule
+\end{longtable}
+
+\subsubsection{pldStat}\label{pldStat}
+The {\tt pldStat} column is to be interpreted as follows:
+\begin{longtable}{>{\tt}rl}
+    \toprule
+    {\bf pldStat} & {\bf Description}\\
+    \midrule\endhead%
+    $2^0$ (=0x01) & Match for this flow\\
+    $2^1$ (=0x02) & Dump payload for this flow\\
+    $2^2$ (=0x04) & SCTP init TSN diff engine\\
+    $2^3$ (=0x08) & SCTP payload truncated\\
+    \\
+    $2^4$ (=0x10) & TCP sequence numbers out of order or roll-over or TCP keep-alive\\
+    $2^5$ (=0x20) & SCTP TSN out of order or roll-over\\
+    $2^6$ (=0x40) & Filename truncated\\
+    $2^7$ (=0x80) & Failed to open file\\
+    \bottomrule
+\end{longtable}
+
+\subsection{Packet File Output}
+In packet mode ({\tt --s} option), the payloadDumper plugin outputs the following columns:
+\begin{longtable}{>{\tt}lll>{\tt\small}l}
+    \toprule
+    {\bf Column} & {\bf Type} & {\bf Description} & {\bf Flags}\\
+    \midrule\endhead%
+    \nameref{pldStat} & H8 & Status & \\
+    \bottomrule
+\end{longtable}
+
+\subsection{Plugin Report Output}
+The following information is reported:
+\begin{itemize}
+    \item Aggregated {\tt\nameref{pldStat}}
+    \item Number of non zero content dumped flows
+\end{itemize}
+
+\subsection{Additional Output}
+The payload of the layer 2, TCP, UDP and/or SCTP flows is extracted in {\tt PLDUMP\_FOLDER}.
+Each file is named according to the value of {\tt PLDUMP\_NAMES}, {\tt PLDUMP\_SUFFIX} and {\tt PLDUMP\_SUFFIX}.
+
+%\subsection{TODO}
+%
+%\begin{itemize}
+%    \item Adapt PLDUMP_START_OFF to TCP and SCTP
+%    \item Add a flag to only dump payload on specific source/destination port(s), addresses, ...
+%\end{itemize}
+
+\end{document}

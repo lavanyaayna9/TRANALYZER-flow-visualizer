@@ -1,0 +1,19 @@
+# Flags to toggle
+#
+# Run the ../../../tests/test.sh script from the plugin main directory:
+#
+# cd $T2HOME/plugins/fnameLabel
+# ../../tests/test.sh [OPTION...]
+#
+# If run from this folder, make sure to use absolute path for the '-p' option.
+#
+# Flag name     File
+
+# ../../tranalyzer2/src/networkHeaders.h
+ETH_ACTIVATE    ../../tranalyzer2/src/networkHeaders.h
+
+# src/fnameLabel.h
+FNL_LBL         src/fnameLabel.h
+FNL_HASH        src/fnameLabel.h
+FNL_FLNM        src/fnameLabel.h
+FNL_FREL        src/fnameLabel.h

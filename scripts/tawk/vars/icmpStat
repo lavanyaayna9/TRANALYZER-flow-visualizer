@@ -1,0 +1,11 @@
+#H bit | icmpStat | Description
+#H =============================================================================
+     0 | 0x01     | Flow is ICMP
+     1 | 0x02     | -
+     2 | 0x04     | -
+     3 | 0x08     | -
+
+#I   4 | 0x10     | WANG2 Microsoft bandwidth test
+#W   5 | 0x20     | ICMP Echo seq num abnormal increment
+#W   6 | 0x40     | Embedded LOKI covert channel
+#W   7 | 0x80     | Embedded SSH covert channel

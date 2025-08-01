@@ -1,0 +1,21 @@
+#H bit | sctpTypeBF | Description
+#H =============================================================================
+     0 | 0x0001     | Payload data
+     1 | 0x0002     | Initiation
+     2 | 0x0004     | Initiation acknowledgement
+     3 | 0x0008     | Selective acknowledgement
+
+     4 | 0x0010     | Heartbeat request
+     5 | 0x0020     | Heartbeat acknowledgement
+     6 | 0x0040     | Abort
+     7 | 0x0080     | Shutdown
+
+     8 | 0x0100     | Shutdown acknowledgement
+     9 | 0x0200     | Operation error
+    10 | 0x0400     | State cookie
+    11 | 0x0800     | Cookie acknowledgement
+
+    12 | 0x1000     | Explicit congestion notification echo (reserved)
+    13 | 0x2000     | Congestion window reduced (reserved)
+    14 | 0x4000     | Shutdown complete
+    15 | 0x8000     | Authentication chunk

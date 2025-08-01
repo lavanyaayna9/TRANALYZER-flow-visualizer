@@ -1,0 +1,37 @@
+#!/usr/bin/env awk
+#
+# Return true if the protocol number is equal to 1 (ICMP).
+#
+# Parameters:
+#   - [p] : the protocol to test [default: $l4Proto]
+#
+# Dependencies:
+#   - basicFlow
+#
+# See also:
+#   - proto
+#   - proto2str : string representation of a protocol
+#   - igmp      : alias for proto(2)
+#   - tcp       : alias for proto(6)
+#   - udp       : alias for proto(17)
+#   - rsvp      : alias for proto(46)
+#   - gre       : alias for proto(47)
+#   - esp       : alias for proto(50)
+#   - ah        : alias for proto(51)
+#   - icmp6     : alias for proto(58)
+#   - sctp      : alias for proto(132)
+#
+# Examples:
+#   - tawk 'icmp()' file.txt
+#   - tawk 'icmp() { print $srcIP }' file.txt
+#   - tawk 'icmp($l4Proto)' file.txt
+#   - tawk 'icmp($l4Proto) { print $srcIP }' file.txt
+
+@include "hdr"
+@include "proto"
+
+function icmp(p) {
+    if (hdr()) return __PRIHDR__
+    if (p) return p == 1
+    else return proto(1)
+}

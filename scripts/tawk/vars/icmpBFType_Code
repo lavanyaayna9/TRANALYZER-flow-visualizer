@@ -1,0 +1,75 @@
+#H bit | icmpBFType  | bit | icmpBFCode | Description
+#H =============================================================================
+     0 | 0x0000 0001 |     |            | Echo Reply
+
+     3 | 0x0000 0008 |     |            | Destination Unreachable
+       |             |   0 | 0x0001     |         Network Unreachable
+       |             |   1 | 0x0002     |         Host Unreachable
+       |             |   2 | 0x0004     |         Protocol Unreachable
+       |             |   3 | 0x0008     |         Port Unreachable
+       |             |   4 | 0x0010     |         Fragmentation Needed/DF set
+       |             |   5 | 0x0020     |         Source Route failed
+       |             |   6 | 0x0040     |         Dest net unknown
+       |             |   7 | 0x0080     |         Dest host unknown
+       |             |   8 | 0x0100     |         Src host isolated
+       |             |   9 | 0x0200     |         Dest net administratively prohibited
+       |             |  10 | 0x0400     |         Dest host administratively prohibited
+       |             |  11 | 0x0800     |         Dest net unreachable for type of service
+       |             |  12 | 0x1000     |         Dest host unreachable for type of service
+       |             |  13 | 0x2000     |         Communication administratively prohibited
+       |             |  14 | 0x4000     |         Precedence violation
+       |             |  15 | 0x8000     |         Precedence cut off
+
+     4 | 0x0000 0010 |     |            | Source Quench
+
+     5 | 0x0000 0020 |     |            | Redirect (change route)
+       |             |   0 | 0x0001     |         Redirect Net
+       |             |   1 | 0x0002     |         Redirect Host
+       |             |   2 | 0x0004     |         Redirect Net for TOS
+       |             |   3 | 0x0008     |         Redirect Host for TOS
+
+     6 | 0x0000 0040 |     |            | Alternate Host Address
+       |             |   0 | 0x0001     |         Alternate Address for Host
+
+     8 | 0x0000 0100 |     |            | Echo Request
+
+     9 | 0x0000 0200 |     |            | Router advertisement
+       |             |   0 | 0x0001     |
+       |             |  16 | 0x0000     | Does not route common traffic
+
+    10 | 0x0000 0400 |     |            | Router selection
+
+    11 | 0x0000 0800 |     |            | Time Exceeded
+       |             |   0 | 0x0001     |         TTL count exceeded
+       |             |   1 | 0x0002     |         Fragment Reassembly time exceeded
+
+    12 | 0x0000 1000 |     |            | Parameter Problem
+    13 | 0x0000 2000 |     |            | Timestamp Request
+    14 | 0x0000 4000 |     |            | Timestamp Reply
+    15 | 0x0000 8000 |     |            | Information Request
+
+    16 | 0x0001 0000 |     |            | Information Reply
+    17 | 0x0002 0000 |     |            | Address Mask Request
+    18 | 0x0004 0000 |     |            | Address Mask Reply
+
+    30 | 0x4000 0000 |     |            | Traceroute
+    39 | 0x0000 0080 |     |            | SKIP
+
+    40 | 0x0000 0100 |     |            | Photuris (Session Key Management)
+       |             |   0 | 0x0001     |         Bad SPI
+       |             |   1 | 0x0002     |         Authentication failed
+       |             |   2 | 0x0004     |         Decompression failed
+       |             |   3 | 0x0008     |         Decryption failed
+       |             |   4 | 0x0010     |         Need authentication
+       |             |   5 | 0x0020     |         Need authorization
+
+    41 | 0x0000 0200 |     |            | Seamoby
+    42 | 0x0000 0400 |     |            | Extended Echo Request
+
+    43 | 0x0000 0800 |     |            | Extended Echo Reply
+       |             |   0 | 0x0001     |         No Error
+       |             |   1 | 0x0002     |         Malformed Query
+       |             |   2 | 0x0004     |         No such Interface
+       |             |   3 | 0x0008     |         No such Table Entry
+       |             |   4 | 0x0010     |         Multiple Interfaces Satify Query
+

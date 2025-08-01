@@ -1,0 +1,90 @@
+# Bash completion for t2fm
+
+_t2fm() {
+    local cur prev words cword
+
+    if type -t _init_completion &> /dev/null; then
+        _init_completion -n = || return
+    else
+        COMPREPLY=()
+        cur="${COMP_WORDS[COMP_CWORD]}"
+        prev="${COMP_WORDS[COMP_CWORD-1]}"
+    fi
+
+    case "$prev" in
+        -i|--iface)
+            # active interfaces only
+            _available_interfaces -a
+            return
+            ;;
+        -r|--pcap|-R|--caplist|-w|--output-prefix|-F|--flow-file|-N|--netflow|--nfdump)
+            if type -t _filedir &> /dev/null; then
+                _filedir
+            else
+                compopt -o filenames 2> /dev/null
+                COMPREPLY=($(compgen -f -- "$cur"))
+            fi
+            return
+            ;;
+        #-p)
+        #    if type -t _filedir &> /dev/null; then
+        #        _filedir -d
+        #    else
+        #        compopt -o dirnames 2> /dev/null
+        #        COMPREPLY=($(compgen -d -- "$cur"))
+        #    fi
+        #    return
+        #    ;;
+    esac
+
+    local args=(
+        -i --iface
+        -r --pcap
+        -R --pcap-list
+        -F --flow-file
+        -C --clickhouse
+        -m --mongo
+        -p --postgres
+        -N --netflow --nfdump
+        -A --open-pdf
+        -w --output-prefix
+        -T
+        -b --build
+        --reset
+        -f --hash-factor
+        -d --data-carving
+        --hide-user
+        --hide-pass
+        --hide-user-pass
+        --top
+        --bottom
+        --no-countries
+        --no-organizations
+        --no-non-std-ports
+        --no-dns
+        --no-http
+        --no-https
+        --no-ssh
+        --no-passwords
+        --no-warnings
+        -t --title
+        -a --author
+        --chart-color
+        --table-odd-color
+        --table-even-color
+        -L --no-log-axis
+        -n --table-n
+        -c --chart-n
+        -H --raw-numbers
+        -HH --raw-and-hrnum
+        --copyright
+        --watermark
+        -y --yes
+        -0 -1
+        -h -? --help
+    )
+
+    COMPREPLY=($(compgen -W "${args[*]}" -- "$cur"))
+}
+
+complete -F _t2fm t2fm

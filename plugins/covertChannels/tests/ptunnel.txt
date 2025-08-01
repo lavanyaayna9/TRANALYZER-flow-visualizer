@@ -1,0 +1,48 @@
+Workstation1
+------------
+  OS: Arch Linux (x86_64)
+  Kernel: 3.15.3-1-ARCH
+  IP: 10.20.7.26
+  Hostname: caprica
+  MAC: 60:a4:4c:52:d6:e9
+
+VM1
+---
+  Qemu KVM running on Workstation1
+  OS: Ubuntu Server 14.04
+  Kernel: 3.13.0-24-generic
+  IP: 10.20.5.48 (connected to bridge on Workstation1)
+  MAC: 52:54:00:12:34:56
+
+
+Network scheme
+-------------
+                 (br0)
+    VM1     ---------------   Workstation1
+ptunnel server                record traffic on br0
+                              ptunnel client
+
+
+Trace capture procedure
+-----------------------
+1) Start workstation
+2) Start Ubuntu VM
+3) Record traffic on Workstation1
+    sudo tcpdump -s 0 -i br0 -w ptunnel.dmp
+4) Start the ptunnel proxy on WM1
+    sudo ./ptunnel
+5) Start the ptunnel client on Workstation1
+    sudo ./ptunnel -p 10.20.5.48 -lp 4567 -da nio.lu -dp 22
+6) Connect via SSH to nio.lu through the ICMP tunnel
+    ssh -p 4567 root@localhost
+7) Type a few SSH commands to generate traffic
+
+
+Notes
+-----
+Source: http://www.cs.uit.no/~daniels/PingTunnel/#download
+
+
+Conclusion
+----------
+The covertChannels plugin can detect ptunnel using same classifier as other ICMP tunnel

@@ -1,0 +1,26 @@
+# ZSH completion for t2viz
+
+_t2viz() {
+    #compdef t2viz
+
+    local cur="${words[CURRENT]}"
+    [ $CURRENT -gt 2 ] && local prev="${words[CURRENT-1]}"
+
+    case "$prev" in
+        -e|-w)
+            return
+            ;;
+        --gif|--jpeg|--png|--svg)
+            _files
+            return
+            ;;
+    esac
+
+    if [[ "$cur" == -* ]]; then
+        _arguments --
+    else
+        _files
+    fi
+}
+
+compdef _t2viz t2viz

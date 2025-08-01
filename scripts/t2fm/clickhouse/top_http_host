@@ -1,0 +1,23 @@
+-- Top HTTP hosts by number of flows
+
+SELECT
+    toValidUTF8(host),
+    COUNT(*) AS cnt
+
+FROM (
+    SELECT
+        host
+    FROM
+        flow
+    ARRAY JOIN
+        "httpHosts" AS host
+    WHERE
+        notEmpty("httpHosts")
+        AND "timeFirst" >= {time_from:DateTime64(6)}
+        AND "timeLast" <= {time_to:DateTime64(6)}
+) AS flows
+
+GROUP BY host
+ORDER BY multiply(cnt, {sort_order:Int8})
+
+LIMIT {n:UInt64}

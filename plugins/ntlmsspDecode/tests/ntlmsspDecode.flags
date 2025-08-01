@@ -1,0 +1,23 @@
+# Flags to toggle
+#
+# Run the ../../../tests/test.sh script from the plugin main directory:
+#
+# cd $T2HOME/plugins/ntlmsspDecode
+# ../../tests/test.sh [OPTION...]
+#
+# If run from this folder, make sure to use absolute path for the '-p' option.
+#
+# Flag name     File
+
+# ../../tranalyzer2/src/tranalyzer.h
+BLOCK_BUF               ../../tranalyzer2/src/tranalyzer.h
+ENVCNTRL                ../../tranalyzer2/src/tranalyzer.h
+
+# src/ntlmsspDecode.h
+NTLMSSP_CLI_CHALL       src/ntlmsspDecode.h
+NTLMSSP_DNS             src/ntlmsspDecode.h
+NTLMSSP_NETBIOS         src/ntlmsspDecode.h
+NTLMSSP_VERSION         src/ntlmsspDecode.h
+NTLMSSP_SAVE_AUTH_V1    src/ntlmsspDecode.h
+NTLMSSP_SAVE_AUTH_V2    src/ntlmsspDecode.h
+NTLMSSP_SAVE_INFO       src/ntlmsspDecode.h

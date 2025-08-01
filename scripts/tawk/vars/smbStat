@@ -1,0 +1,21 @@
+#H bit | smbStat | Description
+#H =============================================================================
+     0 | 0x0001  | Flow is SMB
+#W   1 | 0x0002  | SMB2 header status list truncated... increase SMB2_NUM_STAT
+#W   2 | 0x0004  | Dialect name truncated... increase SMB1_DIAL_MAXLEN
+#W   3 | 0x0008  | SMB1 dialects list truncated... increase SMB1_NUM_DIALECT
+
+#W   4 | 0x0010  | SMB2 dialects list truncated... increase SMB2_NUM_DIALECT
+#W   5 | 0x0020  | List of accessed files truncated... increase SMB_NUM_FNAME
+#W   6 | 0x0040  | Selected dialect index out of bound... increase SMB1_NUM_DIALECT
+#W   7 | 0x0080  | Selected dialect index out of bound... error or A flow not seen
+
+#W   8 | 0x0100  | Filename truncated... increase SMB_FNAME_LEN
+     9 | 0x0200  | -
+    10 | 0x0400  | -
+    11 | 0x0800  | -
+
+#I  12 | 0x1000  | Authentication information extracted
+#I  13 | 0x2000  | SMB1 files present
+#I  14 | 0x4000  | SMB2 files present
+#E  15 | 0x8000  | Malformed packet...

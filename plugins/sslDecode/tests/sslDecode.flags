@@ -1,0 +1,56 @@
+# Flags to toggle
+#
+# Run the ../../../tests/test.sh script from the plugin main directory:
+#
+# cd $T2HOME/plugins/sslDecode
+# ../../tests/test.sh [OPTION...]
+#
+# If run from this folder, make sure to use absolute path for the '-p' option.
+#
+# Flag name     File
+
+# ../../tranalyzer2/src/tranalyzer.h
+BLOCK_BUF                 ../../tranalyzer2/src/tranalyzer.h
+ENVCNTRL                  ../../tranalyzer2/src/tranalyzer.h
+
+# src/sslDecode.h
+SSL_ANALYZE_OVPN          src/sslDecode.h
+SSL_ANALYZE_QUIC          src/sslDecode.h
+SSL_REC_VER               src/sslDecode.h
+SSL_HAND_VER              src/sslDecode.h
+SSL_EXT_LIST              src/sslDecode.h
+SSL_SUPP_VER              src/sslDecode.h
+SSL_SIG_ALG               src/sslDecode.h
+SSL_EC                    src/sslDecode.h
+SSL_EC_FORMATS            src/sslDecode.h
+SSL_ALPN_LIST             src/sslDecode.h
+SSL_ALPS_LIST             src/sslDecode.h
+SSL_NPN_LIST              src/sslDecode.h
+SSL_CIPHER_LIST           src/sslDecode.h
+SSL_ANALYZE_CERT          src/sslDecode.h
+SSL_CERT_SERIAL           src/sslDecode.h
+SSL_CERT_FINGPRINT        src/sslDecode.h
+SSL_CERT_VALIDITY         src/sslDecode.h
+SSL_CERT_SIG_ALG          src/sslDecode.h
+SSL_CERT_PUBKEY_ALG       src/sslDecode.h
+SSL_CERT_ALG_NAME_LONG    src/sslDecode.h
+SSL_CERT_PUBKEY_TS        src/sslDecode.h
+SSL_CERT_SUBJECT          src/sslDecode.h
+SSL_CERT_ISSUER           src/sslDecode.h
+SSL_CERT_COMMON_NAME      src/sslDecode.h
+SSL_CERT_ORGANIZATION     src/sslDecode.h
+SSL_CERT_ORG_UNIT         src/sslDecode.h
+SSL_CERT_LOCALITY         src/sslDecode.h
+SSL_CERT_STATE            src/sslDecode.h
+SSL_CERT_COUNTRY          src/sslDecode.h
+SSL_DETECT_TOR            src/sslDecode.h
+SSL_RM_CERTDIR            src/sslDecode.h
+SSL_SAVE_CERT             src/sslDecode.h
+SSL_CERT_NAME_FINDEX      src/sslDecode.h
+SSL_BLIST                 src/sslDecode.h
+SSL_JA4                   src/sslDecode.h
+SSL_JA4_O                 src/sslDecode.h
+SSL_JA4_R                 src/sslDecode.h
+SSL_JA4_RO                src/sslDecode.h
+SSL_JA3                   src/sslDecode.h
+SSL_JA3_STR               src/sslDecode.h

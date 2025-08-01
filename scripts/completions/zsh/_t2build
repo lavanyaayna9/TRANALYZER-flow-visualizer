@@ -1,0 +1,61 @@
+# ZSH completion for t2build
+
+_t2build() {
+    #compdef t2build
+
+    local cur="${words[CURRENT]}"
+    [ $CURRENT -gt 2 ] && local prev="${words[CURRENT-1]}"
+
+    case "$prev" in
+        -p|--plugin-dir)
+            _files -/
+            return
+            ;;
+        -I|--ignore)
+            _files
+            return
+            ;;
+        -B|--backend)
+            local backends=(cmake meson autotools autotools-out-of-tree)
+            compadd "${backends[@]}"
+            return
+            ;;
+        -G)
+            if type cmake &> /dev/null; then
+                local IFS=$'\n'
+                local quoted
+                printf -v quoted %q "$cur"
+                local generators=(
+                    $(cmake --help 2> /dev/null | sed -n \
+                        -e "1,/^Generators/d" \
+                        -e "/^  *[^ =]/{s|^ *\([^=]*[^ =]\).*$|\1|;s|^|\"|g;s|$|\"|g;p}" \
+                        2> /dev/null)
+                )
+                compadd "${generators[@]}"
+            fi
+            return
+            ;;
+        -O)
+            local opts=(0 g 1 2 3 s)
+            compadd "${opts[@]}"
+            return
+            ;;
+    esac
+
+    if [[ "$cur" == -* ]]; then
+        _arguments --
+        return
+    fi
+
+    local plugins=(tranalyzer2 t2b2t t2whois fextractor)
+    for i in "$T2PLHOME/"*; do
+        local b=$(basename "$i")
+        if [ -d "$i" ] && [ "$b" != "t2PSkel" ]; then
+            plugins+=($b)
+        fi
+    done
+
+    compadd "${plugins[@]}"
+}
+
+compdef _t2build t2build

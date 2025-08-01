@@ -1,0 +1,39 @@
+#!/usr/bin/env bash
+
+source "$(dirname "${0}")/../../t2utils.sh"
+
+OPTS=()
+while [[ "${#}" -ne 0 ]]; do
+    case "${1}" in
+        -n)
+            validate_next_int "${1}" "${2}"
+            N="${2}"
+            shift
+            ;;
+        *)
+            OPTS+=("${1}")
+            ;;
+    esac
+    shift
+done
+
+TOP_CCS="$(nfdump ${OPTS[@]} -s 'dstgeo' | "${TAWK}" -F, -v n="${N}" '
+    NF > 1 && NR > 1 {
+        cc = $5
+        if (!cc) {
+            cc = "N/A"
+        }
+        aggr(cc, $6, n)
+    }')"
+
+if [[ "$(wc -l <<< "${TOP_CCS}")" -eq 1 ]]; then
+    TOP_CCS="$(nfdump ${OPTS[@]} -s 'dstip' | "${TAWK}" -F, -v n="${N}" '
+        NF > 1 && NR > 1 {
+            country = toupper(t2whois($5, "country"))
+            if (country ~ /^[0-9]/) country = "--"
+            else if (country == "FF" || country == "-" || country == "--") country = "N/A"
+            aggr(country, $6, n)
+        }')"
+fi
+
+echo "${TOP_CCS}"

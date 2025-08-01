@@ -1,0 +1,52 @@
+#!/usr/bin/env bash
+
+source "$(dirname "$0")/../../../scripts/t2utils.sh"
+
+usage() {
+    echo "Usage:"
+    echo "    $SNAME [OPTION...]"
+    echo
+    echo "Optional arguments:"
+    echo "    -h, --help        Show this help, then exit"
+}
+
+if [ "$1" == "-h" ] || [ "$1" == "--help" ]; then
+    usage
+    exit 0
+fi
+
+if [ ! -f "$SHOME/manuf.txt" ]; then
+    printerr "File '$SHOME/manuf.txt' does not exist"
+    exit 1
+fi
+
+AWKF -M '
+BEGIN {
+    T = "0000000000000000"
+    ms = "FFFFFFFFFFFFFFFF"
+    m = 0xffffffffffffffff
+}
+!/^#|^$/ {
+    gsub(":", "", $1)
+    n = split($1, A, "/")
+    j = length(A[1])
+    f = substr(T, j, 16 - j)
+    a = "0x" A[1] f
+    if ($3 == "") $3 = $2
+    if (n > 1) {
+       b = or(and(rshift(strtonum(m), A[2]), 0xffffffffffff0000), strtonum(a))
+       printf "%s\t%d\t0\t%s\t%s\n", a, A[2], $2, $3
+       printf "0x%016X\t%d\t1\t%s\t%s\n", b, A[2], $2, $3
+    } else {
+       g = substr(ms, j, 12 - j) "0000"
+       msk = j*4
+       printf "%s\t%d\t0\t%s\t%s\n", a, msk, $2, $3
+       printf "0x%s\t%d\t1\t%s\t%s\n", A[1] g, msk, $2, $3
+    }
+ }' manuf.txt > manuflbl.txt
+
+if [ ! -f "$SHOME/mbm" ]; then
+    make -C "$SHOME" mbm || exit 1
+fi
+
+./mbm manuflbl.txt macEthlbl_HLP.bin

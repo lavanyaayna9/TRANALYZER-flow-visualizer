@@ -1,0 +1,26 @@
+#!/usr/bin/env awk
+#
+# Print the string 's' in red with an added newline to stderr.
+# If 'n' is set, the trailing newline is omitted.
+#
+# Parameters:
+#   - s: the string to print
+#   - n: omit the trailing newline if 'n > 0'
+#
+# Dependencies:
+#   - None
+#
+# See also:
+#   - printbold
+#   - printinf
+#   - printok
+#   - printwrn
+#
+# Examples:
+#   - tawk '$dir ~ /^[AB]$/ { printerr("Invalid direction") }' file.txt
+#   - tawk '{ printerr("An error occured: ", 1); printerr(" parsing error") }' file.txt
+
+function printerr(s, n,        _n) {
+    _n = (n ? "" : "\n")
+    printf "\033[0;31m%s\033[0m%s", s, _n > "/dev/stderr"
+}

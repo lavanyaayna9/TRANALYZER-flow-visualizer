@@ -1,0 +1,13 @@
+-- Return the min timeFirst, max timeLast and the sum of packets and bytes
+
+SELECT
+    toUnixTimestamp64Micro(MIN("timeFirst")) / 1000000,
+    toUnixTimestamp64Micro(MAX("timeLast")) / 1000000,
+    SUM(1),
+    SUM("pktsSnt"),
+    SUM("l7BytesSnt")
+FROM
+    flow
+WHERE
+    "timeFirst" >= {time_from:DateTime64(6)}
+    AND "timeLast" <= {time_to:DateTime64(6)}

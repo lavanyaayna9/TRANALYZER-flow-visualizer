@@ -1,0 +1,19 @@
+#!/usr/bin/env awk
+
+hdr() {
+    next
+}
+
+!tcp() {
+    next
+}
+
+# A flows
+$dir == "A" && !bitsallset($flowStat, 1) {
+    aggr($dstPort, $pktsRcvd, n)
+}
+
+# B flows
+$dir == "A" && bitsallset($flowStat, 1) {
+    aggr($srcPort, $pktsSnt, n)
+}

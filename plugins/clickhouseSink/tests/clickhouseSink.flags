@@ -1,0 +1,20 @@
+# Flags to toggle
+#
+# Run the ../../../tests/test.sh script from the plugin main directory:
+#
+# cd $T2HOME/plugins/clickhouseSink
+# ../../tests/test.sh [OPTION...]
+#
+# If run from this folder, make sure to use absolute path for the '-p' option.
+#
+# Flag name                     File
+
+# ../../tranalyzer2/src/tranalyzer.h
+ENVCNTRL                        ../../tranalyzer2/src/tranalyzer.h
+BLOCK_BUF                       ../../tranalyzer2/src/tranalyzer.h
+TSTAMP_PREC                     ../../tranalyzer2/src/tranalyzer.h
+
+# src/clickhouseSink.hpp
+CLICKHOUSE_OVERWRITE_DB         src/clickhouseSink.hpp
+CLICKHOUSE_OVERWRITE_TABLE      src/clickhouseSink.hpp
+CLICKHOUSE_TRANSACTION_NFLOWS   src/clickhouseSink.hpp

@@ -1,0 +1,41 @@
+#H bit | bgpPAttr    | Description
+#H =============================================================================
+     0 | 0x0000 0001 | ORIGIN
+     1 | 0x0000 0002 | AS_PATH
+     2 | 0x0000 0004 | NEXT_HOP
+     3 | 0x0000 0008 | MULTI_EXIT_DISC (MED)
+
+     4 | 0x0000 0010 | LOCAL_PREF
+     5 | 0x0000 0020 | ATOMIC_AGGREGATE
+     6 | 0x0000 0040 | AGGREGATOR
+     7 | 0x0000 0080 | COMMUNITIES
+
+     8 | 0x0000 0100 | ORIGINATOR_ID
+     9 | 0x0000 0200 | CLUSTER_LIST
+    10 | 0x0000 0400 | DPA (Designation Point Attribute)
+    11 | 0x0000 0800 | ADVERTISER
+
+    12 | 0x0000 1000 | RCID_PATH / CLUSTER_ID
+    13 | 0x0000 2000 | MP_REACH_NLRI
+    14 | 0x0000 4000 | MP_UNREACH_NLRI
+    15 | 0x0000 8000 | EXTENDED_COMMUNITIES
+
+    16 | 0x0001 0000 | NEW_AS_PATH
+    17 | 0x0002 0000 | NEW_AGGREGATOR
+    18 | 0x0004 0000 | SSA, SAFI Specific Attribute
+    19 | 0x0008 0000 | Connector Attribute
+
+    20 | 0x0010 0000 | AS_PATHLIMIT
+    21 | 0x0020 0000 | PMSI_TUNNEL
+    22 | 0x0040 0000 | Tunnel Encapsulation Attribute
+    23 | 0x0080 0000 | Traffic Engineering
+
+    24 | 0x0100 0000 | IPv6 Address Specific Extended Community
+    25 | 0x0200 0000 | -
+    26 | 0x0400 0000 | PE Distinguisher Labels
+    27 | 0x0800 0000 | -
+
+    28 | 0x1000 0000 | -
+    29 | 0x2000 0000 | -
+    30 | 0x4000 0000 | -
+    31 | 0x8000 0000 | -

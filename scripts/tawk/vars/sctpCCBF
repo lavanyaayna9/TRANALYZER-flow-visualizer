@@ -1,0 +1,21 @@
+#H bit | sctpCCBF | Description
+#H =============================================================================
+     0 | 0x0001   | -
+     1 | 0x0002   | Invalid Stream Identifier
+     2 | 0x0004   | Missing Mandatory Parameter
+     3 | 0x0008   | Stale Cookie Error
+
+     4 | 0x0010   | Out of Resource
+     5 | 0x0020   | Unresolvable Address
+     6 | 0x0040   | Unrecognized Chunk Type
+     7 | 0x0080   | Invalid Mandatory Parameter
+
+     8 | 0x0100   | Unrecognized Parameters
+     9 | 0x0200   | No User Data
+    10 | 0x0400   | Cookie Received While Shutting Down
+    11 | 0x0800   | Restart of an Association with New Addresses
+
+    12 | 0x1000   | User Initiated ABORT
+    13 | 0x2000   | Protocol Violation
+    14 | 0x4000   | -
+    15 | 0x8000   | Error code > 14

@@ -1,0 +1,11 @@
+#H bit | ospfType | Description
+#H =============================================================================
+     0 | 0x01     | Not Valid
+     1 | 0x02     | OSPF Hello
+     2 | 0x04     | OSPF Database Description
+     3 | 0x08     | OSPF LS Request
+
+     4 | 0x10     | OSPF LS Update
+     5 | 0x20     | OSPF Acknowledge
+     6 | 0x40     | -
+     7 | 0x80     | -

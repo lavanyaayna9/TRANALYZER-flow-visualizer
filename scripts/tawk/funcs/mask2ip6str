@@ -1,0 +1,24 @@
+#!/usr/bin/env awk
+#
+# Convert a network mask 'm' (int) to an IPv6 address (string).
+#
+# Parameters:
+#   - m : the network mask to convert
+#
+# Dependencies:
+#   - None
+#
+# See also:
+#   - mask2ip6
+#   - mask2ip
+#   - mask2ipstr
+#
+# Examples:
+#   - tawk '{ print mask2ip6str(24) }' file.txt
+
+@include "ip62str"
+@include "mask2ip6"
+
+function mask2ip6str(m) {
+    return ip62str(mask2ip6(m))
+}

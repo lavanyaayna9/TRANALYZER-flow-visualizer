@@ -1,0 +1,45 @@
+# ZSH completion for t2py
+
+_t2py() {
+    #compdef t2py
+
+    local cur="${words[CURRENT]}"
+    [ $CURRENT -gt 2 ] && local prev="${words[CURRENT-1]}"
+
+    case "$prev" in
+        -f)
+            _files
+            return
+            ;;
+        -i|-r|-R|-w|-p|-b)
+            _t2
+            return
+            ;;
+    esac
+
+    local args=(
+        -q
+        -f
+        -i
+        -r
+        -R
+        -w
+        -p
+        -b
+        -m
+        -s
+        -t2
+        -h --help
+        tranalyzer2
+    )
+    for i in "$T2PLHOME/"*; do
+        local b=$(basename "$i")
+        if [ -d "$i" ] && [ "$b" != "t2PSkel" ]; then
+            args+=($b)
+        fi
+    done
+
+    compadd -a args
+}
+
+compdef _t2py t2py

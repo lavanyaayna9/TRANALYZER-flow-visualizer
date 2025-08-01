@@ -1,0 +1,55 @@
+\IfFileExists{t2doc.cls}{
+    \documentclass[documentation]{subfiles}
+}{
+    \errmessage{Error: could not find 't2doc.cls'}
+}
+
+\begin{document}
+
+\trantitle
+    {fnameLabel} % Plugin name
+    {Filename Labeller} % Short description
+    {Tranalyzer Development Team} % author(s)
+
+\section{fnameLabel}\label{s:fnameLabel}
+
+\subsection{Description}
+The fnameLabel plugin tags every flow with the name of the file or interface from which the flow originates.
+Moreover, it adds a hash value or a label which represents the number contained in a file or a specific letter.
+It is predominantly used to automatically separate flows or packets created by the {\tt --R} or {\tt --D} option.
+It can be used, e.g., for training classifiers.
+
+\subsection{Configuration Flags}
+The following flags can be used to control the output of the plugin:
+\begin{longtable}{>{\tt}lcl>{\tt\small}l}
+    \toprule
+    {\bf Name} & {\bf Default} & {\bf Description} & {\bf Flags}\\
+    \midrule\endhead%
+    FNL\_LBL     &    1 & 1: Output label derived from input                                                          & \\
+                 &      & (Use {\tt fileNum} for Tranalyzer {\tt --D} option, otherwise, refer to {\tt FNL\_IDX})     & \\
+    FNL\_IDX     &    1 & Use the {\tt FNL\_IDX} letter of the filename as label                                      & FBL\_LBL=1\\
+                 &      & (Tranalyzer {\tt -R}/{\tt --i}/{\tt --r} options)                                           & \\
+    FNL\_HASH    &    0 & 1: Output hash of filename                                                                  & \\
+    FNL\_FLNM    &    1 & 1: Output filename                                                                          & \\
+    FNL\_FREL    &    1 & Use absolute (0) or relative (1) filenames for {\tt fnLabel}, {\tt fnHash} and {\tt fnName} & \\
+    FNL\_NAMELEN & 1024 & Max length for filename                                                                     & \\
+    \bottomrule
+\end{longtable}
+
+\subsection{Flow File Output}
+The fnameLabel plugin outputs the following columns:
+\begin{longtable}{>{\tt}lll>{\tt\small}l}
+    \toprule
+    {\bf Column} & {\bf Type} & {\bf Description} & {\bf Flags}\\
+    \midrule\endhead%
+    fnLabel & U32 & {\tt FNL\_IDX} letter of the filename/interface & FNL\_LBL=1\\
+    fnHash  & U64 & Hash of the filename/interface                  & FNL\_HASH=1\\
+    fnName  & S   & Filename                                        & FNL\_FLNM=1\\
+    \bottomrule
+\end{longtable}
+Note that the filename refers to the file in which the flow was created.
+
+\subsection{Packet File Output}
+In packet mode ({\tt --s} option), the fnameLabel plugin outputs the same columns as in the flow file.
+
+\end{document}

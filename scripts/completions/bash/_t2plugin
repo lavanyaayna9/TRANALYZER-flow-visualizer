@@ -1,0 +1,33 @@
+# Bash completion for t2plugin
+
+_t2plugin() {
+    local cur prev words cword
+
+    if type -t _init_completion &> /dev/null; then
+        _init_completion -n = || return
+    else
+        COMPREPLY=()
+        cur="${COMP_WORDS[COMP_CWORD]}"
+        prev="${COMP_WORDS[COMP_CWORD-1]}"
+    fi
+
+    local args=(
+        -c --create
+        --c++ --cpp
+        --rust
+        -m --mininal
+        -s --sink
+        -t --t2buf
+        -n --number --plugin-number
+        -y --yes
+        -l --list
+        -N --names-only
+        -H --no-headers
+        -h --help
+    )
+
+    COMPREPLY=($(compgen -W "${args[*]}" -- "$cur"))
+    #COMPREPLY=($(compgen -W "$(_parse_help "$T2HOME/scripts/t2plugin")" -- "$cur"))
+}
+
+complete -F _t2plugin t2plugin

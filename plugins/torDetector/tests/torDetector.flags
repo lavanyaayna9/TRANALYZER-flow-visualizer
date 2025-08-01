@@ -1,0 +1,18 @@
+#
+# Run the ../../../tests/test.sh script from the plugin main directory:
+#
+# cd $T2HOME/plugins/torDetector
+# ../../tests/test.sh [OPTION...]
+#
+# If run from this folder, make sure to use absolute path for the '-p' option.
+#
+# Flag name     File
+
+# ../../tranalyzer2/src/tranalyzer.h
+BLOCK_BUF               ../../tranalyzer2/src/tranalyzer.h
+DEBUG                   ../../tranalyzer2/src/tranalyzer.h
+
+# src/torDetector.h
+TOR_DETECT_OBFUSCATION  src/torDetector.h
+TOR_DEBUG_MESSAGES      src/torDetector.h
+TOR_PKTL                src/torDetector.h

@@ -1,0 +1,15 @@
+-- Return a list of hosts being spoofed
+
+SELECT
+    mac_ip_cnt.1 as mac,
+    mac_ip_cnt.2 as ip
+FROM
+    flow
+ARRAY JOIN
+    "arpMac_Ip_Cnt" AS mac_ip_cnt
+WHERE
+    bitTest("arpStat", 7) != 0
+    AND "timeFirst" >= {time_from:DateTime64(6)}
+    AND "timeLast" <= {time_to:DateTime64(6)}
+
+LIMIT {n:UInt64}

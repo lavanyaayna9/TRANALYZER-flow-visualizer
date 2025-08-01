@@ -1,0 +1,67 @@
+Workstation1
+------------
+  OS: Arch Linux (x86_64)
+  Kernel: 3.11.2-1-ARCH
+  IP: 10.20.5.161
+  Hostname: caprica
+
+VM1
+---
+  Qemu KVM running on Workstation1
+  OS: Debian Sarge (i386)
+  Kernel: 2.4.27-3-386
+  IP: 10.20.6.123 (connected to bridge on Workstation2)
+  MAC: 52:54:00:12:34:56
+
+Workstation2
+------------
+  OS: Ubuntu 12.04.3 Desktop LTS (x86_64)
+  Kernel: 3.8.0-31-generic
+  IP: 10.20.7.225
+  Hostname: tauron
+
+VM2
+---
+  Qemu KVM running on Workstation2
+  OS: Debian Sarge (i386)
+  Kernel: 2.4.27-3-386
+  IP: 10.20.5.149 (connected to bridge on Workstation2)
+  Web server: Apache/2.0.54
+  MAC: 52:54:00:12:34:57
+
+
+Network scheme
+--------------
+
+Receiver VM1                  Sender VM2
+     |                             |
+     | (bridge)           (bridge) |
+     |                             |
+Workstation1 ---- switch ---- Workstation2
+
+
+Trace capture procedure
+-----------------------
+1) Start both workstations
+2) Start VMs on both workstations
+3) Check that WM1 can ping VM2
+4) Record traffic on Workstation1
+    sudo tcpdump -s 0 -i eth0 -w loki.dmp
+5) Start the loki server on VM2
+    ./lokid
+6) Connect to loki server from VM1
+    ./loki -d 10.20.5.149
+7) Enter a few command on the created shell
+
+
+Notes
+-----
+Source: http://phrack.org/issues/51/6.html
+
+
+Conclusion
+----------
+Plugin successfully detects Loki with very simple classifier
+  -> asymmetric ICMP flow with several packets
+Hans is supposed to tunnel data in a symmetric ICMP flow, so
+the classifier will need to be adjusted to also detect it.

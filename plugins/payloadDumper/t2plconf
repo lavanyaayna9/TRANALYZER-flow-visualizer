@@ -1,0 +1,112 @@
+#!/usr/bin/env bash
+#
+# Configuration file for payloadDumper
+# ====================================
+#
+# Usage
+# -----
+#
+# $ ./t2plconf
+#
+# Defining the configurations options
+# -----------------------------------
+#
+# If no configuration options are available, ITEMS must be set as follows:
+#   - ITEMS=(none)
+#
+# Otherwise, enter configurations items as follows:
+#   "NAME" "TYPE" "DEPENDENCIES" "DESCRIPTION"
+#
+#   - TYPE can be:
+#       - bitfield
+#       - check (boolean),
+#       - radio (set of values),
+#       - range (min <= val <= max)
+#       - text
+#
+#   - DEPENDENCIES MUST be numeric, e.g., "A == 1 && (B < 4 || C >= 1)"
+#
+#   - DESCRIPTION for type 'bitfield' MUST NOT contain '\t', ':' or ';'
+#   - DESCRIPTION for type 'check' MUST NOT contain tabs ('\t')
+#   - DESCRIPTION for type 'radio' MUST NOT contain '\t', ':' or ';'
+#   - DESCRIPTION for type 'range' MUST NOT contain '\t' or ':'
+#   - DESCRIPTION for type 'text'  MUST NOT contain '\t'
+#
+#   - DESCRIPTION MUST be formatted according to the type (see examples below):
+#       - bitfield : description ';' val1 ':' description1 ';' valN ':' descriptionN
+#       - check    : description
+#       - radio    : description ';' val1 ':' description1 ';' valN ':' descriptionN
+#       - range    : description ':' min ' ' max
+#       - text     : description
+#
+# Examples
+# --------
+#
+#ITEMS=(
+#    # An item can be specified in one line...
+#    T2PSKEL_VAR1 check "" "Description of option" # No dependencies
+#
+#    # Or span multiple lines
+#    T2PSKEL_VAR1 radio "T2PSKEL_VAR1 == 1"
+#           "Description of option; \
+#                   0: description of val 0; \
+#                   1: description of val 1; \
+#                   2: description of val 2"
+#
+#    T2PSKEL_SIZE range "T2PSKEL_VAR1 == 1 || T2PSKEL_VAR2 > 0"
+#           "Description: 0 255" # min=0, max=255
+#
+#    T2PSKEL_STR text
+#           "T2PSKEL_SIZE <= 5 && (T2PSKEL_VAR1 != 0 || T2PSKEL_VAR2 <= 1)"
+#           "Description"
+#
+#    T2PSKEL_BITFIELD bitfield ""
+#           "Description of option; \
+#                   0x01: description of bit 0; \
+#                   0x02: description of bit 1; \
+#                   0x04: description of bit 2; \
+#                   0x08: description of bit 3; \
+#                   0x10: description of bit 4; \
+#                   0x20: description of bit 5; \
+#                   0x40: description of bit 6; \
+#                   0x80: description of bit 7"
+#)
+#
+# If no configuration option is available, use the value 'none'
+#ITEMS=(none)
+#
+# Source the master t2plconf file
+# source ../../scripts/t2conf/t2plconf
+
+# No configuration options available
+ITEMS=(
+    PLDUMP_L2 check "" "Extract payload for layer 2 flows"
+    #PLDUMP_ETHERTYPES text "PLDUMP_L2 == 1" "Only extract L2 payloads for those ethertypes, e.g., {0x2000,0x2003}"
+
+    PLDUMP_TCP check "" "Extract payload for TCP flows"
+    #PLDUMP_TCP_PORTS text "PLDUMP_TCP == 1" "Only extract TCP payloads on those ports, e.g., {80,8080}"
+
+    PLDUMP_UDP check "" "Extract payload for UDP flows"
+    #PLDUMP_UDP_PORTS text "PLDUMP_UDP == 1" "Only extract UDP payloads on those ports, e.g., {80,8080}"
+
+    PLDUMP_SCTP check "" "Extract payload for SCTP flows"
+    #PLDUMP_SCTP_PORTS text "PLDUMP_SCTP == 1" "Only extract SCTP payloads on those ports, e.g., {80,8080}"
+
+    PLDUMP_MAX_BYTES range "" "Max. number of bytes per flow to dump (use 0 for no limits): 0 UINT32_MAX"
+
+    PLDUMP_START_OFF range "PLDUMP_L2 == 1 || PLDUMP_UDP == 1" "Start dumping bytes at a specific offset (Layer 2 and UDP only)"
+
+    PLDUMP_NAMES radio "" "Format for filenames; \
+            0: flowInd '_' [AB]; \
+            1: srcIP.srcPort-dstIP.dstPort-l4Proto[_sctpStream] and srcMac-dstMac-etherType; \
+            2: Same as 1, but prefixed with timestampT"
+
+    PLDUMP_RMDIR check "" "Empty PLDUMP_FOLDER before starting"
+
+    PLDUMP_FOLDER text "" "Output folder for saved files"
+    PLDUMP_PREFIX text "" "Prefix for output files"
+    PLDUMP_SUFFIX text "" "Suffix for output files"
+)
+
+# Source the master t2plconf file
+source "$(dirname "$0")/../../scripts/t2conf/t2plconf"

@@ -1,0 +1,31 @@
+# Total packets: 144718 (144.72 K)
+# Total bytes: 156206237 (156.21 M)
+# L2/3 Protocol	                       Packets	                         Bytes	Description
+0x0800	                3464 [  2.39%]	             2091446 [  1.34%]	Internet Protocol version 4 (IPv4)
+0x0806	                   4 [  0.00%]	                 168 [  0.00%]	Address Resolution Protocol (ARP)
+0x86dd	              141250 [ 97.60%]	           154114623 [ 98.66%]	Internet Protocol version 6 (IPv6)
+
+
+# Total IPv4 packets: 3464 (3.46 K) [2.39%]
+# Total IPv6 packets: 141250 (141.25 K) [97.60%]
+# L4 Protocol	                       Packets	                         Bytes	Description
+  6	              128857 [ 89.04%]	           145092092 [ 92.88%]	Transmission Control Protocol (TCP)
+ 17	               15821 [ 10.93%]	            11110849 [  7.11%]	User Datagram Protocol (UDP)
+ 58	                  36 [  0.02%]	                3128 [  0.00%]	Internet Control Message Protocol for IPv6 (ICMPv6)
+
+
+# Total TCP packets: 128857 (128.86 K) [89.04%]
+# Total TCP bytes: 145092092 (145.09 M) [92.88%]
+# TCP Port	                       Packets	                         Bytes	Description
+   53	                 365 [  0.28%]	               27396 [  0.02%]	Domain Name Server (DNS)
+   80	                  39 [  0.03%]	                7436 [  0.01%]	World Wide Web HTTP
+  443	              128437 [ 99.67%]	           145055972 [ 99.98%]	HTTP protocol over TLS/SSL
+ 5228	                  16 [  0.01%]	                1288 [  0.00%]	HP Virtual Room Service
+
+
+# Total UDP packets: 15821 (15.82 K) [10.93%]
+# Total UDP bytes: 11110849 (11.11 M) [7.11%]
+# UDP Port	                       Packets	                         Bytes	Description
+   53	                  44 [  0.28%]	                6299 [  0.06%]	Domain Name Server (DNS)
+   67	                   3 [  0.02%]	                1008 [  0.01%]	Bootstrap Protocol Server
+  443	               15774 [ 99.70%]	            11103542 [ 99.93%]	HTTP protocol over TLS/SSL

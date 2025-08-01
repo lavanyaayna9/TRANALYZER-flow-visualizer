@@ -1,0 +1,11 @@
+#H bit | pldStat | Description
+#H =============================================================================
+     0 | 0x01    | Match for this flow
+     1 | 0x02    | Dump payload for this flow
+     2 | 0x04    | SCTP init TSN diff engine
+#W   3 | 0x08    | SCTP payload truncated
+
+#W   4 | 0x10    | TCP sequence numbers out of order or roll-over or TCP keep-alive
+#W   5 | 0x20    | SCTP TSN out of order or roll-over
+#W   6 | 0x40    | Filename truncated
+#E   7 | 0x80    | Failed to open file

@@ -1,0 +1,86 @@
+#!/usr/bin/env bash
+
+source "$(dirname "$0")/t2utils.sh"
+
+shopt -s expand_aliases
+source "$T2HOME/scripts/t2_aliases"
+
+usage() {
+    echo "Usage:"
+    echo "    $SNAME [OPTION...]"
+    echo
+    echo "Optional arguments:"
+    echo "    -t            Timeout until SIGTERM, 0 no SIGTERM [s]"
+    echo "    -p            Poll timout for T2 instances [s]"
+    echo "    -r            Send USR2, config in T2, main.h: MONINTV"
+    echo
+    echo "Help and documentation arguments:"
+    echo "    -h, --help    Show this help, then exit"
+}
+
+Tmout=30
+RP=0
+Poll=1
+
+while [ $# -ne 0 ]; do
+    case "$1" in
+        -t)
+            validate_next_num "$1" "$2"
+            Tmout="$2"
+            shift
+            ;;
+        -p)
+            validate_next_num "$1" "$2"
+            Poll="$2"
+            shift
+            ;;
+        -r)
+            RP=1
+            ;;
+        -h|-\?|--help)
+            usage
+            exit 0
+            ;;
+         *)
+            ;;
+    esac
+    shift
+done
+
+if hash mate-terminal &> /dev/null; then
+    TERMINAL=mate-terminal
+elif hash gnome-terminal &> /dev/null; then
+    TERMINAL=gnome-terminal
+elif hash xfce4-terminal &> /dev/null; then
+    TERMINAL=xfce4-terminal
+elif hash tilix &> /dev/null; then
+    TERMINAL=tilix
+else
+    printerr "Found no suitable terminal emulator"
+    printinf "Try installing one of {gnome,mate,xfce4}-terminal or tilix"
+    exit 1
+fi
+
+A=`t2stat -p`
+B=`echo $A | AWK '{ print $1 }'`
+while [[ $B = "No" ]]; do
+   sleep $Poll
+   A=`t2stat -p`
+   B=`echo $A | AWK '{ print $1 }'`
+   echo $A
+done
+
+i=0
+for f in $A; do
+   $TERMINAL --geometry=160x60+$i+0 --working-directory="$HOME" --command="tail -f /proc/$f/fd/1" &
+   i=$(($i+800))
+done
+
+if [ $RP ]; then
+   t2stat -USR2
+fi
+
+if [[ $Tmout > 0 ]]; then
+   sleep $Tmout
+   t2stat -SIGTERM
+fi

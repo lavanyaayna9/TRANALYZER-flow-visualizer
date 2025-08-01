@@ -1,0 +1,81 @@
+0x01000C0000000000	48	0	ISL	Inter Switch Link
+0x01000CCCCCCC0104	48	0	PAgP	Port Aggregation Protocol
+0x01000CCCCCCC0111	48	0	UDLD	Unidirectional Link Detection
+0x01000CCCCCCC2000	48	0	CDP	Cisco Discovery Protocol
+0x01000CCCCCCC2003	48	0	VTP	VLAN Trunk
+0x01000CCCCCCC2004	48	0	DTP	Dynamic Trunk
+0x01000CCCCCCD010B	48	0	PVSTP+	Per-Vlan Spanning Tree Protocol+
+0x01000CCCCCCD0802	48	0	CSSTP	Cisco Shared Spanning Tree Protocol
+0x01000CCDCDCD200A	48	0	STPUplink	STP Uplink Fast
+0x01000CCDCDCE010C	48	0	VLANBridg	VLAN Bridge
+0x01000CDDDDDD2001	48	0	CGMP	Cisco Group Management Protocol
+0x01005e0000000000	24	0	IPv4Multi	IPv4-Multicast
+0x01005effffff0000	24	1	IPv4Multi	IPv4-Multicast
+0x0180C20000000000	48	0	NearestCu	Nearest Customer Bridge group
+0x0180C20000010000	48	0	MACspecif	MAC-specific Control Protocols group
+0x0180C20000020000	48	0	Slow_Prot	Slow_Protocols_Multicast address
+0x0180C20000030000	48	0	Nn-TPMRB	Nearest non-TPMR Bridge group
+0x0180C20000040000	48	0	MACspecif	MAC-specific Control Protocols group
+0x0180C20000050000	48	0	Futuresta	Future standardization
+0x0180C20000060000	48	0	Futuresta	Future standardization
+0x0180C20000070000	48	0	MEFForumE	MEF Forum ELMI protocol group
+0x0180C20000080000	48	0	ProviderB	Provider Bridge group
+0x0180C20000090000	48	0	Futuresta	Future standardization
+0x0180C200000A0000	48	0	Futuresta	Future standardization
+0x0180C200000B0000	48	0	EDESSPEP	EDE-SS PEP
+0x0180C200000C0000	48	0	Reservedf	Reserved for future standardization
+0x0180C200000D0000	48	0	ProviderB	Provider Bridge MVRP
+0x0180C200000E0000	48	0	NearestBr	Nearest Bridge
+0x0180C200000F0000	48	0	Futuresta	Future standardization
+0x0180C20000100000	48	0	LANsBridg	LANs Bridge Management (depr)
+0x0180C20000110000	48	0	LoadServe	Load Server
+0x0180C20000120000	48	0	LoadableD	Loadable Device
+0x0180C20000130000	48	0	Transmiss	Transmission of IEEE 1905.1 control packets
+0x0180C20000140000	48	0	Level1Int	Level 1 Intermediate Systems
+0x0180C20000150000	48	0	Level2Int	Level 2 Intermediate Systems
+0x0180C20000160000	48	0	EndSystem	End Systems
+0x0180C20000170000	48	0	SNARES	SNARES
+0x0180C20000180000	48	0	AllManage	All Manager Stations
+0x0180C20000190000	48	0	GCR	Groupcast with retries
+0x0180C200001A0000	48	0	GenericAd	Generic Address for All Agent Stations
+0x0180C200001B0000	48	0	Multicast	Multicast Capable End Systems
+0x0180C200001C0000	48	0	Multicast	Multicast Announcements
+0x0180C200001D0000	48	0	Multicast	Multicast Capable Intermediate Systems
+0x0180C200001E0000	48	0	DTRConcen	DTR Concentrators
+0x0180C200001F0000	48	0	EDECCPEP	EDE-CC PEP
+0x0180C20000200000	44	0	MRP	Multiple Registration Protocol
+0x0180C200002F0000	44	1	MRP	Multiple Registration Protocol
+0x0180C20000300000	44	0	CCMandLin	CCM Linktrace messages
+0x0180C200003F0000	44	1	CCMandLin	CCM Linktrace messages
+0x0180C20000400000	44	0	TRILL	TRILL
+0x0180C200004F0000	44	1	TRILL	TRILL
+0x0180C20001000000	48	0	RingManag	Ring Management Directed Beacon Multicast
+0x0180C20001000000	44	0	ISOIECJTC	ISO/IEC JTC1/SC25
+0x0180C200010F0000	44	1	ISOIECJTC	ISO/IEC JTC1/SC25
+0x0180C20001100000	48	0	FrameStat	Frame Status Report Protocol Multicast
+0x0180C20001100000	44	0	ISOIECJTC	ISO/IEC JTC1/SC25
+0x0180C200011F0000	44	1	ISOIECJTC	ISO/IEC JTC1/SC25
+0x0180C20001200000	48	0	AllFDDICo	All FDDI Concentrator MACs
+0x0180C20001200000	44	0	ISOIECJTC	ISO/IEC JTC1/SC25
+0x0180C200012F0000	44	1	ISOIECJTC	ISO/IEC JTC1/SC25
+0x0180C20001300000	48	0	Synchrono	Synchronous Bandwidth Allocation
+0x0180C20001000000	40	0	ISOIECJTC	ISO/IEC JTC1/SC25
+0x0180C20001FF0000	40	1	ISOIECJTC	ISO/IEC JTC1/SC25
+0x0180C20002000000	40	0	ETSIforfu	ETSI for future use
+0x0180C20002FF0000	40	1	ETSIforfu	ETSI for future use
+0x0300000000080000	48	0	CRS	Configuration Report Server
+0x0300000000100000	48	0	REM	Ring Error Monitor
+0x0300000000400000	48	0	RPS	Ring Parameter Server
+0x0300000001000000	48	0	Intermedi	Intermediate System Network Entities
+0x0300000002000000	48	0	LMT	End System Network Entities & Lobe Media Test
+0x0300000004000000	48	0	GenericMa	Generic Manager Stations
+0x0300000008000000	48	0	SNARES	SNARES
+0x0300000010000000	48	0	EndSystem	End System
+0x0300000020000000	48	0	LoadableD	Loadable Device
+0x0300000040000000	48	0	LoadServe	Load Server
+0x0300004000000000	48	0	AllAgentS	All Agent St
+0x3333000000000000	16	0	IPv6Multi	IPv6-Multicast
+0x3333ffffffff0000	16	1	IPv6Multi	IPv6-Multicast
+0x09002B0000040000	48	0	EndSystem	End System Network Entities
+0x09002B0000050000	48	0	Intermedi	Intermediate System Network Entities
+0xffffffffffff0000	48	0	Broadcast	Broadcast

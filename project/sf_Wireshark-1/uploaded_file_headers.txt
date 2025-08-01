@@ -1,0 +1,264 @@
+# Date: 1753804458.000641375 sec (Tue 29 Jul 2025 15:54:18 UTC)
+# Tranalyzer 0.9.3 (Anteater), Cobra
+# Core configuration: L2, IPv4, IPv6
+# SensorID: 666
+# PID: 12620
+# Priority: 0
+# Command line: /home/lavanya/tranalyzer2-0.9.3/tranalyzer2/build/tranalyzer -r ./sf_Wireshark-1/uploaded_file.pcap -w ./sf_Wireshark-1
+# HW info: DESKTOP-FJ3QCTM;Linux;6.6.87.2-microsoft-standard-WSL2;#1 SMP PREEMPT_DYNAMIC Thu Jun  5 18:30:46 UTC 2025;x86_64
+# SW info: libpcap version 1.10.4 (with TPACKET_V3)
+#
+# Plugins loaded:
+#   01: protoStats, version 0.9.3
+#   02: basicFlow, version 0.9.3
+#   03: macRecorder, version 0.9.3
+#   04: portClassifier, version 0.9.3
+#   05: nDPI, version 0.9.3
+#   06: geoip, version 0.9.3
+#   07: basicStats, version 0.9.3
+#   08: tcpFlags, version 0.9.3
+#   09: tcpStates, version 0.9.3
+#   10: icmpDecode, version 0.9.3
+#   11: dnsDecode, version 0.9.3
+#   12: sslDecode, version 0.9.3
+#   13: connStat, version 0.9.3
+#   14: pktSIATHisto, version 0.9.3
+#   15: descriptiveStats, version 0.9.3
+#   16: txtSink, version 0.9.3
+#   17: mysqlSink, version 0.9.3
+#
+# Col No.	Type	Name	Description
+1	C	dir	Flow direction
+2	U64	flowInd	Flow index
+3	H64	flowStat	Flow status and warnings
+4	U64.U32	timeFirst	Date time of first packet
+5	U64.U32	timeLast	Date time of last packet
+6	U64.U32	duration	Flow duration
+7	U8	numHdrDesc	Number of different headers descriptions
+8	U16:R	numHdrs	Number of headers (depth) in hdrDesc
+9	SC:R	hdrDesc	Headers description
+10	MAC:R	srcMac	Mac source
+11	MAC:R	dstMac	Mac destination
+12	H16	ethType	Ethernet type
+13	U16:R	vlanID	VLAN IDs
+14	IPX	srcIP	Source IP address
+15	SC	srcIPCC	Source IP country
+16	S	srcIPOrg	Source IP organization
+17	U16	srcPort	Source port
+18	IPX	dstIP	Destination IP address
+19	SC	dstIPCC	Destination IP country
+20	S	dstIPOrg	Destination IP organization
+21	U16	dstPort	Destination port
+22	U8	l4Proto	Layer 4 protocol
+23	H8	macStat	macRecorder status
+24	U32	macPairs	Number of distinct source/destination MAC addresses pairs
+25	MAC_MAC_U64:R	srcMac_dstMac_numP	Source/destination MAC address, number of packets of MAC address combination
+26	SC_SC:R	srcMacLbl_dstMacLbl	Source/destination MAC label
+27	U16	dstPortClassN	Port based classification of the destination port number
+28	SC	dstPortClass	Port based classification of the destination port name
+29	S	nDPIclass	nDPI based protocol classification
+30	SC	srcIpContinent	IP source continent
+31	SC	srcIpCountry	IP source country
+32	S	srcIpCity	IP source city
+33	SC	srcIpPostcode	IP source postcode
+34	U16	srcIpAccuracy	IP source accuracy
+35	D	srcIpLat	IP source latitude
+36	D	srcIpLong	IP source longitude
+37	S	srcIpTimeZone	IP source time zone
+38	SC	dstIpContinent	IP destination continent
+39	SC	dstIpCountry	IP destination country
+40	S	dstIpCity	IP destination city
+41	SC	dstIpPostcode	IP destination postcode
+42	U16	dstIpAccuracy	IP destination accuracy
+43	D	dstIpLat	IP destination latitude
+44	D	dstIpLong	IP destination longitude
+45	S	dstIpTimeZone	IP destination time zone
+46	H8	geoStat	GeoIP status
+47	U64	pktsSnt	Number of transmitted packets
+48	U64	pktsRcvd	Number of received packets
+49	I64	padBytesSnt	Number of transmitted padding bytes
+50	U64	l7BytesSnt	Number of transmitted layer 7 bytes
+51	U64	l7BytesRcvd	Number of received layer 7 bytes
+52	U16	minL7PktSz	Minimum layer 7 packet size
+53	U16	maxL7PktSz	Maximum layer 7 packet size
+54	F	avgL7PktSz	Average layer 7 packet size
+55	F	stdL7PktSz	Standard deviation layer 7 packet size
+56	F	minIAT	Minimum IAT
+57	F	maxIAT	Maximum IAT
+58	F	avgIAT	Average IAT
+59	F	stdIAT	Standard deviation IAT
+60	F	pktps	Sent packets per second
+61	F	bytps	Sent bytes per second
+62	F	pktAsm	Packet stream asymmetry
+63	F	bytAsm	Byte stream asymmetry
+64	H16	tcpFStat	tcpFlags status
+65	U16	ipMindIPID	IP minimum delta IP ID
+66	U16	ipMaxdIPID	IP maximum delta IP ID
+67	U8	ipMinTTL	IP minimum TTL
+68	U8	ipMaxTTL	IP maximum TTL
+69	U8	ipTTLChg	IP TTL change count
+70	H8	ipToS	IP Type of Service hex
+71	H16	ipFlags	IP aggregated flags
+72	U16	ipOptCnt	IP options count
+73	H8_H32	ipOptCpCl_Num	IP aggregated options, copy-class and number
+74	U16_U16	ip6OptCntHH_D	IPv6 Hop-by-Hop destination option counts
+75	H32_H32	ip6OptHH_D	IPv6 aggregated Hop-by-Hop destination options
+76	U32	tcpISeqN	TCP initial sequence number
+77	U16	tcpPSeqCnt	TCP packet seq count
+78	U64	tcpSeqSntBytes	TCP sent seq diff bytes
+79	U16	tcpSeqFaultCnt	TCP sequence number fault count
+80	U16	tcpPAckCnt	TCP packet ACK count
+81	U64	tcpFlwLssAckRcvdBytes	TCP flawless ACK received bytes
+82	U16	tcpAckFaultCnt	TCP ACK number fault count
+83	U32	tcpBFlgtMx	TCP Bytes in Flight MAX
+84	U32	tcpInitWinSz	TCP initial effective window size
+85	F	tcpAvgWinSz	TCP average effective window size
+86	U32	tcpMinWinSz	TCP minimum effective window size
+87	U32	tcpMaxWinSz	TCP maximum effective window size
+88	U16	tcpWinSzDwnCnt	TCP effective window size change down count
+89	U16	tcpWinSzUpCnt	TCP effective window size change up count
+90	U16	tcpWinSzChgDirCnt	TCP effective window size direction change count
+91	F	tcpWinSzThRt	TCP packet count ratio below window size WINMIN threshold
+92	H16	tcpFlags	TCP aggregated protocol flags (FIN-ACK, SYN-ACK, RST-ACK, CWR, ECE, URG, ACK, PSH, RST, SYN, FIN)
+93	H16	tcpAnomaly	TCP aggregated header anomaly flags
+94	SC	tcpJA4T	TCP JA4T/JA4TS fingerprint
+95	U16	tcpOptPktCnt	TCP options packet count
+96	U16	tcpOptCnt	TCP options count
+97	H32	tcpOptions	TCP aggregated options
+98	U16	tcpMSS	TCP maximum segment size
+99	U16	tcpWS	TCP window scale
+100	H16	tcpMPTBF	TCP MPTCP type bitfield
+101	H8	tcpMPF	TCP MPTCP flags
+102	U8	tcpMPAID	TCP MPTCP address ID
+103	H8	tcpMPDSSF	TCP MPTCP DSS flags
+104	U32	tcpTmS	TCP time stamp
+105	U32	tcpTmER	TCP time echo reply
+106	F	tcpEcI	TCP estimated counter increment
+107	D	tcpUtm	TCP estimated up time
+108	U64.U32	tcpBtm	TCP estimated boot time
+109	F	tcpSSASAATrip	TCP trip time (A: SYN, SYN-ACK, B: SYN-ACK, ACK)
+110	F	tcpRTTAckTripMin	TCP ACK trip min
+111	F	tcpRTTAckTripMax	TCP ACK trip max
+112	F	tcpRTTAckTripAvg	TCP ACK trip average
+113	F	tcpRTTAckTripJitAvg	TCP ACK trip jitter average
+114	F	tcpRTTSseqAA	TCP round trip time (A: SYN, SYN-ACK, ACK, B: ACK-ACK)
+115	F	tcpRTTAckJitAvg	TCP ACK round trip average jitter
+116	H8	tcpStatesAFlags	TCP state machine anomalies
+117	H8	icmpStat	ICMP status
+118	U8	icmpTCcnt	ICMP type code count
+119	H32_H32_H16	icmpBFTypH_TypL_Code	ICMP Aggregated type H (IPv6>128, IPv4>31), L (<32) & code bit field
+120	H32	icmpTmGtw	ICMP time/gateway
+121	F	icmpEchoSuccRatio	ICMP Echo reply/request success ratio
+122	U64	icmpPFindex	ICMP parent flowIndex
+123	H16	dnsStat	DNS status, warnings and errors
+124	H16	dnsHdrOPField	DNS last header field
+125	H8_H16_H16	dnsHFlg_OpC_RetC	DNS aggregated header flags, operational and return code
+126	U16_U16_U16_U16	dnsCntQu_Asw_Aux_Add	DNS number of question, answer, auxiliary and additional records
+127	F	dnsAAAqF	DNS DDOS AAA / query factor
+128	S:R	dnsQname	DNS query name
+129	S:R	dnsAname	DNS answer name record
+130	S:R	dnsAPname	DNS name CNAME entries
+131	IP4:R	dns4Aaddress	DNS address entries IPv4
+132	IP6:R	dns6Aaddress	DNS address entries IPv6
+133	U16:R	dnsQType	DNS query record type entries
+134	U16:R	dnsQClass	DNS query record class entries
+135	U16:R	dnsAType	DNS answer record type entries
+136	U16:R	dnsAClass	DNS answer record class entries
+137	U32:R	dnsATTL	DNS answer record TTL entries
+138	U16:R	dnsMXpref	DNS MX record preference entries
+139	U16:R	dnsSRVprio	DNS SRV record priority entries
+140	U16:R	dnsSRVwgt	DNS SRV record weight entries
+141	U16:R	dnsSRVprt	DNS SRV record port entries
+142	H32:R	dnsOptStat	DNS option status
+143	H32	sslStat	SSL status
+144	H32	sslProto	SSL proto
+145	H8	sslFlags	SSL flags
+146	H16	sslVersion	SSL version
+147	U16	sslNumRecVer	SSL number of record versions
+148	H16:R	sslRecVer	SSL record version
+149	U16	sslNumHandVer	SSL number of handshake versions
+150	H16:R	sslHandVer	SSL handshake version
+151	H8	sslVuln	SSL vulnerabilities
+152	H64	sslAlert	SSL alert
+153	H16	sslCipher	SSL preferred (Client) / negotiated (Server) cipher
+154	U16	sslNumExt	SSL number of extensions
+155	H16:R	sslExtList	SSL list of extensions
+156	U16	sslNumSuppVer	SSL number of supported versions
+157	H16:R	sslSuppVer	SSL list of supported versions (client), negotiated version (server)
+158	U16	sslNumSigAlg	SSL number of signature algorithms
+159	H16:R	sslSigAlg	SSL list of signature algorithms
+160	U16	sslNumECPt	SSL number of EC points
+161	H16:R	sslECPt	SSL list of EC points
+162	U8	sslNumECFormats	SSL number of EC point formats
+163	H8:R	sslECFormats	SSL list of EC point formats
+164	U16	sslNumALPN	SSL number of protocols (ALPN)
+165	S:R	sslALPNList	SSL list of protocols (ALPN)
+166	U16	sslNumALPS	SSL number of protocols (ALPS)
+167	S:R	sslALPSList	SSL list of protocols (ALPS)
+168	U16	sslNumNPN	SSL number of protocols (NPN)
+169	S:R	sslNPNList	SSL list of protocols (NPN)
+170	U16	sslNumCipher	SSL number of supported ciphers
+171	H16:R	sslCipherList	SSL list of supported cipher
+172	U16_U16_U16_U64_U64	sslNumCC_A_H_AD_HB	SSL number of change_cipher, alert, handshake, application data, heartbeat records
+173	U8	sslSessIdLen	SSL Session ID length
+174	U64.U32:R	sslGMTTime	SSL GMT Unix Time
+175	S:R	sslServerName	SSL server name
+176	U8:R	sslCertVersion	SSL certificate version
+177	SC:R	sslCertSerial	SSL certificate serial number
+178	SC:R	sslCertSha1FP	SSL certificate SHA1 fingerprint
+179	U64.U32_U64.U32_U64:R	sslCNotValidBefore_after_lifetime	SSL certificate validity period (not valid before/after, lifetime (seconds))
+180	S:R	sslCSigAlg	SSL certificate signature algorithm
+181	S:R	sslCKeyAlg	SSL certificate public key algorithm
+182	SC_U16:R	sslCPKeyType_Size	SSL certificate public key type, size (bits)
+183	S:R	sslCSubjectCommonName	SSL certificate subject common name
+184	S:R	sslCSubjectOrgName	SSL certificate subject organization name
+185	S:R	sslCSubjectOrgUnit	SSL certificate subject organizational unit name
+186	S:R	sslCSubjectLocality	SSL certificate subject locality name
+187	S:R	sslCSubjectState	SSL certificate subject state or province name
+188	SC:R	sslCSubjectCountry	SSL certificate subject country name
+189	S:R	sslCIssuerCommonName	SSL certificate issuer common name
+190	S:R	sslCIssuerOrgName	SSL certificate issuer organization name
+191	S:R	sslCIssuerOrgUnit	SSL certificate issuer organizational unit name
+192	S:R	sslCIssuerLocality	SSL certificate issuer locality name
+193	S:R	sslCIssuerState	SSL certificate issuer state or province name
+194	SC:R	sslCIssuerCountry	SSL certificate issuer country name
+195	SC:R	sslJA3Hash	SSL JA3 fingerprint
+196	S:R	sslJA3Desc	SSL JA3 description
+197	SC:R	sslJA4	SSL JA4/JA4S fingerprint
+198	S:R	sslJA4Desc	SSL JA4/JA4S description
+199	U32	connSip	Number of unique source IPs
+200	U32	connDip	Number of unique destination IPs
+201	U32	connSipDip	Number of connections between source and destination IP
+202	U32	connSipDprt	Number of connections between source IP and destination port
+203	F	connF	The 'f' number: connSipDprt / connSip [EXPERIMENTAL]
+204	F	connG	The 'g' number: connSipDprt / connSipDip [EXPERIMENTAL]
+205	U64	connNumPCnt	Number of unique IP's source packet count
+206	U64	connNumBCnt	Number of unique IP's source byte count
+207	U32	tCnt	Number of tree entries
+208	U16_U32_U32_U32_U32:R	Ps_Iat_Cnt_PsCnt_IatCnt	Packet size (PS) and min inter-arrival time (IAT) of bin histogram
+209	F	dsMinPl	Minimum packet length
+210	F	dsMaxPl	Maximum packet length
+211	F	dsMeanPl	Mean packet length
+212	F	dsLowQuartilePl	Lower quartile of packet lengths
+213	F	dsMedianPl	Median of packet lengths
+214	F	dsUppQuartilePl	Upper quartile of packet lengths
+215	F	dsIqdPl	Inter quartile distance of packet lengths
+216	F	dsModePl	Mode of packet lengths
+217	F	dsRangePl	Range of packet lengths
+218	F	dsStdPl	Standard deviation of packet lengths
+219	F	dsRobStdPl	Robust standard deviation of packet lengths
+220	F	dsSkewPl	Skewness of packet lengths
+221	F	dsExcPl	Excess of packet lengths
+222	F	dsMinIat	Minimum inter arrival time
+223	F	dsMaxIat	Maximum inter arrival time
+224	F	dsMeanIat	Mean inter arrival time
+225	F	dsLowQuartileIat	Lower quartile of inter arrival times
+226	F	dsMedianIat	Median inter arrival times
+227	F	dsUppQuartileIat	Upper quartile of inter arrival times
+228	F	dsIqdIat	Inter quartile distance of inter arrival times
+229	F	dsModeIat	Mode of inter arrival times
+230	F	dsRangeIat	Range of inter arrival times
+231	F	dsStdIat	Standard deviation of inter arrival times
+232	F	dsRobStdIat	Robust standard deviation of inter arrival times
+233	F	dsSkewIat	Skewness of inter arrival times
+234	F	dsExcIat	Excess of inter arrival times

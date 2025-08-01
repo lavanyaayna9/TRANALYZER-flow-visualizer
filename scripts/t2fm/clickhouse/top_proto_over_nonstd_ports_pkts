@@ -1,0 +1,296 @@
+-- Top protocols over non-standard ports by packets
+
+SELECT
+    toValidUTF8(detected),
+    expected_n,
+    toValidUTF8(expected),
+    SUM(pkts) AS cnt
+
+FROM (
+    -- A flows
+    SELECT
+        LOWER(splitByChar('.', "nDPIclass")[1]) AS detected,
+        LOWER("dstPortClass") AS expected,
+        "dstPortClassN" AS expected_n,
+        "pktsSnt" + "pktsRcvd" AS pkts
+    FROM
+        flow
+    WHERE
+        bitTest("flowStat", 0) = 0
+        AND "timeFirst" >= {time_from:DateTime64(6)}
+        AND "timeLast" <= {time_to:DateTime64(6)}
+) AS flows
+
+WHERE
+    detected != expected AND
+    detected != 'unknown' AND
+    expected != 'unknown' AND
+    NOT (
+        (
+            detected = 'apple' AND
+            expected = 'http'
+        )
+        OR
+        (
+            detected = 'bjnp' AND (
+                expected = 'canon-bjnp2' OR
+                expected = 'canon-mfnp'
+            )
+        )
+        OR
+        (
+            detected = 'capwap' AND (
+                expected = 'capwap-control' OR
+                expected = 'capwap-data'
+            )
+        )
+        OR
+        (
+            detected = 'ciscoskinny' AND
+            expected = 'cisco-sccp'
+        )
+        OR
+        (
+            detected = 'citrix' AND (
+                expected = 'citriximaclient' OR
+                expected = 'ica'
+            )
+        )
+        OR
+        (
+            detected = 'dce_rpc' AND
+            expected = 'epmap'
+        )
+        OR
+        (
+            detected = 'dhcp' AND
+            expected = 'bootps'
+        )
+        OR
+        (
+            detected = 'dhcpv6' AND
+            expected = 'dhcpv6-client'
+        )
+        OR
+        (
+            detected = 'direct_download_link' AND
+            expected = 'http'
+        )
+        OR
+        (
+            detected = 'dnp3' AND
+            expected = 'dnp'
+        )
+        OR
+        (
+            detected = 'dns' AND
+            expected = 'domain'
+        )
+        OR
+        (
+            detected = 'dropbox' AND
+            expected = 'db-lsp-disc'
+        )
+        OR
+        (
+            detected = 'ftp_control' AND
+            expected = 'ftp'
+        )
+        OR
+        (
+            detected = 'ftp_data' AND
+            expected = 'ftp-data'
+        )
+        OR
+        (
+            detected = 'gnutella' AND
+            expected = 'gnutella-svc'
+        )
+        OR
+        (
+            detected = 'google' AND
+            expected = 'http'
+        )
+        OR
+        (
+            detected = 'http' AND
+            expected = 'http-alt'
+        )
+        OR
+        (
+            detected = 'http_connect' AND
+            expected = 'http'
+        )
+        OR
+        (
+            detected = 'http_proxy' AND (
+                expected = 'http' OR
+                expected = 'http-alt'
+            )
+        )
+        OR
+        (
+            detected = 'iec60870' AND
+            expected = 'iec-104'
+        )
+        OR
+        (
+            detected = 'ipsec' AND (
+                expected = 'ipsec-nat-t' OR
+                expected = 'isakmp'
+            )
+        )
+        OR
+        (
+            detected = 'irc' AND
+            expected = 'ircu'
+        )
+        OR
+        (
+            detected = 'jabber' AND
+            expected = 'xmpp-client'
+        )
+        OR
+        (
+            detected = 'mining' AND
+            expected = 'bitcoin'
+        )
+        OR
+        (
+            detected = 'msn' AND (
+                expected = 'http' OR
+                expected = 'msnp'
+            )
+        )
+        OR
+        (
+            detected = 'mssql-tds' AND
+            expected = 'ms-wbt-server'
+        )
+        OR
+        (
+            detected = 'netbios' AND (
+                expected = 'microsoft-ds' OR
+                expected = 'netbios-dgm' OR
+                expected = 'netbios-ns' OR
+                expected = 'netbios-ssn'
+            )
+        )
+        OR
+        (
+            detected = 'ookla' AND
+            expected = 'http-alt'
+        )
+        OR
+        (
+            detected = 'pops' AND
+            expected = 'pop3s'
+        )
+        OR
+        (
+            detected = 'quic' AND
+            expected = 'https'
+        )
+        OR
+        (
+            detected = 'radius' AND
+            expected = 'radius-acct'
+        )
+        OR
+        (
+            detected = 'rdp' AND
+            expected = 'ms-wbt-server'
+        )
+        OR
+        (
+            detected = 'rpc' AND
+            expected = 'epmap'
+        )
+        OR
+        (
+            detected = 'rtmp' AND (
+                expected = 'https' OR
+                expected = 'macromedia-fcs'
+            )
+        )
+        OR
+        (
+            detected = 'sip' AND
+            expected = 'sip-tls'
+        )
+        OR
+        (
+            detected = 'skype' AND
+            expected = 'https'
+        )
+        OR
+        (
+            detected = 'smbv1' AND
+            expected = 'microsoft-ds'
+        )
+        OR
+        (
+            detected = 'smbv23' AND
+            expected = 'microsoft-ds'
+        )
+        OR
+        (
+            detected = 'ssl' AND (
+                expected = 'https' OR
+                expected = 'imaps' OR
+                expected = 'nntps' OR
+                expected = 'pcsync-https' OR
+                expected = 'pop3s'
+            )
+        )
+        OR
+        (
+            detected = 'ssl_no_cert' AND
+            expected = 'https'
+        )
+        OR
+        (
+            detected = 'tls' AND (
+                expected = 'https' OR
+                expected = 'imaps' OR
+                expected = 'nntps' OR
+                expected = 'pcsync-https' OR
+                expected = 'pop3s'
+            )
+        )
+        OR
+        (
+            detected = 'tor' AND
+            expected = 'https'
+        )
+        OR
+        (
+            detected = 'unencrypted_jabber' AND
+            expected = 'xmpp-client'
+        )
+        OR
+        (
+            detected = 'upnp' AND
+            expected = 'ssdp'
+        )
+        OR
+        (
+            detected = 'vnc' AND
+            expected = 'vnc-server'
+        )
+        OR
+        (
+            detected = 'wsd' AND
+            expected = 'ws-discovery'
+        )
+        OR
+        (
+            detected = 'yahoo' AND
+            expected = 'http'
+        )
+    )
+
+GROUP BY detected, expected, expected_n
+ORDER BY multiply(cnt, {sort_order:Int8})
+
+LIMIT {n:UInt64}

@@ -1,0 +1,12 @@
+# ZSH completion for t2plugin
+
+_t2plugin() {
+    #compdef t2plugin
+
+    local cur="${words[CURRENT]}"
+    [ $CURRENT -gt 2 ] && local prev="${words[CURRENT-1]}"
+
+    _arguments --
+}
+
+compdef _t2plugin t2plugin

@@ -1,0 +1,37 @@
+# ZSH completion for t2, gt2, st2 and tranalyzer
+
+_t2() {
+    #compdef t2 gt2 tranalyzer
+
+    local opts=(
+        '(-i --interface -r --pcap -R --pcap-list -D --input-regex)'{-i,--interface}'[Listen on interface]:interface:_net_interfaces'
+        '(-i --interface -r --pcap -R --pcap-list -D --input-regex)'{-r,--pcap}'[Read packets from PCAP file]:file:_files'
+        '(-i --interface -r --pcap -R --pcap-list -D --input-regex)'{-R,--pcap-list}'[Process every PCAP file listed in FILE]:file:_files'
+        '(-i --interface -r --pcap -R --pcap-list -D --input-regex)'{-D,--input-regex}'[Process every PCAP whose name matches EXPR]:expression:_files'
+        '(-w --output-prefix -W --output-regex)'{-w,--output-prefix}'[Append PREFIX to any output file produced]:output prefix:_files'
+        '(-w --output-prefix -W --output-regex)'{-W,--output-regex}'[Like -w/--output-prefix, but fragment flow files according to SIZE]:output prefix:_files'
+        {-l,--logfile}'[Print end report in PREFIX_log.txt instead of stdout]'
+        {-m,--monfile}'[Print monitoring output in PREFIX_monitoring.txt instead of stdout]'
+        {-s,--packets}'[Packet forensics mode]'
+        {-p,--plugin-folder}'[Load plugins from path PATH instead of ~/.tranalyzer/plugins]:plugin folder:_files -/'
+        {-b,--plugin-list}'[Use plugin loading list FILE]:file:_files'
+        {-e,--pcapd}'[Create a PCAP file by extracting all packets belonging to flow indexes listed in file (requires pcapd plugin)]:file:_files'
+        {-f,--hash-factor}'[hashfactor]:Multiplication factor for hash table (int):'
+        {-x,--sensor-id}'[Sensor ID]:sensor ID (int):'
+        {-S,--snaplen}'[Set the snapshot length (used with -i option)]:len (int):'
+        {-B,--rx-bufsize}'[Set the live Rx buffer size (used with -i option)]:size (int):'
+        {-P,--priority}'[Set tranalyzer priority]:priority (int):'
+        {-M,--mon-interval}'[Set monitoring interval]:seconds (float):'
+        {-F,--bpf-file}'[Read BPF filter from file]:file:_files'
+        '(- 1 *)'{-V,--version}'[Show the version of the program and exit]'
+        '(- 1 *)'{-h,--help}'[Show help options and exit]'
+    )
+
+    if [[ "$OSTYPE" != darwin* ]]; then
+        opts+=({-c,--cpu}'[Bind tranalyzer to one core]:CPU core number (int):')
+    fi
+
+    _arguments -s -S "${opts[@]}"
+}
+
+compdef _t2 t2 gt2 st2 tranalyzer

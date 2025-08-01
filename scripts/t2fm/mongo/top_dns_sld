@@ -1,0 +1,91 @@
+cursor = db.flow.aggregate([
+    {
+        $match : {
+            dnsStat   : { $bitsAllClear : NumberInt(0x12) },
+            flowStat  : { $mod : [2, 0] },
+            timeFirst : { $gte : time_from },
+            timeLast  : { $lte : time_to },
+        }
+    },
+    {
+        $unwind : "$dnsQname"
+    },
+    {
+        $match : {
+            $and: [
+                { dnsQname : { $regex : /[^\.]\.[^\.]{2,}$/ } },
+                { dnsQname : { $not : { $regex : /\.[^\.]*[:-][^\.]*$/ } } },
+                { dnsQname : { $not : { $regex : /\.[0-9]*$/ } } },
+                { dnsQname : { $not : { $regex : /^\./ } } },
+            ]
+        }
+    },
+    {
+        $project : {
+            sld : {
+                $slice : [
+                    {
+                        $split : [
+                            { $toLower : "$dnsQname" },
+                            "."
+                        ]
+                    },
+                    -2
+                ]
+            }
+        }
+    },
+    //{
+    //    $project : {
+    //        sld : {
+    //            $concat : [ "$sld.0", ".", "$sld.1" ]
+    //        }
+    //    }
+    //},
+    {
+        $group : {
+            _id : "$sld",
+            count : { $sum : 1 }
+        }
+    },
+    {
+        $match : {
+            "_id.0" : {
+                $ne : "",
+            },
+            "_id.1" : {
+                $not : /^[0-9]*$/,
+            },
+            //_id : {
+            //    $not : /^[0-9]*\.[0-9]*$/,
+            //    $not : /^\./,
+            //    $not : /\.$/
+            //}
+        }
+    },
+    {
+        $addFields : {
+            sort_id: {
+                $multiply : [
+                    sort_order,
+                    "$count"
+                ]
+            },
+        }
+    },
+    {
+        $sort : { sort_id : -1 }
+    },
+    {
+        $limit : n
+    }
+])
+
+cursor.forEach(
+    function(e) {
+        print(
+              e._id[0] + "." + e._id[1] + "\t"
+            + e.count
+        )
+    }
+)

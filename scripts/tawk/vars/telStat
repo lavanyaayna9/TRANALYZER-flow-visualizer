@@ -1,0 +1,11 @@
+#H bit | telStat | Description
+#H =============================================================================
+     0 | 0x01    | TELNET port found
+     1 | 0x02    | Successful files extraction
+     2 | 0x04    | Successful User name found
+     3 | 0x08    | Successful Password found
+
+#E   4 | 0x10    | File open error
+#W   5 | 0x20    | User/PW length overflow... increase TELUPLN
+#W   6 | 0x40    | Command array overflow... increase TELCMDN
+#W   7 | 0x80    | Options array overflow... increase TELOPTN

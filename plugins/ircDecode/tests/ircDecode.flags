@@ -1,0 +1,20 @@
+# Flags to toggle
+#
+# Run the ../../../tests/test.sh script from the plugin main directory:
+#
+# cd $T2HOME/plugins/ircDecode
+# ../../tests/test.sh [OPTION...]
+#
+# If run from this folder, make sure to use absolute path for the '-p' option.
+#
+# Flag name     File
+
+# ../../tranalyzer2/src/tranalyzer.h
+BLOCK_BUF       ../../tranalyzer2/src/tranalyzer.h
+ENVCNTRL        ../../tranalyzer2/src/tranalyzer.h
+
+# src/ircDecode.h
+IRC_SAVE        src/ircDecode.h
+IRC_RMDIR       src/ircDecode.h
+IRC_CMD_AGGR    src/ircDecode.h
+IRC_BITFIELD    src/ircDecode.h

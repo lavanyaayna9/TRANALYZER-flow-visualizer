@@ -1,0 +1,41 @@
+#H bit | gsmStat     | Description
+#H =============================================================================
+     0 | 0x0000 0001 | LAPD Radio Signalling Link (RSL, SAPI 0)
+     1 | 0x0000 0002 | LAPD O&M link (SAPI 62)
+     2 | 0x0000 0004 | LAPD Layer 2 Management (SAPI 63)
+     3 | 0x0000 0008 | RSL Radio Link Layer Management (RLM)
+
+     4 | 0x0000 0010 | RSL Dedicated Channel Management (DCM)
+     5 | 0x0000 0020 | RSL Common Channel Management (CCM)
+     6 | 0x0000 0040 | RSL TRX Management
+     7 | 0x0000 0080 | RSL Location Services
+
+     8 | 0x0000 0100 | RSL ip.access Vendor Specific
+     9 | 0x0000 0200 | RSL HUAWEI Paging Extension
+    10 | 0x0000 0400 | GSM A-I/F DTAP
+    11 | 0x0000 0800 | GSM A-I/F DTAP Call Control (CC)
+
+    12 | 0x0000 1000 | GSM A-I/F DTAP Mobility Management (MM)
+    13 | 0x0000 2000 | GSM A-I/F DTAP Radio Resources Management (RR)
+    14 | 0x0000 4000 | GSM A-I/F DTAP SMS
+    15 | 0x0000 8000 | GSM A-I/F RP
+
+    16 | 0x0001 0000 | GSM SMS TPDU
+    17 | 0x0002 0000 | GSM Mobile Application (GSM MAP)
+    18 | 0x0004 0000 | AMR speech
+    19 | 0x0008 0000 | -
+
+    20 | 0x0010 0000 | Uplink
+    21 | 0x0020 0000 | Downlink
+    22 | 0x0040 0000 | -
+    23 | 0x0080 0000 | -
+
+#E  24 | 0x0100 0000 | File I/O error
+    25 | 0x0200 0000 | -
+#E  26 | 0x0400 0000 | LAPD decoding error
+#E  27 | 0x0800 0000 | LAPDm decoding error
+
+#E  28 | 0x1000 0000 | RSL decoding error
+#E  29 | 0x2000 0000 | DTAP decoding error
+#E  30 | 0x4000 0000 | SMS decoding error
+#E  31 | 0x8000 0000 | Decoding error

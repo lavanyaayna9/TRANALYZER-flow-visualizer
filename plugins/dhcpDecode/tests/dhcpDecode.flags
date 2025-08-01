@@ -1,0 +1,22 @@
+# Flags to toggle
+#
+# Run the ../../../tests/test.sh script from the plugin main directory:
+#
+# cd $T2HOME/plugins/dhcpDecode
+# ../../tests/test.sh [OPTION...]
+#
+# If run from this folder, make sure to use absolute path for the '-p' option.
+#
+# Flag name     File
+
+# ../../tranalyzer2/src/networkHeaders.h
+ETH_ACTIVATE    ../../tranalyzer2/src/networkHeaders.h
+IPV6_ACTIVATE   ../../tranalyzer2/src/networkHeaders.h
+SCTP_ACTIVATE   ../../tranalyzer2/src/networkHeaders.h
+
+# src/dhcpDecode.h
+DHCPMOTOUT      src/dhcpDecode.h
+DHCPMASKFRMT    src/dhcpDecode.h
+DHCP_ADD_CNT    src/dhcpDecode.h
+DHCP_FLAG_MAC   src/dhcpDecode.h
+DHCP_FM_DEBUG   src/dhcpDecode.h

@@ -1,0 +1,21 @@
+#H bit | sshStat | Description
+#H =============================================================================
+     0 | 0x0001  | Flow contains SSH protocol
+     1 | 0x0002  | Keeps track of who sent the SSH banner first
+#W   2 | 0x0004  | Banner does not end with CRLF or contains NULL byte
+     3 | 0x0008  | Key Exchange Init message seen
+
+     4 | 0x0010  | Diffie-Hellman Key Exchange Init message seen
+     5 | 0x0020  | Diffie-Hellman Key Exchange Reply message seen
+     6 | 0x0040  | Elliptic Curve Diffie-Hellman Key Exchange Init message seen
+     7 | 0x0080  | Elliptic Curve Diffie-Hellman Key Exchange Reply message seen
+
+     8 | 0x0100  | Diffie-Hellman Group Exchange Group message seen
+     9 | 0x0200  | Diffie-Hellman Group Exchange Init message seen
+    10 | 0x0400  | Diffie-Hellman Group Exchange Request message seen
+    11 | 0x0800  | Diffie-Hellman Group Exchange Reply message seen
+
+    12 | 0x1000  | New Keys message seen
+#W  13 | 0x2000  | String truncated... increase SSH_BUF_SIZE
+#W  14 | 0x4000  | Host key type or chosen algorithm truncated... increase SSH_HKT_SIZE
+#W  15 | 0x8000  | Malformed (decoding error, encrypted, ...)

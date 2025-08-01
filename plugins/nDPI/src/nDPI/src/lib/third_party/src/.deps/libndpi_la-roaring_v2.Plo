@@ -1,0 +1,4 @@
+third_party/src/libndpi_la-roaring_v2.lo: third_party/src/roaring_v2.c \
+ /usr/include/stdc-predef.h ../../src/include/ndpi_config.h
+/usr/include/stdc-predef.h:
+../../src/include/ndpi_config.h:

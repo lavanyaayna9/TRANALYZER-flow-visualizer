@@ -1,0 +1,30 @@
+# Bash completion for t2caplist
+
+_t2caplist() {
+    local cur prev words cword
+
+    if type -t _init_completion &> /dev/null; then
+        _init_completion -n = || return
+    else
+        COMPREPLY=()
+        cur="${COMP_WORDS[COMP_CWORD]}"
+        prev="${COMP_WORDS[COMP_CWORD-1]}"
+    fi
+
+    case "$prev" in
+        -d)
+            return
+            ;;
+    esac
+
+    if [[ "$cur" == -* ]]; then
+        COMPREPLY=($(compgen -W "$(_parse_help "$T2HOME/scripts/t2caplist")" -- "$cur"))
+    elif type -t _filedir &> /dev/null; then
+        _filedir
+    else
+        compopt -o filenames 2> /dev/null
+        COMPREPLY=($(compgen -f -- "$cur"))
+    fi
+}
+
+complete -F _t2caplist t2caplist

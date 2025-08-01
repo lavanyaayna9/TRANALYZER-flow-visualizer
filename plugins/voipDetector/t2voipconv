@@ -1,0 +1,390 @@
+#!/usr/bin/env bash
+
+source "$(dirname "$0")/../../scripts/t2utils.sh"
+
+if ! hash ffmpeg; then
+    if ! hash sox; then
+        check_dependency ffmpeg # Prefer ffmpeg over sox
+    else
+        check_dependency sox
+    fi
+    HAS_FFMPEG=0
+else
+    check_dependency ffmpeg
+    HAS_FFMPEG=1
+fi
+
+usage() {
+    echo "Usage:"
+    echo "    $SNAME [OPTION...] <DIR|FILE>"
+    echo
+    echo "Optional arguments:"
+    echo "    -m dir            Output folder for mono files"
+    echo "    -s dir            Output folder for stereo files"
+    echo "    -o dir            Output folder for mono and stereo files"
+    echo
+    echo "    -S                Do not create stereo files"
+    echo
+    echo "    -i                Interactive mode"
+    echo "    -y                Do not ask for confirmation before executing an action"
+    echo
+    echo "    -f                Input format (FILE only)"
+    echo "                      (amr, amrnb, amrwb, g711a, g711u, g722, g723_1, g726, g726le, g729, gsm)"
+    echo
+    echo "    --sox             Use SoX instead of ffmpeg"
+    echo
+    echo "    -v                Verbose output"
+    echo
+    echo "    -h, --help        Show this help, then exit"
+}
+
+# options
+STEREO=1
+INFILE=()
+FFMPEG_OPTS=()
+LOGFILE_OUT="/dev/null"
+LOGFILE_ERR="/dev/null"
+while [ $# -ne 0 ]; do
+    case "$1" in
+        -m|--mono-dir)
+            validate_next_arg "$1" "$2"
+            MONO_DIR="$2"
+            shift
+            ;;
+        -s|--stereo-dir)
+            validate_next_arg "$1" "$2"
+            STEREO_DIR="$2"
+            shift
+            ;;
+        -o|--output-dir)
+            validate_next_arg "$1" "$2"
+            MONO_DIR="$2"
+            STEREO_DIR="$2"
+            shift
+            ;;
+        -S|--no-stereo)
+            unset STEREO
+            ;;
+        -i|--interactive)
+            INTERACTIVE=1
+            ;;
+        -y|--yes)
+            YES="yes"
+            FFMPEG_OPTS+=("-y")
+            ;;
+        -v|--verbose)
+            LOGFILE_OUT="/dev/stdout"
+            LOGFILE_ERR="/dev/stderr"
+            ;;
+        -f|--format)
+            validate_next_arg "$1" "$2"
+            case "$2" in
+                amr|amrnb|amrwb|g711a|g711u|g722|g723_1|g726|g726le|g729|gsm) ;;
+                *)
+                    printerr "Unrecognized format for -f option"
+                    abort_with_help
+                    ;;
+            esac
+            FORMAT="$2"
+            shift
+            ;;
+        --sox)
+            check_dependency sox
+            HAS_FFMPEG=0
+            ;;
+        -h|-\?|--help)
+            usage
+            exit 0
+            ;;
+        *)
+            #if [ -f "$1" ]; then
+            #    if [ "$1" !~ /.raw$/ ]; then
+            #        printerr "Only raw files (*.raw) are supported"
+            #        abort_with_help
+            #    fi
+            #    FILES+=("$("$READLINK" -f "$1")")
+            #elif [ -d "$1" ]; then
+            if [ -d "$1" ]; then
+                INDIR="$("$READLINK" -f "$1")"
+                #for f in "$1"/*.raw; do
+                #    if [ -f "$1" ]; then
+                #        FILES+=("$("$READLINK" -f "$1")")
+                #    fi
+                #done
+            elif [ -f "$1" ]; then
+                INFILE+=("$("$READLINK" -f "$1")")
+            else
+                abort_option_unknown "$1"
+            fi
+            ;;
+    esac
+    shift
+done
+
+if [ ! -d "$INDIR" ] && [ ${#INFILE[@]} -eq 0 ]; then
+    abort_required_file_or_dir
+fi
+
+if [ ${#INFILE[@]} -gt 0 ] && [ -z "$FORMAT" ]; then
+    printerr "File conversion requires an input format (-f option)"
+    abort_with_help
+fi
+
+if [ -z "$MONO_DIR" ] && [ -d "$INDIR" ]; then
+    MONO_DIR="$INDIR"
+elif [ -d "$MONO_DIR" ]; then
+    ask_default_no "Directory '$MONO_DIR' already exists... overwrite" "$YES" || exit 1
+    rm -rf "$MONO_DIR"
+fi
+
+if [ -z "$STEREO_DIR" ]; then
+    STEREO_DIR="$INDIR"
+elif [ -d "$STEREO_DIR" ]; then
+    ask_default_no "Directory '$STEREO_DIR' already exists... overwrite" "$YES" || exit 1
+    rm -rf "$STEREO_DIR"
+fi
+
+# $1: input file
+# $2: output file
+convert_amr() {
+    if [ "$HAS_FFMPEG" -eq 1 ]; then
+        ffmpeg "${FFMPEG_OPTS[@]}" -f amr -i "$1" "$2" > "$LOGFILE_OUT" 2> "$LOGFILE_ERR"
+    else
+        printerr "FAILED: SoX does not support transcoding of AMR"
+        return 1
+    fi
+}
+
+# $1: input file
+# $2: output file
+convert_amrnb() {
+    if [ "$HAS_FFMPEG" -eq 1 ]; then
+        ffmpeg "${FFMPEG_OPTS[@]}" -f amrnb -i "$1" "$2" > "$LOGFILE_OUT" 2> "$LOGFILE_ERR"
+    else
+        printerr "FAILED: SoX does not support transcoding of AMR-NB"
+        return 1
+    fi
+}
+
+# $1: input file
+# $2: output file
+convert_amrwb() {
+    if [ "$HAS_FFMPEG" -eq 1 ]; then
+        ffmpeg "${FFMPEG_OPTS[@]}" -f amrwb -i "$1" "$2" > "$LOGFILE_OUT" 2> "$LOGFILE_ERR"
+    else
+        printerr "FAILED: SoX does not support transcoding of AMR-WB"
+        return 1
+    fi
+}
+
+# $1: input file
+# $2: output file
+convert_g711a() {
+    if [ "$HAS_FFMPEG" -eq 1 ]; then
+        ffmpeg "${FFMPEG_OPTS[@]}" -f alaw -ar 8k -ac 1 -i "$1" "$2" > "$LOGFILE_OUT" 2> "$LOGFILE_ERR"
+    else
+        sox --channels 1 --type raw --rate 8000 -e a-law "$1" "$2" > "$LOGFILE_OUT" 2> "$LOGFILE_ERR"
+    fi
+}
+
+# $1: input file
+# $2: output file
+convert_g711u() {
+    if [ "$HAS_FFMPEG" -eq 1 ]; then
+        ffmpeg "${FFMPEG_OPTS[@]}" -f mulaw -ar 8k -ac 1 -i "$1" "$2" > "$LOGFILE_OUT" 2> "$LOGFILE_ERR"
+    else
+        sox --channels 1 --type raw --rate 8000 -e mu-law "$1" "$2" > "$LOGFILE_OUT" 2> "$LOGFILE_ERR"
+    fi
+}
+
+# $1: input file
+# $2: output file
+convert_g722() {
+    if [ "$HAS_FFMPEG" -eq 1 ]; then
+        ffmpeg "${FFMPEG_OPTS[@]}" -f g722 -i "$1" "$2" > "$LOGFILE_OUT" 2> "$LOGFILE_ERR"
+    else
+        printerr "FAILED: SoX does not support transcoding of G.722"
+        return 1
+    fi
+}
+
+# $1: input file
+# $2: output file
+convert_g723_1() {
+    if [ "$HAS_FFMPEG" -eq 1 ]; then
+        ffmpeg "${FFMPEG_OPTS[@]}" -f g723_1 -i "$1" "$2" > "$LOGFILE_OUT" 2> "$LOGFILE_ERR"
+    else
+        printerr "FAILED: SoX does not support transcoding of G.723.1"
+        return 1
+    fi
+}
+
+# $1: input file
+# $2: output file
+convert_g726() {
+    if [ "$HAS_FFMPEG" -eq 1 ]; then
+        ffmpeg "${FFMPEG_OPTS[@]}" -f g726 -i "$1" "$2" > "$LOGFILE_OUT" 2> "$LOGFILE_ERR"
+    else
+        printerr "FAILED: SoX does not support transcoding of G.726"
+        return 1
+    fi
+}
+
+# $1: input file
+# $2: output file
+convert_g726le() {
+    if [ "$HAS_FFMPEG" -eq 1 ]; then
+        ffmpeg "${FFMPEG_OPTS[@]}" -f g726le -i "$1" "$2" > "$LOGFILE_OUT" 2> "$LOGFILE_ERR"
+    else
+        printerr "FAILED: SoX does not support transcoding of little endian G.726"
+        return 1
+    fi
+}
+
+# $1: input file
+# $2: output file
+convert_g729() {
+    if [ "$HAS_FFMPEG" -eq 1 ]; then
+        ffmpeg "${FFMPEG_OPTS[@]}" -f g729 -i "$1" "$2" > "$LOGFILE_OUT" 2> "$LOGFILE_ERR"
+    else
+        printerr "FAILED: SoX does not support transcoding of G.729"
+        return 1
+    fi
+}
+
+# $1: input file
+# $2: output file
+convert_gsm() {
+    if [ "$HAS_FFMPEG" -eq 1 ]; then
+        ffmpeg "${FFMPEG_OPTS[@]}" -f gsm -i "$1" "$2" > "$LOGFILE_OUT" 2> "$LOGFILE_ERR"
+    else
+        printerr "FAILED: SoX does not support transcoding of GSM"
+        return 1
+    fi
+}
+
+convert() {
+    local infile="$1"
+    local outfile="$2"
+    local format="$3"
+
+    if [ -n "$INTERACTIVE" ]; then
+        ask_default_yes "Convert '$infile' to '$outfile'" "$YES" || return
+    fi
+
+    if [ -z "$YES" ] && [ -f "$outfile" ]; then
+        ask_default_no "'$outfile' already exists... overwrite" "$YES" || return
+        rm -f "$outfile"
+    fi
+
+    if [ -n "$format" ]; then
+        printf "${BLUE}Converting '$infile' from '$format' to '$outfile'...${NOCOLOR} "
+    else
+        printf "${BLUE}Converting '$infile' to '$outfile'...${NOCOLOR} "
+    fi
+
+    case "$format" in
+        amr)    convert_amr    "$infile" "$outfile";;
+        amrnb)  convert_amrnb  "$infile" "$outfile";;
+        amrwb)  convert_amrwb  "$infile" "$outfile";;
+        g711a)  convert_g711a  "$infile" "$outfile";;
+        g711u)  convert_g711u  "$infile" "$outfile";;
+        g722)   convert_g722   "$infile" "$outfile";;
+        g723_1) convert_g723_1 "$infile" "$outfile";;
+        g726)   convert_g726   "$infile" "$outfile";;
+        g726le) convert_g726le "$infile" "$outfile";;
+        g729)   convert_g729   "$infile" "$outfile";;
+        gsm)    convert_gsm    "$infile" "$outfile";;
+        *)
+            if [ -n "$format" ]; then
+                printerr "failed (unrecognized format '$format')"
+            else
+                printerr "failed (unrecognized format)"
+            fi
+            return
+            ;;
+    esac
+
+    if [ $? -eq 0 ]; then
+        printok "OK"
+    elif [ "$HAS_FFMPEG" -eq 1 ] || [ "$format" != "g722" -a "$format" != "g729" ]; then
+        printerr "FAILED"
+    fi
+}
+
+for file in "${INFILE[@]}"; do
+    rawfile="$(basename "$file")"
+    wavfile="$(replace_suffix "$rawfile" ".raw" ".wav")"
+    if [ -d "$MONO_DIR" ]; then
+        wavpath="$MONO_DIR/$wavfile"
+    else
+        wavpath="$($READLINK -f "$(dirname "$file")")/$wavfile"
+    fi
+    convert "$file" "$wavpath" "$FORMAT"
+done
+
+if [ -d "$INDIR" ]; then
+    for raw in "$INDIR/"*.raw; do
+        rawfile="$(basename "$raw")"
+        wavfile="$(replace_suffix "$rawfile" ".raw" ".wav")"
+        wavpath="$MONO_DIR/$wavfile"
+        case "$(tr '[:lower:]' '[:upper:]' <<< "$rawfile")" in
+            *_AMR_*)              format="amr";;
+            *_AMRNB_*)            format="amrnb";;
+            *_AMRWB_*)            format="amrwb";;
+            *_G711A_*|*_8_[AB]_*) format="g711a";;
+            *_G711U_*|*_0_[AB]_*) format="g711u";;
+            *_G722_*|*_9_[AB]_*)  format="g722";;
+            *_G723_*|*_4_[AB]_*)  format="g723_1";;
+            *_G726_*)             format="g726";;
+            *_G726LE_*)           format="g726le";;
+            *_G729_*|*_18_[AB]_*) format="g729";;
+            *_GSM_*|*_3_[AB]_*)   format="gsm";;
+            *)                    format=""
+        esac
+        convert "$raw" "$wavpath" "$format"
+
+        if [ -n "$STEREO" ]; then
+            echo "$wavfile" | AWK -F"_" -v OFS="_" '{
+                if (NF == 7) {
+                    # VOIP_FNAME "_" sensorID "_" flowInd "_" ssrc "_" typeStr "_" typeNum "_" dir
+                    print $1, $2, $3, $4, $5, $6
+                } else {
+                    # VOIP_FNAME "_" sensorID "_" flowInd "_" typeStr "_" typeNum "_" dir
+                    print $1, $2, $3, $4, $5
+                }
+            }' >> "$MONO_DIR/findex.txt"
+        fi
+    done
+
+    if [ -n "$STEREO" ] && [ -f "$MONO_DIR/findex.txt" ]; then
+        sort -V "$MONO_DIR/findex.txt" | uniq > "$MONO_DIR/ff.txt"
+
+        for a in $(cat "$MONO_DIR/ff.txt"); do
+            infileA="${MONO_DIR}/${a}_A.wav"
+            infileB="${MONO_DIR}/${a}_B.wav"
+            if [ -f "$infileA" ] && [ -f "$infileB" ]; then
+                outfile="${STEREO_DIR}/${a}_AB.wav"
+                if [ -n "$INTERACTIVE" ]; then
+                    ask_default_yes "Merge '$infileA' and '$infileB' into '$outfile'" "$YES" || continue
+                fi
+
+                if [ -z "$YES" ] && [ -f "$wavpath" ]; then
+                    ask_default_no "'$outfile' already exists... overwrite" "$YES" || continue
+                    rm -f "$outfile"
+                fi
+
+                printf "${BLUE}Merging '$infileA' and '$infileB' into '$outfile'...${NOCOLOR} "
+                ffmpeg "${FFMPEG_OPTS[@]}" -i "$infileA" -i "$infileB" \
+                    -filter_complex "[0:a][1:a]join=inputs=2:channel_layout=stereo[a]" \
+                    -map "[a]" "${outfile}" > "$LOGFILE_OUT" 2> "$LOGFILE_ERR"
+
+                if [ $? -eq 0 ]; then
+                    printok "OK"
+                else
+                    printerr "FAILED"
+                fi
+            fi
+        done
+    fi
+fi

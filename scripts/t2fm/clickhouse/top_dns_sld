@@ -1,0 +1,35 @@
+-- Return the top 10 Second-Level Domains (SLD)
+
+SELECT
+    toValidUTF8(sld),
+    COUNT(*) AS cnt
+
+FROM (
+    SELECT
+        query,
+        LOWER(splitByChar('.', query)[length(splitByChar('.', query))-1])
+        || '.' || -- concatenate using '.'
+        LOWER(splitByChar('.', query)[length(splitByChar('.', query))])
+        AS sld
+    FROM
+        flow
+    ARRAY JOIN
+        "dnsQname" AS query
+    WHERE
+        notEmpty("dnsQname")
+        AND bitTest("flowStat", 0) = 0                -- A flows only
+        AND bitTestAny("dnsStat", 1, 4) = 0           -- Ignore NBNS and truncated entries
+        AND "timeFirst" >= {time_from:DateTime64(6)}
+        AND "timeLast" <= {time_to:DateTime64(6)}
+) AS flows
+
+WHERE
+    match(query, '[^\.]\.[^\.]{2,}$')
+    AND NOT match(sld, '\.[0-9]*$')
+    AND NOT match(sld, '\..*[:-].*$')
+    AND NOT match(sld, '^\.')
+
+GROUP BY sld
+ORDER BY multiply(cnt, {sort_order:Int8})
+
+LIMIT {n:UInt64}

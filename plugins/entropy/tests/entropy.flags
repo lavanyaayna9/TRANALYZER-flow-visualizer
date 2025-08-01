@@ -1,0 +1,26 @@
+# Flags to toggle
+#
+# Run the ../../../tests/test.sh script from the plugin main directory:
+#
+# cd $T2HOME/plugins/entropy
+# ../../tests/test.sh [OPTION...]
+#
+# If run from this folder, make sure to use absolute path for the '-p' option.
+#
+# Flag name     File
+
+# ../../tranalyzer2/src/networkHeaders.h
+ETH_ACTIVATE    ../../tranalyzer2/src/networkHeaders.h
+
+# ../../tranalyzer2/src/tranalyzer.h
+ENVCNTRL        ../../tranalyzer2/src/tranalyzer.h
+
+# src/entropy.h
+ENT_NORM        src/entropy.h
+ENT_NBITS       src/entropy.h
+ENT_HPKTIG      src/entropy.h
+ENT_HEAD        src/entropy.h
+ENT_TAIL        src/entropy.h
+ENT_THRESL      src/entropy.h
+ENT_THRESH      src/entropy.h
+ENT_ALPHAD      src/entropy.h

@@ -1,0 +1,45 @@
+-- Return a list of hosts requesting DNS zone transfer
+
+SELECT
+    time,
+    replaceRegexpOne(IPv6NumToString(sip.2), '^::ffff:', ''),
+    replaceRegexpOne(IPv6NumToString(dip.2), '^::ffff:', ''),
+    toValidUTF8(query)
+
+FROM (
+    -- A flows
+    SELECT
+        "timeFirst" AS time,
+        "srcIP" AS sip,
+        "dstIP" AS dip,
+        query
+    FROM
+        flow
+    ARRAY JOIN
+        "dnsQname" AS query
+    WHERE
+        bitTest("dnsStat", 7) != 0
+        AND bitTest("flowStat", 0) = 0
+        AND "timeFirst" >= {time_from:DateTime64(6)}
+        AND "timeLast" <= {time_to:DateTime64(6)}
+
+    UNION ALL
+
+    -- B flows
+    SELECT
+        "timeFirst" AS time,
+        "dstIP" AS sip,
+        "srcIP" AS dip,
+        query
+    FROM
+        flow
+    ARRAY JOIN
+        "dnsQname" AS query
+    WHERE
+        bitTest("dnsStat", 7) != 0
+        AND bitTest("flowStat", 0) = 1
+        AND "timeFirst" >= {time_from:DateTime64(6)}
+        AND "timeLast" <= {time_to:DateTime64(6)}
+) AS flows
+
+LIMIT {n:UInt64}

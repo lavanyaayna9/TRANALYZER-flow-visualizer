@@ -1,0 +1,48 @@
+#!/usr/bin/env bash
+
+source "$(dirname "$0")/../../../scripts/t2utils.sh"
+
+printf "Generating netflow9.h... "
+
+INFILE="$T2PLHOME/netflowSink/src/netflow9r.h"
+OUTFILE="$T2PLHOME/netflowSink/src/netflow9.h"
+
+if [ ! -f "$INFILE" ]; then
+    printerr "FAILED"
+    printerr "'$INFILE' could not be found."
+    exit 1
+fi
+
+T2MPLS=$(get_define BFO_MAX_MPLS "$SHOME/../../basicFlow/src/basicFlow.h")
+if [ -z "$T2MPLS" ]; then
+    printerr "FAILED"
+    printerr "Could not extract 'BFO_MAX_MPLS' value from basicFlow/src/basicFlow.h"
+    exit 1
+fi
+
+T2ETH=$(get_define ETH_ACTIVATE "$SHOME/../../../tranalyzer2/src/networkHeaders.h")
+if [ -z "$T2ETH" ]; then
+    printerr "FAILED"
+    printerr "Could not extract 'ETH_ACTIVATE' value from tranalyzer2/src/networkHeaders.h"
+    exit 1
+fi
+
+if [ "$T2MPLS" -gt 10 ]; then
+   T2MPLS=10
+fi
+
+AWK -F"\t" -v t="$T2MPLS" -v e="$T2ETH" '{
+    if (index($0, "NF9_MPLS_LABEL_1,")) {
+        for (i = 1; i <= t; i++) {
+            print "\tNF9_MPLS_LABEL_" i ", NF9_MPLS_LABEL_" i "_LEN,"
+        }
+    } else if (index($0, "nfMpls[BFO_MAX_MPLS")) {
+        if (t) print
+    } else if (index($0, "NF9_OUT_SRC_MAC,")) {
+        print "\tNF9_OUT_SRC_MAC, NF9_OUT_SRC_MAC_LEN,"
+    } else {
+        print
+    }
+}' "$INFILE" > "$OUTFILE"
+
+printok "OK\n"

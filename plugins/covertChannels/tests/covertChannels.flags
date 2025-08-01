@@ -1,0 +1,27 @@
+#
+# Run the ../../../tests/test.sh script from the plugin main directory:
+#
+# cd $T2HOME/plugins/covertChannels
+# ../../tests/test.sh [OPTION...]
+#
+# If run from this folder, make sure to use absolute path for the '-p' option.
+#
+# Flag name     File
+
+# ../../tranalyzer2/src/networkHeaders.h
+IPV6_ACTIVATE           ../../tranalyzer2/src/networkHeaders.h
+
+# ../../tranalyzer2/src/tranalyzer.h
+DEBUG                   ../../tranalyzer2/src/tranalyzer.h
+
+# src/covertChannels.h
+CC_DEBUG_MESSAGES       src/covertChannels.h
+CC_DETECT_DNS           src/covertChannels.h
+CC_DETECT_ICMP_ASYM     src/covertChannels.h
+CC_DETECT_ICMP_WL       src/covertChannels.h
+CC_DETECT_ICMP_NP       src/covertChannels.h
+CC_DETECT_HCOVERT       src/covertChannels.h
+CC_DETECT_DEVCC         src/covertChannels.h
+CC_DETECT_IPID          src/covertChannels.h
+CC_DETECT_RTP_TS        src/covertChannels.h
+CC_DETECT_SKYDE         src/covertChannels.h

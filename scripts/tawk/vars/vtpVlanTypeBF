@@ -1,0 +1,11 @@
+#H bit | vtpVlanTypeBF | Description
+#H =============================================================================
+     0 | 0x01          | -
+     1 | 0x02          | Ethernet
+     2 | 0x04          | FDDI: Fiber Distributed Data Interface
+     3 | 0x08          | TrCRF: Token Ring Concentrator Relay Function
+
+     4 | 0x10          | FDDI-net: Fiber Distributed Data Interface Network Entity Title
+     5 | 0x20          | TrBRF: Token Ring Bridge Relay Function
+     6 | 0x40          | -
+#W   7 | 0x80          | Unknown VTP VLAN type

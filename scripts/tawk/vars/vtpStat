@@ -1,0 +1,21 @@
+#H bit | vtpStat | Description
+#H =============================================================================
+     0 | 0x0001  | Flow is VTP
+#I   1 | 0x0002  | Different versions used
+#I   2 | 0x0004  | Different Management Domains used
+     3 | 0x0008  | -
+
+#E   4 | 0x0010  | Invalid Management Domain Length (> 32)
+#E   5 | 0x0020  | Invalid version
+#E   6 | 0x0040  | Invalid code
+#E   7 | 0x0080  | Invalid VLAN type
+
+     8 | 0x0100  | -
+     9 | 0x0200  | -
+    10 | 0x0400  | -
+    11 | 0x0800  | -
+
+    12 | 0x1000  | -
+#W  13 | 0x2000  | Array truncated... increase VTP_NUM_UPDID
+#W  14 | 0x4000  | String truncated... increase VTP_STR_MAX
+#W  15 | 0x8000  | Packet snapped, decoding failed

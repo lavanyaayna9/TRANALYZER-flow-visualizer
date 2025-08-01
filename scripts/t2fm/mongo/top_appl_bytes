@@ -1,0 +1,52 @@
+cursor = db.flow.aggregate([
+    {
+        $match : {
+            flowStat  : { $bitsAllClear : NumberInt(0x1) },  // 'A' flows only
+            timeFirst : { $gte : time_from },
+            timeLast  : { $lte : time_to },
+        }
+    },
+    {
+        $project : {
+            bytes : {
+                $add : [ "$l7BytesSnt", "$l7BytesRcvd" ]
+            },
+            ndpiclass : {
+                $split : [ "$nDPIclass", "." ]
+            }
+        }
+    },
+    {
+        $group : {
+            _id : {
+                $arrayElemAt : [ "$ndpiclass", 0 ]  // master protocol only
+            },
+            count : { $sum : "$bytes" }
+        }
+    },
+    {
+        $addFields : {
+            sort_id: {
+                $multiply : [
+                    sort_order,
+                    "$count"
+                ]
+            },
+        }
+    },
+    {
+        $sort : { sort_id : -1 }
+    },
+    {
+        $limit : n
+    }
+])
+
+cursor.forEach(
+    function(e) {
+        print(
+              e._id + "\t"
+            + e.count
+        )
+    }
+)

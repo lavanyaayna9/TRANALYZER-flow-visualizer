@@ -1,0 +1,179 @@
+\IfFileExists{t2doc.cls}{
+    \documentclass[documentation]{subfiles}
+}{
+    \errmessage{Error: could not find 't2doc.cls'}
+}
+
+\begin{document}
+
+\trantitle
+    {gquicDecode} % Plugin name
+    {Google Quick UDP Internet Connections (GQUIC)} % Short description
+    {Tranalyzer Development Team} % author(s)
+
+\section{gquicDecode}\label{s:gquicDecode}
+
+\subsection{Description}
+The gquicDecode plugin analyzes GQUIC traffic.
+
+%\subsection{Dependencies}
+
+%\traninput{file} % use this command to input files
+%\traninclude{file} % use this command to include files
+
+%\tranimg{image} % use this command to include an image (must be located in a subfolder ./img/)
+
+%\subsubsection{External Libraries}
+%This plugin depends on the {\bf XXX} library.
+%\paragraph{Ubuntu:} {\tt sudo apt-get install XXX}
+%\paragraph{Arch:} {\tt sudo pacman -S XXX}
+%
+%\subsubsection{Other Plugins}
+%This plugin requires the {\bf XXX} plugin.
+%
+%\subsubsection{Required Files}
+%The file {\tt file.txt} is required.
+
+\subsection{Configuration Flags}
+The following flags can be used to control the output of the plugin:
+\begin{longtable}{>{\tt}lcl}
+    \toprule
+    {\bf Name} & {\bf Default} & {\bf Description}\\
+    \midrule\endhead%
+    GQUIC\_SLEN  & 63  & Max length for string columns, e.g., {\tt gquicSNI}\\
+    GQUIC\_DEBUG &  0  & 0: do not print any debug messages\\
+                 &     & 1: print warnings about unhandled cases\\
+                 &     & 2: + print regular info about decoding status\\
+    \bottomrule
+\end{longtable}
+
+\subsection{Flow File Output}
+The gquicDecode plugin outputs the following columns:
+\begin{longtable}{>{\tt}lll>{\tt\small}l}
+    \toprule
+    {\bf Column} & {\bf Type} & {\bf Description} & {\bf Flags}\\
+    \midrule\endhead%
+    \nameref{gquicStat}       & H8  & Status                       & \\
+    \nameref{gquicPubFlags}   & H8  & Public Flags                 & \\
+    %\nameref{gquicPrivFlags}  & H8  & Private Flags                & \\
+    \nameref{gquicFrameTypes} & H16 & Frame Types                  & \\
+    gquicCID                  & U64 & Connection ID                & \\
+    gquicSNI                  & S   & Server Name Indication (SNI) & \\
+    gquicUAID                 & S   & Client's User Agent ID       & \\
+    % VERSION
+    % MAX STREAMS PER CONNECTION
+    % AUTHENTICATED ENCRYPTION ALGORITHMS
+    % PROOF DEMAND
+    % KEY EXCHANGE ALGORITHMS
+    % ESTIMATED INITIAL RTT
+    \bottomrule
+\end{longtable}
+
+\subsubsection{gquicStat}\label{gquicStat}
+The {\tt gquicStat} column is to be interpreted as follows:
+\begin{longtable}{>{\tt}rl}
+    \toprule
+    {\bf gquicStat} & {\bf Description}\\
+    \midrule\endhead%
+    0x01 & Flow is GQUIC\\
+    0x02 & Handshake (Stream number is 1)\\
+    0x04 & Connection ID changed\\
+    0x08 & ---\\
+    \\
+    0x10 & ---\\
+    0x20 & ---\\
+    0x40 & Packet was snapped (t2buf failed)\\
+    0x80 & Packet was malformed, e.g., covert channel\\
+    \bottomrule
+\end{longtable}
+
+\subsubsection{gquicPubFlags}\label{gquicPubFlags}
+The {\tt gquicPubFlags} column is to be interpreted as follows:
+\begin{longtable}{>{\tt}rl}
+    \toprule
+    {\bf gquicPubFlags} & {\bf Description}\\
+    \midrule\endhead%
+    0x01 & Header contains a GQUIC Version\\
+    0x02 & Public Reset packet\\
+    0x04 & 32 byte diversification nonce is present (version >= 33)\\
+    0x08 & 8 byte Connection ID is present (version >= 33)\\
+    0x0c & 8 byte Connection ID is present (version < 33)\\
+    0x30 & Number of low-order bytes of the packet number\\
+    0x40 & Reserved for multipath use\\
+    0x80 & Reserved (MUST be 0)\\
+    \bottomrule
+\end{longtable}
+
+%\subsubsection{gquicPrivFlags}\label{gquicPrivFlags}
+%The {\tt gquicPrivFlags} column is to be interpreted as follows:
+%\begin{longtable}{>{\tt}rl}
+%    \toprule
+%    {\bf gquicPrivFlags} & {\bf Description}\\
+%    \midrule\endhead%
+%    0x01 & Entropy\\
+%    0x02 & FEC Group\\
+%    0x04 & FEC\\
+%    0xf8 & Reserved (MUST be 0)\\
+%    \bottomrule
+%\end{longtable}
+
+\subsubsection{gquicFrameTypes}\label{gquicFrameTypes}
+The {\tt gquicFrameTypes} column is to be interpreted as follows:
+\begin{longtable}{>{\tt}r>{\tt}l}
+    \toprule
+    {\bf gquicFrameTypes} & {\bf Description}\\
+    \midrule\endhead%
+    $2^{0}$  (=0x0001) & PADDING\\
+    $2^{1}$  (=0x0002) & RST\_STREAM\\
+    $2^{2}$  (=0x0004) & CONNECTION\_CLOSE\\
+    $2^{3}$  (=0x0008) & GOAWAY\\
+    \\
+    $2^{4}$  (=0x0010) & WINDOW\_UPDATE\\
+    $2^{5}$  (=0x0020) & BLOCKED\\
+    $2^{6}$  (=0x0040) & STOP\_WAITING\\
+    $2^{7}$  (=0x0080) & PING\\\\
+
+    \multicolumn{2}{l}{Special Frame Types:}\\\\
+
+    $2^{14}$ (=0x4000) & ACK\\
+    $2^{15}$ (=0x8000) & STREAM\\
+    \bottomrule
+\end{longtable}
+
+\subsection{Packet File Output}
+In packet mode ({\tt --s} option), the gquicDecode plugin outputs the following columns:
+\begin{longtable}{>{\tt}lll>{\tt\small}l}
+    \toprule
+    {\bf Column} & {\bf Type} & {\bf Description} & {\bf Flags}\\
+    \midrule\endhead%
+    \nameref{gquicPubFlags}  & H8  & Public Flags  & \\
+    gquicVersion             & SC  & Version       & \\
+    gquicPktNo               & U64 & Packet Number & \\
+    gquicCID                 & U64 & Connection ID & \\
+    %\nameref{gquicPrivFlags} & H8  & Private Flags & \\
+    %gquicSID                 & U64 & Stream ID     & \\
+    \bottomrule
+\end{longtable}
+
+\subsection{Plugin Report Output}
+The following information is reported:
+\begin{itemize}
+    \item Aggregated {\tt\nameref{gquicStat}}
+    \item Number of GQUIC packets
+    \item Number of GQUIC Client Hello packets
+    \item Number of GQUIC Rejection packets
+    \item Number of GQUIC Public Reset packets
+\end{itemize}
+
+\subsection{Known Bugs and Limitations}
+\begin{itemize}
+    \item The gquicDecode plugin assumes every UDP packet on port 80 or 443 is GQUIC\ldots
+\end{itemize}
+
+%\subsection{References}
+%\begin{itemize}
+%    \item \href{https://tools.ietf.org/html/rfcXXXX}{RFCXXXX}: Title
+%    \item \url{https://www.iana.org/assignments/}
+%\end{itemize}
+
+\end{document}

@@ -1,0 +1,499 @@
+\IfFileExists{t2doc.cls}{
+    \documentclass[documentation]{subfiles}
+}{
+    \errmessage{Error: could not find 't2doc.cls'}
+}
+
+\begin{document}
+
+\trantitle
+    {tcpFlags}
+    {IP and TCP flags}
+    {Tranalyzer Development Team} % author(s)
+
+\section{tcpFlags}\label{s:tcpFlags}
+
+\subsection{Description}
+The tcpFlags plugin contains IP and TCP header information encountered during the lifetime of a flow.
+%All features are a result of practical troubleshooting experience in the field.
+
+%\subsection{Dependencies}
+%
+%\subsubsection{External Libraries}
+%This plugin depends on ...
+%
+%\subsubsection{Other Plugins}
+%This plugin requires the ... plugin.
+%
+%\subsubsection{Required Files}
+%The file ... is required.
+
+\subsection{Configuration Flags}
+The following flags can be used to control the output of the plugin:
+\begin{longtable}{>{\tt}lcl>{\tt\small}l}
+    \toprule
+    {\bf Name} & {\bf Default} & {\bf Description} & {\bf Flags}\\
+    \midrule\endhead%
+    IPTOS             & 0  & IPv4 ToS / IPv6 Class representation:                        & \\
+                      &    & \qquad 0: IP ToS hex                                         & \\
+                      &    & \qquad 1: DSCP\_ECN decimal                                  & \\
+                      &    & \qquad 2: Precedence(1-7)\_ECN decimal                       & \\
+    RTT\_ESTIMATE     & 1  & Estimate Round trip time                                     & \\
+    IPCHECKSUM        & 2  & 0: No checksums calculation                                  & \\
+                      &    & 1: Calculation of L3 (IP) header checksum                    & \\
+                      &    & 2: Calculation of L3 (IP) and L4 (TCP, UDP, \ldots) checksum & \\
+    WINDOWSIZE        & 1  & Output TCP window size parameters                            & \\
+    \nameref{WINMIN}  & 1  & Min.\ window size threshold defining a healthy communication & \\
+                      &    & (only packets below the threshold are counted)               & \\
+    SEQ\_ACK\_NUM     & 1  & Output Sequence/Acknowledge number features                  & \\
+    FRAG\_ANALYZE     & 1  & Enable fragmentation analysis                                & \\
+    NAT\_BT\_EST      & 1  & Estimate NAT boot time                                       & \\
+    SCAN\_DETECTOR    & 1  & Enable scan flow detector                                    & \\
+    MPTCP             & 1  & Enable MPTCP dissection                                      & \\
+    TCPJA4T           & 1  & Output JA4T/JA4TS fingerprints                               & \\
+    JA4TOPTMX         & 20 & Maximal options stored in flow                               & TCPJA4T=1\\
+    TCPFLGCNT         & 1  & TCP flags counts                                             & \\
+    SPKTMD\_SEQACKREL & 0  & SEQ/ACK numbers representation ({\tt --s} option):           & SEQ\_ACK\_NUM=1\\
+                      &    & \qquad 0: absolute                                           & \\
+                      &    & \qquad 1: relative                                           & \\
+    SPKTMD\_SEQACKHEX & 0  & SEQ/ACK numbers representation ({\tt --s} option):           & SEQ\_ACK\_NUM=1\\
+                      &    & \qquad 0: uint32\_t                                          & \\
+                      &    & \qquad 1: hex32                                              & \\
+    \bottomrule
+\end{longtable}
+
+\subsubsection{WINMIN}\label{WINMIN}
+{\tt WINMIN} default 1 setting selects all packets/flow where communication came to a halt due to receiver buffer overflow.
+Literally the number of window size 0 packets to the sender are then counted. {\tt WINMIN} can be set to any value defining
+a healthy communication, which depends on the network and application.
+
+\subsection{Flow File Output}
+The tcpFlags plugin outputs the following columns:
+\begin{longtable}{>{\tt}lll>{\tt\small}l}
+    \toprule
+    {\bf Column}                     & {\bf Type} & {\bf Description}                                     & {\bf Flags}\\
+    \midrule\endhead%
+    \nameref{tcpFStat}               & H16        & Status                                                & \\
+    ipMindIPID                       & U16        & IP minimum delta IP ID                                & \\
+    ipMaxdIPID                       & U16        & IP maximum delta IP ID                                & \\
+    ipMinTTL                         & U8         & IP minimum TTL                                        & \\
+    ipMaxTTL                         & U8         & IP maximum TTL                                        & \\
+    ipTTLChg                         & U8         & IP TTL change count                                   & \\
+    \nameref{ipToS}                  & H8         & IP Type of Service (ToS)                              & IPTOS=0\\
+    \hyperref[ipToS]{ipToSDscp\_ecn} & U8\_U8     & IP ToS: DSCP and ECN                                  & IPTOS=1\\
+    \hyperref[ipToS]{ipToSPrec\_ecn} & U8\_U8     & IP ToS: Precedence and ECN                            & IPTOS=2\\
+    \nameref{ipFlags}                & H16        & IP aggregated flags                                   & \\
+    \\
+    ipOptCnt                         & U16        & IP options count                                      & IPV6\_ACTIVATE=0|2\\
+    \nameref{ipOptCpClNum}           & H8\_H32    & IP aggregated options, copy-class and number          & IPV6\_ACTIVATE=0|2\\
+    \\
+    ip6OptCntHH\_D                   & U16\_U16   & IPv6 aggregated Hop-by-Hop dest.\ option counts       & IPV6\_ACTIVATE>0\\
+    ip6OptHH\_D                      & H32\_H32   & IPv6 Hop-by-Hop destination options                   & IPV6\_ACTIVATE>0\\
+    \\
+    %\multicolumn{4}{l}{If {\tt SEQ\_ACK\_NUM=1}, the following columns are displayed:}\\\\
+    %\\
+    tcpISeqN                         & U32        & TCP initial sequence number                           & SEQ\_ACK\_NUM=1\\
+    tcpPSeqCnt                       & U16        & TCP packet sequence count                             & SEQ\_ACK\_NUM=1\\
+    tcpSeqSntBytes                   & U64        & TCP sent seq diff bytes                               & SEQ\_ACK\_NUM=1\\
+    tcpSeqFaultCnt                   & U16        & TCP sequence number fault count                       & SEQ\_ACK\_NUM=1\\
+    tcpPAckCnt                       & U16        & TCP packet ACK count                                  & SEQ\_ACK\_NUM=1\\
+    tcpFlwLssAckRcvdBytes            & U64        & TCP flawless ACK received bytes                       & SEQ\_ACK\_NUM=1\\
+    tcpAckFaultCnt                   & U16        & TCP ACK number fault count                            & SEQ\_ACK\_NUM=1\\
+    tcpBFlgtMx                       & U32        & TCP max bytes in flight                               & SEQ\_ACK\_NUM=1\\
+    \\
+    %\multicolumn{4}{l}{If {\tt WINDOWSIZE=1}, the following columns are displayed:}\\\\
+    %\\
+    tcpInitWinSz                     & U32        & TCP initial effective window size                     & WINDOWSIZE=1\\
+    tcpAvgWinSz                      &   F        & TCP average effective window size                     & WINDOWSIZE=1\\
+    tcpMinWinSz                      & U32        & TCP minimum effective window size                     & WINDOWSIZE=1\\
+    tcpMaxWinSz                      & U32        & TCP maximum effective window size                     & WINDOWSIZE=1\\
+    tcpWinSzDwnCnt                   & U16        & TCP effective window size change down count           & WINDOWSIZE=1\\
+    tcpWinSzUpCnt                    & U16        & TCP effective window size change up count             & WINDOWSIZE=1\\
+    tcpWinSzChgDirCnt                & U16        & TCP effective window size direction change count      & WINDOWSIZE=1\\
+    tcpWinSzThRt                     & F          & TCP packet count ratio below window size {\tt WINMIN} & WINDOWSIZE=1\\
+    \\
+    \nameref{tcpFlags}               & H16        & TCP aggregated protocol flags                         & \\
+                                     &            & (FIN, SYN, RST, PSH, ACK, URG, ECE, CWR)              & \\
+    \nameref{tcpAnomaly}             & H16        & TCP aggregated header anomaly flags                   & \\
+    \\
+    tcpCntF\_S\_R\_P\_A\_            & 16xU16     & TCP flags counts: FIN, SYN, RST, PSH, ACK,            & TCPFLGCNT=1\\
+    \qquad U\_E\_C\_FA\_SA\_         &            & \quad URG, ECE, CWR, FIN-ACK, SYN-ACK,                & \\
+    \qquad RA\_N\_SF\_SFR\_          &            & \quad RST-ACK, none, SYN-FIN, SYN-FIN-RST             & \\
+    \qquad RF\_X                     &            & \quad RST-FIN, Xmas (FIN-PSH-URG)                     & \\
+    \\
+    tcpJA4T                          & SC         & TCP JA4T/JA4TS fingerprint                            & TCPJA4T=1\\
+    \\
+    tcpOptPktCnt                     & U16        & TCP options packet count                              & \\
+    tcpOptCnt                        & U16        & TCP options count                                     & \\
+    \nameref{tcpOptions}             & H32        & TCP aggregated options                                & \\
+    tcpMSS                           & U16        & TCP maximum segment size                              & \\
+    tcpWS                            & U16        & TCP window scale factor                               & \\
+    \\
+    %\multicolumn{4}{l}{If {\tt MPTCP=1}, the following four columns are displayed:}\\\\
+    %\\
+    \nameref{tcpMPTBF}               & H16        & MPTCP type bitfield                                   & MPTCP=1\\
+    tcpMPF                           & H8         & MPTCP flags                                           & MPTCP=1\\
+    tcpMPAID                         & U8         & MPTCP address ID                                      & MPTCP=1\\
+    tcpMPDSSF                        & H8         & MPTCP DSS flags                                       & MPTCP=1\\
+    \\
+    %\multicolumn{4}{l}{If {\tt NAT\_BT\_EST=1}, the following four columns are displayed:}\\\\
+    %\\
+    tcpTmS                           & U32        & TCP time stamp                                        & NAT\_BT\_EST=1\\
+    tcpTmER                          & U32        & TCP time echo reply                                   & NAT\_BT\_EST=1\\
+    tcpEcI                           & F          & TCP estimated counter increment                       & NAT\_BT\_EST=1\\
+    tcpUtm                           & D          & TCP estimated up time                                 & NAT\_BT\_EST=1\\
+    tcpBtm                           & TS         & TCP estimated boot time                               & NAT\_BT\_EST=1\\
+    \\
+    %\multicolumn{4}{l}{If {\tt RTT\_ESTIMATE=1}, the following columns are displayed:}\\\\
+    %\\
+    tcpSSASAATrip                    & F          & TCP trip time:                                        & RTT\_ESTIMATE=1\\
+                                     &            & \qquad A flow: SYN, SYN-ACK                           & \\
+                                     &            & \qquad B flow: SYN-ACK, ACK                           & \\
+    tcpRTTAckTripMin                 & F          & TCP ACK trip minimum                                  & RTT\_ESTIMATE=1\\
+    tcpRTTAckTripMax                 & F          & TCP ACK trip maximum                                  & RTT\_ESTIMATE=1\\
+    tcpRTTAckTripAvg                 & F          & TCP ACK trip average                                  & RTT\_ESTIMATE=1\\
+    tcpRTTAckTripJitAvg              & F          & TCP ACK trip jitter average                           & RTT\_ESTIMATE=1\\
+    tcpRTTSseqAA                     & F          & TCP round trip time:                                  & RTT\_ESTIMATE=1\\
+                                     &            & \qquad A flow: SYN, SYN-ACK, ACK                      & \\
+                                     &            & \qquad B flow: ACK-ACK                                & \\
+    tcpRTTAckJitAvg                  & F          & TCP ACK round trip average jitter                     & RTT\_ESTIMATE=1\\
+    \bottomrule
+\end{longtable}
+
+\subsubsection{tcpFStat}\label{tcpFStat}
+The {\tt tcpFStat} column is to be interpreted as follows:
+\begin{longtable}{>{\tt}rl}
+    \toprule
+    {\bf tcpFStat} & {\bf Description}\\
+    \midrule\endhead%
+    0x0001 & Packet good for inter-distance assessment\\
+    0x0002 & TCP option init\\
+    0x0004 & Timestamp option decreasing\\
+    0x0008 & L4 option field corrupt or not acquired\\
+    \\
+    0x0010 & Window state-machine initialized\\
+    0x0020 & Window update\\
+    0x0040 & Win 0 probe\\
+    0x0080 & Win 0 probe ACK\\
+    \\
+    0x0100 & Min Window detected\\
+    0x0200 & WS used\\
+    0x0400 & Window Receiver full\\
+    0x0800 & Window state-machine count up(1)/down(0)\\
+    \\
+    0x1000 & L4 Checksum calculation if present\\
+    0x2000 & UDPLITE Checksum coverage error\\
+    0x4000 & TCP Selective ACK Option\\
+    0x8000 & MPTCP detected\\
+    \bottomrule
+\end{longtable}
+
+\subsubsection{ipToS}\label{ipToS}
+The {\tt ipToS} column is to be interpreted as follows:
+\begin{longtable}{>{\tt}rl}
+    \toprule
+    {\bf ipToS} & {\bf Description}\\
+    \midrule\endhead%
+    0x01 & ECN0: enable ECN when requested by incoming connections,\\
+         & \qquad and also request ECN on outgoing connection attempts\\
+    0x02 & ECN1: (default) enable ECN when requested by incoming connections,\\
+         & \qquad but do not request ECN on outgoing connections\\
+    0x04 & Precedence 0\\
+    0x08 & Precedence 1\\
+    \\
+    0x10 & Precedence 2\\
+    0x20 & Precedence 3: Class Sel 0\\
+    0x40 & Precedence 4: Class Sel 1\\
+    0x80 & Precedence 5: Class Sel 2\\
+    \bottomrule
+\end{longtable}
+
+\subsubsection{ipToS precedence description}\label{ipToSDesc}
+The {\tt precedence in ipToS, Mode 0-2} is defined by the following table according to RFC 2474:
+\begin{longtable}{>{\tt}l>{\tt}lll}
+    \toprule
+    {\bf DSCP} & {\bf Hex Md 0 Values} & {\bf Dec Md 1-2 Values} & {\bf Precedence: Description}\\
+    \midrule\endhead%
+    CS0 & 0x00                & 0              & Best Effort\\
+    LE  & 0x01                & 1              & ---\\
+    CS1 & 0x20,0x28,0x30,0x38 & 8, 10, 12, 14  & 1: Priority\\
+    CS2 & 0x40,0x48,0x50,0x58 & 16, 18, 20, 22 & 2: Immediate\\
+    CS3 & 0x60,0x68,0x70,0x78 & 24, 26, 28, 30 & 3: Flash - mainly used for voice signaling\\
+    CS4 & 0x80,0x88,0x90,0x98 & 32, 34, 36, 38 & 4: Flash Override\\
+    CS5 & 0xa0,0xb8           & 40, 46         & 5: Critical - mainly used for voice RTP\\
+    CS6 & 0xc0                & 48             & 6: Internetwork Control\\
+    CS7 & 0xe0                & 56             & 7: Network Control\\
+    \bottomrule
+\end{longtable}
+
+\subsubsection{ipFlags}\label{ipFlags}
+The {\tt ipFlags} column is to be interpreted as follows:\\
+\begin{minipage}{.48\textwidth}
+    \begin{longtable}{>{\tt}rl}
+        \toprule
+        {\bf ipFlags} & {\bf Description}\\
+        \midrule\endhead%
+        0x0001 & IP options corrupt\\
+        0x0002 & IPv4 packets out of order\\
+        0x0004 & IPv4 ID roll over\\
+        0x0008 & IP fragment below minimum\\
+        \\
+        0x0010 & IP fragment out of range\\
+        0x0020 & More Fragment bit\\
+               &\\
+        0x0040 & IPv4: Don't Fragment bit\\
+               & IPv6: reserve bit\\
+        0x0080 & Reserve bit\\
+        \bottomrule
+    \end{longtable}
+\end{minipage}
+\hfill
+\begin{minipage}{.48\textwidth}
+    \begin{longtable}{>{\tt}rl}
+        \toprule
+        {\bf ipFlags} & {\bf Description}\\
+        \midrule\endhead%
+        0x0100 & Fragmentation position error\\
+        0x0200 & Fragmentation sequence error\\
+        0x0400 & L3 checksum error\\
+        0x0800 & L4 checksum error\\
+        \\
+        0x1000 & Length in L3/4 header < actual L3/4 length\\
+        0x2000 & Length in UDP/UDP-Lite header $\neq$\\
+               & \qquad actual UDP/UDP-Lite length\\
+        0x4000 & Packet inter-distance = 0\\
+        \\
+        0x8000 & Packet inter-distance < 0\\
+        \bottomrule
+    \end{longtable}
+\end{minipage}
+
+\subsubsection{ipOptCpCl\_Num}\label{ipOptCpClNum}%TODO
+The aggregated IP options are coded as a bit field in hexadecimal notation where the bit position denotes the IP options type according to following format: [$2^{\text{Copy-Class}}$]\_[$2^{\text{Number}}$]. If the field reads: {\tt 0x10\_0x00100000} in an ICMP message it is a {\tt 0x94 = 148} router alert. \\
+Refer to RFC for decoding the bitfield: \url{http://www.iana.org/assignments/ip-parameters}.
+
+\subsubsection{tcpFlags}\label{tcpFlags}
+The {\tt tcpFlags} column is to be interpreted as follows:
+\begin{longtable}{>{\tt}rl}
+    \toprule
+    {\bf tcpFlags} & {\bf Description}\\
+    \midrule\endhead%
+    $2^{0}$  (=0x0001) & {\tt FIN}: No more data, finish connection                         \\
+    $2^{1}$  (=0x0002) & {\tt SYN}: Synchronize sequence numbers                            \\
+    $2^{2}$  (=0x0004) & {\tt RST}: Reset connection                                        \\
+    $2^{3}$  (=0x0008) & {\tt PSH}: Push data                                               \\
+    \\
+    $2^{4}$  (=0x0010) & {\tt ACK}: Acknowledgement field value valid                       \\
+    $2^{5}$  (=0x0020) & {\tt URG}: Urgent pointer valid                                    \\
+    $2^{6}$  (=0x0040) & {\tt ECE}: ECN-Echo                                                \\
+    $2^{7}$  (=0x0080) & {\tt CWR}: Congestion Window Reduced flag is set                   \\
+    \\
+    $2^{8}$  (=0x0100) & {\tt FIN-ACK}: Acknowledgment of {\tt FIN}                         \\
+    $2^{9}$  (=0x0200) & {\tt SYN-ACK}: Acknowledgment of {\tt SYN}                         \\
+    $2^{10}$ (=0x0400) & {\tt RST-ACK}: Acknowledgment of {\tt RST}                         \\
+    $2^{11}$ (=0x0800) & Potential NULL scan packet or malicious channel                    \\
+    \\
+    $2^{12}$ (=0x1000) & {\tt SYN-FIN} flag: potential scan packet or malicious packet      \\
+    $2^{13}$ (=0x2000) & {\tt SYN-FIN-RST} flag: potential scan packet or malicious channel \\
+    $2^{14}$ (=0x4000) & {\tt FIN-RST} flag: abnormal flow termination                      \\
+    $2^{15}$ (=0x8000) & Potential Xmas scan packet (FIN-PSH-URG) or malicious channel      \\
+    \bottomrule
+\end{longtable}
+
+\clearpage
+
+\subsubsection{tcpAnomaly}\label{tcpAnomaly}
+The {\tt tcpAnomaly} column is to be interpreted as follows:
+\begin{longtable}{>{\tt}rl}
+    \toprule
+    {\bf tcpAnomaly} & {\bf Description}\\
+    \midrule\endhead%
+    0x0001 & SYN retransmission\\
+    0x0002 & SEQ retransmission\\
+    0x0004 & SEQ fast retransmission\\
+    0x0008 & Duplicate ACK\\
+    \\
+    0x0010 & TCP Keep-Alive\\
+    0x0020 & TCP Keep-Alive ACK\\
+    0x0040 & Sequence number out-of-order\\
+    0x0080 & Sequence mess in flow order due to pcap packet loss\\
+    \\
+    0x0100 & ACK for unseen packet\\
+    0x0200 & Previous packet not captured\\
+    0x0100 & -\\
+    0x0200 & -\\
+    \\
+    0x1000 & Scan detected in flow\\
+    0x2000 & Successful Scan detected in flow\\
+    0x4000 & SYN flag with L7 content\\
+    0x8000 & -\\
+    \bottomrule
+\end{longtable}
+
+\subsubsection{tcpOptions}\label{tcpOptions}
+The {\tt tcpOptions} column is to be interpreted as follows:
+\begin{longtable}{>{\tt}rl}
+    \toprule
+    {\bf tcpOptions} & {\bf Description}\\
+    \midrule\endhead%
+    $2^{0}$  (=0x00000001) & End of Option List\\
+    $2^{1}$  (=0x00000002) & No-Operation\\
+    $2^{2}$  (=0x00000004) & Maximum Segment Size\\
+    $2^{3}$  (=0x00000008) & Window Scale\\
+    \\
+    $2^{4}$  (=0x00000010) & SACK Permitted\\
+    $2^{5}$  (=0x00000020) & SACK\\
+    $2^{6}$  (=0x00000040) & Echo (obsoleted by option 8)\\
+    $2^{7}$  (=0x00000080) & Echo Reply (obsoleted by option 8)\\
+    \\
+    $2^{8}$  (=0x00000100) & Timestamps\\
+    $2^{9}$  (=0x00000200) & Partial Order Connection Permitted (obsolete)\\
+    $2^{10}$ (=0x00000400) & Partial Order Service Profile (obsolete)\\
+    $2^{11}$ (=0x00000800) & CC (obsolete)\\
+    \\
+    $2^{12}$ (=0x00001000) & CC.NEW (obsolete)\\
+    $2^{13}$ (=0x00002000) & CC.ECHO (obsolete)\\
+    $2^{14}$ (=0x00004000) & TCP Alternate Checksum Request (obsolete)\\
+    $2^{15}$ (=0x00008000) & TCP Alternate Checksum Data (obsolete)\\
+    \\
+    $2^{16}$ (=0x00010000) & Skeeter\\
+    $2^{17}$ (=0x00020000) & Bubba\\
+    $2^{18}$ (=0x00040000) & Trailer Checksum Option\\
+    $2^{19}$ (=0x00080000) & MD5 Signature Option (obsoleted by option 29)\\
+    \\
+    $2^{20}$ (=0x00100000) & SCPS Capabilities\\
+    $2^{21}$ (=0x00200000) & Selective Negative Acknowledgements\\
+    $2^{22}$ (=0x00400000) & Record Boundaries\\
+    $2^{23}$ (=0x00800000) & Corruption experienced\\
+    \\
+    $2^{24}$ (=0x01000000) & SNAP\\
+    $2^{25}$ (=0x02000000) & Unassigned (released 2000-12-18)\\
+    $2^{26}$ (=0x04000000) & TCP Compression Filter\\
+    $2^{27}$ (=0x08000000) & Quick-Start Response\\
+    \\
+    $2^{28}$ (=0x10000000) & User Timeout Option (also, other known unauthorized use)\\
+    $2^{29}$ (=0x20000000) & TCP Authentication Option (TCP-AO)\\
+    $2^{30}$ (=0x40000000) & Multipath TCP (MPTCP)\\
+    $2^{31}$ (=0x80000000) & all options > 31\\
+    \bottomrule
+\end{longtable}
+
+\subsubsection{tcpMPTBF}\label{tcpMPTBF}
+The {\tt tcpMPTBF} column is to be interpreted as follows:
+\begin{longtable}{>{\tt}r>{\tt}l}
+    \toprule
+    {\bf tcpMPTBF} & {\bf Description}\\
+    \midrule\endhead%
+    $2^{0}$  (=0x0001) & TCP\_MP\_CAPABLE\\
+    $2^{1}$  (=0x0002) & TCP\_MP\_JOIN\\
+    $2^{2}$  (=0x0004) & TCP\_MP\_DSS\\
+    $2^{3}$  (=0x0008) & TCP\_MP\_ADD\_ADDR\\
+    \\
+    $2^{4}$  (=0x0010) & TCP\_MP\_REM\_ADDR\\
+    $2^{5}$  (=0x0020) & TCP\_MP\_PRIO\\
+    $2^{6}$  (=0x0040) & TCP\_MP\_FAIL\\
+    $2^{7}$  (=0x0080) & TCP\_MP\_FSTCLS\\
+    \\
+    $2^{15}$ (=0x8000) & TCP\_MP\_PRIV\\
+    \bottomrule
+\end{longtable}
+
+\subsection{Packet File Output}
+In packet mode ({\tt --s} option), the tcpFlags plugin outputs the following columns:
+\begin{longtable}{>{\tt}lll>{\tt\small}l}
+    \toprule
+    {\bf Column}         & {\bf Type} & {\bf Description}                   & {\bf Flags}\\
+    \midrule\endhead%
+    \nameref{ipToS}                  & H8      & IP Type of Service (ToS)                     & IPTOS=0\\
+    \hyperref[ipToS]{ipToSDcsp\_ecn} & U8\_U8  & IP ToS: Precedence and ECN                   & IPTOS=1\\
+    \hyperref[ipToS]{ipToSPrec\_ecn} & H8      & IP ToS: DSCP and ECN                         & IPTOS=2\\
+    ipID                             & U16     & IP ID                                        & \\
+    ipIDDiff                         & I32     & IP ID diff                                   & \\
+    ipFrag                           & H16     & IP fragment                                  & \\
+    ipTTL                            & U8      & IP TTL                                       & \\
+    ipHdrChkSum                      & H16     & IP header checksum                           & \\
+    ipCalChkSum                      & H16     & IP header computed checksum                  & \\
+    l4HdrChkSum                      & H16     & Layer 4 header checksum                      & \\
+    l4CalChkSum                      & H16     & Layer 4 header computed checksum             & \\
+    \nameref{ipFlags}                & H16     & IP flags                                     & \\
+    ip6HHOptLen                      & I16     & IPv6 Hop-by-Hop options length               & IPV6\_ACTIVATE>0\\
+    ip6HHOpts                        & R(H8)   & IPv6 Hop-by-Hop options                      & IPV6\_ACTIVATE>0\\
+    ip6DOptLen                       & I16     & IPv6 Destination options length              & IPV6\_ACTIVATE>0\\
+    ip6DOpts                         & R(H8)   & IPv6 Destination options                     & IPV6\_ACTIVATE>0\\
+    ipOptLen                         & I16     & IPv4 options length                          & IPV6\_ACTIVATE=0|2\\
+    ipOpts                           & R(H8)   & IPv4 options                                 & IPV6\_ACTIVATE=0|2\\
+    seq                              & U32/H32 & Sequence number                              & SEQ\_ACK\_NUM=1\\
+    ack                              & U32/H32 & Acknowledgement number                       & SEQ\_ACK\_NUM=1\\
+    seqMax                           & U32/H32 & Sequence number max                          & SEQ\_ACK\_NUM=1\\
+    seqDiff                          & I32     & Sequence number diff                         & SEQ\_ACK\_NUM=1\\
+    ackDiff                          & I32     & Acknowledgement number diff                  & SEQ\_ACK\_NUM=1\\
+    seqLen                           & U32     & Sequence length                              & SEQ\_ACK\_NUM=1\\
+    ackLen                           & U32     & Acknowledgement length                       & SEQ\_ACK\_NUM=1\\
+    seqFlowLen                       & I64     & Sequence flow length                         & SEQ\_ACK\_NUM=1\\
+    ackFlowLen                       & I64     & Acknowledgement flow length                  & SEQ\_ACK\_NUM=1\\
+    tcpMLen                          & I64     & Aggregated valid bytes transmitted so far    & SEQ\_ACK\_NUM=1\\
+    tcpBFlgt                         & U32     & Number of bytes in flight (not acknowledge)  & SEQ\_ACK\_NUM=1\\
+    \nameref{tcpFStat}               & H16     & TCP aggregated protocol flags + combinations & \\
+                                     &         & (CWR, ACK, PSH, RST, SYN, FIN, ...)          & \\
+    \nameref{tcpFlags}               & H16     & Flags                                        & \\
+    \nameref{tcpAnomaly}             & H16     & TCP aggregated header anomaly flags          & \\
+    tcpWin                           & U32     & TCP window size                              & \\
+    tcpWS                            & U16     & TCP window scale factor                      & \\
+    tcpMSS                           & U16     & TCP maximum segment size                     & \\
+    tcpTmS                           & U32     & TCP time stamp                               & NAT\_BT\_EST=1\\
+    tcpTmER                          & U32     & TCP time echo reply                          & NAT\_BT\_EST=1\\
+    tcpMPTyp                         & U16     & MPTCP type                                   & MPTCP=1\\
+    tcpMPF                           & H8      & MPTCP flags                                  & MPTCP=1\\
+    tcpMPAID                         & U8      & MPTCP address ID                             & MPTCP=1\\
+    tcpMPDSSF                        & H8      & MPTCP DSS flags                              & MPTCP=1\\
+    tcpOptLen                        & I32     & TCP options length                           & \\
+    tcpOpts                          & R(H8)   & TCP options                                  & \\
+    \bottomrule
+\end{longtable}
+
+\subsection{Monitoring Output}
+In monitoring mode, the tcpFlags plugin outputs the following columns:
+\begin{longtable}{>{\tt}lll>{\tt\small}l}
+    \toprule
+    {\bf Column} & {\bf Type} & {\bf Description} & {\bf Flags}\\
+    \midrule\endhead%
+    tcpScan       & U64 & Number of TCP scans attempted  & \\
+    tcpSuccScan   & U64 & Number of TCP scans successful & \\
+    tcpSynRetries & U64 & Number of TCP SYN retries      & \\
+    tcpSeqRetries & U64 & Number of TCP seq retries      & \\
+    \bottomrule
+\end{longtable}
+
+\subsection{Plugin Report Output}
+The following information is reported:
+\begin{itemize}
+    \item Aggregated {\tt\nameref{ipFlags}}
+    \item Aggregated {\tt\nameref{tcpFlags}}
+    \item Aggregated {\tt\nameref{tcpAnomaly}}
+    \item Aggregated {\tt\nameref{ipToS}}
+    \item Number of TCP scans attempted, successful
+    \item Number of TCP SYN retries, seq retries
+    \item Number of WinSz below {\tt\nameref{WINMIN}}
+\end{itemize}
+
+%\subsection{Example}
+%A prominent example is the routing problem by misconfiguration:
+%Anomaly flag shows {\tt 0xXX03} with Flags {\tt 0x1A} indicating perfect data exchange but the received byte count and packet count are zero.
+%Either the return traffic is not captured and/or a routing anomaly exists, such as the traffic returns via an unknown gateway.
+%This was an actual case resolving a firewall misconfiguration combined with unexpected OSPF actions in a large company network.
+
+%\subsection{Known Bugs and Limitations}
+%
+%\subsection{TODO}
+%\begin{itemize}
+%    \item TODO1
+%    \item TODO2
+%\end{itemize}
+
+\subsection{References}
+\begin{itemize}
+    \item \url{http://www.iana.org/assignments/ip-parameters}
+    \item \url{http://www.iana.org/assignments/tcp-parameters/tcp-parameters.xml}
+\end{itemize}
+
+\end{document}

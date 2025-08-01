@@ -1,0 +1,143 @@
+\IfFileExists{t2doc.cls}{
+    \documentclass[documentation]{subfiles}
+}{
+    \errmessage{Error: could not find 't2doc.cls'}
+}
+
+\begin{document}
+
+% Declare author and title here, so the main document can reuse it
+\trantitle
+    {kafkaSink} % Plugin name
+    {Apache Kafka} % Short description
+    {Tranalyzer Development Team} % author(s)
+
+\section{kafkaSink}\label{s:kafkaSink}
+
+\subsection{Description}
+The kafkaSink plugin outputs flows to an Apache Kafka event streaming platform.
+
+\subsection{Dependencies}
+
+\subsubsection{External Libraries}
+This plugin depends on the {\bf librdkafka} library.
+\begin{table}[!ht]
+    \centering
+    \begin{tabular}{>{\bf}r>{\tt}l>{\tt}l>{\tt}l}
+        \toprule
+                                     &                      & {\bf OPT2=1}\\
+        \midrule
+        Ubuntu:                      & sudo apt-get install & librdkafka-dev\\
+        Arch:                        & sudo pacman -S       & librdkafka\\
+        Gentoo:                      & sudo emerge          & librdkafka\\
+        openSUSE:                    & sudo zypper install  & librdkafka-devel\\
+        Red Hat/Fedora\tablefootnote{If the {\tt dnf} command could not be found, try with {\tt yum} instead}:
+                                     & sudo dnf install     & librdkafka-devel\\
+        macOS\tablefootnote{Brew is a packet manager for macOS that can be found here: \url{https://brew.sh}}:
+                                     & brew install         & librdkafka\\
+        \bottomrule
+    \end{tabular}
+\end{table}
+
+\subsubsection{Core Configuration}
+This plugin requires the following core configuration:
+\begin{itemize}
+    \item {\em \$T2HOME/tranalyzer2/src/tranalyzer.h}:
+        \begin{itemize}
+            \item {\tt BLOCK\_BUF=0}
+        \end{itemize}
+\end{itemize}
+
+\subsection{Services Initialization}
+
+The kafkaSink plugin requires a ZooKeeper and a Kafka broker service running on {\tt KAFKA\_BROKERS} (default address and port are {\tt 127.0.0.1:9092}).\\
+
+\noindent
+{\tt \color{blue}{\# Start the ZooKeeper server and send it to the background}}\\
+{\tt \$ zookeeper-server-start.sh /etc/kafka/zookeeper.properties \&}\\
+\\
+{\tt \color{blue}{\# Start the Kafka server and send it to the background}}\\
+{\tt \$ kafka-server-start.sh /etc/kafka/server.properties \&}\\
+
+\clearpage
+\subsection{Configuration Flags}
+The following flags can be used to control the output of the plugin:
+\begin{longtable}{>{\tt}lcl}
+    \toprule
+    {\bf Name} & {\bf Default} & {\bf Description}\\
+    \midrule\endhead%
+    KAFKA\_BROKERS   & {\tt\small "127.0.0.1:9092"}   & Broker address(es)                                              \\
+                     &                                & (comma separated list of host[:port])                           \\
+    KAFKA\_TOPIC     & {\tt\small "tranalyzer.flows"} & Topic to produce to                                             \\
+    KAFKA\_PARTITION & -1                             & Target partition:                                               \\
+                     &                                & \qquad $\geq 0$: fixed partition                                \\
+                     &                                & \qquad -1: automatic partitioning (unassigned)                  \\
+    KAFKA\_RETRIES   & 3                              & Max. number of retries when message production failed [0 - 255] \\
+    KAFKA\_DEBUG     & 0                              & Print debug messages                                            \\
+    \bottomrule
+\end{longtable}
+
+\subsubsection{Environment Variable Configuration Flags}
+The following configuration flags can also be configured with environment variables ({\tt ENVCNTRL>0}):
+\begin{itemize}
+    \item {\tt KAFKA\_BROKERS}
+    \item {\tt KAFKA\_TOPIC}
+    \item {\tt KAFKA\_PARTITION}
+\end{itemize}
+
+\subsection{Plugin Report Output}
+The following information is reported:
+\begin{itemize}
+    \item Number of flows discarded
+\end{itemize}
+
+\subsection{Example}
+
+In this example, the flows will be sent to Kafka to the {\tt tranalyzer.flows} topic.
+In addition, Tranalyzer information ({\tt [INF]}) and warnings ({\tt [WRN]}) will be sent to the {\tt tranalyzer.out}, while errors ({\tt [ERR]}) will use the {\tt tranalyzer.err} topic.\\
+
+\noindent
+First, we want to prevent Tranalyzer from coloring the output:\\
+
+\noindent
+{\tt \$ t2conf tranalyzer2 -D T2\_LOG\_COLOR=0}\\
+
+\noindent
+In this example, only the \tranrefpl{basicFlow} and \tranrefpl{kafkaSink} plugins will be used:\\
+
+\noindent
+{\tt \$ t2build tranalyzer2 basicFlow kafkaSink}\\
+
+\noindent
+Now, the fun part! Run Tranalyzer as per usual, but redirect {\tt stdout} and {\tt stderr} to a {\tt kcat}\footnote{{\tt kcat} was formerly known as {\tt kafkacat}} process, which will send the data to Kafka:\\
+
+\noindent
+{\tt \$ t2 -r file.pcap \textbackslash{}}\\
+\indent {\tt \qquad 1> >(grep -F -e "[INF]" -e "[WRN]" | kcat -P -b 127.0.0.1:9092 -t tranalyzer.out) \textbackslash{}}\\
+\indent {\tt \qquad 2> >(kcat -P -b 127.0.0.1:9092 -t tranalyzer.err)}\\
+
+\noindent
+The messages can now be consumed with the help of {\tt kafka-console-consumer}.\\
+
+\noindent
+{\tt \color{blue}{\# Consume messages for tranalyzer.flows topic}}\\
+{\tt \$ kafka-console-consumer \textbackslash{}}\\
+\indent {\tt \qquad -{}-bootstrap-server localhost:9092 \textbackslash{}}\\
+\indent {\tt \qquad -{}-from-beginning \textbackslash{}}\\
+\indent {\tt \qquad -{}-topic tranalyzer.flows}\\
+
+\noindent
+{\tt \color{blue}{\# Consume messages for tranalyzer.out topic}}\\
+{\tt \$ kafka-console-consumer \textbackslash{}}\\
+\indent {\tt \qquad -{}-bootstrap-server localhost:9092 \textbackslash{}}\\
+\indent {\tt \qquad -{}-from-beginning \textbackslash{}}\\
+\indent {\tt \qquad -{}-topic tranalyzer.out}\\
+
+\noindent
+{\tt \color{blue}{\# Consume messages for tranalyzer.err topic}}\\
+{\tt \$ kafka-console-consumer \textbackslash{}}\\
+\indent {\tt \qquad -{}-bootstrap-server localhost:9092 \textbackslash{}}\\
+\indent {\tt \qquad -{}-from-beginning \textbackslash{}}\\
+\indent {\tt \qquad -{}-topic tranalyzer.err}\\
+
+\end{document}

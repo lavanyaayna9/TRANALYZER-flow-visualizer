@@ -1,0 +1,13 @@
+#H bit | gquicFrameTypes | Description
+#H =============================================================================
+     0 | 0x0001          | PADDING
+     1 | 0x0002          | RST_STREAM
+     2 | 0x0004          | CONNECTION_CLOSE
+     3 | 0x0008          | GOAWAY
+     4 | 0x0010          | WINDOW_UPDATE
+     5 | 0x0020          | BLOCKED
+     6 | 0x0040          | STOP_WAITING
+     7 | 0x0080          | PING
+
+    14 | 0x4000          | ACK
+    15 | 0x8000          | STREAM

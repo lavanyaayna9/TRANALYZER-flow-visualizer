@@ -1,0 +1,22 @@
+-- Top unknown HTTPS JA3 signatures by number of flows
+
+SELECT
+    ja3hash,
+    COUNT(*) AS cnt
+
+FROM (
+    SELECT
+        UNNEST("sslJA3Hash") AS ja3hash
+    FROM
+        flow
+    WHERE
+        ("flowStat"::BIGINT & 1) = 0::BIGINT
+        AND COALESCE(ARRAY_LENGTH("sslJA3Desc", 1), 0) = 0
+        AND "timeFirst" >= to_timestamp(:time_from)
+        AND "timeLast" <= to_timestamp(:time_to)
+) AS flows
+
+GROUP BY ja3hash
+ORDER BY cnt :sort_order
+
+LIMIT :n

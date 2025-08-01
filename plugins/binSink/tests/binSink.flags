@@ -1,0 +1,21 @@
+# Flags to toggle
+#
+# Run the ../../../tests/test.sh script from the plugin main directory:
+#
+# cd $T2HOME/plugins/binSink
+# ../../tests/test.sh [OPTION...]
+#
+# If run from this folder, make sure to use absolute path for the '-p' option.
+#
+# Flag name     File
+
+# ../../tranalyzer2/src/outputBuffer.h
+BUF_DATA_SHFT       ../../tranalyzer2/src/outputBuffer.h
+
+# ../../tranalyzer2/src/tranalyzer.h
+ENVCNTRL            ../../tranalyzer2/src/tranalyzer.h
+BLOCK_BUF           ../../tranalyzer2/src/tranalyzer.h
+
+# src/binSink.h
+BFS_GZ_COMPRESS     src/binSink.h
+BFS_SFS_SPLIT       src/binSink.h

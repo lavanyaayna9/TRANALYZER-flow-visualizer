@@ -1,0 +1,216 @@
+\IfFileExists{t2doc.cls}{
+    \documentclass[documentation]{subfiles}
+}{
+    \errmessage{Error: could not find 't2doc.cls'}
+}
+
+\begin{document}
+
+\trantitle
+    {ftpDecode}
+    {File Transfer Protocol (FTP)}
+    {Tranalyzer Development Team} % author(s)
+
+\section{ftpDecode}\label{s:ftpDecode}
+
+\subsection{Description}
+The ftpDecode plugin analyzes FTP traffic.
+The plugin identifies the client FTP flows automatically and links them via the {\tt ftpCDFindex}, identifying
+the findex of the associated flows.
+
+\subsection{Configuration Flags}
+The following flags can be used to control the output of the plugin:
+\begin{longtable}{>{\tt}lcl>{\tt\small}l}
+    \toprule
+    {\bf Name} & {\bf Default} & {\bf Description} & {\bf Flags}\\
+    \midrule\endhead%
+    FTP\_SAVE      &  0 & Save content to {\tt FTP\_F\_PATH}       & \\
+    FTP\_RMDIR     &  1 & Empty {\tt FTP\_F\_PATH} before starting & FTP\_SAVE=1\\
+    FTP\_CMD\_AGGR &  1 & Aggregate FTP commands/response codes    & \\
+    FTP\_BTFLD     &  0 & Bitfield coding of FTP commands          & \\
+    FTP\_UXNMLN    & 10 & maximal username length                  & \\
+    FTP\_PXNMLN    & 15 & maximal password length                  & \\
+    FTP\_MXNMLN    & 50 & maximal name length                      & \\
+    FTP\_MAXCPFI   & 10 & maximal number of parent findex          & \\
+    FTP\_MAXUNM    &  5 & maximal number of users                  & \\
+    FTP\_MAXPNM    &  5 & maximal number of passwords              & \\
+    FTP\_MAXCNM    & 20 & maximal number of parameters             & \\
+
+    FTP\_F\_PATH  & {\tt\small "/tmp/FTPFILES/"} & Path for extracted content\\
+    FTP\_NONAME   & {\tt\small "nudel"}          & Filename to use when none available\\
+    \bottomrule
+\end{longtable}
+
+\subsubsection{Environment Variable Configuration Flags}
+The following configuration flags can also be configured with environment variables ({\tt ENVCNTRL>0}):
+\begin{itemize}
+    \item {\tt FTP\_F\_PATH}
+    \item {\tt FTP\_NONAME}
+\end{itemize}
+
+\subsection{Flow File Output}
+The ftpDecode plugin outputs the following columns:
+\begin{longtable}{>{\tt}lll>{\tt\small}l}
+    \toprule
+    {\bf Column} & {\bf Type} & {\bf Description} & {\bf Flags}\\
+    \midrule\endhead%
+    \nameref{ftpStat} & H8     & Status bit field             & \\
+    ftpCDFindex       & R(U64) & Command/data findex link     & \\
+    \nameref{ftpCBF}  & H64    & Command bitfield             & FTP\_BTFLD=1\\
+    ftpCC             & R(SC)  & Command codes                & \\
+    ftpRC             & R(U16) & Response codes               & \\
+    ftpNumUser        & U8     & Number of users              & \\
+    ftpUser           & R(S)   & Users                        & \\
+    ftpNumPass        & U8     & Number of passwords          & \\
+    ftpPass           & R(S)   & Passwords                    & \\
+    ftpNumCP          & U8     & Number of command parameters & \\
+    ftpCP             & R(S)   & Command parameters           & \\
+    \bottomrule
+\end{longtable}
+
+\subsubsection{ftpStat}\label{ftpStat}
+The {\tt ftpStat} column is to be interpreted as follows:
+\begin{longtable}{>{\tt}rl}
+    \toprule
+    {\bf ftpStat} & {\bf Description}\\
+    \midrule\endhead%
+    $2^0$ (=0x01) & FTP control port found\\
+    $2^1$ (=0x02) & FTP passive parent flow\\
+    $2^2$ (=0x04) & FTP passive parent flow length overrun, possibly by dupACK/retransmits\\
+    $2^3$ (=0x08) & FTP active parent flow\\
+    \\
+    $2^4$ (=0x10) & FTP hash map full \\
+    $2^5$ (=0x20) & File error ({\tt FTP\_SAVE=1})\\
+    $2^6$ (=0x40) & Data flow not detected\\
+    $2^7$ (=0x80) & Array, string or filename overflow\\
+    \bottomrule
+\end{longtable}
+
+\subsubsection{ftpCBF}\label{ftpCBF}
+The {\tt ftpCBF} column is to be interpreted as follows:\\
+\begin{minipage}{.48\textwidth}
+    \begin{longtable}{>{\tt}rl}
+        \toprule
+        {\bf ftpCBF} & {\bf Description} \\
+        \midrule\endhead%
+        $2^{0}$  (=0x0000.0000.0000.0001) & ABOR\\
+        $2^{1}$  (=0x0000.0000.0000.0002) & ACCT\\
+        $2^{2}$  (=0x0000.0000.0000.0004) & ADAT\\
+        $2^{3}$  (=0x0000.0000.0000.0008) & ALLO\\
+        \\
+        $2^{4}$  (=0x0000.0000.0000.0010) & APPE\\
+        $2^{5}$  (=0x0000.0000.0000.0020) & AUTH\\
+        $2^{6}$  (=0x0000.0000.0000.0040) & CCC\\
+        $2^{7}$  (=0x0000.0000.0000.0080) & CDUP\\
+        \\
+        $2^{8}$  (=0x0000.0000.0000.0100) & CONF\\
+        $2^{9}$  (=0x0000.0000.0000.0200) & CWD\\
+        $2^{10}$ (=0x0000.0000.0000.0400) & DELE\\
+        $2^{11}$ (=0x0000.0000.0000.0800) & ENC\\
+        \\
+        $2^{12}$ (=0x0000.0000.0000.1000) & EPRT\\
+        $2^{13}$ (=0x0000.0000.0000.2000) & EPSV\\
+        $2^{14}$ (=0x0000.0000.0000.4000) & FEAT\\
+        $2^{15}$ (=0x0000.0000.0000.8000) & HELP\\
+        \\
+        $2^{16}$ (=0x0000.0000.0001.0000) & LANG\\
+        $2^{17}$ (=0x0000.0000.0002.0000) & LIST\\
+        $2^{18}$ (=0x0000.0000.0004.0000) & LPRT\\
+        $2^{19}$ (=0x0000.0000.0008.0000) & LPSV\\
+        \\
+        $2^{20}$ (=0x0000.0000.0010.0000) & MDTM\\
+        $2^{21}$ (=0x0000.0000.0020.0000) & MIC\\
+        $2^{22}$ (=0x0000.0000.0040.0000) & MKD\\
+        $2^{23}$ (=0x0000.0000.0080.0000) & MLSD\\
+        \\
+        $2^{24}$ (=0x0000.0000.0100.0000) & MLST\\
+        $2^{25}$ (=0x0000.0000.0200.0000) & MODE\\
+        $2^{26}$ (=0x0000.0000.0400.0000) & NLST\\
+        $2^{27}$ (=0x0000.0000.0800.0000) & NOOP\\
+        \\
+        $2^{28}$ (=0x0000.0000.1000.0000) & OPTS\\
+        $2^{29}$ (=0x0000.0000.2000.0000) & PASS\\
+        $2^{30}$ (=0x0000.0000.4000.0000) & PASV\\
+        $2^{31}$ (=0x0000.0000.8000.0000) & PBSZ\\
+        \bottomrule
+    \end{longtable}
+\end{minipage}
+\begin{minipage}{.48\textwidth}
+    \begin{longtable}{>{\tt}rl}
+        \toprule
+        {\bf ftpCBF} & {\bf Description} \\
+        \midrule\endhead%
+        $2^{32}$ (=0x0000.0001.0000.0000) & PORT\\
+        $2^{33}$ (=0x0000.0002.0000.0000) & PROT\\
+        $2^{34}$ (=0x0000.0004.0000.0000) & PWD\\
+        $2^{35}$ (=0x0000.0008.0000.0000) & QUIT\\
+        \\
+        $2^{36}$ (=0x0000.0010.0000.0000) & REIN\\
+        $2^{37}$ (=0x0000.0020.0000.0000) & REST\\
+        $2^{38}$ (=0x0000.0040.0000.0000) & RETR\\
+        $2^{39}$ (=0x0000.0080.0000.0000) & RMD\\
+        \\
+        $2^{40}$ (=0x0000.0100.0000.0000) & RNFR\\
+        $2^{41}$ (=0x0000.0200.0000.0000) & RNTO\\
+        $2^{42}$ (=0x0000.0400.0000.0000) & SITE\\
+        $2^{43}$ (=0x0000.0800.0000.0000) & SIZE\\
+        \\
+        $2^{44}$ (=0x0000.1000.0000.0000) & SMNT\\
+        $2^{45}$ (=0x0000.2000.0000.0000) & STAT\\
+        $2^{46}$ (=0x0000.4000.0000.0000) & STOR\\
+        $2^{47}$ (=0x0000.8000.0000.0000) & STOU\\
+        \\
+        $2^{48}$ (=0x0001.0000.0000.0000) & STRU\\
+        $2^{49}$ (=0x0002.0000.0000.0000) & SYST\\
+        $2^{50}$ (=0x0004.0000.0000.0000) & TYPE\\
+        $2^{51}$ (=0x0008.0000.0000.0000) & USER\\
+        \\
+        $2^{52}$ (=0x0010.0000.0000.0000) & XCUP\\
+        $2^{53}$ (=0x0020.0000.0000.0000) & XMKD\\
+        $2^{54}$ (=0x0040.0000.0000.0000) & XPWD\\
+        $2^{55}$ (=0x0080.0000.0000.0000) & XRCP\\
+        \\
+        $2^{56}$ (=0x0100.0000.0000.0000) & XRMD\\
+        $2^{57}$ (=0x0200.0000.0000.0000) & XRSQ\\
+        $2^{58}$ (=0x0400.0000.0000.0000) & XSEM\\
+        $2^{59}$ (=0x0800.0000.0000.0000) & XSEN\\
+        \\
+        $2^{60}$ (=0x1000.0000.0000.0000) & CLNT\\
+        \\
+        \\
+        \\
+        \bottomrule
+    \end{longtable}
+\end{minipage}
+
+\subsection{Packet File Output}
+In packet mode ({\tt --s} option), the ftpDecode plugin outputs the following columns:
+\begin{longtable}{>{\tt}lll>{\tt\small}l}
+    \toprule
+    {\bf Column} & {\bf Type} & {\bf Description} & {\bf Flags}\\
+    \midrule\endhead%
+    \nameref{ftpStat} & H8 & Status & \\
+    \bottomrule
+\end{longtable}
+
+\subsection{Monitoring Output}
+In monitoring mode, the ftpDecode plugin outputs the following columns:
+\begin{longtable}{>{\tt}lll>{\tt\small}l}
+    \toprule
+    {\bf Column} & {\bf Type} & {\bf Description} & {\bf Flags}\\
+    \midrule\endhead%
+    ftpPkts     & U64 & Number of FTP control packets & \\
+    ftpDataPkts & U64 & Number of FTP-DATA packets    & \\
+    \bottomrule
+\end{longtable}
+
+\subsection{Plugin Report Output}
+The following information is reported:
+\begin{itemize}
+    \item Aggregated {\tt\nameref{ftpStat}}
+    \item Number of FTP control packets
+    \item Number of FTP-DATA packets
+    \item Number of files extracted ({\tt FTP\_SAVE=1})
+\end{itemize}
+
+\end{document}

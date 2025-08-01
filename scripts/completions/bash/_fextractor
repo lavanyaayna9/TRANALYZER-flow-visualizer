@@ -1,0 +1,40 @@
+# Bash completion for fextractor
+
+_fextractor() {
+    local cur prev words cword
+
+    if type -t _init_completion &> /dev/null; then
+        _init_completion -n = || return
+    else
+        COMPREPLY=()
+        cur="${COMP_WORDS[COMP_CWORD]}"
+        prev="${COMP_WORDS[COMP_CWORD-1]}"
+    fi
+
+    case "$prev" in
+        -r|-i|-w)
+            if type -t _filedir &> /dev/null; then
+                _filedir
+            else
+                compopt -o filenames 2> /dev/null
+                COMPREPLY=($(compgen -f -- "$cur"))
+            fi
+            return
+            ;;
+        -p)
+            if type -t _filedir &> /dev/null; then
+                _filedir -d
+            else
+                compopt -o dirnames 2> /dev/null
+                COMPREPLY=($(compgen -d -- "$cur"))
+            fi
+            return
+            ;;
+    esac
+
+    if [[ "$cur" == -* ]]; then
+        COMPREPLY=($(compgen -W "$(_parse_help "$T2PLHOME/findexer/fextractor/fextractor" -h)" -- "$cur"))
+    fi
+}
+
+complete -F _fextractor fextractor

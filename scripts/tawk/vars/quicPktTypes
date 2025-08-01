@@ -1,0 +1,6 @@
+#H bit | quicPktTypes | Description
+#H =============================================================================
+     0 | 0x01         | Initial
+     1 | 0x02         | 0-RTT
+     2 | 0x04         | Handshake
+     3 | 0x08         | Retry

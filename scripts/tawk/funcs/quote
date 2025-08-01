@@ -1,0 +1,29 @@
+#!/usr/bin/env awk
+#
+# Add leading and trailing quotes to a string 's' and
+# escape all quotes in 's'.
+#
+# Parameters:
+#   - s : the string to quote
+#
+# Dependencies:
+#   - None
+#
+# See also:
+#   - unquote
+#   - chomp
+#   - strip
+#   - lstrip
+#   - rstrip
+#
+# Examples:
+#   - tawk '{ print quote($1) }' <<< 'hello "World"'
+
+@include "unquote"
+
+function quote(s) {
+    s = unquote(s)
+    gsub(/"/, "\\\"", s)ll
+    s = "\"" s "\""
+    return s
+}

@@ -1,0 +1,23 @@
+-- Top HTTPS certificate Common Name (CN) by number of flows
+
+SELECT
+    toValidUTF8(cert_cn),
+    COUNT(*) AS cnt
+
+FROM (
+    SELECT
+        cert_cn
+    FROM
+        flow
+    ARRAY JOIN
+        "sslCSubjectCommonName" AS cert_cn
+    WHERE
+        notEmpty("sslCSubjectCommonName")
+        AND "timeFirst" >= {time_from:DateTime64(6)}
+        AND "timeLast" <= {time_to:DateTime64(6)}
+) AS flows
+
+GROUP BY cert_cn
+ORDER BY multiply(cnt, {sort_order:Int8})
+
+LIMIT {n:UInt64}

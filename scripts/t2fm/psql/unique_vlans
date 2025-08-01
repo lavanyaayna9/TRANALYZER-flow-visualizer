@@ -1,0 +1,12 @@
+-- Return a sorted list of unique VLAN tags
+
+SELECT DISTINCT vlan
+
+FROM (
+    SELECT
+        UNNEST("vlanID") AS vlan
+    FROM
+        flow
+) AS vlans
+
+ORDER BY vlan ASC

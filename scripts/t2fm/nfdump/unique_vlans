@@ -1,0 +1,27 @@
+#!/usr/bin/env bash
+
+source "$(dirname "${0}")/../../t2utils.sh"
+
+OPTS=()
+while [[ "${#}" -ne 0 ]]; do
+    case "${1}" in
+        -n)
+            validate_next_int "${1}" "${2}"
+            N="${2}"
+            shift
+            ;;
+        *)
+            OPTS+=("${1}")
+            ;;
+    esac
+    shift
+done
+
+VLANS="$(nfdump ${OPTS[@]} -s 'vlan' | "${TAWK}" -F, '
+    NF > 1 && NR > 1 {
+        print $5
+    }' | sort -u)"
+
+if [[ "${VLANS}" != "0" ]]; then
+    echo "${VLANS}"
+fi

@@ -1,0 +1,171 @@
+#!/usr/bin/env bash
+#
+# Randomly corrupt a PCAP file
+
+source "$(dirname "$0")/t2utils.sh"
+
+CRPT_START=0.001   # Start with no corruption
+CRPT_STEP=0.001    # Increment the corruption by 1%
+CRPT_STOP=1        # Finish with full corruption
+OUTPREF="DELETEME" # T2 output prefix
+ADDR="127.0.0.1"   # Default address to use for the socket
+PORT=6666          # Default port to use for the socket
+
+usage() {
+    echo "Usage:"
+    echo "    $SNAME [OPTION...] <PCAP>"
+    echo
+    echo "Optional arguments:"
+    echo "    -s val            Initial corruption   [0 - 1] [default: $CRPT_START]"
+    echo "    -t val            Final corruption     [0 - 1] [default: $CRPT_STOP]"
+    echo "    -p val            Corruption increment [0 - 1] [default: $CRPT_STEP]"
+    echo "    -w prefix         Output prefix [default: $OUTPREF]"
+    echo "    -S                Start a socket before running t2"
+    echo "    -a addr           Address to use for the socket [default: $ADDR]"
+    echo "    -P port           Port to use for the socket [default: $PORT]"
+    echo "    -d                Run gdb on pcap which caused a crash"
+    echo "    -v                Be more verbose"
+    echo
+    echo "Help and documentation arguments:"
+    echo "    -h, --help        Show this help, then exit"
+}
+
+while [ $# -ne 0 ]; do
+    case "$1" in
+        -s|--start)
+           validate_next_float "$1" "$2"
+           CRPT_START="$2"
+           shift
+           ;;
+        -t|--stop)
+           validate_next_float "$1" "$2"
+           CRPT_STOP="$2"
+           shift
+           ;;
+        -p|--step)
+           validate_next_float "$1" "$2"
+           CRPT_STEP="$2"
+           shift
+           ;;
+        -w|--outpref|--output-prefix)
+            validate_next_arg "$1" "$2"
+            OUTPREF="$2"
+            shift
+            ;;
+        -S|--socket)
+            SOCKET=1
+            ;;
+        -a|--addr|--address)
+            validate_next_arg "$1" "$2"
+            ADDR="$2"
+            shift
+            ;;
+        -P|--port)
+            validate_next_num "$1" "$2"
+            PORT="$2"
+            shift
+            ;;
+        -d|--debug)
+            DEBUG=1
+            if [ "$(uname)" = "Darwin" ]; then
+                check_dependency "lldb"
+            else
+                check_dependency "gdb"
+            fi
+            ;;
+        -v|--verbose)
+            VERBOSE=1
+            ;;
+        -h|-\?|--help)
+            usage
+            exit 0
+            ;;
+        *)
+            if [ ! -f "$1" ]; then
+                abort_option_unknown "$1"
+            fi
+            FILE="$1"
+            ;;
+    esac
+    shift
+done
+
+if [ -z "$FILE" ]; then
+    usage
+    exit 1
+elif ! validate_pcap "$FILE"; then
+    abort_with_help
+fi
+
+if [ -z "$OUTPREF" ]; then
+    printerr "Output prefix cannot be empty"
+    abort_with_help
+fi
+
+if [ -z "$(which editcap)" ]; then
+    printerr "editcap not found"
+    exit 1
+fi
+
+if [ "$SOCKET" ]; then
+    check_dependency "nc" "netcat"
+fi
+
+if file -b "$FILE" | grep -Fw pcapng &> /dev/null; then
+    PCAP_FORMAT=pcapng
+else
+    PCAP_FORMAT=pcap
+fi
+
+DIR="segfault_$(date '+%F_%R')"
+for i in $(seq $CRPT_START $CRPT_STEP $CRPT_STOP); do # corrupt from 0 to 100%
+    OUTFILE="out2_$$_$i.$PCAP_FORMAT"
+    [ "$VERBOSE" ] && echo "Testing '$OUTFILE'"
+
+    if editcap -F "$PCAP_FORMAT" -E "$i" "$FILE" "$OUTFILE"; then
+        sync
+    else
+        printwrn "Editcap failed to create '$OUTFILE'"
+        rm -f "$OUTFILE"
+        continue
+    fi
+
+    if [ "$SOCKET" ]; then
+        [ "$VERBOSE" ] && echo "nc -l $ADDR -p $PORT &> /dev/null &"
+        nc -l "$ADDR" -p "$PORT" &> /dev/null &
+    fi
+
+    if [ "$(uname)" = "Darwin" ]; then
+        [ "$VERBOSE" ] && echo "$(get_t2_exec) -r \"$OUTFILE\" -w \"$OUTPREF\" -l"
+        T2 -r "$OUTFILE" -w "$OUTPREF" -l
+    else
+        [ "$VERBOSE" ] && echo "$(get_t2_exec) -r \"$OUTFILE\" -w \"$OUTPREF\" -c 0 -l"
+        T2 -r "$OUTFILE" -w "$OUTPREF" -c 0 -l
+    fi
+
+    ret=$?
+    rm -f "${OUTPREF}_"*
+
+    if [ $ret -eq 0 ]; then
+        rm "$OUTFILE"
+    else
+        printerr "File '$OUTFILE' caused a problem"
+
+        if [ ! -d "$DIR" ]; then
+            [ "$VERBOSE" ] && echo "Creating '$DIR'"
+            mkdir "$DIR"
+        fi
+
+        if [ "$DEBUG" ]; then
+            if [ "$(uname)" = "Darwin" ]; then
+                [ "$VERBOSE" ] && echo "lldb -- $(get_t2_exec) -r \"$OUTFILE\" -w \"$OUTPREF\" -l"
+                lldb -- "$(get_t2_exec)" -r "$OUTFILE" -w "$OUTPREF" -l
+            else
+                [ "$VERBOSE" ] && echo "gdb --args $(get_t2_exec) -r \"$OUTFILE\" -w \"$OUTPREF\" -c 0 -l"
+                gdb --args "$(get_t2_exec)" -r "$OUTFILE" -w "$OUTPREF" -c 0 -l
+            fi
+        fi
+
+        mv "$OUTFILE" "$DIR"
+    fi
+done

@@ -1,0 +1,105 @@
+#!/usr/bin/env bash
+#
+# Configuration file for utils
+#
+# Usage: ./t2plconf
+#
+# [Defining the configurations options]
+#
+# If no configuration options are available, ITEMS must be set as follows:
+#   - ITEMS=(none)
+#
+# Otherwise, enter configurations items as follows:
+#   "NAME" "TYPE" "DEPENDENCIES" "DESCRIPTION"
+#
+#   - TYPE can be:
+#       - check (boolean),
+#       - radio (set of values),
+#       - range (min <= val <= max)
+#       - text
+#
+#   - DEPENDENCIES MUST be numeric, e.g., "A == 1 && (B < 4 || C >= 1)"
+#
+#   - DESCRIPTION for type 'check' MUST NOT contain tabs ('\t')
+#   - DESCRIPTION for TYPE 'range' MUST NOT contain '\t' or ':'
+#   - DESCRIPTION for TYPE 'radio' MUST NOT contain '\t', ':' or ';'
+#   - DESCRIPTION for TYPE 'text'  MUST NOT contain '\t'
+#
+#   - DESCRIPTION MUST be formatted according to the type (see examples below):
+#       - check: description
+#       - radio: description ';' val1 ':' description1 ';' valN ':' descriptionN
+#       - range: description ':' min ' ' max
+#       - text : description
+
+ITEMS=(
+    # bin2txt.h
+    IP4_FORMAT radio "" "IPv4 addresses representation; \
+            0: normal; \
+            1: normalized (padded with zeros); \
+            2: hexadecimal; \
+            3: uint32"
+
+    IP6_FORMAT radio "" "IPv6 addresses representation; \
+            0: compressed; \
+            1: uncompressed; \
+            2: one 128-bits hex number; \
+            3: two 64-bits hex numbers"
+
+    MAC_FORMAT radio "" "MAC addresses representation; \
+            0: normal (edit MAC_SEP to change the separator); \
+            1: one 64-bits hex number; \
+            2: one 64-bits number"
+    MAC_SEP text "" "Separator to use in MAC addresses: 11:22:33:44:55:66"
+
+    B2T_NON_IP_STR text "" "Representation of non-IPv4/IPv6 addresses in IP columns"
+
+    HEX_CAPITAL radio "" "Hex output; \
+            0: lower case; \
+            1: upper case"
+
+    TFS_EXTENDED_HEADER check "" "Print extended header in flow file"
+
+    TFS_NC_TYPE radio "" "Types in header file; \
+            0: none; \
+            1: numbers; \
+            2: C types"
+
+    TFS_SAN_UTF8 check "" "Activate the UTF-8 sanitizer for strings"
+
+    B2T_TIMESTR check "" "Print Unix timestamps as human readable dates"
+
+    HDR_CHR text "" "Start characters to label comments"
+
+    SEP_CHR text "" "Column separator in the flow file (; . _ and \" should not be used)"
+
+    JSON_KEEP_EMPTY check "" "Output empty fields"
+    JSON_PRETTY     check "" "Add spaces to make the output more readable"
+
+    # gz2txt.h
+    USE_ZLIB check "" "Activate code for gzip-(de)compression"
+
+    # subnetHL.h
+    SUBRNG radio ""
+        "IP range definition; \
+            0: CIDR only; \
+            1: Begin-End"
+    CNTYCTY check "" "Add the county and city to the subnet files"
+    WHOADDR check "" "Add whois address info"
+    SUB_MAP check "" "Use mmap to load the subnet file"
+    CNTYLEN range "" "Length of County record: 0 255"
+    CTYLEN  range "" "Length of City record: 0 255"
+    WHOLEN  range "" "Length of Organization record: 0 255"
+    ADDRLEN range "" "Length of Address record: 0 255"
+
+    SUBNET_UNK text "" "Representation of unknown locations"
+
+    # t2log.h
+    T2_LOG_COLOR check "" "Color log messages"
+
+    # rbTree.h
+    RBT_DEBUG    check "" "Enable debug output for Red-Black Tree"
+    RBT_ROTATION check "" "Activate Red-Black Tree feature of rotating unbalanced tree"
+)
+
+# Source the main config file
+source "$(dirname "$0")/../scripts/t2conf/t2plconf"

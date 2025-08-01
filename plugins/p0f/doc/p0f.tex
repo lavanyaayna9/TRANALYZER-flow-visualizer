@@ -1,0 +1,77 @@
+\IfFileExists{t2doc.cls}{
+    \documentclass[documentation]{subfiles}
+}{
+    \errmessage{Error: could not find 't2doc.cls'}
+}
+
+\begin{document}
+
+\trantitle
+    {p0f} % Plugin name
+    {OS/Application Fingerprinting (SSL)} % Short description
+    {Tranalyzer Development Team} % author(s)
+
+\section{p0f}\label{s:p0f}
+
+\subsection{Description}
+The p0f plugin tries to fingerprint OS and applications.
+
+\subsection{Dependencies}
+
+\subsubsection{Other Plugins}
+This plugin requires the {\bf sslDecode} plugin with the following flags activated, i.e., set to 1:
+\begin{itemize}
+    \item {\tt SSL\_EXT\_LIST}
+    \item {\tt SSL\_CIPHER\_LIST}
+\end{itemize}
+
+\subsubsection{Required Files}
+The file {\tt p0f-ssl.txt} is required.
+
+\subsection{Configuration Flags}
+The following flags can be used to control the output of the plugin:
+\begin{longtable}{>{\tt}lcl>{\tt\small}l}
+    \toprule
+    {\bf Name} & {\bf Default} & {\bf Description} & {\bf Flags}\\
+    \midrule\endhead%
+    P0F\_SSL\_VER     &    1 & Consider the version for fingerprint match              & \\
+    P0F\_SSL\_NCIPHER &    1 & Consider the number of ciphers for fingerprint match    & \\
+    P0F\_SSL\_NUMEXT  &    1 & Consider the number of extensions for fingerprint match & \\
+    P0F\_SSL\_FLAGS   &    1 & Consider flags for fingerprint match                    & \\
+    P0F\_SSL\_CIPHER  &    1 & Consider ciphers for fingerprint match                  & \\
+    P0F\_SSL\_EXT     &    1 & Consider extensions for fingerprint match               & \\
+    \\
+    P0F\_SSL\_ELEN    &    6 & Maximum length of cipher or extension                   & \\
+    P0F\_SSL\_NSIG    &   64 & Maximum number of signatures to read                    & \\
+    P0F\_SSL\_SLEN    &  128 & Maximum length of a string (os, browser, comment)       & \\
+    P0F\_SSL\_DB      & {\tt\small "p0f-ssl.txt"}
+                             & Name of the database to use                             & \\
+    \bottomrule
+\end{longtable}
+
+\subsubsection{Environment Variable Configuration Flags}
+The following configuration flags can also be configured with environment variables ({\tt ENVCNTRL>0}):
+\begin{itemize}
+    \item {\tt P0F\_SSL\_DB}
+\end{itemize}
+
+\subsection{Flow File Output}
+The p0f plugin outputs the following columns:
+\begin{longtable}{>{\tt}lll>{\tt\small}l}
+    \toprule
+    {\bf Column} & {\bf Type} & {\bf Description} & {\bf Flags}\\
+    \midrule\endhead%
+    p0fSSLRule    & U16 & p0f SSL fingerprint rule number & \\
+    p0fSSLOS      &   S & p0f SSL OS fingerprint          & \\
+    p0fSSLOS2     &   S & p0f SSL OS fingerprint (2)      & \\
+    p0fSSLBrowser &   S & p0f SSL browser fingerprint     & \\
+    p0fSSLComment &   S & p0f SSL fingerprint comment     & \\
+    \bottomrule
+\end{longtable}
+
+\subsection{References}
+\begin{itemize}
+    \item \url{https://idea.popcount.org/2012-06-17-ssl-fingerprinting-for-p0f}
+\end{itemize}
+
+\end{document}

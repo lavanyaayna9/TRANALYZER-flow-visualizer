@@ -1,0 +1,3 @@
+third_party/src/libndpi_la-strptime.lo: third_party/src/strptime.c \
+ /usr/include/stdc-predef.h
+/usr/include/stdc-predef.h:

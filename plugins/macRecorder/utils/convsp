@@ -1,0 +1,32 @@
+#!/usr/bin/env bash
+
+source "$(dirname "$0")/../../../scripts/t2utils.sh"
+
+usage() {
+    echo "Usage:"
+    echo "    $SNAME [OPTION...]"
+    echo
+    echo "Optional arguments:"
+    echo "    -h, --help        Show this help, then exit"
+}
+
+if [ "$1" == "-h" ] || [ "$1" == "--help" ]; then
+    usage
+    exit 0
+fi
+
+AWKF '{
+    a = substr($4, 1, 9)
+    gsub(/[ ,()-]/, "", a)
+    print $1, $2, a "_" $6, $4 "_" $6
+}'
+
+#AWKF -M '
+#BEGIN {
+#    m = strtonum(0xffffffffffffffff)
+#}
+#{
+#    split($1, A, "/")
+#    gsub("0x", "", $2)
+#    printf "%s\t0\t0x%016x\t%s\t%s\n", A[1] $2, and(lshift(m, 64-A[2]), m), $3, $4
+#}' manufN.txt

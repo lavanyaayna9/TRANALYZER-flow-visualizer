@@ -1,0 +1,24 @@
+#!/usr/bin/env awk
+#
+# Use this function in your tests to keep the header (column names).
+#
+# Parameters:
+#   - None
+#
+# Dependencies:
+#   - None
+#
+# Examples:
+#   - tawk 'hdr()' file.txt
+#   - tawk 'hdr() || YOUR_FILTER' file.txt
+#   - tawk '!hdr() { print tuple2() }' file.txt
+
+function hdr(        _n) {
+    if (__HDRROW__) {
+        return NR == __HDRROW__
+    } else if (!__HDRSEP__) {
+        return NR == 1
+    } else {
+        return $0 ~ "^" __HDRSEP__ "\\s*[a-zA-Z\\\\(\\\\)][a-zA-Z0-9_/-]*"
+    }
+}

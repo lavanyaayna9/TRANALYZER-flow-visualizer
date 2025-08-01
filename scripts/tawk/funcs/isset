@@ -1,0 +1,24 @@
+#!/usr/bin/env awk
+#
+# Return true if 'v' is set, i.e., not empty, false otherwise.
+#
+# Parameters:
+#   - v : the value to test
+#
+# Dependencies:
+#   - None
+#
+# See also:
+#   - isfloat
+#   - isint
+#   - isnum
+#   - isuint
+#
+# Examples:
+#   - tawk 'isset($1) { print "false" }' <<< ""
+#   - tawk 'isset($1) { print "true" }' <<< "0"
+#   - tawk 'isset($1) { print "true" }' <<< "a"
+
+function isset(v) {
+    return ("a" v != "a")
+}

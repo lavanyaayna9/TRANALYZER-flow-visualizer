@@ -1,0 +1,237 @@
+\IfFileExists{t2doc.cls}{
+    \documentclass[documentation]{subfiles}
+}{
+    \errmessage{Error: could not find t2doc.cls}
+}
+
+\overfullrule=0pt
+\begin{document}
+
+\trantitle
+    {torDetector}
+    {Detect Tor flows}
+    {Tranalyzer Development Team}
+
+\setlength{\parindent}{0cm}
+
+\section{torDetector}\label{s:torDetector}
+
+\subsection{Description}
+This plugin detects Tor flows.
+
+\subsection{Dependencies}
+This plugin requires the {\bf libssl}.
+\begin{table}[!ht]
+    \centering
+    \begin{tabular}{>{\bf}r>{\tt}l>{\tt}l>{\tt}l}
+        \toprule
+        %                             &                      &                 \\
+        %\midrule
+        Ubuntu:                      & sudo apt-get install & libssl-dev      \\
+        Arch:                        & sudo pacman -S       & openssl         \\
+        %Gentoo:                      & sudo emerge          & openssl         \\
+        openSUSE:                    & sudo zypper install  & libopenssl-devel\\
+        Red Hat/Fedora\tablefootnote{If the {\tt dnf} command could not be found, try with {\tt yum} instead}:
+                                     & sudo dnf install     & openssl-devel   \\
+        macOS\tablefootnote{Brew is a packet manager for macOS that can be found here: \url{https://brew.sh}}:
+                                     & brew install         & openssl@1.1     \\
+        \bottomrule
+    \end{tabular}
+\end{table}
+
+\subsection{Configuration Flags}
+\begin{longtable}{>{\tt}lcl}
+    \toprule
+    {\bf Name} & {\bf Default} & {\bf Description} \\
+    \midrule\endhead%
+    TOR\_DETECT\_OBFUSCATION & 1 & Detect obfuscation protocols\\
+    TOR\_DEBUG\_MESSAGES     & 0 & Activate debug output\\
+    TOR\_PKTL                & 1 & Activate packet length modulo 8 heuristic\\
+    \bottomrule
+\end{longtable}
+
+The obfuscation detection method has a pretty high rate of false positives when only one direction
+of the traffic is captured. It should therefore be disabled (or low confidence should be given to
+the resulting output) when analyzing Tor traffic which was only captured in one direction.
+
+\subsection{Flow File Output}
+The torDetector plugin outputs the following columns:
+\begin{longtable}{>{\tt}lll}%>{\tt\small}l}
+    \toprule
+    {\bf Column} & {\bf Type} & {\bf Description}\\% & {\bf Flags}\\
+    \midrule\endhead%
+    \nameref{torStat} & H8 & Tor status\\
+    \bottomrule
+\end{longtable}
+
+\subsubsection{torStat}\label{torStat}
+The {\tt torStat} column is to be interpreted as follows:
+\begin{longtable}{>{\tt}rl}
+    \toprule
+    {\bf torStat} & {\bf Description}\\
+    \midrule\endhead%
+    0x0\textcolor{magenta}{1} & Tor flow\\
+    0x0\textcolor{magenta}{2} & Obfuscated Tor flow ({\tt TOR\_DETECT\_OBFUSCATION=1})\\
+    0x0\textcolor{magenta}{4} & Tor address detected\\
+    0x0\textcolor{magenta}{8} & Tor pktlen modulo 8 detected\\
+    \\
+    0x\textcolor{magenta}{1}0 & Internal state: SYN detected\\
+    0x\textcolor{magenta}{2}0 & Internal state: obfuscation checked\\
+    0x\textcolor{magenta}{4}0 & ---\\
+    0x\textcolor{magenta}{8}0 & Packet snapped or decoding failed\\
+    \bottomrule
+\end{longtable}
+
+\subsection{Packet File Output}
+In packet mode ({\tt --s} option), the torDetector plugin outputs the following columns:
+\begin{longtable}{>{\tt}lll>{\tt\small}l}
+    \toprule
+    {\bf Column} & {\bf Type} & {\bf Description} & {\bf Flags}\\
+    \midrule\endhead%
+    \nameref{torStat} & H8 & Status & \\
+    \bottomrule
+\end{longtable}
+
+\subsection{Plugin Report Output}
+The following information is reported:
+\begin{itemize}
+    \item Aggregated {\tt\nameref{torStat}}
+    \item Number of Tor packets
+\end{itemize}
+
+\subsection{Plugin Detection Method}
+
+This subsection briefly present the detection methods used by this plugin.
+Tor version 0.2.7.6 and 0.4.5.10 were used to test these detection methods, they might become invalid in the future.
+
+\subsubsection{TLS Certificate}
+
+On older versions of the Tor client (< 0.2.9.15) the TLS certificate can be extracted from the traffic.
+The following conditions are used to determine if it belongs to a Tor flow:
+
+\begin{description}
+    \item[Size of the certificate] Tor certificates are very minimalist and are always smaller than
+        500 bytes.
+    \item[Public key algorithm] Currently Tor uses RSA-1024 certificates. Proposal 220,
+        \url{https://gitweb.torproject.org/torspec.git/plain/proposals/220-ecc-id-keys.txt}, defines
+        how to support Ed25519 in addition to RSA-1024. This proposal was implemented in Tor 0.2.7.5
+        according to the changelog:
+        \url{https://gitweb.torproject.org/tor.git/tree/ReleaseNotes?h=release-0.2.8#n96}.
+        However tests with Tor 0.2.7.6 (client and entry node) showed that RSA-1024 was still used for
+        the TLS link key.
+    \item[Validity period]\hfill
+        \begin{description}
+            \item[before 0.2.4.11] Tor certificate are always valid for exactly one year (60*60*24*365
+                seconds).
+            \item[0.2.4.11 and after] In March 2013, Tor changed the way it generates the validity period
+                in certificates. Certificates are valid for a random period of time but validity periods
+                always start at exactly midnight.
+        \end{description}
+    \item[Certificate issuer] The certificate issuer is only defined by its common name (no organization,
+        country, \ldots). This common name has the following format: {\tt www.RAND.com} where {\tt RAND}
+        is between 8 and 20 (inclusive) base32 characters. If Tor is compiled with the
+        {\tt DISABLE\_V3\_LINKPROTO\_SERVERSIDE} flag, the common name ends in {\tt .net} instead of
+        {\tt .com}
+    \item[Certificate subject] The certificate subject is only defined by its common name
+        (no organization, country, \ldots). This common name has the following format: {\tt www.RAND.net}
+        where {\tt RAND} is between 8 and 20 (inclusive) base32 characters.
+\end{description}
+
+\subsubsection{TLS Client Hello}
+
+Recent version of the Tor client (>= 0.2.9.15) use TLS 1.3 which encrypts the certificate.
+On these versions, only the TLS handshake Client Hello and Server Hello can be used.
+
+\begin{description}
+    \item[Cipher list] The {\tt TLS\_EMPTY\_RENEGOTIATION\_INFO\_SCSV} is always the last element in the supported cipher list sent by Tor.
+        Recent versions of Firefox and Chrome do not send this cipher.
+    \item[TLS extensions] The {\tt renegotiation\_info}, the {\tt Application-Layer Protocol Negotiation (ALPN)} and the {\tt Next Protocol Negotiation (NPN)} extensions are never present in Tor Client Hello messages.
+        These extensions are almost always present in modern browsers.
+    \item[Server name extension] The {\tt server\_name} extension contains a hostname with the following format:
+        {\tt www.RAND.com} where {\tt RAND} is between 4 and 25 (inclusive) base32 characters.
+\end{description}
+
+\subsubsection{TLS Server Hello}
+
+The following fields are checked in the Server Hello to differentiate Tor from other TLS traffic:
+
+\begin{description}
+    \item[TLS extensions] The {\tt Application-Layer Protocol Negotiation (ALPN)} and the {\tt Next Protocol Negotiation (NPN)} extensions are never present in Tor Server Hello messages.
+        These extensions are sometimes present in traffic sent by web servers.
+\end{description}
+
+
+\subsubsection{Obfuscation detection}
+
+Different pluggable transport protocols can be used to obfuscate the Tor traffic between a client
+and a bridge. For more info: \url{https://www.torproject.org/docs/pluggable-transports.html.en}.\\
+
+This plugin tries to detect the {\bf obfs3} and {\bf obfs4} obfuscation methods. The goal of
+these obfuscation methods is to make the traffic look completely random from the first byte
+(including the (EC) Diffie-Hellman key exchange). This characteristic is used to detect flows with high
+entropy in their first packets. Indeed, most encrypted protocols (TLS or SSH for instance) start with
+an unencrypted handshake phase.
+
+\subsection{Other Detection Methods}
+
+This subsection describes other possible detection methods not implemented in this plugin.
+
+\subsubsection{Relay blacklist}
+
+The list of all relays can be queried from the Tor directory. This list contain the relay IP address and
+OR port. Tor flows can easily be identified by comparing their IP addresses and ports against this list.
+A CSV list can be downloaded from \url{https://torstatus.blutmagie.de/}.\\
+
+The disadvantages of this method are:
+\begin{itemize}
+    \item It will not detect Bridge relays (\url{https://www.torproject.org/docs/bridges}) because
+        it is not possible to query a list of Bridges from the Tor directory.
+        Bridges addresses can only be retrieved three at a time from
+        \url{https://bridges.torproject.org/} unless the bridge was specifically configured to not
+        publish its descriptor.
+    \item As this list is constantly changing, we need to regularly fetch it and keep all possible
+        versions to use the version with the date closest to the analyzed PCAP.
+\end{itemize}
+
+The advantage of this method is:
+\begin{itemize}
+    \item The traffic payload is not necessary, this method only needs the flow ports and IP addresses.
+\end{itemize}
+
+\subsubsection{Packet size distribution}
+
+Tor always pack data in cells of 512 bytes. This means that when a client or a relay only has a few
+bytes to transmit, a packet with a size a bit superior to 512 bytes (because of TLS overhead)
+will be sent. This results in a peak in the packet size distribution around 550 bytes
+(543 bytes in the tests done with Tor version 0.2.7.6) and very few packets with smaller sizes.
+Figures~\ref{fig:tor_https_distrib} and \ref{fig:tor_tor_distrib} show the difference in the packet
+size distribution between HTTPS traffic and Tor traffic.\\
+
+\begin{figure}[!ht]
+  \centering
+  \tranimg[width=0.9\textwidth]{https-distrib}
+  \caption{Packet size distribution of HTTPS traffic.}
+  \label{fig:tor_https_distrib}
+\end{figure}
+
+\begin{figure}[!ht]
+  \centering
+  \tranimg[width=0.9\textwidth]{tor-distrib}
+  \caption{Packet size distribution of Tor traffic.}
+  \label{fig:tor_tor_distrib}
+\end{figure}
+
+The disadvantage of this method is:
+\begin{itemize}
+    \item False positives and negatives are way more frequent than with certificate analysis.
+\end{itemize}
+
+The advantage of this method is:
+\begin{itemize}
+    \item The traffic payload is not necessary, this method only needs the packet size and
+        the 5 (or 6 with VLAN) tuple necessary to aggregate packets in flows.
+\end{itemize}
+
+\clearpage
+
+\end{document}

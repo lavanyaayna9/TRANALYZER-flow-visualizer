@@ -1,0 +1,21 @@
+#H bit | sipMethods | Description
+#H =============================================================================
+#W   0 | 0x0001     | Unknown method
+     1 | 0x0002     | INVITE
+     2 | 0x0004     | ACK
+     3 | 0x0008     | BYE
+
+     4 | 0x0010     | CANCEL
+     5 | 0x0020     | REGISTER
+     6 | 0x0040     | OPTIONS
+     7 | 0x0080     | PRACK
+
+     8 | 0x0100     | SUBSCRIBE
+     9 | 0x0200     | NOTIFY
+    10 | 0x0400     | PUBLISH
+    11 | 0x0800     | INFO
+
+    12 | 0x1000     | REFER
+    13 | 0x2000     | MESSAGE
+    14 | 0x4000     | UPDATE
+    15 | 0x8000     | -

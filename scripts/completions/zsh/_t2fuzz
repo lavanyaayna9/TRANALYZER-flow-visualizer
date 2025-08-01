@@ -1,0 +1,39 @@
+# ZSH completion for t2fuzz
+
+_t2fuzz() {
+    #compdef t2fuzz
+
+    local cur="${words[CURRENT]}"
+    [ $CURRENT -gt 2 ] && local prev="${words[CURRENT-1]}"
+
+    case "$prev" in
+        -s|--start|-t|--stop|-p|--step|-a|--addr|--address|-P|--port)
+            return
+            ;;
+        -w|--outpref|--output-prefix)
+            _files
+            return
+            ;;
+    esac
+
+    local args=(
+        -s --start
+        -t --stop
+        -p --step
+        -w --outpref --output-prefix
+        -S --socket
+        -a --addr --address
+        -P --port
+        -d --debug
+        -v --verbose
+        -h --help
+    )
+
+    if [[ "$cur" == -* ]]; then
+        _arguments --
+    else
+        _files
+    fi
+}
+
+compdef _t2fuzz t2fuzz

@@ -1,0 +1,26 @@
+# Flags to toggle
+#
+# Run the ../../../tests/test.sh script from the plugin main directory:
+#
+# cd $T2HOME/plugins/ftpDecode
+# ../../tests/test.sh [OPTION...]
+#
+# If run from this folder, make sure to use absolute path for the '-p' option.
+#
+# Flag name     File
+
+# ../../tranalyzer2/src/networkHeaders.h
+ETH_ACTIVATE    ../../tranalyzer2/src/networkHeaders.h
+IPV6_ACTIVATE   ../../tranalyzer2/src/networkHeaders.h
+SCTP_ACTIVATE   ../../tranalyzer2/src/networkHeaders.h
+
+# ../../tranalyzer2/src/tranalyzer.h
+BLOCK_BUF       ../../tranalyzer2/src/tranalyzer.h
+ENVCNTRL        ../../tranalyzer2/src/tranalyzer.h
+DIFF_REPORT     ../../tranalyzer2/src/tranalyzer.h
+
+# src/ftpDecode.h
+FTP_SAVE        src/ftpDecode.h
+FTP_RMDIR       src/ftpDecode.h
+FTP_CMD_AGGR    src/ftpDecode.h
+FTP_BTFLD       src/ftpDecode.h

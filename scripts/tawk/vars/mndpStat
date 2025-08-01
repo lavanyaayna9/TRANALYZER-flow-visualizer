@@ -1,0 +1,11 @@
+#H bit | mndpStat | Description
+#H =============================================================================
+     0 | 0x01     | Flow is MNDP
+     1 | 0x02     | IPv4 address
+     2 | 0x04     | IPv6 address
+#W   3 | 0x08     | Unknown TLV type
+
+#W   4 | 0x10     | Invalid TLV length, e.g., length of MAC address > 6
+#W   5 | 0x20     | List was truncated... increase MNDP_LSTLEN
+#W   6 | 0x40     | String was truncated... increase MNDP_STRLEN
+#W   7 | 0x80     | Packet was snapped

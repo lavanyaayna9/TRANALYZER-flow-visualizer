@@ -1,0 +1,109 @@
+#!/usr/bin/env bash
+#
+# Format FILE_ospfDBD.txt to look like the output of Cisco's command
+# 'show ip ospf database'
+#
+# Usage: ./dbd FILE_ospfDBD.txt
+
+source "$(dirname "$0")/../../../scripts/t2utils.sh"
+
+usage() {
+    printf "Usage:\n"
+    printf "    $SNAME [OPTION...] <FILE_ospfDBD.txt>\n"
+    printf "\nOptional arguments:\n"
+    printf "    -h          display this help, then exit\n"
+}
+
+print_ls_type() {
+    if [ -z "$1" ] || [ -z "$2" ] || [ -z "$3" ]; then
+        printerr "print_ls_type <lsType> <routerID> <area>"
+        exit 1
+    fi
+
+    "$TAWK" "${TAWK_OPTS[@]}" -v lstype="$1" -v router="$2" -v area="$3" '
+        hdr() {
+            print "Link ID", "ADV Router", "Age", "Seq#", "Checksum"
+        }
+        ($AreaID == area && $LSType == lstype && $RtrID == router) {
+            s[$LSLinkID] = $LSLinkID "\t" $ADVRouter "\t" $Age "\t" $SeqNum "\t" $Checksum
+        }
+        END {
+            if (!length(s)) print "EMPTY"
+            else for (i in s) print s[i]
+        }' "$INFILE"
+}
+
+while [ $# -gt 0 ]; do
+    case "$1" in
+        -h|-\?|--help)
+            usage
+            exit 0
+            ;;
+        *)
+            if [ ! -f "$1" ]; then
+                abort_option_unknown "$1"
+            fi
+            INFILE="$1"
+            ;;
+    esac
+    shift
+done
+
+if [ ! -f "$INFILE" ]; then
+    abort_required_file
+fi
+
+# Default options for tawk
+TAWK_OPTS=()
+
+# Make sure all the required columns exist
+REQUIRED=(
+    ADVRouter
+    Age
+    AreaID
+    Checksum
+    LSLinkID
+    LSType
+    RtrID
+    SeqNum
+)
+
+COLS=($("$TAWK" "${TAWK_OPTS[@]}" -l "$INFILE" | AWK '{ print $2 }'))
+
+for i in "${REQUIRED[@]}"; do
+    if ! grep -qFw "$i" <<< "${COLS[*]}"; then
+        printerr "Column '$i' could not be found"
+        exit 1
+    fi
+done
+
+area=($("$TAWK" "${TAWK_OPTS[@]}" -H '{ print $AreaID }' "$INFILE" | sort -u))
+
+# Routers in area
+rid=($("$TAWK" "${TAWK_OPTS[@]}" -H '$LSType == "Router_1"  { print $LSLinkID }' "$INFILE" | sort -u)) # routers ID
+#dr=($("$TAWK" "${TAWK_OPTS[@]}" '$LSType == "Network_2" { print $LSLinkID }' "$INFILE" | sort -u))
+#abr=($("$TAWK" "${TAWK_OPTS[@]}" '$LSType == "Summary_3" { print $ADVRouter }' "$INFILE" | sort -u))
+#net=($("$TAWK" "${TAWK_OPTS[@]}" '$LSType == "Summary_3" { print $LSLinkID }' "$INFILE" | sort -u))
+
+for r in "${rid[@]}"; do
+    printf "${GREEN_BOLD}OSPF Router with ID ($r)${NOCOLOR}\n\n"
+    for a in "${area[@]}"; do
+        # TODO get num links...
+        printinf "Router Link States (Area $a)\n"
+        print_ls_type "Router_1" "$r" "$a"
+
+        printinf "\nNet Link States (Area $a)\n"
+        print_ls_type "Network_2" "$r" "$a"
+
+        # known networks outside the area
+        printinf "\nSummary Net Link States (Area $a)\n"
+        print_ls_type "Summary_3" "$r" "$a"
+
+        #printinf "\nSummary ASB Link States (Area $a)\n"
+        #print_ls_type "ASBR_4" "$r" "$a"
+
+        #printinf "\nType-5 AS External Link States\n"
+        #print_ls_type "ASext_5" "$r" "$a"
+    done
+    printf "\n\n"
+done

@@ -1,0 +1,54 @@
+cursor = db.flow.aggregate([
+    {
+        $match : {
+            sslJA4     : { $exists : true },
+            sslJA4Desc : { $exists : false },
+            timeFirst  : { $gte : time_from },
+            timeLast   : { $lte : time_to },
+        }
+    },
+    {
+        $unwind : "$sslJA4"
+    },
+    {
+        $match : {
+            $expr: {
+                $eq: [
+                    { $strLenCP: "$sslJA4" },
+                    25
+                ]
+            }
+        }
+    },
+    {
+        $group : {
+            _id : "$sslJA4",
+            count : { $sum : 1 }
+        }
+    },
+    {
+        $addFields : {
+            sort_id: {
+                $multiply : [
+                    sort_order,
+                    "$count"
+                ]
+            },
+        }
+    },
+    {
+        $sort : { sort_id : -1 }
+    },
+    {
+        $limit : n
+    }
+])
+
+cursor.forEach(
+    function(e) {
+        print(
+              e._id + "\t"
+            + e.count
+        )
+    }
+)

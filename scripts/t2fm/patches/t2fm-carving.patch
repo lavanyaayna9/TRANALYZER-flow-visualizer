@@ -1,0 +1,19 @@
+# Patch httpSniffer for data carving for t2fm.
+#
+# Apply the patch as follows: t2conf -x --patch t2fm.patch
+# Revert the patch as follows: t2conf -x --rpatch t2fm.patch
+#
+# Format of the patch:
+#     - Empty lines and lines starting with '%' or '#'’ are ignored
+#     - Filenames are relative to $T2HOME (where the setup.sh script is located)
+#     - A line is composed of four tabs (not spaces) separated columns:
+#         NAME <tab> newvalue <tab> oldvalue <tab> file
+
+# httpSniffer
+HTTP_SAVE_IMAGE	1	0	plugins/httpSniffer/src/httpSniffer.h
+HTTP_SAVE_VIDEO	1	0	plugins/httpSniffer/src/httpSniffer.h
+HTTP_SAVE_AUDIO	1	0	plugins/httpSniffer/src/httpSniffer.h
+HTTP_SAVE_MSG	1	0	plugins/httpSniffer/src/httpSniffer.h
+HTTP_SAVE_TEXT	1	0	plugins/httpSniffer/src/httpSniffer.h
+HTTP_SAVE_APPL	1	0	plugins/httpSniffer/src/httpSniffer.h
+HTTP_SAVE_PUNK	1	0	plugins/httpSniffer/src/httpSniffer.h

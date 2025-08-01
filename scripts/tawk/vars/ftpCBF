@@ -1,0 +1,81 @@
+#H bit | ftpCBF                | Description
+#H =============================================================================
+     0 | 0x0000 0000 0000 0001 | ABOR: Abort an active file transfer
+     1 | 0x0000 0000 0000 0002 | ACCT: Account information
+     2 | 0x0000 0000 0000 0004 | ADAT: Authentication/Security Data (RFC 2228)
+     3 | 0x0000 0000 0000 0008 | ALLO: Allocate sufficient disk space to receive a file
+
+     4 | 0x0000 0000 0000 0010 | APPE: Append (with create)
+     5 | 0x0000 0000 0000 0020 | AUTH: Authentication/Security Mechanism (RFC 2228)
+     6 | 0x0000 0000 0000 0040 | CCC: Clear Command Channel (RFC 2228)
+     7 | 0x0000 0000 0000 0080 | CDUP: Change to Parent Directory
+
+     8 | 0x0000 0000 0000 0100 | CONF: Confidentiality Protection Command (RFC 2228)
+     9 | 0x0000 0000 0000 0200 | CWD: Change working directory (RFC 697)
+    10 | 0x0000 0000 0000 0400 | DELE: Delete file
+    11 | 0x0000 0000 0000 0800 | ENC: Privacy Protected Channel (RFC 2228)
+
+    12 | 0x0000 0000 0000 1000 | EPRT: Specifies an extended address and port to which the server should connect (RFC 2428)
+    13 | 0x0000 0000 0000 2000 | EPSV: Enter extended passive mode (RFC 2428)
+    14 | 0x0000 0000 0000 4000 | FEAT: Get the feature list implemented by the server (RFC 2389)
+    15 | 0x0000 0000 0000 8000 | HELP: Returns usage documentation on a command if specified, else a general help document is returned
+
+    16 | 0x0000 0000 0001 0000 | LANG: Language Negotiation (RFC 2640)
+    17 | 0x0000 0000 0002 0000 | LIST: Returns information of a file or directory if specified, else information of the current working directory is returned
+    18 | 0x0000 0000 0004 0000 | LPRT: Specifies a long address and port to which the server should connect (RFC 1639)
+    19 | 0x0000 0000 0008 0000 | LPSV: Enter long passive mode (RFC 1639)
+
+    20 | 0x0000 0000 0010 0000 | MDTM: Return the last-modified time of a specified file (RFC 3659)
+    21 | 0x0000 0000 0020 0000 | MIC: Integrity Protected Command (RFC 2228)
+    22 | 0x0000 0000 0040 0000 | MKD: Make directory
+    23 | 0x0000 0000 0080 0000 | MLSD: Lists the contents of a directory if a directory is named (RFC 3659)
+
+    24 | 0x0000 0000 0100 0000 | MLST: Provides data about exactly the object named on its command line, and no others (RFC 3659)
+    25 | 0x0000 0000 0200 0000 | MODE: Sets the transfer mode (Stream, Block, or Compressed)
+    26 | 0x0000 0000 0400 0000 | NLST: Returns a list of file names in a specified directory
+    27 | 0x0000 0000 0800 0000 | NOOP: No operation (dummy packet; used mostly on keepalives)
+
+    28 | 0x0000 0000 1000 0000 | OPTS: Select options for a feature (for example OPTS UTF8 ON) (RFC 2389)
+    29 | 0x0000 0000 2000 0000 | PASS: Authentication password
+    30 | 0x0000 0000 4000 0000 | PASV: Enter passive mode
+    31 | 0x0000 0000 8000 0000 | PBSZ: Protection Buffer Size (RFC 2228)
+
+    32 | 0x0000 0001 0000 0000 | PORT: Specifies an address and port to which the server should connect
+    33 | 0x0000 0002 0000 0000 | PROT: Data Channel Protection Level (RFC 2228)
+    34 | 0x0000 0004 0000 0000 | PWD: Print working directory. Returns the current directory of the host
+    35 | 0x0000 0008 0000 0000 | QUIT: Disconnect
+
+    36 | 0x0000 0010 0000 0000 | REIN: Re initializes the connection
+    37 | 0x0000 0020 0000 0000 | REST: Restart transfer from the specified point (RFC 3659)
+    38 | 0x0000 0040 0000 0000 | RETR: Retrieve a copy of the file
+    39 | 0x0000 0080 0000 0000 | RMD: Remove a directory
+
+    40 | 0x0000 0100 0000 0000 | RNFR: Rename from
+    41 | 0x0000 0200 0000 0000 | RNTO: Rename to
+    42 | 0x0000 0400 0000 0000 | SITE: Sends site specific commands to remote server (like SITE IDLE 60 or SITE UMASK 002). Inspect SITE HELP output for complete list of supported commands
+    43 | 0x0000 0800 0000 0000 | SIZE: Return the size of a file (RFC 3659)
+
+    44 | 0x0000 1000 0000 0000 | SMNT: Mount file structure
+    45 | 0x0000 2000 0000 0000 | STAT: Returns information on the server status, including the status of the current connection
+    46 | 0x0000 4000 0000 0000 | STOR: Accept the data and to store the data as a file at the server site
+    47 | 0x0000 8000 0000 0000 | STOU: Store file uniquely
+
+    48 | 0x0001 0000 0000 0000 | STRU: Set file transfer structure
+    49 | 0x0002 0000 0000 0000 | SYST: Return system type
+    50 | 0x0004 0000 0000 0000 | TYPE: Sets the transfer mode (ASCII/Binary)
+    51 | 0x0008 0000 0000 0000 | USER: Authentication username
+
+    52 | 0x0010 0000 0000 0000 | XCUP: Change to the parent of the current working directory (RFC 775)
+    53 | 0x0020 0000 0000 0000 | XMKD: Make a directory (RFC 775)
+    54 | 0x0040 0000 0000 0000 | XPWD: Print the current working directory (RFC 775)
+    55 | 0x0080 0000 0000 0000 | XRCP: Recipient specification (RFC 743)
+
+    56 | 0x0100 0000 0000 0000 | XRMD: Remove the directory (RFC 775)
+    57 | 0x0200 0000 0000 0000 | XRSQ: Scheme selection (RFC 743)
+    58 | 0x0400 0000 0000 0000 | XSEM: Send, mail if cannot (RFC 737)
+    59 | 0x0800 0000 0000 0000 | XSEN: Send to terminal (RFC 737)
+
+    60 | 0x1000 0000 0000 0000 | CLNT: Used to identify the client software to the server
+    61 | 0x2000 0000 0000 0000 | -
+    62 | 0x4000 0000 0000 0000 | -
+    63 | 0x8000 0000 0000 0000 | -

@@ -1,0 +1,19 @@
+#!/usr/bin/env awk
+
+hdr() {
+    next
+}
+
+
+bitsanyset($flowStat, 0xc000) {  # IPv4/6 only
+    _validate_col("srcIPASN")
+    _validate_col("dstIPASN")
+    __asn[$srcIPASN] = 1
+    __asn[$dstIPASN] = 1
+}
+
+END {
+    for (i in __asn) {
+        print i
+    }
+}

@@ -1,0 +1,26 @@
+# ZSH completion for t2topcap
+
+_t2topcap() {
+    #compdef t2topcap
+
+    local opts=(
+        '-w[output filename or directory]:output:_files'
+        '-f[only extract flows whose index is listed in file (one flow index per row)]:file:_files'
+        '-A[only extract A flows]'
+        '-B[only extract B flows]'
+        '-n[only extract flows whose index is NOT listed in file (-f option)]'
+        {-y,--yes}'[Do not ask for confirmation before executing an action]'
+        '(- 1 *)'{-h,--help}'[Show help options and exit]'
+    )
+
+    local cur="${words[CURRENT]}"
+    [ $CURRENT -gt 2 ] && local prev="${words[CURRENT-1]}"
+
+    if [[ "$cur" == -* ]]; then
+        _arguments -s -S "${opts[@]}"
+    else
+        _files
+    fi
+}
+
+compdef _t2topcap t2topcap

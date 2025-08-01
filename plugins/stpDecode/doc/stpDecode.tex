@@ -1,0 +1,182 @@
+\IfFileExists{t2doc.cls}{
+    \documentclass[documentation]{subfiles}
+}{
+    \errmessage{Error: could not find 't2doc.cls'}
+}
+
+\begin{document}
+
+\trantitle
+    {stpDecode} % Plugin name
+    {Spanning Tree Protocol (STP)} % Short description
+    {Tranalyzer Development Team} % author(s)
+
+\section{stpDecode}\label{s:stpDecode}
+
+\subsection{Description}
+The stpDecode plugin analyzes STP traffic.
+
+\subsection{Dependencies}
+
+\subsubsection{Core Configuration}
+This plugin requires the following core configuration:
+\begin{itemize}
+    \item {\em \$T2HOME/tranalyzer2/src/networkHeaders.h}:
+        \begin{itemize}
+            \item {\tt ETH\_ACTIVATE>0}
+        \end{itemize}
+\end{itemize}
+
+\subsection{Configuration Flags}
+The following flags can be used to control the output of the plugin:
+\begin{longtable}{>{\tt}lcl>{\tt\small}l}
+    \toprule
+    {\bf Name} & {\bf Default} & {\bf Description} & {\bf Flags}\\
+    \midrule\endhead%
+    STP\_RTPREXT & 1 & 1: Priority Extension MAC, 0: BID hex & \\
+    \bottomrule
+\end{longtable}
+
+\subsection{Flow File Output}
+The stpDecode plugin outputs the following columns:
+\begin{longtable}{>{\tt}lll>{\tt\small}l}
+    \toprule
+    {\bf Column} & {\bf Type} & {\bf Description} & {\bf Flags}\\
+    \midrule\endhead%
+    \nameref{stpStat}    & H8  & Status                      & \\
+    \nameref{stpVer}     & U8  & Protocol version identifier & \\
+    \nameref{stpType}    & H8  & Aggregated BPDU types       & \\
+    \nameref{stpFlags}   & H8  & Aggregated BPDU flags       & \\
+    stpRtCst             & U32 & Root cost                   & \\
+    stpRtBID             & H64 & Root bridge ID              & STP\_RTPREXT=0\\
+    stpRtPrio            & U16 & Root priority               & STP\_RTPREXT=1\\
+    stpRtExt             & U16 & Root extension (VLAN)       & STP\_RTPREXT=1\\
+    stpRtMAC             & MAC & Root MAC                    & STP\_RTPREXT=1\\
+    stpBrdgID            & H64 & Bridge ID                   & STP\_RTPREXT=0\\
+    stpBrdgPrio          & U16 & Bridge priority             & STP\_RTPREXT=1\\
+    stpBrdgExt           & U16 & Bridge extension (VLAN)     & STP\_RTPREXT=1\\
+    stpBrdgMAC           & MAC & Bridge MAC                  & STP\_RTPREXT=1\\
+    stpFrwrd             & U16 & Forward delay               & \\
+    \bottomrule
+\end{longtable}
+
+
+\subsubsection{stpStat}\label{stpStat}
+The {\tt stpStat} column is to be interpreted as follows:
+\begin{longtable}{>{\tt}rl}
+    \toprule
+    {\bf stpStat} & {\bf Description}\\
+    \midrule\endhead%
+    0x01 & Flow is STP\\
+    \bottomrule
+\end{longtable}
+
+\subsubsection{stpProto}\label{stpProto}
+The {\tt stpProto} column is to be interpreted as follows:
+\begin{longtable}{>{\tt}rl}
+    \toprule
+    {\bf stpProto} & {\bf Description}\\
+    \midrule\endhead%
+    0x0000 & Spanning Tree Protocol\\
+    \bottomrule
+\end{longtable}
+
+\subsubsection{stpVer}\label{stpVer}
+The {\tt stpVer} column is to be interpreted as follows:
+\begin{longtable}{rl}
+    \toprule
+    {\bf stpVer} & {\bf Description}\\
+    \midrule\endhead%
+    0 & Spanning Tree\\
+    2 & Rapid Spanning Tree\\
+    3 & Multiple Spanning Tree\\
+    4 & Shortest Path Tree\\
+    \bottomrule
+\end{longtable}
+
+\clearpage
+\subsubsection{stpType}\label{stpType}
+The {\tt stpType} column is to be interpreted as follows:
+\begin{longtable}{>{\tt}rl}
+    \toprule
+    {\bf stpType} & {\bf Description}\\
+    \midrule\endhead%
+    0x00 & Configuration BPDU or TCN BPDU\\
+    %0x01 & ---\\
+    0x02 & Rapid/Multiple Spanning Tree\\
+    %0x04 & ---\\
+    %0x08 & ---\\
+    %0x10 & ---\\
+    %0x20 & ---\\
+    %0x40 & ---\\
+    0x80 & Topology Change Notification (TCN) BPDU\\
+    \bottomrule
+\end{longtable}
+
+\subsubsection{stpFlags}\label{stpFlags}
+The {\tt stpFlags} column is to be interpreted as follows:
+\begin{longtable}{>{\tt}rl}
+    \toprule
+    {\bf stpFlags} & {\bf Description}\\
+    \midrule\endhead%
+    $2^0$ (=0x0\textcolor{magenta}{1}) & Topology Change\\
+    $2^1$ (=0x0\textcolor{magenta}{2}) & Proposal\\
+    $2^2$ (=0x0\textcolor{magenta}{4}) & \multirow{2}{*}{Port Role: {\tt 0x00}: Unknown, {\tt 0x10}: Alternate or Backup, {\tt 0x20}: Root, {\tt 0x30}: Designated}\\
+    $2^3$ (=0x0\textcolor{magenta}{8}) & \\
+    \\
+    $2^4$ (=0x\textcolor{magenta}{1}0) & Learning\\
+    $2^5$ (=0x\textcolor{magenta}{2}0) & Forwarding\\
+    $2^6$ (=0x\textcolor{magenta}{4}0) & Agreement\\
+    $2^7$ (=0x\textcolor{magenta}{8}0) & Topology Change Acknowledgment\\
+    \bottomrule
+\end{longtable}
+
+\subsection{Packet File Output}
+In packet mode ({\tt --s} option), the stpDecode plugin outputs the following columns:
+\begin{longtable}{>{\tt}lll>{\tt\small}l}
+    \toprule
+    {\bf Column} & {\bf Type} & {\bf Description} & {\bf Flags}\\
+    \midrule\endhead%
+    \nameref{stpStat}  & H8  & Status                      & \\
+    \nameref{stpProto} & H16 & Protocol identifier         & \\
+    \nameref{stpVer}   & U8  & Protocol version identifier & \\
+    \nameref{stpType}  & H8  & BPDU type                   & \\
+    \nameref{stpFlags} & H8  & BPDU flags                  & \\
+    stpRtCst           & U32 & Root cost                   & \\
+    stpRtBID           & H64 & Root bridge ID              & STP\_RTPREXT=0\\
+    stpRtPrio          & U16 & Root priority               & STP\_RTPREXT=1\\
+    stpRtExt           & U16 & Root extension (VLAN)       & STP\_RTPREXT=1\\
+    stpRtMAC           & MAC & Root MAC                    & STP\_RTPREXT=1\\
+    stpBrdgID          & H64 & Bridge BID                  & STP\_RTPREXT=0\\
+    stpBrdgPrio        & U16 & Bridge priority             & STP\_RTPREXT=1\\
+    stpBrdgExt         & U16 & Bridge extension (VLAN)     & STP\_RTPREXT=1\\
+    stpBrdgMAC         & MAC & Bridge MAC                  & STP\_RTPREXT=1\\
+    stpPort            & H16 & Port identifier             & \\
+    stpMsgAge          & U16 & Message age                 & \\
+    stpMaxAge          & U16 & Max age                     & \\
+    stpHello           & U16 & Hello time                  & \\
+    stpFrwrd           & U16 & Forward delay               & \\
+    stpPvstOrigVlan    & U16 & Originating VLAN (PVSTP+)   & \\
+    \bottomrule
+\end{longtable}
+
+\subsection{Monitoring Output}
+In monitoring mode, the stpDecode plugin outputs the following columns:
+\begin{longtable}{>{\tt}lll>{\tt\small}l}
+    \toprule
+    {\bf Column} & {\bf Type} & {\bf Description} & {\bf Flags}\\
+    \midrule\endhead%
+    stpPkts & U64 & Number of STP packets & \\
+    \bottomrule
+\end{longtable}
+
+\subsection{Plugin Report Output}
+The following information is reported:
+\begin{itemize}
+    \item Aggregated {\tt\nameref{stpStat}}
+    \item Aggregated BPDU {\tt\nameref{stpType}}
+    \item Aggregated BPDU {\tt\nameref{stpFlags}}
+    \item Number of STP packets
+\end{itemize}
+
+\end{document}

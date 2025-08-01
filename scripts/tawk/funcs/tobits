@@ -1,0 +1,52 @@
+#!/usr/bin/env awk
+#
+# Convert an unsigned integer 'u' to its binary representation.
+#
+# Parameters:
+#   - u   : the number to convert
+#   - [b] : base for input number
+#           (currently only 16 is supported to force interpretation of, e.g., 45 as 0x45)
+#
+# See also:
+#   - bitshift
+#   - nibble_swap
+#
+# Examples:
+#   - tawk '{ $l7HexContent = tobits($l7HexContent); print }' file_packets.txt
+#   - tawk '{ print tobits($l7HexContent, 16) }' file_packets.txt
+#   - tawk '{ print tobits(0x45) }' file.txt
+#   - tawk '{ print tobits(44) }' file.txt
+
+@include "hdr"
+
+function tobits(u, b,        _a, _b, _i, _n, _r, _s, _u) {
+    if (hdr()) return u
+
+    if (!u) return "0"
+
+    _n = split(u, _a, /[\t ,]+/, _s)
+
+    for (_i = 1; _i <= _n; _i++) {
+        _b = ""
+
+        if (_a[_i] !~ /^[0-9a-fA-F]+$/ && _a[_i] !~ /^0x[0-9a-fA-F]+$/) {
+            break
+        }
+
+        if (b == 16 && _a[_i] !~ /^0x/) {
+            _a[_i] = "0x" _a[_i]
+        }
+
+        for (_u = strtonum(_a[_i]); _u; _u = rshift(_u, 1)) {
+            _b = (and(_u, 1) ? "1" : "0") _b
+        }
+
+        while ((length(_b) % 8) != 0 || _b == "") {
+            _b = "0" _b
+        }
+
+        _r = _r _b _s[_i]
+    }
+
+    return _r
+}

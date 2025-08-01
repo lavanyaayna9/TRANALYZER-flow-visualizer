@@ -1,0 +1,25 @@
+#!/usr/bin/env awk
+#
+# Return the maximum value between 'a', 'b' and 'c'.
+#
+# Parameters:
+#   - a : the first value
+#   - b : the second value
+#   - c : the third value
+#
+# Dependencies:
+#   - None
+#
+# See also:
+#   - max
+#   - max2
+#   - min
+#   - min2
+#   - min3
+#
+# Examples:
+#   - tawk '{ print max3(1, 2, 3) }' file.txt
+
+function max3(a, b, c) {
+    return (a > b ? (a > c ? a : c) : (b > c ? b : c))
+}

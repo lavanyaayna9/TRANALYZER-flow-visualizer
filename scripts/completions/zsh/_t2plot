@@ -1,0 +1,26 @@
+# ZSH completion for t2plot
+
+_t2plot() {
+    #compdef t2plot
+
+    local cur="${words[CURRENT]}"
+    [ $CURRENT -gt 2 ] && local prev="${words[CURRENT-1]}"
+
+    case "$prev" in
+        -F|-o|-H|-ts|-ls|-ks|-sx|-sy|-sz|-rx|-ry|-v|-ws|-c|-t|-s)
+            return
+            ;;
+        --gif|--jpeg|--png|--svg)
+            _files
+            return
+            ;;
+    esac
+
+    if [[ "$cur" == -* ]]; then
+        _arguments --
+    else
+        _files
+    fi
+}
+
+compdef _t2plot t2plot

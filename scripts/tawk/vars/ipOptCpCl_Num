@@ -1,0 +1,37 @@
+#H Cp, Cl | ipOptCpCl | bit | ipOptNum    | Value, Description
+#H =============================================================================
+    0, 0  | 0x00      |   0 | 0x0000 0001 | 0x00, End of Options List
+    0, 0  | 0x00      |   1 | 0x0000 0002 | 0x01, NOOP
+    1, 0  | 0x80      |   2 | 0x0000 0004 | 0x82, Security
+    1, 0  | 0x80      |   3 | 0x0000 0008 | 0x83, Loose Source Route
+    0, 2  | 0x40      |   4 | 0x0000 0010 | 0x44, Time Stamp
+    1, 0  | 0x80      |   5 | 0x0000 0020 | 0x85, Extended Security
+    1, 0  | 0x80      |   6 | 0x0000 0040 | 0x86, Commercial Security
+    0, 0  | 0x00      |   7 | 0x0000 0080 | 0x07, Record Route
+    1, 0  | 0x80      |   8 | 0x0000 0100 | 0x88, Stream ID
+    1, 0  | 0x80      |   9 | 0x0000 0200 | 0x89, Strict Source Route
+    0, 0  | 0x00      |  10 | 0x0000 0400 | 0x0a, Experimental Measurement
+    0, 0  | 0x00      |  11 | 0x0000 0800 | 0x0b, MTU Probe
+    0, 0  | 0x00      |  12 | 0x0000 1000 | 0x0c, MTU Reply
+    1, 2  | 0xc0      |  13 | 0x0000 2000 | 0xcd, Experimental Flow Control
+    1, 0  | 0x80      |  14 | 0x0000 4000 | 0x8E, Experimental Access Control
+    0, 0  | 0x00      |  15 | 0x0000 8000 | 0x0f, ENCODE
+    1, 1  | 0x80      |  16 | 0x0001 0000 | 0x90, IMI Traffic Descriptor
+    1, 0  | 0x80      |  17 | 0x0002 0000 | 0x91, Extended Internet Protocol
+    0, 2  | 0x40      |  18 | 0x0004 0000 | 0x52, Traceroute
+    1, 0  | 0x80      |  19 | 0x0008 0000 | 0x93, Address Extension
+    1, 0  | 0x80      |  20 | 0x0010 0000 | 0x94, Router Alert
+    1, 0  | 0x80      |  21 | 0x0020 0000 | 0x95, Selective Directed Broadcast
+    1, 0  | 0x80      |  22 | 0x0040 0000 | 0x96, -
+    1, 0  | 0x80      |  23 | 0x0080 0000 | 0x97, Dynamic Packet State
+    1, 0  | 0x80      |  24 | 0x0100 0000 | 0x98, Upstream Multicast Packet
+    0, 0  | 0x00      |  25 | 0x0200 0000 | 0x19, Quick-Start
+          | 0x00      |  26 | 0x0400 0000 |
+          | 0x00      |  27 | 0x0800 0000 |
+          | 0x00      |  28 | 0x1000 0000 |
+          | 0x00      |  29 | 0x2000 0000 |
+
+    0, 0  | 0x00      |  30 | 0x4000 0000 | 0x1e, RFC3692-style Experiment
+    1, 0  | 0x80      |  30 | 0x4000 0000 | 0x5e, RFC3692-style Experiment
+    1, 2  | 0xc0      |  30 | 0x4000 0000 | 0x9e, RFC3692-style Experiment
+    0, 2  | 0x40      |  30 | 0x4000 0000 | 0xde, RFC3692-style Experiment

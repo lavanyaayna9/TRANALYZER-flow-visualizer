@@ -1,0 +1,196 @@
+\IfFileExists{t2doc.cls}{
+    \documentclass[documentation]{subfiles}
+}{
+    \errmessage{Error: could not find 't2doc.cls'}
+}
+
+\begin{document}
+
+% Declare author and title here, so the main document can reuse it
+\trantitle
+    {vtpDecode} % Plugin name
+    {VLAN Trunking Protocol (VTP)} % Short description
+    {Tranalyzer Development Team} % author(s)
+
+\section{vtpDecode}\label{s:vtpDecode}
+
+\subsection{Description}
+The vtpDecode plugin analyzes the VLAN Trunking Protocol (VTP) protocol.
+
+\subsection{Dependencies}
+
+\subsubsection{Core Configuration}
+This plugin requires the following core configuration:
+\begin{itemize}
+    \item {\em \$T2HOME/tranalyzer2/src/networkHeaders.h}:
+        \begin{itemize}
+            \item {\tt ETH\_ACTIVATE>0}
+        \end{itemize}
+\end{itemize}
+
+\subsection{Configuration Flags}
+The following flags can be used to control the output of the plugin:
+\begin{longtable}{>{\tt}lcl>{\tt\small}l}
+    \toprule
+    {\bf Name}        & {\bf Default}           & {\bf Description}                              & {\bf Flags}\\
+    \midrule\endhead%
+    VTP\_AGGR         & 1                       & Aggregate updater identity                     & \\
+    VTP\_SAVE         & 1                       & Extract all VLANs info in a separate file      & \\
+    VTP\_DEBUG        & 0                       & Print debug messages                           & \\
+    VTP\_TS\_FRMT     & 1                       & Format for timestamps: 0: string, 1: timestamp & \\
+    VTP\_NUM\_UPDID   & 16                      & Max number of updater identity                 & \\
+    VTP\_STR\_MAX     & 64                      & Max length for strings                         & \\
+    VTP\_SUFFIX       & {\tt\small "\_vtp.txt"} & Suffix for separate file                       & VTP\_SAVE=1\\
+    VTP\_VLANID\_FRMT & 1                       & Format for VLAN ID: 0: int, 1: hex             & VTP\_SAVE=1\\
+    \bottomrule
+\end{longtable}
+
+\subsubsection{Environment Variable Configuration Flags}
+The following configuration flags can also be configured with environment variables ({\tt ENVCNTRL>0}):
+\begin{itemize}
+    \item {\tt VTP\_SUFFIX}
+\end{itemize}
+
+\subsection{Flow File Output}
+The vtpDecode plugin outputs the following columns:
+\begin{longtable}{>{\tt}lll>{\tt\small}l}
+    \toprule
+    {\bf Column}                          & {\bf Type} & {\bf Description}          & {\bf Flags}\\
+    \midrule\endhead%
+    \nameref{vtpStat}                     & H8         & Status                     & \\
+    vtpVer                                & H8         & Version                    & \\
+    \hyperref[vtpCode]{vtpCodeBF}         & H8         & Aggregated codes           & \\
+    \hyperref[vtpVlanType]{vtpVlanTypeBF} & H8         & Aggregated VLAN types      & \\
+    vtpDomain                             & S          & Management Domain          & \\
+    vtpNumUpdId                           & U32        & Number of Updater identity & VTP\_NUM\_UPDID>0\\
+    vtpUpdId                              & R(IP4)     & Updater identity           & VTP\_NUM\_UPDID>0\\
+    vtpFirstUpdTS                         & S/TS       & Timestamp of first update  & VTP\_TS\_FRMT=0/1\\
+    vtpLastUpdTS                          & S/TS       & Timestamp of last update   & VTP\_TS\_FRMT=0/1\\
+    \bottomrule
+\end{longtable}
+
+\subsubsection{vtpStat}\label{vtpStat}
+The {\tt vtpStat} column is to be interpreted as follows:
+\begin{longtable}{>{\tt}rl}
+    \toprule
+    {\bf vtpStat} & {\bf Description}\\
+    \midrule\endhead%
+    0x000\textcolor{magenta}{1} & Flow is VTP\\
+    0x000\textcolor{magenta}{2} & Different versions used\\
+    0x000\textcolor{magenta}{4} & Different Management Domains used\\
+    0x000\textcolor{magenta}{8} & -\\
+    \\
+    0x00\textcolor{magenta}{1}0 & Invalid Management Domain Length (> 32)\\
+    0x00\textcolor{magenta}{2}0 & Invalid version\\
+    0x00\textcolor{magenta}{4}0 & Invalid code\\
+    0x00\textcolor{magenta}{8}0 & Invalid VLAN type\\
+    \\
+    0x0\textcolor{magenta}{1}00 & ---\\
+    0x0\textcolor{magenta}{2}00 & ---\\
+    0x0\textcolor{magenta}{4}00 & ---\\
+    0x0\textcolor{magenta}{8}00 & ---\\
+    \\
+    0x\textcolor{magenta}{1}000 & ---\\
+    0x\textcolor{magenta}{2}000 & Array truncated\ldots increase {\tt VTP\_NUM\_UPDID}\\
+    0x\textcolor{magenta}{4}000 & String truncated\ldots increase {\tt VTP\_STR\_MAX}\\
+    0x\textcolor{magenta}{8}000 & Packet snapped, decoding failed\\
+    \bottomrule
+\end{longtable}
+
+\subsubsection{vtpCode and vtpCodeBF}\label{vtpCode}
+The {\tt vtpCode} and {\tt vtpCodeBF} columns are to be interpreted as follows:\\
+\begin{longtable}{>{\tt}r>{\tt}rl}
+    \toprule
+    {\bf vtpCode} & {\bf vtpCodeBF} & {\bf Description}\\
+    \midrule\endhead%
+    ---  & 0x01 & ---\\
+    0x01 & 0x02 & Summary Advertisement\\
+    0x02 & 0x04 & Subset Advertisement\\
+    0x03 & 0x08 & Advertisement Request\\
+    \\
+    0x04 & 0x10 & Join/Prune Message\\
+    ---  & 0x20 & ---\\
+    ---  & 0x40 & ---\\
+    ---  & 0x80 & Unknown VTP code\\
+    \bottomrule
+\end{longtable}
+
+\subsubsection{vtpVlanType and vtpVlanTypeBF}\label{vtpVlanType}
+The {\tt vtpVlanType} and {\tt vtpVlanTypeBF} columns are to be interpreted as follows:\\
+\begin{longtable}{>{\tt}r>{\tt}rl}
+    \toprule
+    {\bf vtpVlanType} & {\bf vtpVlanTypeBF} & {\bf Description}\\
+    \midrule\endhead%
+    ---  & 0x01 & ---\\
+    0x01 & 0x02 & Ethernet\\
+    0x02 & 0x04 & Fiber Distributed Data Interface (FDDI)\\
+    0x03 & 0x08 & Token Ring Concentrator Relay Function (TrCRF)\\
+    \\
+    0x04 & 0x10 & Fiber Distributed Data Interface Network Entity Title (FFID-net)\\
+    0x05 & 0x20 & Token Ring Bridge Relay Function (TrBRF)\\
+    ---  & 0x40 & ---\\
+    ---  & 0x80 & Unknown VTP VLAN type\\
+    \bottomrule
+\end{longtable}
+
+\subsection{Packet File Output}
+In packet mode ({\tt --s} option), the vtpDecode plugin outputs the following columns:
+\begin{longtable}{>{\tt}lll>{\tt\small}l}
+    \toprule
+    {\bf Column} & {\bf Type} & {\bf Description} & {\bf Flags}\\
+    \midrule\endhead%
+    \nameref{vtpStat}                     & H8 & Status               & \\
+    vtpVer                                & H8 & Version              & \\
+    \hyperref[vtpCode]{vtpCode}           & H8 & Code                 & \\
+    vtpDomain                             & SC & Management Domain    & \\
+    \hyperref[vtpVlanType]{vtpVlanTypeBF} & H8 & Aggregated VLAN type & \\
+    \bottomrule
+\end{longtable}
+
+\subsection{Plugin Report Output}
+The following information is reported:
+\begin{itemize}
+    \item Aggregated {\tt\nameref{vtpStat}}
+    \item Aggregated {\tt\hyperref[vtpCode]{vtpCodeBF}}
+    \item Aggregated {\tt\hyperref[vtpVlanType]{vtpVlanTypeBF}}
+    \item Number of VTP packets
+    \item Number of VTPv1, VTPv2 and VTPv3 packets
+    \item Number of VTP Summary Advertisement packets
+    \item Number of VTP Subset Advertisement packets
+    \item Number of VTP Advertisement Request packets
+    \item Number of VTP Join/Prune Message packets
+    \item Number of VTP packets with unknown type
+\end{itemize}
+
+\subsection{Additional Output}
+Non-standard output:
+\begin{itemize}
+    \item {\tt PREFIX\_vtp.txt}: List of VLANs extracted from Subset Advertisement messages
+\end{itemize}
+
+The {\tt PREFIX\_vtp.txt} file contains the following columns:
+\begin{longtable}{>{\tt}rl}
+    \toprule
+    {\bf Name} & {\bf Description}\\
+    \midrule\endhead%
+    pktNo                               & Packet number\\
+    flowInd                             & Flow index\\
+    srcMac                              & MAC address which issued this advertisement\\
+    vtpVer                              & VTP version\\
+    vtpDomain                           & VTP Management Domain\\
+    vtpRevNum                           & VTP Configuration Revision Number\\
+    \hyperref[vtpVlanType]{vtpVlanType} & Aggregated VLAN type\\
+    vtpVlanID                           & ISL VLAN ID\\
+    vtpVlanName                         & VLAN Name\\
+    vtpVlanSAID                         & 802.10 Index (IEEE 802.10 security association identifier for this VLAN)\\
+    vtpVlanMTU                          & MTU Size\\
+    vtpVlanSuspended                    & State of the VLAN (suspended or not)\\
+    \bottomrule
+\end{longtable}
+
+\subsection{References}
+\begin{itemize}
+    \item \href{http://www.cisco.com/en/US/tech/tk389/tk689/technologies_tech_note09186a0080094c52.shtml}{Understanding VLAN Trunk Protocol (VTP)}
+\end{itemize}
+
+\end{document}

@@ -1,0 +1,75 @@
+Workstation1
+------------
+  OS: Arch Linux (x86_64)
+  Kernel: 3.11.2-1-ARCH
+  IP: 10.20.5.161
+  Hostname: caprica
+
+VM1
+---
+  Qemu KVM running on Workstation1
+  OS: Debian Sarge (i386)
+  Kernel: 2.4.27-3-386
+  IP: 10.20.6.123 (connected to bridge on Workstation2)
+  MAC: 52:54:00:12:34:56
+
+Workstation2
+------------
+  OS: Ubuntu 12.04.3 Desktop LTS (x86_64)
+  Kernel: 3.8.0-31-generic
+  IP: 10.20.7.225
+  Hostname: tauron
+
+VM2
+---
+  Qemu KVM running on Workstation2
+  OS: Debian Sarge (i386)
+  Kernel: 2.4.27-3-386
+  IP: 10.20.5.149 (connected to bridge on Workstation2)
+  Web server: Apache/2.0.54
+  MAC: 52:54:00:12:34:57
+
+
+Network scheme
+--------------
+
+Receiver VM1                  Sender VM2
+     |                             |
+     | (bridge)           (bridge) |
+     |                             |
+Workstation1 ---- switch ---- Workstation2
+
+
+Trace capture procedure
+-----------------------
+1) Start both workstations
+2) Start VMs on both workstations
+3) Check that WM1 can download file from webserver on VM2
+4) Record traffic on Workstation1
+    sudo tcpdump -s 0 -i eth0 -w devcc.dmp
+5) Load DEVCC kdevcc-module.o kernel module on VM2
+    insmod ksender/kdevcc-module.o
+6) Start receiver on VM1
+    dissect 10000 "tcp && src port 80 && src host 10.20.5.149" EncryptionKey 13
+    (if the message is received before 10000 packets, one can kill the process)
+7) Download from VM1 file hosted on VM2
+    wget "http://10.20.5.149/ubuntu.iso"
+
+
+Notes
+-----
+Source: http://www.mit.edu/~gif/covert-channel/src/
+
+On VM2 ksender/kdevcc.c must be adapted as follow:
+  #define KEY "EncryptionKey"
+  #define KEY_LENGHT 13
+  static u32 target_host = 0x0a14067b; // VM1 IP
+
+Both hosts must use TCP timestamps, check with:
+    cat /proc/sys/net/ipv4/tcp_timestamps
+
+Conclusion
+----------
+Covert message was successfully transmitted between VM2 and VM1
+Traffic recorded in devcc.dmp
+Covert channel is successfully detected by the Tranalyzer covertChannels plugin

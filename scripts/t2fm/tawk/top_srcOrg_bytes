@@ -1,0 +1,35 @@
+#!/usr/bin/env awk
+
+hdr() {
+    next
+}
+
+!bitsanyset($flowStat, 0xc000) {  # IPv4/6 only
+    next
+}
+
+# A flows
+$dir == "A" && !bitsallset($flowStat, 1) {
+    if (privip($srcIP)) {
+        org = "--"
+    } else if (srcIPOrg != 0) {
+        org = unquote($srcIPOrg)
+        if (org == "-" || org == "--") org = "N/A"
+    } else {
+        org = "N/A"
+    }
+    aggr(org, $l7BytesSnt, n)
+}
+
+# B flows
+$dir == "A" && bitsallset($flowStat, 1) {
+    if (privip($dstIP)) {
+        org = "--"
+    } else if (dstIPOrg != 0) {
+        org = unquote($dstIPOrg)
+        if (org == "-" || org == "--") org = "N/A"
+    } else {
+        org = "N/A"
+    }
+    aggr(org, $l7BytesRcvd, n)
+}

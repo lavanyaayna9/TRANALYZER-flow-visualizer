@@ -1,0 +1,95 @@
+#!/usr/bin/env bash
+
+source "$(dirname "$0")/../../../scripts/t2utils.sh"
+
+usage() {
+    echo "Usage:"
+    echo "    $SNAME [OPTION...] <FILE>"
+    echo
+    echo "Optional arguments:"
+    echo "    -h, --help        Show this help, then exit"
+}
+
+if [ "$1" == "-h" ] || [ "$1" == "--help" ]; then
+    usage
+    exit 0
+elif [ ! -f "$1" ]; then
+    abort_required_file
+fi
+
+FILE="$($READLINK -f "$1")"
+
+AWK -F',' -v OFS='\t' '
+
+BEGIN {
+    T = "000000000000"
+}
+
+NR == 1 {
+    gsub("\r", "", $4)
+    print "#oui", "ethType", "short", $3, $4
+}
+
+NR > 1 && !/"/ {
+    gsub("\r", "", $4)
+    gsub(":", "", $2)
+    j = length($2)
+    f = substr(T, j, 12 - j)
+    x = $3
+    gsub(/[ ,()-\/]/, "", x)
+    print "0x"$2f"0000", j*4, substr(x, 1, 9), $3, $4
+}
+
+/"/ {
+    gsub(/""/, "", $0)
+    gsub("\r", "", $0)
+    n = split($0, A, "\"")
+    m = split(A[1], B, ",")
+    if (n > 1) {
+        j = length(B[2])
+        f = substr(T, j, 12 - j)
+        x = B[2]
+        gsub(/[ ,()-\/]/, "", x)
+        printf "0x%s%s0000\t%d\t", B[2], f, j*4
+        if (length(B[3]) > 1) {
+            x = B[3]
+            gsub(/[ ,()-\/]/, "", x)
+            printf("%s\t%s\t", substr(x, 1, 9), B[3])
+        } else {
+            x = A[2]
+            gsub(/[ ,()-\/]/, "", x)
+            printf "%s\t", substr(x, 1, 9)
+        }
+        if (n == 3 && m == 3) {
+            gsub(/^,/, "", A[3])
+            gsub(/\n/, "", A[3])
+            printf "%s\t%s\n", A[2], A[3]
+        } else {
+            gsub(/^ /, "", A[2])
+            gsub(/\n/, "", A[4])
+            printf "%s\t%s\n", A[2], A[4]
+        }
+    } else {
+        j = length($2)
+        f = substr(T, j, 12 - j)
+        x = $3
+        gsub(/[ ,()-\/]/, "", x)
+        print "0x"$2f"0000", j*4, substr(x, 1, 9), $3, $4, $5, $6
+    }
+}' "$FILE" | AWKF '
+!/^#/ {
+    a = $5
+    b = a
+    gsub(/-/, "", b)
+    n = split(b, A, " ")
+    s = 0
+    if (length(A[n]) != 2) {
+        if (A[n] ~ /[0-9]/) s++
+        if (A[n-1] ~ /[0-9]/ ) s = 2
+        else if (length(A[n-1]) != 2) s = 1
+    } else if (A[n] ~ /[0-9]/) s = 2
+    if (length(A[n-s]) != 2) s++
+    print $1, $2, $3, $4, A[n-s]
+}'
+
+# | AWKF 'length($5) != 2 && $2 != "Private"'

@@ -1,0 +1,24 @@
+# Bash completion for statGplt
+
+_statGplt() {
+    local cur prev words cword
+
+    if type -t _init_completion &> /dev/null; then
+        _init_completion -n = || return
+    else
+        COMPREPLY=()
+        cur="${COMP_WORDS[COMP_CWORD]}"
+        prev="${COMP_WORDS[COMP_CWORD-1]}"
+    fi
+
+    if [[ "$cur" == -* ]]; then
+        COMPREPLY=($(compgen -W "$(_parse_help "$T2HOME/scripts/statGplt")" -- "$cur"))
+    elif type -t _filedir &> /dev/null; then
+        _filedir
+    else
+        compopt -o filenames 2> /dev/null
+        COMPREPLY=($(compgen -f -- "$cur"))
+    fi
+}
+
+complete -F _statGplt statGplt

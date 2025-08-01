@@ -1,0 +1,11 @@
+#!/usr/bin/env bash
+
+source "$(dirname "$0")/../../../scripts/t2utils.sh"
+
+cd "$(dirname "$0")/.." || fatal "Failed to cd into '$(dirname "$0")/..'"
+
+DB="GeoLite2-City.mmdb.gz"
+if ! t2_wget_n "http://geolite.maxmind.com/download/geoip/database/$DB"; then
+    printerr "Failed to update '$DB'"
+    exit 1
+fi

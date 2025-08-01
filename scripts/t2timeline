@@ -1,0 +1,270 @@
+#!/usr/bin/env bash
+#
+# Produces a timeline plot of a flow file using the timestamps and the findex
+
+source "$(dirname "$0")/t2utils.sh"
+
+usage() {
+    echo "Usage:"
+    echo "    $SNAME [OPTION...] <FILE_flows.txt>"
+    echo
+    echo "Optional arguments:"
+    echo "    -r            Use relative time, i.e., start at 0"
+    echo "    -n            Do not plot the generated graph with gnuplot"
+    echo "    -e fields     Extra fields to display in the tooltip, e.g., -e macS,macD"
+    echo
+    echo "    -g            Display a grid in the background"
+    echo
+    echo "    -ts size      Size of the title [$TSIZE]"
+    echo "    -ls size      Size of the labels [$LSIZE]"
+    echo "    -ks size      Size of the keys/tics [$KSIZE]"
+    echo
+    echo "    -v vspace     Vertical space to add between A and B flows"
+    echo "    -d mindur     Minimal duration if 0"
+    echo
+    echo "    -ws w,h       Window size (width,height) [$WSIZE]"
+    echo "    -fs           Maximize window size (fullscreen)"
+    echo
+    echo "    -tx label     Label for X axis"
+    echo "    -ty label     Label for Y axis"
+    echo
+    echo "    -t title      Main title of the plot [$TITLE]"
+    echo "    -s title      Subtitle of the plot [$SUBTITLE]"
+    echo
+    echo "    --gif  file   Generate a GIF file"
+    echo "    --jpeg file   Generate a JPEG file"
+    echo "    --png  file   Generate a PNG file"
+    echo "    --svg  file   Generate a SVG file"
+    echo
+    echo "Help and documentation arguments:"
+    echo "    -h, --help    Show this help, then exit"
+}
+
+cleanup() {
+    local ret=$1
+    if [ "$(pgrep -P $$ | wc -l)" -gt 1 ]; then
+        printinf "Killing all subprocesses..."
+        kill -- -$$
+    fi
+    exit $ret
+}
+
+# default values
+TITLE="Tranalyzer2"
+SUBTITLE="Timeline"
+
+TX="Time [s.us]"
+TY="Flow Index"
+
+VSPACE=0.5
+WSIZE="800,600"  # Window size (width, height)
+TSIZE=20         # title size
+LSIZE=16         # label size
+KSIZE=10         # key/tics size
+SET_GRID=""      # no grid
+TERM="qt"
+PLOT=1
+
+# options
+while [ $# -ne 0 ]; do
+    case "$1" in
+        -tx|--xlabel)
+            validate_next_arg "$1" "$2"
+            TX="$2"
+            shift
+            ;;
+        -ty|--ylabel)
+            validate_next_arg "$1" "$2"
+            TY="$2"
+            shift
+            ;;
+        -s|--subtitle)
+            validate_next_arg "$1" "$2"
+            SUBTITLE="$2"
+            shift
+            ;;
+        -t|--title)
+            validate_next_arg "$1" "$2"
+            TITLE="$2"
+            shift
+            ;;
+        -e)
+            validate_next_arg "$1" "$2"
+            EXTRA="$2"
+            shift
+            ;;
+        -v|--vspace)
+            validate_next_arg "$1" "$2"
+            VSPACE="$2"
+            shift
+            ;;
+        -d|--mindur)
+            validate_next_arg "$1" "$2"
+            MINDUR="$2"
+            shift
+            ;;
+        -ts|--tsize|--t-size|--title-size)
+            validate_next_num "$1" "$2"
+            TSIZE="$2"
+            shift
+            ;;
+        -ls|--lsize|--l-size|--label-size)
+            validate_next_num "$1" "$2"
+            LSIZE="$2"
+            shift
+            ;;
+        -ks|--ksize|--k-size|--key-size|--tics-size)
+            validate_next_num "$1" "$2"
+            KSIZE="$2"
+            shift
+            ;;
+        -ws|--wsize|--win-size|--window-size)
+            validate_next_arg "$1" "$2"
+            if [ -n "$(perl -pe 's/^[1-9][0-9]*,[1-9][0-9]*$//' <<< "$2")" ]; then
+                printerr "Invalid argument for option '$1': expected width,height; found '$2'"
+                abort_with_help
+            fi
+            WSIZE="$2"
+            shift
+            ;;
+        -fs|--fullscreen)
+            if [ "$(uname)" = "Darwin" ]; then
+                WSIZE="$(system_profiler SPDisplaysDataType | AWK '/^\s*Resolution:/ { print $2/2 "," $4/2; exit }')"
+            else
+                WSIZE="$(xrandr | AWK '/\*/ { sub(/x/, ","); print $1; exit }')"
+            fi
+            ;;
+        --gif|--jpeg|--png|--svg)
+            validate_next_arg "$1" "$2"
+            TERM="${1#*--}"
+            IMGFILE="$2"
+            shift
+            ;;
+        -g|--grid) SET_GRID="set grid";;
+        -r|--relative) RELATIVE=1;;
+        -n|--no-plot) PLOT=0;;
+        -h|-\?|--help) usage; exit 0;;
+        *)
+            if [ ! -f "$1" ]; then
+                abort_option_unknown "$1"
+            fi
+            INFILE="$1"
+            ;;
+    esac
+    shift
+done
+
+if [ ! -f "$INFILE" ]; then
+    abort_required_file
+fi
+
+if [ $PLOT -eq 1 ] || [ $IMGFILE ]; then
+    check_dependency "gnuplot"
+fi
+
+# Setup signal handler
+trap "trap - SIGTERM && cleanup 1" HUP INT QUIT TERM
+trap "cleanup \$?" EXIT
+
+PREFIX="$(AWK -F. 'NF > 1 { NF-- } { print; exit }' <<< "$INFILE")"
+OUTFILE_A="${PREFIX}_a.txt"
+OUTFILE_B="${PREFIX}_b.txt"
+OUTFILE_GP="${PREFIX}.gp"
+
+printf "Generating '$OUTFILE_A' and '$OUTFILE_B'... "
+$TAWK -H -v prefix="$PREFIX" -v extra="$EXTRA" -v vspace="$VSPACE" -v mindur="$MINDUR" -v reltime="$RELATIVE" '
+BEGIN {
+    _validate_col("flowInd")
+    _validate_col("flowStat")
+    _validate_col("srcIP")
+    _validate_col("dstIP")
+    _validate_col("srcPort")
+    _validate_col("dstPort")
+    _validate_col("vlanID")
+    _validate_col("duration")
+    _validate_col("timeFirst")
+
+    if (length(extra) > 0) {
+        _nextra = split(extra, _fextra, ",")
+        for (i = 1; i <= _nextra; i++) {
+            _fextra[i] = _validate_col(_fextra[i])
+        }
+    }
+}
+{
+    _dir = (bitsanyset($flowStat, 0x01) ? "B" : "A")
+
+    label = _dir "_" $flowInd "_" $flowStat "_" $srcIP ":" $srcPort "_" $dstIP ":" $dstPort "_" proto2str(proto()) "_" $vlanID
+    for (i = 1; i <= _nextra; i++) {
+        label = label "_" $_fextra[i]
+    }
+
+    if (!firstTime && reltime) firstTime = timestamp($timeFirst)
+
+    if (_dir == "A") {
+        _vspace = 0
+        _destf  = prefix "_a.txt"
+    } else {
+        _vspace = vspace
+        _destf  = prefix "_b.txt"
+    }
+    if ($duration == 0.0) $duration = mindur
+    printf "%f\t%f\t%s\t%d\t%s\n", timestamp($timeFirst) - firstTime, $flowInd - _vspace, $duration, 0, label > _destf
+}' "$INFILE"
+
+if [ $? -ne 0 ]; then
+    # One of the column could not be found
+    printerr "FAIL"
+    exit 1
+else
+    printok "OK"
+fi
+
+if [ ! -f "$OUTFILE_A" ] && [ ! -f "$OUTFILE_B" ]; then
+    printerr "None of '$OUTFILE_A' or '$OUTFILE_B' could be created"
+    exit 1
+fi
+
+# build the gnuplot command
+printf "Generating '$OUTFILE_GP'... "
+if [ -z "$IMGFILE" ]; then
+    echo "set term $TERM size $WSIZE dashed title \"$TITLE\" persist" > "$OUTFILE_GP"
+else
+    echo "set term $TERM size $WSIZE dashed" > "$OUTFILE_GP"
+    echo "set output \"$IMGFILE\"" >> "$OUTFILE_GP"
+fi
+
+cat >> "$OUTFILE_GP" << EOF
+set title "$SUBTITLE" font "Times-Bold,$TSIZE"
+set xlabel "$TX" offset -15 font "Times-Bold,$LSIZE"
+set ylabel "$TY" font "Times-Bold,$LSIZE"
+set key font "Times-Bold,$KSIZE"
+set tics font "Times-Bold,$KSIZE"
+$SET_GRID
+EOF
+
+PLOT_A="\"$OUTFILE_A\" u 1:2:3:4 w vectors heads size screen 0.002,90 ls 2 title \"A flows\", \
+        \"$OUTFILE_A\" u 1:2:5 w labels hypertext point pt 0 notitle"
+
+PLOT_B="\"$OUTFILE_B\" u 1:2:3:4 w vectors heads size screen 0.002,90 ls 7 title \"B flows\", \
+        \"$OUTFILE_B\" u 1:2:5 w labels hypertext point pt 0 notitle"
+
+if [ -f "$OUTFILE_A" ] && [ -f "$OUTFILE_B" ]; then
+    echo "plot $PLOT_A, $PLOT_B" >> "$OUTFILE_GP"
+elif [ -f "$OUTFILE_A" ]; then
+    echo "plot $PLOT_A" >> "$OUTFILE_GP"
+elif [ -f "$OUTFILE_B" ]; then
+    echo "plot $PLOT_B" >> "$OUTFILE_GP"
+fi
+
+if [ -z "$IMGFILE" ]; then
+    echo "pause 1000" >> "$OUTFILE_GP"
+fi
+
+echo "exit" >> "$OUTFILE_GP"
+
+printok "OK"
+
+if [ $PLOT -eq 1 ] || [ $IMGFILE ]; then
+    cat "$OUTFILE_GP" | gnuplot
+fi

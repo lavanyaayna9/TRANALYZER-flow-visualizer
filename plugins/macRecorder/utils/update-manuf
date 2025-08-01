@@ -1,0 +1,120 @@
+#!/usr/bin/env bash
+#
+# Generates 'manuf.txt' file from Wireshark's manuf file,
+# the latest version of which can be found at:
+# https://gitlab.com/wireshark/wireshark/raw/master/manuf
+# wget https://macaddress.io/database/macaddress.io-db.csv
+
+source "$(dirname "$0")/../../../scripts/t2utils.sh"
+
+usage() {
+    printf "Usage:\n"
+    printf "    $SNAME [OPTION...]\n\n"
+    printf "Optional arguments:\n"
+    printf "    -u      update manuf\n"
+    printf "    -c      convert manuf to manuf.txt\n"
+    printf "    -a      update and convert manuf\n"
+    printf "    -h      display this help, then exit\n"
+}
+
+manuf_convert() {
+    echo "% count" > "$OUTFILE"
+    AWKF '
+        NF > 1 && $1 ~ /^[0-9A-Fa-f]{2}(:[0-9A-Fa-f]{2}){2}$/{
+            split($1, m, ":")
+            sname = $2
+            if (NF == 2) {
+                lname = sname
+            } else if (NF == 3) {
+                lname = $3
+            } else {
+                lname = $3
+                for (i = 4; i <= NF && $i !~ /^#/; i++) {
+                    lname = lname " " $i
+                }
+            }
+            printf "0x%s%s%s\t%s\t%s\n", m[1], m[2], m[3], sname, lname
+        }
+        #$1 ~ /^[0-9A-Fa-f]{2}(:[0-9A-Fa-f]{2}){5}\/[0-9]{2}$/ {
+        #    # TODO
+        #}
+    ' "$INFILE" | AWKF '{ print strtonum($1), $1, $2, $3 }' |
+        sort -nk1 | uniq |
+        AWKF '{ print $2, $3, $4 }' >> "$OUTFILE"
+    local ret=$?
+    if [ "$ret" -eq 0 ]; then
+        local nmanuf=$(wc -l "$OUTFILE" | AWK '{ print $1 }')
+        if [ "$nmanuf" -le 1 ]; then
+            local cause="no manufacturers found"
+            ret=1
+        else
+            "$SED" -i "1s/count/$((nmanuf - 1))/" "$OUTFILE"
+            ret=$?
+        fi
+    fi
+
+    local base_in="$(basename "$INFILE")"
+    local base_out="$(basename "$OUTFILE")"
+
+    if [ "$ret" -ne 0 ]; then
+        local msg="Failed to convert '$base_in' to '$base_out'"
+        [ -n "$cause" ] && msg="$msg: $cause"
+        printerr "$msg"
+        exit 1
+    fi
+
+    printok "'$base_in' successfully converted to '$base_out'"
+}
+
+manuf_update() {
+    local tmp=$(mktemp)
+    if ! t2_wget "https://gitlab.com/wireshark/wireshark/raw/master/$INFILE" "$tmp"; then
+        [ -f "$tmp" ] && rm -f "$tmp"
+        printerr "Failed to update '$INFILE'"
+        exit 1
+    fi
+
+    mv "$tmp" "$INFILE"
+    printok "'$INFILE' successfully updated"
+}
+
+if [ $# -eq 0 ]; then
+    printerr "One of '-a', '-u' or '-c' option is required"
+    abort_with_help
+fi
+
+cd "$(dirname "$0")" || fatal "Failed to cd into '$(dirname "$0")'"
+
+INFILE="manuf"
+OUTFILE="../${INFILE}.txt"
+
+while [ $# -gt 0 ]; do
+    case "$1" in
+        -a|--all)
+            UPDATE=1
+            CONVERT=1
+            ;;
+        -u|--update)
+            UPDATE=1
+            ;;
+        -c|--convert)
+            CONVERT=1
+            ;;
+        -h|-\?|--help)
+            usage
+            exit 0
+            ;;
+        *)
+            abort_option_unknown "$1"
+            ;;
+    esac
+    shift
+done
+
+if [ -n "$UPDATE" ]; then
+    manuf_update
+fi
+
+if [ -n "$CONVERT" ]; then
+    manuf_convert
+fi

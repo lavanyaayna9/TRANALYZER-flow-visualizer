@@ -1,0 +1,6 @@
+-- Return the maximum value of timeLast as a Unix timestamp
+
+SELECT
+    toUnixTimestamp64Micro(MAX("timeLast")) / 1000000
+FROM
+    flow

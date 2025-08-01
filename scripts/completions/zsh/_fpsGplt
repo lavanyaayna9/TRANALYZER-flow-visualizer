@@ -1,0 +1,31 @@
+# ZSH completion for fpsGplt
+
+_fpsGplt() {
+    #compdef fpsGplt
+
+    local cur="${words[CURRENT]}"
+    [ $CURRENT -gt 2 ] && local prev="${words[CURRENT-1]}"
+
+    case "$prev" in
+        -d)
+            local dirs=(A B)
+            compadd "${dirs[@]}"
+            return
+            ;;
+        -e|-f|-p)
+            return
+            ;;
+        --gif|--jpeg|--png|--svg)
+            _files
+            return
+            ;;
+    esac
+
+    if [[ "$cur" == -* ]]; then
+        _arguments --
+    else
+        _files
+    fi
+}
+
+compdef _fpsGplt fpsGplt

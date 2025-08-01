@@ -1,0 +1,33 @@
+-- Top DNS Second-Level Domains (SLD)
+
+SELECT
+    sld,
+    COUNT(*) AS cnt
+
+FROM (
+    SELECT
+        UNNEST("dnsQname") as query,
+        LOWER((string_to_array(UNNEST("dnsQname"), '.'))[array_length((string_to_array(UNNEST("dnsQname"), '.')), 1)-1])
+        || '.' || -- concatenate using '.'
+        LOWER((string_to_array(UNNEST("dnsQname"), '.'))[array_length((string_to_array(UNNEST("dnsQname"), '.')), 1)])
+        AS sld
+    FROM
+        flow
+    WHERE
+        ARRAY_LENGTH("dnsQname", 1) > 0
+        AND ("flowStat"::BIGINT & 1) = 0::BIGINT     -- A flows only
+        AND ("dnsStat" & x'12'::INT) = 0::INT        -- Ignore NBNS and truncated entries
+        AND "timeFirst" >= to_timestamp(:time_from)
+        AND "timeLast" <= to_timestamp(:time_to)
+) AS flows
+
+WHERE
+    query ~ '[^\.]\.[^\.]{2,}$'
+    AND sld !~ '\.[0-9]*$'
+    AND sld !~ '\..*[:-].*$'
+    AND sld !~ '^\.'
+
+GROUP BY sld
+ORDER BY cnt :sort_order
+
+LIMIT :n

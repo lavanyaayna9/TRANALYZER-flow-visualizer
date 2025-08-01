@@ -1,0 +1,43 @@
+#!/usr/bin/env bash
+
+source "$(dirname "${0}")/../../../scripts/t2utils.sh"
+
+usage() {
+    echo "Usage:"
+    echo "    $SNAME [OPTION...] <FINDEXFILE>"
+    echo
+    echo "Optional arguments:"
+    echo "    -h, --help        Show this help, then exit"
+}
+
+while [ $# -ne 0 ]; do
+    case "$1" in
+        -h|-\?|--help)
+            usage
+            exit 0
+            ;;
+        *)
+            if [ ! -f "$1" ]; then
+                abort_option_unknown "$1"
+            fi
+            INFILE="$1"
+            ;;
+    esac
+    shift
+done
+
+if [ ! -f "$INFILE" ]; then
+    abort_required_file
+fi
+
+OUTPREF="${INFILE%.*}H"
+
+PD_LBSRCH=$(get_define PD_LBSRCH ../src/pcapd.h)
+if [ "$PD_LBSRCH" -eq 1 ]; then
+    if [ ! -x "$SHOME/pfb" ]; then
+        make -C "$SHOME" || fatal "Failed to build pfb"
+    fi
+    AWKF '/^[0-9]/' "$INFILE" | sort -n | uniq | "$SHOME/pfb" "$OUTPREF.bin"
+else
+    AWKF '/^[0-9]/' "$INFILE" | sort -n | uniq > "$OUTPREF.txt"
+fi

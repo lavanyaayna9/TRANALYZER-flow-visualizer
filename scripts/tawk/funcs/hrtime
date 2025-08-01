@@ -1,0 +1,95 @@
+#!/usr/bin/env awk
+#
+# Convert timestamps (seconds) to human readable form, e.g., 123 -> 2m 3s.
+#
+# Parameters:
+#   - secs   : the timestamp to convert
+#   - [mode] : 0: short (2m 5s)
+#              1: long  (125s (2m 5s))
+#              2: raw   (125s)
+#   - [unit] : 0: short  (y, d, h, m, s)
+#              1: medium (yr, days, hr, min, sec)
+#              2: long   (years, days, hours, minutes, seconds)
+#
+# Dependencies:
+#   - None
+#
+# See also:
+#   - hrnum
+#
+# Examples:
+#   - tawk '{ print hrtime($duration) }' file.txt        # 123 -> 2m 3s
+#   - tawk '{ print hrtime($duration, 1) }' file.txt     # 123 -> 123s (2m 3s)
+#   - tawk '{ print hrtime($duration, 2) }' file.txt     # 123 -> 123s
+#   - tawk '{ print hrtime($duration, 0, 1) }' file.txt  # 123 -> 2 min 3 sec
+#   - tawk '{ print hrtime($duration, 1, 1) }' file.txt  # 123 -> 123 sec (2 min 3 sec)
+#   - tawk '{ print hrtime($duration, 2, 1) }' file.txt  # 123 -> 123 sec
+#   - tawk '{ print hrtime($duration, 0, 2) }' file.txt  # 123 -> 2 minutes 3 seconds
+#   - tawk '{ print hrtime($duration, 1, 2) }' file.txt  # 123 -> 123 seconds (2 minutes 3 seconds)
+#   - tawk '{ print hrtime($duration, 2, 2) }' file.txt  # 123 -> 123 seconds
+
+@include "isnum"
+
+function hrtime(secs, mode, unit,        _hr, _units, _years, _days, _hours, _mins, _secs) {
+    if (!isnum(secs)) return secs
+
+    if (unit == 2) {
+        _units["y"] = " years"
+        _units["d"] = " days"
+        _units["h"] = " hours"
+        _units["m"] = " minutes"
+        _units["s"] = " seconds"
+    } else if (unit == 1) {
+        _units["y"] = " yr"
+        _units["d"] = " days"
+        _units["h"] = " hr"
+        _units["m"] = " min"
+        _units["s"] = " sec"
+    } else {
+        _units["y"] = "y"
+        _units["d"] = "d"
+        _units["h"] = "h"
+        _units["m"] = "m"
+        _units["s"] = "s"
+    }
+
+    if (mode == 2 || secs < 60) {
+        return secs _units["s"]
+    }
+
+    _years = int(secs / 3600. / 24. / 365.)
+    _days  = int(secs / 3600. / 24. - _years * 365)
+    _hours = int(secs / 3600. - _years * 365 * 24 - _days * 24)
+    _mins  = int(secs / 60. - _hours * 60 - _days * 24 * 60 - _years * 365 * 24 * 60)
+    _secs  = int(secs % 60)
+
+    if (_years) {
+        _hr = _years _units["y"]
+    }
+
+    if (_days) {
+        if (_years) _hr = _hr " "
+        _hr = _hr _days _units["d"]
+    }
+
+    if (_hours) {
+        if (_years || _days) _hr = _hr " "
+        _hr = _hr _hours _units["h"]
+    }
+
+    if (_mins) {
+        if (_years || _days || _hours) _hr = _hr " "
+        _hr = _hr _mins _units["m"]
+    }
+
+    if (_secs) {
+        if (_years || _days || _hours || _mins) _hr = _hr " "
+        _hr = _hr _secs _units["s"]
+    }
+
+    if (mode == 1) {
+        _hr = secs _units["s"] " (" _hr ")"
+    }
+
+    return _hr
+}

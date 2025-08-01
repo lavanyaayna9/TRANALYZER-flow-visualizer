@@ -1,0 +1,194 @@
+\IfFileExists{t2doc.cls}{
+    \documentclass[documentation]{subfiles}
+}{
+    \errmessage{Error: could not find 't2doc.cls'}
+}
+
+\begin{document}
+
+% Declare author and title here, so the main document can reuse it
+\trantitle
+    {ntlmsspDecode} % Plugin name
+    {NT LAN Manager (NTLM) Security Support Provider (NTLMSSP)} % Short description
+    {Tranalyzer Development Team} % author(s)
+
+\section{ntlmsspDecode}\label{s:ntlmsspDecode}
+
+\subsection{Description}
+The ntlmsspDecode plugin analyzes the NT LAN Manager (NTLM) Security Support Provider (NTLMSSP) protocol.
+
+\subsection{Configuration Flags}
+The following flags can be used to control the output of the plugin:
+\begin{longtable}{>{\tt}lcl>{\tt\small}l}
+    \toprule
+    {\bf Name} & {\bf Default} & {\bf Description} & {\bf Flags}\\
+    \midrule\endhead%
+    NTLMSSP\_CLI\_CHALL     & 0  & Output client challenge                  & \\
+    NTLMSSP\_DNS            & 1  & Output DNS computer/domain/tree name     & \\
+    NTLMSSP\_NETBIOS        & 1  & Output NetBIOS computer/domain name      & \\
+    NTLMSSP\_VERSION        & 2  & Output format for the version:           & \\
+                            &    & \qquad 0: do not output the version      & \\
+                            &    & \qquad 1: output the version as string   & \\
+                            &    & \qquad 2: major\_minor\_build\_revision  & \\
+    NTLMSSP\_NAME\_LEN      & 64 & Max length for string output             & \\
+    NTLMSSP\_SAVE\_AUTH\_V1 & 1  & Extract NetNTLMv1 hashes                 & \\
+    NTLMSSP\_SAVE\_AUTH\_V2 & 1  & Extract NetNTLMv2 hashes                 & \\
+    NTLMSSP\_SAVE\_INFO     & 0  & Add flow information in the hashes files & NTLMSSP\_SAVE\_AUTH\_V1=1||\\
+                            &    &                                          & NTLMSSP\_SAVE\_AUTH\_V2=1\\
+    \bottomrule
+\end{longtable}
+
+The suffix used for the NetNTLMv[12] hashes files is controlled by:
+\begin{itemize}
+    \item {\tt NTLMSSP\_AUTH\_V1\_FILE} (default to {\tt "\_NetNTLMv1.txt"}) for NetNTLMv1
+    \item {\tt NTLMSSP\_AUTH\_V2\_FILE} (default to {\tt "\_NetNTLMv2.txt"}) for NetNTLMv2
+\end{itemize}
+
+\subsubsection{Environment Variable Configuration Flags}
+The following configuration flags can also be configured with environment variables ({\tt ENVCNTRL>0}):
+\begin{itemize}
+    \item {\tt NTLMSSP\_AUTH\_V1\_FILE}
+    \item {\tt NTLMSSP\_AUTH\_V2\_FILE}
+\end{itemize}
+
+\subsection{Flow File Output}
+The ntlmsspDecode plugin outputs the following columns:
+\begin{longtable}{>{\tt}lll>{\tt\small}l}
+    \toprule
+    {\bf Column} & {\bf Type} & {\bf Description} & {\bf Flags}\\
+    \midrule\endhead%
+    \nameref{ntlmsspStat}           & H8           & Status                        & \\
+    ntlmsspTarget                   & STRC         & Target name                   & \\
+    ntlmsspDomain                   & STRC         & Domain name                   & \\
+    ntlmsspUser                     & STRC         & Username                      & \\
+    ntlmsspHost                     & STRC         & Host/workstation              & \\
+    \nameref{ntlmsspNegotiateFlags} & H32          & Negotiate Flags               & \\
+    ntlmsspServChallenge            & STRC         & Server challenge              & \\
+    ntlmsspNTProofStr               & STRC         & NT proof string               & \\
+    ntlmsspCliChallenge             & STRC         & Client challenge              & NTLMSSP\_CLI\_CHALL=1\\
+    ntlmsspSessKey                  & STRC         & Session key                   & \\
+    ntlmsspVersion                  & STR          & Version                       & NTLMSSP\_VERSION=1\\
+    ntlmsspVersionMajor\_           & U8\_         & Major Version,                & NTLMSSP\_VERSION=2\\
+    \qquad Minor\_                  & \qquad U8\_  & \qquad Minor Version,         & \\
+    \qquad Build\_                  & \qquad U16\_ & \qquad Build Number and       & \\
+    \qquad Rev                      & \qquad U8    & \qquad NTLM Current Revision) & \\
+    ntlmsspNbComputer               & STRC         & NetBIOS computer name         & NTLMSSP\_NETBIOS=1\\
+    ntlmsspNbDomain                 & STRC         & NetBIOS domain name           & NTLMSSP\_NETBIOS=1\\
+    ntlmsspDnsComputer              & STRC         & DNS computer name             & NTLMSSP\_DNS=1\\
+    ntlmsspDnsDomain                & STRC         & DNS domain name               & NTLMSSP\_DNS=1\\
+    ntlmsspDnsTree                  & STRC         & DNS tree name                 & NTLMSSP\_DNS=1\\
+    ntlmsspAttrTarget               & STRC         & Attribute Target Name         & \\
+    ntlmsspTimestamp                & U64.U32/S    & Timestamp                     & \\
+    \bottomrule
+\end{longtable}
+
+\subsubsection{ntlmsspStat}\label{ntlmsspStat}
+The {\tt ntlmsspStat} column is to be interpreted as follows:
+\begin{longtable}{>{\tt}rl}
+    \toprule
+    {\bf ntlmsspStat} & {\bf Description}\\
+    \midrule\endhead%
+    0x0\textcolor{magenta}{1} & Flow is NTLMSSP\\
+    0x0\textcolor{magenta}{2} & Flow contains Negotiate messages\\
+    0x0\textcolor{magenta}{4} & Flow contains Challenge messages\\
+    0x0\textcolor{magenta}{8} & Flow contains Authenticate messages\\
+    \\
+    0x\textcolor{magenta}{1}0 & NetNTLMv1 hash was extracted for this flow\\
+    0x\textcolor{magenta}{2}0 & NetNTLMv2 hash was extracted for this flow\\
+    0x\textcolor{magenta}{4}0 & String output was truncated... increase {\tt NTLMSSP\_NAME\_LEN}\\
+    0x\textcolor{magenta}{8}0 & Decoding error, invalid message type, ...\\
+    \bottomrule
+\end{longtable}
+
+\subsubsection{ntlmsspNegotiateFlags}\label{ntlmsspNegotiateFlags}
+The {\tt ntlmsspNegotiateFlags} column is to be interpreted as follows:
+\begin{longtable}{>{\tt}r>{\tt}l}
+    \toprule
+    {\bf ntlmsspNegotiateFlags} & {\bf Description}\\
+    \midrule\endhead%
+    $2^{0}$  (=0x00000001) & NTLMSSP\_NEGOTIATE\_UNICODE\\
+    $2^{1}$  (=0x00000002) & NTLMSSP\_NEGOTIATE\_OEM\\
+    $2^{2}$  (=0x00000004) & NTLMSSP\_REQUEST\_TARGET\\
+    $2^{3}$  (=0x00000008) & NTLMSSP\_NEGOTIATE\_00000008 \textnormal{(Reserved, MUST be 0)}\\
+    \\
+    $2^{4}$  (=0x00000010) & NTLMSSP\_NEGOTIATE\_SIGN\\
+    $2^{5}$  (=0x00000020) & NTLMSSP\_NEGOTIATE\_SEAL\\
+    $2^{6}$  (=0x00000040) & NTLMSSP\_NEGOTIATE\_DATAGRAM\\
+    $2^{7}$  (=0x00000080) & NTLMSSP\_NEGOTIATE\_LM\_KEY\\
+    \\
+    $2^{8}$  (=0x00000100) & NTLMSSP\_NEGOTIATE\_00000100 \textnormal{(Reserved, MUST be 0)}\\
+    $2^{9}$  (=0x00000200) & NTLMSSP\_NEGOTIATE\_NTLM\\
+    $2^{10}$ (=0x00000400) & NTLMSSP\_NEGOTIATE\_NT\_ONLY \textnormal{(Reserved, MUST be 0?)}\\
+    $2^{11}$ (=0x00000800) & NTLMSSP\_NEGOTIATE\_ANONYMOUS\\
+    \\
+    $2^{12}$ (=0x00001000) & NTLMSSP\_NEGOTIATE\_OEM\_DOMAIN\_SUPPLIED\\
+    $2^{13}$ (=0x00002000) & NTLMSSP\_NEGOTIATE\_OEM\_WORKSTATION\_SUPPLIED\\
+    $2^{14}$ (=0x00004000) & NTLMSSP\_NEGOTIATE\_00004000 \textnormal{(Reserved, MUST be 0)}\\
+    $2^{15}$ (=0x00008000) & NTLMSSP\_NEGOTIATE\_ALWAYS\_SIGN\\
+    \\
+    $2^{16}$ (=0x00010000) & NTLMSSP\_TARGET\_TYPE\_DOMAIN\\
+    $2^{17}$ (=0x00020000) & NTLMSSP\_TARGET\_TYPE\_SERVER\\
+    $2^{18}$ (=0x00040000) & NTLMSSP\_TARGET\_TYPE\_SHARE \textnormal{(Reserved, MUST be 0?)}\\
+    $2^{19}$ (=0x00080000) & NTLMSSP\_NEGOTIATE\_EXTENDED\_SESSIONSECURITY\\
+    \\
+    $2^{20}$ (=0x00100000) & NTLMSSP\_NEGOTIATE\_IDENTIFY\\
+    $2^{21}$ (=0x00200000) & NTLMSSP\_NEGOTIATE\_00200000 \textnormal{(Reserved, MUST be 0)}\\
+    $2^{22}$ (=0x00400000) & NTLMSSP\_REQUEST\_NON\_NT\_SESSION\_KEY\\
+    $2^{23}$ (=0x00800000) & NTLMSSP\_NEGOTIATE\_TARGET\_INFO\\
+    \\
+    $2^{24}$ (=0x01000000) & NTLMSSP\_NEGOTIATE\_01000000 \textnormal{(Reserved, MUST be 0)}\\
+    $2^{25}$ (=0x02000000) & NTLMSSP\_NEGOTIATE\_VERSION\\
+    $2^{26}$ (=0x04000000) & NTLMSSP\_NEGOTIATE\_04000000 \textnormal{(Reserved, MUST be 0)}\\
+    $2^{27}$ (=0x08000000) & NTLMSSP\_NEGOTIATE\_08000000 \textnormal{(Reserved, MUST be 0)}\\
+    \\
+    $2^{28}$ (=0x10000000) & NTLMSSP\_NEGOTIATE\_10000000 \textnormal{(Reserved, MUST be 0)}\\
+    $2^{29}$ (=0x20000000) & NTLMSSP\_NEGOTIATE\_128\\
+    $2^{30}$ (=0x40000000) & NTLMSSP\_NEGOTIATE\_KEY\_EXCH\\
+    $2^{31}$ (=0x80000000) & NTLMSSP\_NEGOTIATE\_56\\
+    \bottomrule
+\end{longtable}
+
+\subsection{Plugin Report Output}
+The following information is reported:
+\begin{itemize}
+    \item Aggregated {\tt\nameref{ntlmsspStat}}
+    \item Number of NTLMSSP packets
+    \item Number of NetNTLMv1 hashes extracted ({\tt NTLMSSP\_SAVE\_AUTH\_V1=1})
+    \item Number of NetNTLMv2 hashes extracted ({\tt NTLMSSP\_SAVE\_AUTH\_V2=1})
+\end{itemize}
+
+\subsection{Additional Output}
+The following non-standard files are produced:
+\begin{itemize}
+    \item {\tt PREFIX\_NetNTLMv1.txt}: NetNTLMv1 hashes ({\tt NTLMSSP\_SAVE\_AUTH\_V1=1})
+    \item {\tt PREFIX\_NetNTLMv2.txt}: NetNTLMv2 hashes ({\tt NTLMSSP\_SAVE\_AUTH\_V2=1})
+\end{itemize}
+
+\clearpage
+
+\subsection{Post-Processing}
+
+\subsubsection{NTLMSSP Authentications}
+When {\tt NTLMSSP\_SAVE\_AUTH\_V1=1} or {\tt NTLMSSP\_SAVE\_AUTH\_V1=1}, the plugin produces file(s) with suffix defined by
+{\tt NTLMSSP\_AUTH\_V1\_FILE} and {\tt NTLMSSP\_AUTH\_V2\_FILE} containing all the NetNTLMv1 and NetNTLMv2 hashes extracted from the traffic.
+The hashes can then be reversed using JohnTheRipper\footnote{\url{https://github.com/magnumripper/JohnTheRipper}} or Hashcat\footnote{\url{https://hashcat.net}} as follows:
+
+\begin{itemize}
+    \item NetNTLMv1:
+        \begin{itemize}
+            \item {\tt john --{}--wordlist=password.lst --format=netntlm FILE\_NetNTLMv1.txt}\\
+            \item {\tt hashcat --m 5500 FILE\_NetNTLMv1.txt wordlist.txt --{}--show}
+        \end{itemize}
+    \item NetNTLMv2:
+        \begin{itemize}
+            \item {\tt john --{}--wordlist=password.lst --format=netntlmv2 FILE\_NetNTLMv2.txt}\\
+            \item {\tt hashcat --m 5600 FILE\_NetNTLMv2.txt wordlist.txt --{}--show}
+        \end{itemize}
+\end{itemize}
+
+\subsection{References}
+\begin{itemize}
+    \item \href{https://docs.microsoft.com/en-us/openspecs/windows_protocols/ms-nlmp}{[MS-NLMP]: NT LAN Manager (NTLM) Authentication Protocol}
+\end{itemize}
+
+\end{document}

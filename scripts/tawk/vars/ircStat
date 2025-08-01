@@ -1,0 +1,11 @@
+#H bit | ircStat | Description
+#H =============================================================================
+     0 | 0x01    | IRC port found
+     1 | 0x02    | IRC registration successful
+#W   2 | 0x04    | IRC password incorrect
+     3 | 0x08    | -
+
+#W   4 | 0x10    | Unrecognized IRC command
+#E   5 | 0x20    | File error (IRC_SAVE == 1)
+#W   6 | 0x40    | Array, string or filename overflow
+#E   7 | 0x80    | Invalid format or parsing error

@@ -1,0 +1,182 @@
+\IfFileExists{t2doc.cls}{
+    \documentclass[documentation]{subfiles}
+}{
+    \errmessage{Error: could not find 't2doc.cls'}
+}
+
+\begin{document}
+
+\trantitle
+    {psqlSink} % Plugin name
+    {PostgreSQL} % Short description
+    {Tranalyzer Development Team} % author(s)
+
+\section{psqlSink}\label{s:psqlSink}
+
+\subsection{Description}
+The psqlSink plugin outputs flows to a PostgreSQL database.
+
+\subsection{Dependencies}
+
+\subsubsection{External Libraries}
+This plugin depends on the {\bf libpq} library.
+\begin{table}[!ht]
+    \centering
+    \begin{tabular}{>{\bf}r>{\tt}l>{\tt}l>{\tt}l}
+        \toprule
+        %                             &                      &                 \\
+        %\midrule
+        Ubuntu:                      & sudo apt-get install & libpq-dev       \\
+        Arch:                        & sudo pacman -S       & postgresql-libs \\
+        Gentoo:                      & sudo emerge          & postgresql      \\
+        openSUSE:                    & sudo zypper install  & postgresql-devel\\
+        Red Hat/Fedora\tablefootnote{If the {\tt dnf} command could not be found, try with {\tt yum} instead}:
+                                     & sudo dnf install     & libpq-devel     \\
+        macOS\tablefootnote{Brew is a packet manager for macOS that can be found here: \url{https://brew.sh}}:
+                                     & brew install         & postgresql      \\
+        \bottomrule
+    \end{tabular}
+\end{table}
+
+\subsubsection{Core Configuration}
+This plugin requires the following core configuration:
+\begin{itemize}
+    \item {\em \$T2HOME/tranalyzer2/src/tranalyzer.h}:
+        \begin{itemize}
+            \item {\tt BLOCK\_BUF=0}
+        \end{itemize}
+\end{itemize}
+
+\subsection{Database Initialization}
+
+The psqlSink plugin requires a PostgreSQL server running on {\tt PSQL\_HOST}, e.g., {\tt 127.0.0.1} on port {\tt PSQL\_PORT}, e.g., 5432.
+In addition, a user with name {\tt PSQL\_USER}, e.g., {\tt postgres}, and password {\tt PSQL\_PASS}, e.g., {\tt postgres} {\bf MUST} exist and be allowed to create databases. This can be achieved with the following commands:\\
+
+\begin{minipage}{.48\textwidth}
+{\bf Linux:} {\tt \$ sudo -u postgres psql}\\
+\end{minipage}
+\hfill
+\begin{minipage}{.48\textwidth}
+{\bf macOS:} {\tt \$ psql postgres}\\
+\end{minipage}
+
+\noindent
+{\tt postgres=\# \textcolor{darkblue}{CREATE ROLE} postgres \textcolor{darkblue}{WITH LOGIN PASSWORD} '\textcolor{cyan}{postgres}';}\\
+{\tt CREATE ROLE}\\
+{\tt postgres=\# \textcolor{darkblue}{ALTER ROLE} postgres \textcolor{darkblue}{CREATEDB};}\\
+{\tt ALTER ROLE}
+
+\subsection{Configuration Flags}
+The following flags can be used to control the output of the plugin:
+\begin{longtable}{>{\tt}lcl}
+    \toprule
+    {\bf Name} & {\bf Default} & {\bf Description}\\
+    \midrule\endhead%
+    PSQL\_OVERWRITE\_DB       & 2                        & 0: abort if DB already exists\\
+                              &                          & 1: overwrite DB if it already exists\\
+                              &                          & 2: reuse DB if it already exists\\
+    PSQL\_OVERWRITE\_TABLE    & 2                        & 0: abort if table already exists\\
+                              &                          & 1: overwrite table if it already exists\\
+                              &                          & 2: append to table if it already exists\\
+    PSQL\_TRANSACTION\_NFLOWS & 40000                    & 0: one transaction\\
+                              &                          & > 0: one transaction every $n$ flows\\
+    PSQL\_QRY\_LEN            & 32768                    & Max length for query\\
+    PSQL\_HOST                & {\tt\small "127.0.0.1"}  & Address of the database\\
+    PSQL\_PORT                & 5432                     & Port of the database\\
+    PSQL\_USER                & {\tt\small "postgres"}   & Username to connect to DB\\
+    PSQL\_PASS                & {\tt\small "postgres"}   & Password to connect to DB\\
+    PSQL\_DBNAME              & {\tt\small "tranalyzer"} & Name of the database\\
+    PSQL\_TABLE\_NAME         & {\tt\small "flow"}       & Name of the table\\
+    \\
+    \hyperref[psql:select]{PSQL\_SELECT}
+                              & 0                        & Only insert specific fields into the DB\\
+    \hyperref[psql:select]{PSQL\_SELECT\_FILE}
+                              & {\small\tt "psql-columns.txt"}
+                                                   & Filename of the field selector (one column name per line)\\
+    \bottomrule
+\end{longtable}
+
+\subsubsection{Environment Variable Configuration Flags}
+The following configuration flags can also be configured with environment variables ({\tt ENVCNTRL>0}):
+\begin{itemize}
+    \item {\tt PSQL\_HOST}
+    \item {\tt PSQL\_PORT}
+    \item {\tt PSQL\_USER}
+    \item {\tt PSQL\_PASS}
+    \item {\tt PSQL\_DBNAME}
+    \item {\tt PSQL\_TABLE\_NAME}
+    \item {\tt PSQL\_SELECT\_FILE} (require {\tt PSQL\_SELECT=1})
+\end{itemize}
+
+\subsection{Insertion of Selected Fields Only}\label{psql:select}
+
+When {\tt PSQL\_SELECT=1}, the columns to insert into the DB can be customized with the help of {\tt PSQL\_SELECT\_FILE}.
+The filename defaults to {\tt psql-columns.txt} in the user plugin folder, e.g., {\em \textasciitilde{}/.tranalyzer/plugins}.
+The format of the file is simply one field name per line with lines starting with a {\tt `\#'} being ignored.
+For example, to only insert source and destination addresses and ports, create the following file:
+
+\begin{verbatim}
+# Lines starting with a '#' are ignored and can be used to add comments
+srcIP
+srcPort
+dstIP
+dstPort
+\end{verbatim}
+
+\subsection{Post-Processing}
+The following queries can be used to analyze bitfields in PostgreSQL:
+\begin{itemize}
+    \item Select all A flows:\\
+        \begin{ttfamily}
+            \textcolor{darkblue}{\bf SELECT} to\_hex(\textcolor{red}{"flowStat"}::\textcolor{darkblue}{bigint}), *\\
+            \textcolor{darkblue}{\bf FROM} flow\\
+            \textcolor{darkblue}{\bf WHERE} (\textcolor{red}{"flowStat"}::\textcolor{darkblue}{bigint} \& \textcolor{cyan}{1}) = \textcolor{cyan}{0}::\textcolor{darkblue}{bigint}
+        \end{ttfamily}
+    \item Select all IPv4 flows:\\
+        \begin{ttfamily}
+            \textcolor{darkblue}{\bf SELECT} *\\
+            \textcolor{darkblue}{\bf FROM} flow\\
+            \textcolor{darkblue}{\bf WHERE} (\textcolor{red}{"flowStat"}::\textcolor{darkblue}{bigint} \& x`\textcolor{red}{4000}'::\textcolor{darkblue}{bigint}) != \textcolor{cyan}{0}::\textcolor{darkblue}{bigint}
+        \end{ttfamily}
+    \item Select all IPv6 flows:\\
+        \begin{ttfamily}
+            \textcolor{darkblue}{\bf SELECT} to\_hex(\textcolor{red}{"flowStat"}::\textcolor{darkblue}{bigint}), *\\
+            \textcolor{darkblue}{\bf FROM} flow\\
+            \textcolor{darkblue}{\bf WHERE} (\textcolor{red}{"flowStat"}::\textcolor{darkblue}{bigint} \& x`\textcolor{red}{8000}'::\textcolor{darkblue}{bigint}) != \textcolor{cyan}{0}::\textcolor{darkblue}{bigint}
+        \end{ttfamily}
+\end{itemize}
+
+\subsection{Example}
+
+{\tt\color{blue} \# Run Tranalyzer}\\
+{\tt \$ t2 -r file.pcap}\\
+
+\noindent
+{\tt\color{blue} \# Connect to the PostgreSQL database}\\
+{\tt \$ psql -U postgres -d tranalyzer}\\
+
+\noindent
+{\tt\color{blue} \# Number of flows}\\
+{\tt tranalyzer=\# \textcolor{darkblue}{SELECT COUNT}(*) \textcolor{darkblue}{FROM} flow;}\\
+
+\noindent
+{\tt\color{blue} \# 10 first srcIP/dstIP pairs}\\
+{\tt tranalyzer=\# \textcolor{darkblue}{SELECT} \textcolor{red}{"srcIP"}, \textcolor{red}{"dstIP"} \textcolor{darkblue}{FROM} flow \textcolor{darkblue}{LIMIT} \textcolor{cyan}{10};}\\
+
+\noindent
+{\tt\color{blue} \# All flows from 1.2.3.4 to 1.2.3.5}\\
+{\tt tranalyzer=\# \textcolor{darkblue}{SELECT} * \textcolor{darkblue}{FROM} flow \textcolor{darkblue}{WHERE} \textcolor{red}{"srcIP"} = '\textcolor{cyan}{1.2.3.4}' \textcolor{darkblue}{AND} \textcolor{red}{"dstIP"} = '\textcolor{cyan}{1.2.3.5}';}\\
+
+\noindent
+For examples of more complex queries, have a look in {\tt \$T2HOME/scripts/t2fm/psql/}.
+
+\subsubsection{Clean up an existing database}
+
+{\tt\color{blue} \# Connect to the PostgreSQL database}\\
+{\tt \$ psql -U postgres}\\
+
+\noindent
+{\tt\color{blue} \# Drop the database}\\
+{\tt tranalyzer=\# \textcolor{darkblue}{DROP DATABASE} tranalyzer;}\\
+
+\end{document}

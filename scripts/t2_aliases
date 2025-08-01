@@ -1,0 +1,387 @@
+#!/usr/bin/env bash
+#
+# Aliases for Tranalyzer (tested with Bash and ZSH)
+#
+# Known issues:
+#   [ZSH]
+#       - alias lsx is already defined
+#         fix: type 'unalias lsx' before sourcing this file
+#
+# To activate these aliases, append the following lines to ~/.bashrc or
+# ~/.bash_aliases (make sure to replace ${T2HOME} with the actual path,
+# e.g., ${HOME}/tranalyzer2-0.9.3):
+#
+#      if [[ -f "${T2HOME}/scripts/t2_aliases" ]]; then
+#          . "${T2HOME}/scripts/t2_aliases"             # Note the leading '.'
+#      fi
+#
+# TODO
+#   - Improve ZSH/Bash completion
+#       - tawk: ignore '$' when completing variable names
+#       - describe options
+
+# To force deactivation of the completion, set HAS_COMPLETION to 0
+HAS_COMPLETION=1
+
+# Private functions
+
+_printerr() {
+    printf "\e[0;31m%b\e[0m\n" "${1}" >&2  # Red
+}
+
+_printok() {
+    printf "\e[0;32m%b\e[0m\n" "${1}"       # Green
+}
+
+_printwrn() {
+    printf "\e[0;33m%b\e[0m\n" "${1}" >&2   # Orange
+}
+
+_printinf() {
+    printf "\e[0;34m%b\e[0m\n" "${1}"       # Blue
+}
+
+# Required programs
+if [[ "$(uname)" == "Darwin" ]]; then
+    for i in gawk greadlink gsed pidof watch; do
+        if ! type "${i}" &> /dev/null; then
+            if [[ -n "${ZSH_VERSION}" ]]; then
+                deps="zsh-completions coreutils gawk gnu-sed pidof watch"
+            else
+                deps="bash-completion coreutils gawk gnu-sed pidof watch"
+            fi
+            _printerr "t2_aliases: missing dependencies: ${deps}"
+            _printinf "You may use homebrew to install them: brew install ${deps}"
+            return 1
+        fi
+    done
+    AWK="$(which gawk)"
+    OPEN="open"
+    READLINK="$(which greadlink)"
+    SED="$(which gsed)"
+else
+    for i in gawk readlink sed; do
+        deps="coreutils gawk sed"
+        if ! type "${i}" &> /dev/null; then
+            if hash apt-get 2> /dev/null; then
+                pgrmname="apt-get"
+                pgrmcmd="apt-get install"
+            elif hash pacman 2> /dev/null; then
+                pgrmname="pacman"
+                pgrmcmd="pacman -S"
+            elif hash yum 2> /dev/null; then
+                pgrmname="yum"
+                pgrmcmd="yum install"
+            else
+                pgrmname="your package utility"
+            fi
+            [[ -n "${pgrmcmd}" ]] && pgrmcmd=": ${pgrmcmd} ${deps}"
+            _printerr "t2_aliases: missing dependencies: ${deps}"
+            _printinf "You may use ${pgrmname} to install them${pgrmcmd}"
+            return 1
+        fi
+    done
+    AWK="$(which gawk)"
+    OPEN="$(which xdg-open)"
+    READLINK="$(which readlink)"
+    SED="$(which sed)"
+fi
+
+# Set T2HOME
+if [[ -n "${ZSH_VERSION}" ]]; then
+    T2HOME="$(dirname "$("${READLINK}" -f "${(%):-%x}")")/.."
+else
+    T2HOME="$(dirname "$("${READLINK}" -f "${BASH_SOURCE[0]}")")/.."
+fi
+T2HOME="$("${READLINK}" -f "${T2HOME}")"
+
+export T2HOME
+export T2PLHOME="${T2HOME}/plugins"
+export PYTHONPATH="${PYTHONPATH}:${T2HOME}/scripts/"
+
+_t2_build_exec() {
+    local exec="${1}"
+    if [[ -z "${exec}" ]]; then
+        _printerr "Usage: _t2_build_exec /path/to/exec"
+        return 1
+    fi
+    local exec_home
+    local exec_name
+    exec_home="$(dirname "${exec}")"
+    exec_name="$(basename "${exec}")"
+    if [[ ! -d "${exec_home}" || -z "${exec_name}" ]]; then
+        _printerr "_t2_build_exec(): failed to extract exec_home and/or exec_name from '${exec}'"
+        return 1
+    fi
+    if [[ ! -f "${exec}" ]]; then
+        printf "\e[1;33m'%s'\e[0;33m executable does not exist... build it (Y/n)?\e[0m " "${exec_name}"
+        local ans
+        read -r ans
+        case "${ans}" in
+            [Nn]|[Nn][Oo]) return 1;;
+            *) ;;
+        esac
+        make -C "${exec_home}" || return 1
+        tput clear
+    fi
+}
+
+_find_t2() {
+    local _t2
+    local builddir="${1:-build}"
+    local buildpath="${T2HOME}/tranalyzer2/${builddir}"
+    if [[ -d "${buildpath}" ]]; then
+        find "${buildpath}" -type f -name tranalyzer | head -1
+    fi
+}
+
+# $1: pass --debug to build in debug mode
+_build_t2() {
+    local opts="${1}"
+    local builddir
+    if [[ "${opts}" == "--debug" ]]; then
+        builddir="debug"
+    else
+        builddir="build"
+    fi
+    local _t2
+    _t2="${T2HOME}/tranalyzer2/${builddir}/tranalyzer"
+    if [[ ! -f "${_t2}" ]]; then
+        printf "\e[1;33m'tranalyzer'\e[0;33m executable does not exist... build it (Y/n)?\e[0m "
+        local ans
+        read -r ans
+        case "${ans}" in
+            [Nn]|[Nn][Oo]) return 1;;
+            *) ;;
+        esac
+        "${T2HOME}/tranalyzer2/autogen.sh" ${opts} || return 1
+        tput clear
+    fi
+}
+
+# Tranalyzer
+tranalyzer() {
+    local _t2
+    _t2="$(_find_t2)"
+    if [[ -z "${_t2}" ]]; then
+        _build_t2
+        _t2="$(_find_t2)"
+        [[ -z "${_t2}" ]] && return 1
+    fi
+    "${_t2}" "${@}"
+}
+
+alias t2="tranalyzer"
+
+gt2() {
+    # TODO favour t2 exec in debug folder?
+    local _t2
+    _t2="$(_find_t2 "debug")"
+    if [[ -z "${_t2}" ]]; then
+        _build_t2 "--debug"
+        _t2="$(_find_t2 "debug")"
+        [[ -z "${_t2}" ]] && return 1
+    fi
+    if [[ "$(uname)" == "Darwin" ]]; then
+        lldb -- "${_t2}" "${@}"
+    else
+        gdb --args "${_t2}" "${@}"
+    fi
+}
+
+st2() {
+    local _t2
+    _t2="$(_find_t2)"
+    if [[ -z "${_t2}" ]]; then
+        _build_t2
+        _t2="$(_find_t2)"
+        [[ -z "${_t2}" ]] && return 1
+    fi
+    sudo "${_t2}" -p "${HOME}/.tranalyzer/plugins/" "${@}"
+}
+
+# Navigation aliases
+alias tran="cd ${T2HOME}"
+alias tranpl="cd ${T2PLHOME}"
+alias .tran="cd ${HOME}/.tranalyzer/plugins/"
+
+# Access every plugin folder by its name,
+# e.g., tcpFlags instead of cd ${T2PLHOME}/tcpFlags
+for i in "${T2HOME}/tranalyzer2" "${T2PLHOME}/"*; do
+    b="$(basename "${i}")"
+    if [[ -f "${i}/autogen.sh" ]]; then
+        alias "${b}"="cd ${i}"
+    fi
+done
+
+alias subnetutils="cd ${T2HOME}/utils/subnet"
+alias utils="cd ${T2HOME}/utils"
+
+# Make some scripts globally accessible
+alias fpsGplt="${T2HOME}/scripts/fpsGplt"
+alias protStat="${T2HOME}/scripts/protStat"
+alias statGplt="${T2HOME}/scripts/statGplt"
+alias t2build="${T2HOME}/autogen.sh"
+alias t2caplist="${T2HOME}/scripts/t2caplist"
+alias t2conf="${T2HOME}/scripts/t2conf/t2conf"
+alias t2dmon="${T2HOME}/scripts/t2dmon"
+alias t2doc="${T2HOME}/scripts/t2doc"
+alias t2docker="${T2HOME}/scripts/t2docker"
+alias t2dpdk="${T2HOME}/scripts/t2dpdk"
+alias t2flowstat="${T2HOME}/scripts/t2flowstat"
+alias t2fm="${T2HOME}/scripts/t2fm/t2fm"
+alias t2fuzz="${T2HOME}/scripts/t2fuzz"
+alias t2locate="${T2HOME}/scripts/t2locate/t2locate"
+alias t2netID="${T2HOME}/utils/subnet/t2netID"
+alias t2plot="${T2HOME}/scripts/t2plot"
+alias t2plugin="${T2HOME}/scripts/t2plugin"
+alias t2py="${T2HOME}/scripts/t2py/utils/t2py"
+alias t2rrd="${T2HOME}/scripts/t2rrd"
+alias t2stat="${T2HOME}/scripts/t2stat"
+alias t2test="${T2HOME}/tests/T2Tester.py"
+alias t2timeline="${T2HOME}/scripts/t2timeline"
+alias t2topcap="${T2PLHOME}/pcapd/utils/t2topcap"
+alias t2update="${T2HOME}/setup.sh -C"
+alias t2viz="${T2HOME}/scripts/t2viz"
+alias t2voipconv="${T2PLHOME}/voipDetector/t2voipconv"
+alias tawk="${T2HOME}/scripts/tawk/tawk"
+
+# Make some executables globally accessible
+fextractor() {
+    local fextractor="${T2PLHOME}/findexer/fextractor/fextractor"
+    _t2_build_exec "${fextractor}" || return 1
+    "${fextractor}" "${@}"
+}
+
+t2b2t() {
+    local t2b2t="${T2HOME}/utils/t2b2t/t2b2t"
+    _t2_build_exec "${t2b2t}" || return 1
+    "${t2b2t}" "${@}"
+}
+
+t2mmdb() {
+    local t2mmdb="${T2PLHOME}/geoip/utils/t2mmdb/t2mmdb"
+    _t2_build_exec "${t2mmdb}" || return 1
+    "${t2mmdb}" "${@}"
+}
+
+t2whois() {
+    local t2whois="${T2HOME}/utils/t2whois/t2whois"
+    _t2_build_exec "${t2whois}" || return 1
+    "${t2whois}" "${@}"
+}
+
+alias awkf="\"${AWK}\" -F'\t' -v OFS='\t'"
+alias sortu="sort | uniq -c | sort -rn"
+alias sortup="sort | uniq -c | sort -rn | \"${AWK}\" '{
+        cnt++
+        tot += \$1
+        val[cnt] = \$1
+        key[cnt] = \$2
+        for (i = 3; i <= NF; i++) {
+            key[cnt] = key[cnt] FS \$i
+        }
+    }
+    END {
+        for (i = 1; i <= cnt; i++) {
+            #printf \"%5.02f%%\t%s\t%s\n\", val[i] / tot * 100, val[i], key[i]
+            printf \"%5.02f%%\t%s\n\", val[i] / tot * 100, key[i]
+        }
+    }'"
+
+tcol() {
+    local ubuntu
+    if hash apt-get 2> /dev/null; then
+        ubuntu="-n -e"
+    fi
+
+    local less_opts
+    local less_version
+    less_version="$(less --version | "${AWK}" '{ print $2; exit }')"
+    if "${AWK}" '{ exit(!($1 >= 600)) }' <<< "${less_version}"; then
+        less_opts="--header=1"
+    fi
+
+    if [[ "${#}" -eq 0 ]]; then
+        column -t -s $'\t' ${ubuntu} | less ${less_opts} -S
+    else
+        column -t -s $'\t' ${ubuntu} "${@}" | less ${less_opts} -S
+    fi
+}
+
+# ZSH already defines an lsx alias
+if ! type lsx &> /dev/null; then
+    function lsx() {
+        local WIDTH=40
+        if [[ "${#}" -gt 0 && -z "$("${SED}" 's/^[0-9]\+$//' <<< "${1}")" ]]; then
+            WIDTH="${1}"
+            shift
+        fi
+
+        local less_opts
+        local less_version
+        less_version="$(less --version | "${AWK}" '{ print $2; exit }')"
+        if "${AWK}" '{ exit(!($1 >= 600)) }' <<< "${less_version}"; then
+            less_opts="--header=1"
+        fi
+
+        less ${less_opts} -RSx"${WIDTH}" "${@}"
+    }
+fi
+
+# Bash/ZSH completion
+_source_completions() {
+    local shell
+    if hash complete 2> /dev/null; then
+        shell="bash"
+    elif type compdef &> /dev/null; then
+        setopt complete_aliases
+        shell="zsh"
+    else
+        return
+    fi
+
+    source "${T2HOME}/scripts/tawk/completions/${shell}/_tawk"
+    source "${T2HOME}/scripts/t2fm/completions/${shell}/_t2fm"
+    for i in "${T2HOME}/scripts/completions/${shell}/_"*; do
+        source "${i}"
+    done
+}
+
+# Check for completion
+if [[ "${HAS_COMPLETION}" -eq 1 ]]; then
+    if hash complete 2> /dev/null || type compdef &> /dev/null; then
+        if [[ -n "${ZSH_VERSION}" ]] && "${AWK}" '{ exit(!($1 < 5.2)) }' <<< "${ZSH_VERSION}"; then
+            _printwrn "Your zsh version does not support tab completion"
+            HAS_COMPLETION=0
+        fi
+    else
+        _printwrn "No valid completion program found."
+        if [[ -n "${ZSH_VERSION}" ]]; then
+            _printinf "Try installing 'zsh-completions' with your package utility"
+        else
+            _printinf "Try installing 'bash-completion' with your package utility"
+        fi
+        HAS_COMPLETION=0
+    fi
+fi
+
+if [[ "${HAS_COMPLETION}" -eq 1 ]]; then
+    _source_completions
+fi
+
+# Cleanup
+unset ans
+unset b
+unset deps
+unset i
+unset pgrmcmd
+unset pgrmname
+unset HAS_COMPLETION
+unset READLINK
+unset _source_completions
+
+# Do not unset those variables: used in functions or completions
+#unset AWK
+#unset OPEN
+#unset SED

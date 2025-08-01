@@ -1,0 +1,5 @@
+#H smbShareT | Description
+#H =============================================================================
+        0x01 | Physical disk share
+        0x02 | Named pipe share
+        0x03 | Printer share

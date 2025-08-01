@@ -1,0 +1,131 @@
+#!/usr/bin/env bash
+#
+# Update and convert the JA3 fingerprints from
+# https://raw.githubusercontent.com/trisulnsm/ja3prints/master/ja3fingerprint.json
+
+source "$(dirname "$0")/../../../scripts/t2utils.sh"
+
+usage() {
+    printf "Usage:\n"
+    printf "    $SNAME [OPTION...]\n\n"
+    printf "Optional arguments:\n"
+    printf "    -u      update blacklist\n"
+    printf "    -c      convert blacklist\n"
+    printf "    -a      update and convert blacklist\n"
+    printf "    -f      file to convert\n"
+    printf "    -h      display this help, then exit\n"
+}
+
+ssl_ja3_json_convert() {
+    echo "% $(AWK '/^{/ { cnt++ } END { print cnt }' "$INFILE")" > "$OUTFILE"
+    "$PYTHON" -c '
+import json
+
+fingerprints = []
+with open("ja3fingerprint.json") as f:
+    for line in f:
+        line = line.strip()
+        if not line or line.startswith("#"):
+            continue
+        fingerprints.append(json.loads(line))
+
+for f in fingerprints:
+    print("{}\t{}".format(f["ja3_hash"], f["desc"]))
+    ' | sort >> "$OUTFILE"
+    return $?
+}
+
+ssl_ja3_csv_convert() {
+    local failed=0
+    local hdr="% $(AWK '/^[[:xdigit:]]{32},"/ { cnt++ } END { print cnt }' "$INFILE")"
+    AWK -F, -v OFS='\t' '/^[[:xdigit:]]{32},"/ { print $1, $2 }' "$INFILE" | sort > "$OUTFILE" || failed=1
+    $SED -i "1s/^/$hdr\n/" "$OUTFILE" || failed=1
+    return "$failed"
+}
+
+ssl_ja3_convert() {
+    local ext="$(AWK -F. -v OFS=. '{ print $NF }' <<< "$INFILE")"
+    if [ "$ext" = "csv" ]; then
+        ssl_ja3_csv_convert
+    elif [ "$ext" = "json" ]; then
+        ssl_ja3_json_convert
+        ssl_ja3_correct
+    else
+        printerr "Cannot determine format of input file (only *.csv and *.json are supported)"
+        exit 1
+    fi
+    if [ $? -eq 0 ]; then
+        printok "'$INFILE' successfully converted to '$OUTFILE'"
+    else
+        printerr "Failed to convert '$INFILE' to '$OUTFILE'"
+    fi
+}
+
+ssl_ja3_correct() {
+    local tmpfile="$(mktemp)"
+    AWK -F'\t' -v OFS='\t' '
+        $1 ~ /^2baf01616e930d378df97576e2686df3$/ && $2 ~ /^MSIE 8.0 & 9.0 Trident\/5.0)$/ {
+            $2 = "MSIE 8.0 & 9.0 Trident/5.0"
+        }
+        $1 ~ /^7b3b37883b5e80065b35f27888ed2b04$/ && $2 ~ /^MSIE 10.0 Trident\/6.0)$/ {
+            $2 = "MSIE 10.0 Trident/6.0"
+        }
+        {
+            print
+        }' "$OUTFILE" > "$tmpfile"
+    mv "$tmpfile" "$OUTFILE"
+}
+
+ssl_ja3_update() {
+    t2_wget_n "https://raw.githubusercontent.com/trisulnsm/ja3prints/master/$INFILE"
+    #t2_wget_n "https://raw.githubusercontent.com/trisulnsm/trisul-scripts/master/lua/frontend_scripts/reassembly/ja3/prints/$INFILE"
+    #t2_wget_n "https://raw.githubusercontent.com/salesforce/ja3/master/lists/osx-nix-ja3.csv"
+    if [ $? -eq 0 ]; then
+        printok "'$INFILE' successfully updated"
+    else
+        printerr "Failed to update '$INFILE'"
+        exit 1
+    fi
+}
+
+INFILE="ja3fingerprint.json"
+
+while [ $# -gt 0 ]; do
+    case "$1" in
+        -a|--all)
+            UPDATE=1
+            CONVERT=1
+            ;;
+        -u|--update)
+            UPDATE=1
+            ;;
+        -c|--convert)
+            CONVERT=1
+            ;;
+        -f|--file)
+            validate_next_file "$1" "$2"
+            INFILE="$($READLINK -f "$2")"
+            shift
+            ;;
+        -h|-\?|--help)
+            usage
+            exit 0
+            ;;
+        *)
+            abort_option_unknown "$1"
+            ;;
+    esac
+    shift
+done
+
+if [ -z "$UPDATE$CONVERT" ]; then
+    printerr "One of '-a', '-u' or '-c' option is required"
+    abort_with_help
+fi
+
+cd "$(dirname "$0")" || fatal "Failed to cd into '$(dirname "$0")'"
+
+OUTFILE="../$(AWK -F. -v OFS=. '{ $NF = "tsv"; print }' <<< "$(basename "$INFILE")")"
+
+[ -n "$UPDATE" ]  && ssl_ja3_update
+[ -n "$CONVERT" ] && ssl_ja3_convert

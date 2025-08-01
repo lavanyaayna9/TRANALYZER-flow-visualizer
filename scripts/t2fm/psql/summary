@@ -1,0 +1,13 @@
+-- Min timeFirst, Max timeLast and sum of flows, packets and bytes
+
+SELECT
+    EXTRACT(epoch FROM MIN("timeFirst")),
+    EXTRACT(epoch FROM MAX("timeLast")),
+    SUM(1),
+    SUM("pktsSnt"),
+    SUM("l7BytesSnt")
+FROM
+    flow
+WHERE
+    "timeFirst" >= to_timestamp(:time_from)
+    AND "timeLast" <= to_timestamp(:time_to)

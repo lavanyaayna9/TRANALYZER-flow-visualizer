@@ -1,0 +1,98 @@
+Workstation1
+------------
+  OS: Arch Linux (x86_64)
+  Kernel: 3.15.7-1-ARCH
+  IP: 10.20.7.26
+  Hostname: caprica
+  MAC: 60:a4:4c:52:d6:e9
+
+VM1
+---
+  Qemu KVM running on Workstation1
+  OS: Ubuntu Server 14.04
+  Kernel: 3.13.0-24-generic
+  IP: 10.20.5.48 (connected to bridge on Workstation1)
+  MAC: 52:54:00:12:34:56
+
+VM2
+---
+  Qemu KVM running on Workstation1
+  OS: Ubuntu Server 14.04
+  Kernel: 3.13.0-24-generic
+  IP: 10.20.6.245 (connected to bridge on Workstation1)
+  MAC: 02:a2:3f:28:9b:c7
+
+
+Network config
+--------------
+
+      VM1                VM2
+bind DNS server     iodine server
+         \               /
+          \             /
+    (tap0) \           / (tap1)
+            \         /
+             \ (br0) /
+            Workstation1
+           iodine client
+        record traffic on br0
+
+
+Trace capture procedure
+-----------------------
+1) Start workstation
+2) Start Ubuntu VMs
+3) Check that Unbound is running on workstation1
+4) Check that bind is running on VM1
+5) Record traffic on Workstation1
+    sudo tcpdump -s 0 -i br0 -w iodine-1.dmp
+6) Start iodine server on VM2
+    sudo iodined -f -c -P pass123 192.168.99.1 t1.tunnel
+7) Check that server is working
+    dig test123.t1.tunnel NS # must return ns.t1.tunnel 10.20.6.245
+    dig z123.t1.tunnel CNAME # must some garbage CNAME
+8) Start iodine client on Workstation1
+    sudo iodine -f -P pass123 [other options] t1.tunnel
+9) NAT packets coming out of tunnel on VM2
+    echo 1 | sudo tee /proc/sys/net/ipv4/ip_forward
+    sudo iptables -t nat -A POSTROUTING -s 192.168.99.0/24 -j MASQUERADE
+10) Configure routes on Workstation1
+    sudo ip route add 195.154.14.46 dev dns0
+    (replace 195.154.14.46 by the current IP of nio.lu)
+11) Create an SSH socks tunnel to nio.lu through the DNS tunnel
+    ssh -D 9050 -N -C root@nio.lu
+12) Start firefox with socks profile and load random pages
+    firefox -P
+
+Notes
+-----
+Source: http://code.kryo.se/iodine/
+
+Workstation1 uses Unbound as DNS proxy with this config:
+
+server:
+  ...
+  module-config: "iterator"
+
+forward-zone:
+  name: "."
+  forward-addr: 10.20.5.48
+...
+
+Config bind on VM1 using files in bind-config directory
+
+
+Other options
+-------------
+iodine-1.dmp: none
+iodine-2.dmp: -r
+iodine-3.dmp: -r -O Base64u
+iodine-4.dmp: -r -O Base32
+iodine-5.dmp: -r -O Base32 -T CNAME
+iodine-6.dmp: -r -O Base32 -T MX
+iodine-7.dmp: -r -O Base32 -T A
+
+
+Conclusion
+----------
+The covertChannels plugin can detect iodine with any of the above parameters.

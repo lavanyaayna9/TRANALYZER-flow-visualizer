@@ -1,0 +1,23 @@
+# ZSH completion for t2doc
+
+_t2doc() {
+    #compdef t2doc
+
+    local cur="${words[CURRENT]}"
+    [ $CURRENT -gt 2 ] && local prev="${words[CURRENT-1]}"
+
+    if [[ "$cur" == -* ]]; then
+        _arguments --
+    else
+        local plugins=(faq scripts t2fm tawk tranalyzer2)
+        for i in "$T2PLHOME/"*; do
+            local b=$(basename "$i")
+            if [ -d "$i" ] && [ "$b" != "t2PSkel" ]; then
+                plugins+=($b)
+            fi
+        done
+        compadd "${plugins[@]}"
+    fi
+}
+
+compdef _t2doc t2doc

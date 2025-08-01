@@ -1,0 +1,34 @@
+#!/usr/bin/env awk
+#
+# Split compound values and provide easy access to the subvalues.
+#
+# If 'num' is omitted or 0, 'val' is split into 'osep' separated columns.
+# If 'num' > 0, return the 'num' repetition.
+# If 'num' < 0, return the 'num' item from the end, e.g., -1 for last element.
+#
+# Multiple 'num' can be specified, e.g., "1;-1;2".
+#
+# Parameters:
+#   - val    : the value to split
+#   - [num]  : the index of the subvalue(s) to extract (see above)
+#   - [osep] : output separator (default: OFS)
+#
+# Dependencies:
+#   - None
+#
+# See also:
+#   - splitr
+#   - t2split
+#
+# Examples:
+#   - tawk '{ print splitc($srcMac_dstMac_numP, 2) }' file.txt
+#   - tawk 'splitc($srcMac_dstMac_numP, 2) == "00:11:22:33:44:55" { print splitc($srcMac_dstMac_numP) }' file.txt
+#   - tawk 'flow(2) { print splitc(splitr($L2L3L4Pl_Iat, 0, "\n")) }' file.txt
+#   - tawk '{ split($Ps_Iat_Cnt_PsCnt_IatCnt, x, ";"); for (i in x) { print splitc(x[i], "2;3") } }' file.txt
+#   - tawk '{ print splitc($srcMac_dstMac_numP, "1;2") }' file.txt
+
+@include "t2split"
+
+function splitc(val, num, osep) {
+    return t2split(val, "_", num, osep)
+}

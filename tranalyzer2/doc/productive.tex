@@ -1,0 +1,1686 @@
+\section{Tranalyzer2}\label{s:tranalyzer2}
+Tranalyzer2 is designed in a modular way. Thus, the packet flow aggregation and the flow statistics are separated. While the main program performs the header dissection and flow organization, the plugins produce specialized output such as packet statistics, mathematical transformations, signal analysis and result file generation.
+
+\subsection{Supported Link-Layer Header Types}
+Tranalyzer handles most PCAP link-layer header types automatically. Some specific types can be analyzed by switching on flags in {\tt linktypes.h}. The following table summarizes the link-layer header types handled by Tranalyzer:
+\begin{longtable}{>{\tt\small}ll>{\tt\small}l}
+    \toprule
+    {\bf Linktype} & {\bf Description} & {\bf Flags}\\
+    \midrule\endhead%
+    DLT\_C\_HDLC            & Cisco PPP with HDLC framing                                   & \\
+    DLT\_C\_HDLC\_WITH\_DIR & Cisco PPP with HDLC framing preceded by one byte direction    & \\
+    DLT\_EN10MB             & IEEE 802.3 Ethernet (10Mb, 100Mb, 1000Mb and up)              & \\
+    DLT\_FRELAY             & Frame Relay                                                   & \\
+    DLT\_FRELAY\_WITH\_DIR  & Frame Relay preceded by one byte direction                    & \\
+    DLT\_IEEE802\_11        & IEEE802.11 wireless LAN                                       & \\
+    DLT\_IEEE802\_11\_RADIO & Radiotap link-layer information followed by an 802.11 header  & \\
+    DLT\_IPV4               & Raw IPv4                                                      & \\
+    DLT\_IPV6               & Raw IPv6                                                      & \\
+    DLT\_JUNIPER\_ATM1      & Juniper ATM1 PIC (experimental)                               & LINKTYPE\_JUNIPER=1\\
+    DLT\_JUNIPER\_ETHER     & Juniper Ethernet (experimental)                               & LINKTYPE\_JUNIPER=1\\
+    DLT\_JUNIPER\_PPPOE     & Juniper PPPoE PIC (experimental)                              & LINKTYPE\_JUNIPER=1\\
+    DLT\_LAPD               & Raw LAPD                                                      & LAPD\_ACTIVATE=1\\
+    DLT\_LINUX\_LAPD        & LAPD (Q.921) frames, with a {\tt DLT\_LINUX\_SLL} header      & LAPD\_ACTIVATE=1\\
+    DLT\_LINUX\_SLL         & Linux ``cooked'' capture encapsulation                        & \\
+    DLT\_NULL               & BSD loopback encapsulation                                    & \\
+    DLT\_PPI                & Per-Packet Information                                        & \\
+    DLT\_PPP                & Point-to-Point Protocol                                       & \\
+    DLT\_PPP\_SERIAL        & PPP in HDLC-like framing                                      & \\
+    DLT\_PPP\_WITH\_DIR     & PPP preceded by one byte direction                            & \\
+    DLT\_PRISM\_HEADER      & Prism monitor mode information followed by an 802.11 header   & \\
+    DLT\_RAW                & Raw IP                                                        & \\
+    DLT\_SYMANTEC\_FIREWALL & Symantec Enterprise Firewall                                  & \\
+    \bottomrule
+\end{longtable}
+
+\subsection{Enabling/Disabling Plugins}\label{ss:plugins}
+The plugins are stored under {\em\textasciitilde{}/.tranalyzer/plugins}.
+This folder can be changed with the {\tt --p} option.\\
+
+By default, all the plugins found in the plugin folder are loaded.
+This behavior can be changed by altering the value of {\tt USE\_PLLIST} in {\em loadPlugins.h:35}.
+The valid options are:
+\begin{longtable}{rl}
+    \toprule
+    {\tt USE\_PLLIST} & {\bf Description}\\
+    \midrule\endhead%
+    0 & disable {\tt --b} option and load all plugins from the plugin folder (default)\\ %\lstinline{^[0-9]\{3\}_[a-zA-Z0-9]+.so$} (default)\\
+    1 & only load plugins present in the list (whitelist)\\
+    2 & do not load plugins present in the list (blacklist)\\
+    \bottomrule
+\end{longtable}
+
+This following sections discuss the various ways to selectively enable/disable plugins.
+
+\subsubsection{Default}
+By default, all the files in the plugin folder named according to the following pattern are loaded:\\
+\begin{longtable}{>{\tt}c}
+    \textasciicircum[0-9]\{3\}\_[a--zA--Z0--9]+.so\$
+\end{longtable}
+To disable a plugin, it must be removed from the plugin folder. A subfolder, e.g., {\em disabled}, can be used to store unused plugins.
+
+\subsubsection{Whitelisting Plugins}
+If {\tt USE\_PLLIST=1}, the whitelist (loading list) is searched under the plugins folder with the name {\tt plugins.txt}.
+The name can be changed by adapting the value {\tt PLLIST} in {\em loadPlugins.h:36}.
+If the file is stored somewhere else, Tranalyzer2 {\tt --b} option can be used.
+
+The format of the whitelist is as follows (empty lines and lines starting with a {\tt `\#'} are ignored):
+\begin{verbatim}
+        # This is a comment
+
+        # This plugin is whitelisted (will be loaded)
+        001_protoStats.so
+
+        # This plugin is NOT whitelisted (will NOT be loaded)
+        #010_basicFlow.so
+\end{verbatim}
+
+Note that if a plugin is not present in the list, it will {\bf NOT} be loaded.
+
+\subsubsection{Blacklisting Plugins}
+If {\tt USE\_PLLIST=2}, the blacklist is searched under the plugins folder with the name {\tt plugins.txt}.
+The name can be changed by adapting the value {\tt PLLIST} in {\em loadPlugins.h:36}.
+If the file is stored somewhere else, Tranalyzer2 {\tt --b} option can be used.
+
+The format of the blacklist is as follows (empty lines and lines starting with a {\tt `\#'} are ignored):
+\begin{verbatim}
+        # This is a comment
+
+        # This plugin is blacklisted (will NOT be loaded)
+        001_protoStats.so
+
+        # This plugin is NOT blacklisted (will be loaded)
+        #010_basicFlow.so
+\end{verbatim}
+
+Note that if a plugin is not present in the list, it will be loaded.
+
+\subsubsection{Graphical Configuration and Building of T2 and Plugins}\label{sss:t2conf}
+Tranalyzer2 comes with a script named {\tt t2conf} allowing easy configuration of all the plugins through a command line based graphical menu:
+
+\begin{figure}[!ht]
+    \centering
+    \begin{minipage}[b]{0.45\linewidth}
+        \tranimg[width=\textwidth]{t2conf1}
+    \end{minipage}
+    ~
+    \begin{minipage}[b]{0.45\linewidth}
+        \tranimg[width=\textwidth]{t2conf2}
+    \end{minipage}
+\end{figure}
+
+Use the arrows on your keyboard to navigate up and down and between the buttons. The first window is only displayed if the {\tt --t2} option is used. The {\tt Edit} and {\tt Configure} buttons will launch a text editor ({\tt \$EDITOR} or vim\footnote{The default editor can be changed by editing the variable {\tt DEFAULT\_EDITOR} (line 7)} if the environment variable is not defined). The second window can be used to activate and deactivate plugins (toggle the active/inactive state with the space key).
+
+To access the script from anywhere, use the provided {\tt install.sh} script, install \hyperref[s:aliases]{\tt t2\_aliases} or manually add the following alias to {\tt \textasciitilde{}/.bash\_aliases}:
+\begin{center}
+    {\tt alias t2conf="\$T2HOME/scripts/t2conf/t2conf"}
+\end{center}
+Where {\tt \$T2HOME} is the folder containing the source code of Tranalyzer2 and its plugins.
+
+A man page for {\tt t2conf} is also provided and can be installed with the {\tt install.sh} script.
+
+\subsection{Man Page}
+If the man page was installed (\refs{t2install}), then accessing the man page is as simple as calling
+
+\begin{center}
+    {\tt man tranalyzer}\\
+\end{center}
+
+If it was not installed, then the man page can be invoked by calling
+
+\begin{center}
+    {\tt man \$T2HOME/tranalyzer2/man/tranalyzer.1}
+\end{center}
+
+\subsection{Invoking Tranalyzer}
+As stated earlier Tranalyzer2 either operates on Ethernet/DAG interfaces or pcap files. It may be invoked using a BPF if only certain flows are interesting. The required arguments are listed below. Note that the {\tt --i}, {\tt --r}, {\tt --R} and {\tt --D} options cannot be used at the same time.
+
+%To access Tranalyzer2 from anywhere, the following alias can be added to {\tt \textasciitilde{}/.bash\_aliases}:
+%\begin{center}
+%{\tt alias t2="\$T2HOME/tranalyzer2/src/tranalyzer"}
+%\end{center}
+%Where {\tt \$T2HOME} is the folder containing the source code of Tranalyzer2 and its plugins.
+
+\subsubsection{Help}
+For a full list of options, use the {\tt --h} option: {\tt tranalyzer --h}
+
+\begin{verbatim}
+Tranalyzer 0.9.2 - High performance flow based network traffic analyzer
+
+Usage:
+    tranalyzer [OPTION...] <INPUT>
+
+Input arguments:
+    -i IFACE     Listen on interface IFACE
+    -r PCAP      Read packets from PCAP file or from stdin if PCAP is "-"
+    -R FILE      Process every PCAP file listed in FILE
+    -D EXPR[:SCHR][,STOP]
+                 Process every PCAP file whose name matches EXPR, up to an
+                 optional last index STOP. If STOP is omitted, then Tranalyzer
+                 never stops. EXPR can be a filename, e.g., file.pcap0, or an
+                 expression, such as "dump*.pcap00", where the star matches
+                 anything (note the quotes to prevent the shell from
+                 interpreting the expression). SCHR can be used to specify
+                 the last character before the index (default: 'p')
+
+Output arguments:
+    -w PREFIX    Append PREFIX to any output file produced. If the option is
+                 omitted, derive PREFIX from the input. Use '-w -' to output
+                 the flow file to stdout (other files will be saved as if the
+                 '-w' option had been omitted and the '-l' and '-m' options used)
+    -W PREFIX[:SIZE][,START]
+                 Like -w, but fragment flow files according to SIZE, producing
+                 files starting with index START. SIZE can be specified in bytes
+                 (default), KB ('K'), MB ('M') or GB ('G'). Scientific notation,
+                 i.e., 1e5 or 1E5 (=100000), can be used as well. If a 'f' is
+                 appended, e.g., 10Kf, then SIZE denotes the number of flows.
+    -l           Print end report in PREFIX_log.txt instead of stdout
+    -m           Print monitoring output in PREFIX_monitoring.txt instead of stdout
+    -s           Packet forensics mode
+
+Interface capture arguments:
+    -S SNAPLEN   Set the snapshot length (used with -i option)
+    -B BUFSIZE   Set the live Rx buffer size (used with -i option)
+
+Optional arguments:
+    -p PATH      Load plugins from PATH instead of ~/.tranalyzer/plugins
+    -b FILE      Use plugin list FILE instead of plugin_folder/plugins.txt
+    -e FILE      Create a PCAP file by extracting all packets belonging to
+                 flow indexes listed in FILE (require pcapd plugin)
+    -f FACTOR    Set hash multiplication factor
+    -x ID        Sensor ID
+    -c CPU       Bind tranalyzer to one core. If CPU is 0 then OS selects the
+                 core to bind
+    -P PRIO      Set tranalyzer priority to PRIO (int) instead of 0
+                 (PRIO [highest, lowest]: [-20, 20] (root), [0, 20] (user))
+    -M FLT       Set monitoring interval to FLT seconds
+    -F FILE      Read BPF filter from FILE
+
+Help and documentation arguments:
+    -V           Show the version of the program and exit
+    -h           Show help options and exit
+
+Remaining arguments:
+    BPF          Berkeley Packet Filter command, as in tcpdump
+\end{verbatim}
+
+\subsubsection{--i INTERFACE}
+Capture data from an Ethernet interface {\tt INTERFACE} (requires {\em root} privileges).
+If high volume of traffic is expected, then enable internal buffering in \nameref{ioBuffer.h}.
+
+\begin{center}
+    {\tt sudo tranalyzer --i eth0}
+\end{center}
+
+\subsubsection{--r FILE}
+Capture data from a pcap file {\tt FILE}.
+\begin{center}
+    {\tt tranalyzer --r file.pcap}
+\end{center}
+
+The special file {\tt `-'} can be used to read data from {\em stdin}. This can be used, e.g., to process compressed pcap files, e.g., {\em file.pcap.gz}, using the following command:
+\begin{center}
+    {\tt zcat file.pcap.gz | tranalyzer --r -- --w out}
+\end{center}
+
+\subsubsection{--R FILE}
+Process all the pcap files listed in {\tt FILE}. All files are being treated as one large file. The life time of a flow can extend over many files. The processing order is defined by the location of the filenames in the text file. The absolute path has to be specified. The {\tt t2caplist} script documented in {\tt \$T2HOME/scripts/scripts.pdf} can be used to generate such a list. All lines starting with a {\tt `\#'} are considered as comments and thus ignored.
+
+\begin{figure}[!ht]
+\centering
+\begin{verbbox}
+$ t2caplist directory > pcap_list.txt
+$ tranalyzer -R pcap_list.txt
+\end{verbbox}
+%stopzone  % hack to correct vim syntax highlighting
+\theverbbox
+\end{figure}
+
+\subsubsection{--D FILE[*][.ext]\#1[:SCHR][,\#2]}
+Process files in a directory using file start and stop index, defined by {\tt \#1} and {\tt \#2} respectively. {\tt ext} can be anything, e.g., {\tt .pcap}, and can be omitted. If {\tt \#2} is omitted and not in round robin mode, then Tranalyzer2 never stops and waits until the next file in the increment is available. If leading zeroes are used, {\tt \#2} defaults to $10^\text{number\_length}-1$. Note that only the last occurrence of {\tt SCHR} is considered, e.g., if {\tt SCHR=`p'}, then out.pca{\bf p}001 will work, but out001pca{\bf p}, will not. with the {\tt :[SCHR]} option a new separation character can be set, superseding {\tt SCHR} defined in \nameref{tranalyzer.h}.\\
+
+The following variables in \nameref{tranalyzer.h} can be used to configure this mode:
+\begin{longtable}{>{\tt}lcl}
+    \toprule
+    {\bf Name} & {\bf Default}   & {\bf Description}\\
+    \midrule\endhead%
+    RROP       & 0               & Activate round robin operations\\
+               &                 & WARNING: if set to 1, then \tranrefpl{findexer} will not work anymore\\
+    POLLTM     & 5               & Poll timing (in seconds) for files \\
+    MFPTMOUT   & 0               & > 0: timeout for poll > {\tt\small POLLTM}, 0: no poll timeout \\
+    SCHR       & {\tt\small 'p'} & Separating character for file number\\
+    \bottomrule
+\end{longtable}
+
+For example, when using {\tt tcpdump} to capture traffic from an interface (eth0) and produce 100MB files as follows:
+\begin{center}
+    {\tt sudo tcpdump -C 100 -i eth0 -w out.pcap}
+\end{center}
+The following files are generated: {\em out.pcap, out.pcap1, out.pcap2, \ldots, out.pcap10, \ldots}\\
+
+Then {\tt SCHR} must be set to {\tt 'p'}, i.e., the last character before the file number (out.pca{\bf p}NUM) and Tranalyzer must be run as follows:
+\begin{center}
+    {\tt tranalyzer -D out.pcap}
+\end{center}
+
+Or to process files 10 to 100:
+\begin{center}
+    {\tt tranalyzer -D out.pcap10,100}
+\end{center}
+
+Or to process files 10 to 100 in another format:
+\begin{center}
+    {\tt tranalyzer -D out10.pcap,100 -w out}
+\end{center}
+
+Or to process files from 0 to $2^{32}-1$ using regex characters:
+\begin{center}
+    {\tt tranalyzer -D "out*.pcap" -w out}
+\end{center}
+
+The last command can be shortened further, the only requirement being the presence of {\tt SCHR} (the last character before the file number) in the pattern:
+\begin{center}
+    {\tt tranalyzer -D "*p" -w out}
+\end{center}
+Note the quotes ({\tt "}) which are necessary to avoid preemptive interpretation of regex characters and {\tt SCHR} which MUST appear in the pattern. The same configuration can be used for filenames using one or more leading zeros, e.g., {\em out.pcap000, out.pcap001, out.pcap002, \ldots, out.pcap010, \ldots}\\
+
+The following table summarizes the supported naming patterns and the configuration required:
+\begin{longtable}{l>{\tt}l>{\tt}l}
+    \toprule
+    {\bf Filenames} & {\bf SCHR} & {\bf Command}\\
+    \midrule\endhead%
+    out.pca{\bf p}, out.pca{\bf p}1, out.pca{\bf p}2, \ldots     & 'p' & tranalyzer -D out.pcap -w out\\
+    out.pca{\bf p}00, out.pca{\bf p}01, out.pca{\bf p}02, \ldots & 'p' & tranalyzer -D out.pcap00 -w out\\
+    %ou{\bf t}.pcap, ou{\bf t}1.pcap, ou{\bf t}2.pcap, \ldots     & 't' & tranalyzer -D "out*.pcap" -w out\\
+    ou{\bf t}0.pcap, ou{\bf t}1.pcap, ou{\bf t}2.pcap, \ldots    & 't' & tranalyzer -D out0.pcap -w out\\
+    ou{\bf t}00.pcap, ou{\bf t}01.pcap, ou{\bf t}02.pcap, \ldots & 't' & tranalyzer -D out00.pcap -w out\\
+    out\_24.04.2016.20h00.pca{\bf p},                            &     & \\
+    \qquad out\_24.04.2016.20h00.pca{\bf p}1, \ldots             & 'p' & tranalyzer -D "out*.pcap" -w out\\
+    out\_24.04.2016.20h00.pca{\bf p}00,                          &     & \\
+    \qquad out\_24.04.2016.20h00.pca{\bf p}01, \ldots            & 'p' & tranalyzer -D "out*.pcap00" -w out\\
+    ou{\bf t}0.pcap, ou{\bf t}1.pcap, ou{\bf t}2.pcap, \ldots    & 't' & tranalyzer -D out0.pcap:t -w out\\
+    out.pca{\bf p}00, out.pca{\bf p}01, out.pca{\bf p}02, \ldots & 'p' & tranalyzer -D out.pcap00:p -w out\\
+    \bottomrule
+\end{longtable}
+
+\subsubsection{--w PREFIX}
+Use a {\tt PREFIX} for all output file types. The number of files being produced vary with the number of activated plugins. The file suffixes are defined in the file \nameref{tranalyzer.h} (see \refs{file_suffixes}) or in the header files for the plugins. If you forget to specify an output file, Tranalyzer will use the input interface name or the file name as file prefix and print the flows to {\em stdout}. Thus, Tranalyzer output can be piped into other command line tools, such as netcat in order to produce centralized logging to another host or an AWK script for further post processing without intermediate writing to a slow disk storage.
+
+\subsubsection{--W PREFIX[:SIZE][,START]}
+This option allows the fragmentation of flow files produced by Tranalyzer independent of the input mode. The expression before the {\tt `:'} is the output prefix, the expression after the {\tt `:'} denotes the maximal file size for each fragment and the number after the {\tt `,'} denotes the start index of the first file. If omitted it defaults to {\tt 0}. The size of the files can be specified in bytes (default), KB ({\tt `K'}), MB ({\tt `M'}) or GB ({\tt `G'}). Scientific notation, i.e., 1e5 or 1E5 (=100000), can be used as well. If no size is specified, the default value of 500MB, defined by {\tt OFRWFILELN} in \nameref{tranalyzer.h} is used. If no size is specified, then the {\tt `:'} can be omitted. The same happens if no start index is specified. If an additional {\tt `f'} is appended the unit is flow count. This enables the user to produce file chunks containing the same amount of flows. Some typical examples are shown below.
+
+\begin{longtable}{>{\tt}lccl}
+    \toprule
+    {\bf Command} & {\bf Fragment Size} & {\bf Start Index} & {\bf Output Files}\\
+    \midrule\endhead%
+    tranalyzer -r nudel.pcap -W out:1.5E9,10 & 1.5GB                  & 10 & out10, out11, \ldots\\
+    tranalyzer -r nudel.pcap -W out:1.5e9,5  & 1.5GB                  &  5 & out5, out6, \ldots\\
+    tranalyzer -r nudel.pcap -W out:1.5G,1   & 1.5GB                  &  1 & out1, out2, \ldots\\
+    tranalyzer -r nudel.pcap -W out:5000K    & 0.5MB                  &  0 & out0, out1, \ldots\\
+    tranalyzer -r nudel.pcap -W out:5Kf      & 5000 Flows             &  0 & out0, out1, \ldots\\
+    tranalyzer -r nudel.pcap -W out:180M     & 180MB                  &  0 & out0, out1, \ldots\\
+    tranalyzer -r nudel.pcap -W out:2.5G     & 2.5GB                  &  0 & out0, out1, \ldots\\
+    tranalyzer -r nudel.pcap -W out,6        & {\tt\small OFRWFILELN} &  0 & out6, out7, \ldots\\
+    tranalyzer -r nudel.pcap -W out          & {\tt\small OFRWFILELN} &  0 & out0, out1, \ldots\\
+    \bottomrule
+\end{longtable}
+
+\subsubsection{--l}\label{t2-loption}
+All Tranalyzer command line and report output is diverted to the log file: {\tt PREFIX\_log.txt}.
+Fatal error messages still appear on the command line.
+
+\subsubsection{--m}
+All Tranalyzer monitoring output is diverted to the monitoring file: {\tt PREFIX\_monitoring.txt}.
+
+\subsubsection{--s}
+Initiates the packet mode where a file with the suffix {\tt PREFIX\_packets.txt} is created.
+The content of the file depends on the plugins loaded.
+The display of the packet number (first column is controlled by {\tt SPKTMD\_PKTNO} in \nameref{main.h}.
+The payload can be displayed in hexadecimal and/or as characters by using the {\tt SPKTMD\_PCNTH} and {\tt SPKTMD\_PCNTC} respectively.
+The start of the payload (full packet, L2/3/4/7) to print is controlled by {\tt SPKTMD\_PCNTL}.
+A tab separated header description line is printed at the beginning of the packet file.
+The first two lines then read as follows:
+
+\begin{center}
+\begin{scriptsize}
+\begin{lstlisting}
+%pktNo    time    pktIAT    duration    flowInd    flowStat    numHdrDesc   hdrDesc   vlanID    ethType    srcMac    dstMac    srcIP4    srcPort    dstIP4    dstPort    l4Proto    ipTOS    ipID    ipIDDiff    ipFrag    ipTTL    ipHdrChkSum    ipCalChkSum    l4HdrChkSum    l4CalChkSum    ipFlags    pktLen    ipOptLen    ipOpts    seq    ack    seqDiff    ackDiff    seqPktLen    ackPktLen    tcpStat    tcpFlags    tcpAnomaly    tcpWin    tcpOptLen    tcpOpts    l7Content
+...
+25    1291753225.446846    0.000000    0.000000    23    0x00006000   6    eth:vlan:mpls{2}:ipv4:tcp   20    0x0800    00:11:22:33:44:55    66:77:88:99:aa:bb    X.Y.Z.U    62701    M.N.O.P    80    6    0x00    0x26f6    0    0x4000    62    0x6ca6    0x6ca6    0x0247    0x0247    0x0040    460    0        0xb2a08909    0x90314073    0    0    0    0    0x59    0x18    0x0000    65535    12    0x01 0x01 0x08 0x0a 0x29 0x2d 0xc3 0x6e 0x83 0x63 0xc5 0x76    GET /images/I/01TnJ0+mhnL.png HTTP/1.1\r\nHost: ecx.images-amazon.com\r\nUser-Agent: Mozilla/5.0 (Macintosh; U; Intel Mac OS X 10.6; de; rv:1.9.2.8) Gecko/20100722 Firefox/3.6.8\r\nAccept: image/png,image/*;q=0.8,*/*;q=0.5\r\nAccept-Language: de-de,de;q=0.8,en-us;q=0.5,en;q=0.3\r\nAccept-Encoding: gzip,deflate\r\nAccept-Charset: ISO-8859-1,utf-8;q=0.7,*;q=0.7\r\nKeep-Alive: 115\r\nConnection: keep-alive\r\nReferer: http://z-ecx.images-amazon.com/images/I/11J5cf408UL.css\r\n\r\n
+...
+\end{lstlisting}
+\end{scriptsize}
+\end{center}
+
+\subsubsection{--p FOLDER}
+Changes the plugin folder from standard {\em \textasciitilde{}/.tranalyzer/plugins} to {\tt FOLDER}.
+
+\subsubsection{--b FILE}
+Changes the plugin blacklist file from {\em plugin\_folder/plugin\_blacklist.txt} to {\tt FILE}, where {\tt plugin\_folder} is either\\
+{\em\textasciitilde{}/.tranalyzer/plugins} or the folder specified with the {\tt --p} option.
+
+\subsubsection{--e FLOWINDEXFILE}
+Denotes the filename and path of the flow index file when the \tranrefpl{pcapd} plugin is loaded.
+The path and name of the pcap file depends on {\tt FLOWINDEXFILE}.
+If omitted the default names for the PCAP file are defined in {\em pcapd.h}. The format of the {\tt FLOWINDEXFILE} is a list of 64 bit flow indices which define the packets to be extracted from the pcap being read by the {\tt --r} option.
+In general the user should use a plain file with the format displayed below:
+
+\begin{scriptsize}
+\begin{lstlisting}
+# Comments (ignored)
+% Flow file info (ignored)
+30
+3467
+656697
+5596
+\end{lstlisting}
+\end{scriptsize}
+
+For more information on the \tranrefpl{pcapd} plugin please refer to its \href{../../pcapd/doc/pcapd.pdf}{documentation}.
+
+\subsubsection{--f HASHFACTOR}\label{s:foption}
+Sets and supersedes the {\tt HASHFACTOR} constant in \nameref{tranalyzer.h}.
+
+\subsubsection{--x SENSORID}
+Each T2 can have a separate sensor ID which can be listed in a flow file in order to differentiate flows
+originating from several interfaces during post processing, e.g., in a DB. If not specified {\tt T2\_SENSORID} ({\tt 666}), defined in \nameref{tranalyzer.h}, will be the default value.
+
+\subsubsection{--c CPU}
+Bind Tranalyzer to core number {\tt CPU}; if {\tt CPU == 0} then the operating system selects the core to bind.
+
+\subsubsection{--P PRIO}
+Set Tranalyzer priority to {\tt PRIO} instead of 0 (int).
+{\tt PRIO} MUST belong in [-20, 20] for root and in [0, 20] for standard users.
+The lower the number, the higher the priority, i.e., -20 has higher priority than 20.
+
+\subsubsection{--M FLT}
+Set monitoring interval to {\tt FLT} seconds.
+
+\subsubsection{--F FILE}
+Read BPF filter from FILE. A filter can span multiple lines and can be commented using the {\tt `\#'} character (everything following a {\tt `\#'} is ignored).
+
+\subsubsection{BPF Filter}
+A Berkeley Packet Filter (BPF) can be specified at any time in order to reduce the amount of flows being produced and to increase speed during life capture ops. All rules of pcap BPF apply.
+
+\subsection{hashTable.h}\label{hashTable.h}
+\begin{longtable}{>{\tt}lcl}
+    \toprule
+    {\bf Name} & {\bf Default} & {\bf Description}\\
+    \midrule\endhead%
+    T2\_HASH\_FUNC       & 10 & Hash function to use:\\
+                         &    & \qquad  0: standard\\
+                         &    & \qquad  1: Murmur3 32-bits\\
+                         &    & \qquad  2: Murmur3 128-bits (truncated to 64-bits)\\
+                         &    & \qquad  3: xxHash 32-bits\\
+                         &    & \qquad  4: xxHash 64-bits\\
+                         &    & \qquad  5: XXH3 64-bits\\
+                         &    & \qquad  6: XXH3 128-bits (truncated to lower 64-bits)\\
+                         &    & \qquad  7: CityHash64\\
+                         &    & \qquad  8: MUM-hash version 3 64-bits\\
+                         &    & \qquad  9: hashlittle 32-bits\\
+                         &    & \qquad 10: wyhash 64-bits\\
+                         &    & \qquad 11: FastHash32\\
+                         &    & \qquad 12: FastHash64\\
+                         &    & \qquad 13: t1ha0 (Linux only) [meson build backend only]\\
+                         &    & \qquad 14: t1ha2 [meson build backend only]\\
+    HASHTABLE\_DEBUG     & 0  & Print debug information\\
+    HASHTABLE\_NAME\_LEN & 7  & Maximum length of a hashTable's name\\
+    \bottomrule
+\end{longtable}
+
+\subsection{ioBuffer.h}\label{ioBuffer.h}
+\begin{longtable}{>{\tt}lcl}
+    \toprule
+    {\bf Name} & {\bf Default} & {\bf Description}\\
+    \midrule\endhead%
+
+    IO\_BUFFERING              & 0    & Enables buffering of the packets in a queue\\
+
+    \\
+    \multicolumn{3}{l}{If {\tt IO\_BUFFERING == 1}, the following flags are available:}\\
+    \\
+
+    IO\_BUFFER\_FULL\_WAIT\_MS &  200 & Number of milliseconds to wait if queue is full\\
+    IO\_BUFFER\_SIZE           & 8192 & Maximum number of packets that can be stored in the buffer (power of 2)\\
+    IO\_BUFFER\_MAX\_MTU       & 2048 & Maximum size of a packet (divisible by 4)\\
+    \bottomrule
+\end{longtable}
+
+\subsection{loadPlugins.h}\label{loadPlugins.h}
+\begin{longtable}{>{\tt}lcl}
+    \toprule
+    {\bf Name} & {\bf Default} & {\bf Description}\\
+    \midrule\endhead%
+    \hyperref[ss:plugins]{USE\_PLLIST} & 1 & Behavior of {\tt --b} option (plugin loading list):                            \\
+                                       &   & \qquad 0: disable {\tt --b} option and load all plugins from the plugin folder \\
+                                       &   & \qquad 1: only load plugins present in the list (whitelist)                    \\
+                                       &   & \qquad 2: do not load plugins present in the list (blacklist)                  \\
+    \bottomrule
+\end{longtable}
+
+\subsection{main.h}\label{main.h}
+\begin{longtable}{>{\tt}lcl>{\tt\small}l}
+    \toprule
+    {\bf Name} & {\bf Default} & {\bf Description} & {\bf Flags}\\
+    \midrule\endhead%
+
+    \\
+    \multicolumn{4}{l}{The following four flags apply to the packet mode ({\tt -s} option):}\\
+    \\
+
+    SPKTMD\_PKTNO       & 1          & Print the packet number                                              & \\
+    SPKTMD\_PCNTC       & 1          & Print packet payload as characters                                   & \\
+    SPKTMD\_PCNTH       & 0          & Print packet payload as hex                                          & \\
+    SPKTMD\_PCNTL       & 4          & Content field:                                                       & \\
+                        &            & \qquad 0: Print the full payload of the packet                       & \\
+                        &            & \qquad 1: Print payload from L2                                      & \\
+                        &            & \qquad 2: Print payload from L3                                      & \\
+                        &            & \qquad 3: Print payload from L4                                      & \\
+                        &            & \qquad 4: Print payload from L7                                      & \\
+    SPKTMD\_BOPS        & {\tt 0x00} & Bit operations on content:                                           & \\
+                        &            & \qquad {\tt 0x00}: MSB, no bit inverse, no shift                     & \\
+                        &            & \qquad {\tt 0x01}: LSB, bit inverse                                  & \\
+                        &            & \qquad {\tt 0x02}: Nibble swap                                       & \\
+                        &            & \qquad {\tt 0x10}: Shift right                                       & \\
+                        &            & \qquad {\tt 0x20}: shift from last byte into extra trailing      & \\
+                        &            & \qquad\qquad\quad byte (requires {\tt\small SPKTMD\_BOPS \& 0x10})        & \\
+    SPKTMD\_BSHFT\_POS  & 5          & Shift {\tt\small SPKTMD\_BSHFT\_POS}-1 at                            & \\
+                        &            & 8-{\tt\small SPKTMD\_BSHFT} into following bytes                     & \\
+    SPKTMD\_BSHFT       & 2          & Bitshift                                                             & SPKTMD\_BOPS\&0x10\\
+
+    SPKTMD\_PCNTH\_PREF & {\tt "0x"} & Prefix to add to every byte in packet mode as hex                    & SPKTMD\_PCNTH=1\\
+                        &            & ({\tt ""} $\rightarrow$ {\tt ab cd} instead of {\tt 0xab 0xcd})      & \\
+    SPKTMD\_PCNTH\_SEP  & {\tt " "}  & Byte separator in packet mode as hex                                 & SPKTMD\_PCNTH=1\\
+                        &            & ({\tt ","} $\rightarrow$ {\tt 0xab,0xcd} instead of {\tt 0xab 0xcd}) & \\
+    \\
+    MIN\_MAX\_ESTIMATE  & 0          & Min/Max bandwidth statistics                                         & \\
+    MMXLAGTMS           & 0.1        & Min Max interval [s]                                                 & MIN\_MAX\_ESTIMATE=1\\
+    MMXNO0              & 0          & Suppress 0 in MIN estimation                                         & MIN\_MAX\_ESTIMATE=1\\
+
+    \\
+    \multicolumn{4}{l}{The following flags control the monitoring mode:}\\
+    \\
+
+    MONINTTHRD          & 1          & Activate threaded interrupt handling                                 & \\
+    MONINTBLK           & 0          & Block interrupts in main loop during packet                          & \\
+                        &            & processing (disables {\tt\small MONINTTHRD})                         & \\
+    MONINTPSYNC         & 1          & 0: Interrupt printing,                                               & \\
+                        &            & 1: pcap main loop synchronized printing                              & \\
+    MONINTTMPCP         & 0          & 0: real time base, 1: pcap time base                                 & \\
+    MONINTTMPCP\_ON     & 0          & Startup monitoring. 0: off, 1: on                                    & MONINTTMPCP=1\\
+    MONINTV             & 1.0        & $\geq 1\sec$ interval of monitoring output                           & \\
+                        &            & if {\tt\small USR2} is sent or {\tt\small MONINTTMPCP=0}             & \\
+    POLLENV             & 0          & Change monitoring interval via env var {\tt\small \$T2MTIME}         & \\
+    MONPROTMD           & 1          & 0: report protocol numbers,                                          & \\
+                        &            & 1: report protocol names                                             & \\
+    MONPROTFL           & {\small\tt "proto.txt"}
+                                     & proto file                                                           & \\
+    \\
+    \multicolumn{4}{l}{The following flags control the DPDK multi-process mode:}\\
+    \\
+
+    DPDK\_MP          & 0            & Use DPDK multi-process mode instead of libpcap                       & \\
+
+    \bottomrule
+\end{longtable}
+
+The {\tt MONPROTL2} and {\tt MONPROTL3} flags can be used to configure the L2 and L3 protocols to monitor.
+Their default values are
+\begin{itemize}
+    \item {\tt MONPROTL2}: {\tt ETHERTYPE\_ARP,ETHERTYPE\_RARP}
+    \item {\tt MONPROTL3}: {\tt L3\_TCP,L3\_UDP,L3\_ICMP,L3\_ICMP6,L3\_SCTP}
+\end{itemize}
+
+\clearpage
+\subsection{networkHeaders.h}\label{networkHeaders.h}
+\begin{longtable}{>{\tt}lcl>{\tt\small}l}
+    \toprule
+    {\bf Name} & {\bf Default} & {\bf Description} & {\bf Flags}\\
+    \midrule\endhead%
+    IPV6\_ACTIVATE    &   2 & 0: IPv4 only                                           & \\
+                      &     & 1: IPv6 only                                           & \\
+                      &     & 2: Dual mode                                           & \\
+    \\
+    ETH\_ACTIVATE     &   1 & 0: No Ethernet flows                                   & \\
+                      &     & 1: Activate Ethernet flows generation                  & \\
+                      &     & 2: Also use Ethernet addresses for IPv4/6 flows        & \\
+    \\
+    LAPD\_ACTIVATE    &   0 & 0: No LAPD/Q.931 flows                                 & \\
+                      &     & 1: Activate  LAPD/Q.931 flow generation                & \\
+    LAPD\_OVER\_UDP   &   0 & 0: Do not try dissecting LAPD over UDP                 & \\
+                      &     & 1: Dissect LAPD over UDP (experimental)                & LAPD\_ACTIVATE=1\\
+    \\
+    SCTP\_ACTIVATE    &   0 & 1: standard flows                                      & \\
+                      &     & 1: activate SCTP chunk streams $\rightarrow$ flow      & \\
+                      &     & 2: activate SCTP association $\rightarrow$ flow        & \\
+                      &     & 3: activate SCTP chunk \& association $\rightarrow$ flow & \\
+    SCTP\_STATFINDEX  &   0 & 1: findex constant for all SCTP streams in a packet    & SCTP\_ACTIVATE=1\\
+                      &     & 0: findex increments                                   & \\
+    \\
+    MULTIPKTSUP       &   0 & Multi-packet suppression (discard duplicated packets)  & IPV6\_ACTIVATE=0\\
+    \\
+    T2\_PRI\_HDRDESC  &   1 & 1: keep track of the headers traversed                 & \\
+    T2\_HDRDESC\_AGGR &   1 & 1: aggregate repetitive headers, e.g., {\tt vlan\{2\}} & T2\_PRI\_HDRDESC=1\\
+    T2\_HDRDESC\_LEN  & 128 & max length of the headers description                  & T2\_PRI\_HDRDESC=1\\
+    \bottomrule
+\end{longtable}
+
+\subsection{proto/capwap.h}\label{proto-capwap.h}
+\begin{longtable}{>{\tt}lcl>{\tt\small}l}
+    \toprule
+    {\bf Name} & {\bf Default} & {\bf Description} & {\bf Flags}\\
+    \midrule\endhead%
+    CAPWAP\_SWAP\_FC & 1 & Swap CAPWAP frame control (required for Cisco) & CAPWAP=1\\
+    \bottomrule
+\end{longtable}
+
+\subsection{proto/ethertype.h}\label{proto-ethertype.h}
+\begin{longtable}{>{\tt}lcl>{\tt\small}l}
+    \toprule
+    {\bf Name} & {\bf Default} & {\bf Description} & {\bf Flags}\\
+    \midrule\endhead%
+    PW\_ETH\_CW & 1 & Detect Pseudowire (PW) Ethernet Control Word (Heuristic, experimental) & \\
+    \bottomrule
+\end{longtable}
+
+\subsection{proto/linktype.h}\label{proto-linktype.h}
+\begin{longtable}{>{\tt}lcl>{\tt\small}l}
+    \toprule
+    {\bf Name} & {\bf Default} & {\bf Description} & {\bf Flags}\\
+    \midrule\endhead%
+    LINKTYPE\_JUNIPER & 1 & Dissect PCAP with Juniper linktypes (Experimental) & \\
+    \bottomrule
+\end{longtable}
+
+\subsection{proto/lwapp.h}\label{proto-lwapp.h}
+\begin{longtable}{>{\tt}lcl>{\tt\small}l}
+    \toprule
+    {\bf Name} & {\bf Default} & {\bf Description} & {\bf Flags}\\
+    \midrule\endhead%
+    LWAPP\_SWAP\_FC & 1 & Swap LWAPP frame control (required for Cisco) & LWAPP=1\\
+    \bottomrule
+\end{longtable}
+
+\subsection{packetCapture.h}\label{packetCapture.h}
+The config file {\em packetCapture.h} provides control about the packet capture and packet structure process of Tranalyzer2.
+The most important fields are described below. Please note that after changing any value in define statements a rebuild is required.
+Note that the {\tt PACKETLENGTH} switch controls the {\tt len} variable in the packet structure, from where the packet length is
+measured from. So statistical plugins such as \tranrefpl{basicStats} can have a layer dependent output. If only L7 length is needed,
+use the {\tt l7Len} variable in the packet structure.
+
+\begin{longtable}{>{\tt}lcl>{\tt\small}l}
+    \toprule
+    {\bf Name} & {\bf Default} & {\bf Description} & {\bf Flags}\\
+    \midrule\endhead%
+    PACKETLENGTH      & 3 & 0: including L2, L3 and L4 header                           & \\
+                      &   & 1: including L3 and L4 header                               & \\
+                      &   & 2: including L4 header                                      & \\
+                      &   & 3: only higher layer payload (Layer 7)                      & \\
+    FRGIPPKTLENVIEW   & 1 & 0: IP header stays with 2nd++ fragmented packets            & PACKETLENGTH=1\\
+                      &   & 1: IP header stripped from 2nd++ fragmented packets         & \\
+    NOLAYER2          & 0 & 0: Automatic L3 header discovery                            & \\
+                      &   & 1: Manual L3 header positioning                             & \\
+    NOL2\_L3HDROFFSET & 0 & Offset of L3 header                                         & NOLAYER2=1\\
+    MAXHDRCNT         & 5 & Maximal header count (MUST be $\geq 3$)                     & IPV6\_ACTIVATE=1\\
+    SALRM             & 0 & 1: enable sending {\tt FL\_ALARM} bit for \tranrefpl{pcapd} & \\
+    SALRMINV          & 0 & 1: invert selection                                         & SALRM=1\\
+    \bottomrule
+\end{longtable}
+
+\subsection{tranalyzer.h}\label{tranalyzer.h}
+\begin{longtable}{>{\tt}lcl>{\tt\small}l}
+    \toprule
+    {\bf Name}               & {\bf Default}      & {\bf Description}                                                   & {\bf Flags}\\
+    \midrule\endhead%
+    T2\_SENSORID             & 666                & Sensor ID (can be overwritten with {\tt t2 -x} option)              & \\
+    ENVCNTRL                 & 2                  & Plugins configuration mode:                                         & \\
+                             &                    & \quad 0: Values from header file during compilation                 & \\
+                             &                    & \quad 1: Values from header file at runtime                         & \\
+                             &                    & \quad 2: Values from environment if defined,                        & \\
+                             &                    & \qquad otherwise from header file at runtime                        & \\
+    REPSUP                   & 0                  & Activate alive mode                                                 & \\
+    PID\_FNM\_ACT            & 0                  & Save the PID into a file {\tt\small PID\_FNM}                       & \\
+                             &                    & (default: {\tt\small "tranalyzer.pid"})                             & \\
+    PKT\_CB\_STATS           & 0                  & Compute stats about time spent in {\tt\small perPacketCallback()}   & \\
+    DEBUG                    & 0                  & 0: no debug output                                                  & \\
+                             &                    & 1: debug output which occurs only once or very seldom               & \\
+                             &                    & 2: + debug output which occurs in special situations,               & \\
+                             &                    & \qquad but not regularly                                            & \\
+                             &                    & 3: + debug output which occurs regularly (every packet)             & \\
+    VERBOSE                  & 2                  & 0: no output                                                        & \\
+                             &                    & 1: basic pcap report                                                & \\
+                             &                    & 2: + full traffic statistics                                        & \\
+                             &                    & 3: + info about fragmentation anomalies                             & \\
+    MEMORY\_DEBUG            & 0                  & 0: no memory debug                                                  & \\
+                             &                    & 1: detect leaks and overflows (see {\em utils/memdebug.h})          & \\
+    NO\_PKTS\_DELAY\_US      & 1000               & If no packets are available, sleep for $n$ microseconds             & \\
+    NON\_BLOCKING\_MODE      & 1                  & Non-blocking mode                                                   & \\
+    MAIN\_OUTBUF\_SIZE       & 1000000            & Size of the main output buffer                                      & \\
+    SNAPLEN                  & {\small\tt BUFSIZ} & Snapshot length (live capture)                                      & \\
+    CAPTURE\_TIMEOUT         & 1000               & Read timeout in milliseconds (live capture)                         & \\
+    BPF\_OPTIMIZE            & 0                  & 1: Optimize BPF filters                                             & \\
+    TSTAMP\_PREC             & 1                  & Timestamp precision: 0: microseconds, 1: nanoseconds                & \\
+    TSTAMP\_UTC              & 1                  & Time representation: 0: localtime, 1: UTC                           & \\
+    TSTAMP\_R\_UTC           & 0                  & Time report representation: 0: localtime, 1: UTC                    & \\
+    ALARM\_MODE              & 0                  & Only output flow if an alarm-based plugin fires                     & \\
+    ALARM\_AND               & 0                  & 0: logical OR, 1: logical AND                                       & ALARM\_MODE=1\\
+    FORCE\_MODE              & 0                  & Parameter induced flow termination (NetFlow mode)                   & \\
+    BLOCK\_BUF               & 0                  & Block unnecessary buffer output when non Tranalyzer                 & \\
+                             &                    & format event based plugins are active                               & \\
+    USE\_T2BUS               & 0                  & Use t2Bus communication backend (experimental)                      & \\
+    PLUGIN\_REPORT           & 1                  & Enable plugins to contribute to Tranalyzer end report               & \\
+    DIFF\_REPORT             & 0                  & 0: absolute Tranalyzer command line USR1 report                     & \\
+                             &                    & 1: differential report                                              & \\
+    MACHINE\_REPORT          & 0                  & USR1 report:                                                        & \\
+                             &                    & \qquad 0: human compliant,                                          & \\
+                             &                    & \qquad 1: machine compliant                                         & \\
+    REPORT\_HIST             & 0                  & Store statistical report history in {\tt\small REPORT\_HIST\_FILE}  & \\
+                             &                    & after shutdown and reload it when restarted                         & \\
+    ESOM\_DEP                & 0                  & Allow plugins to globally access other plugins variables            & \\
+    AYIYA                    & 1                  & Process AYIYA                                                       & \\
+    GENEVE                   & 1                  & Process GENEVE                                                      & \\
+    TEREDO                   & 1                  & Process TEREDO                                                      & \\
+    L2TP                     & 1                  & Process L2TP                                                        & \\
+    GRE                      & 1                  & Process GRE                                                         & \\
+    GTP                      & 1                  & Process GTP (GPRS Tunneling Protocol)                               & \\
+    VXLAN                    & 1                  & Process VXLAN                                                       & \\
+    IPIP                     & 1                  & Process IPv4/6 in IPv4/6                                            & \\
+    ETHIP                    & 1                  & Process Ethernet within IP                                          & \\
+    CAPWAP                   & 1                  & Process CAPWAP                                                      & \\
+    LWAPP                    & 1                  & Process LWAPP                                                       & \\
+    DTLS                     & 1                  & Process DTLS                                                        & \\
+    FRAGMENTATION            & 1                  & Activate fragmentation processing                                   & \\
+    FRAG\_HLST\_CRFT         & 1                  & Enables crafted packet processing                                   & FRAGMENTATION=1\\
+    FRAG\_ERROR\_DUMP        & 0                  & Dumps flawed fragmented packet to {\tt stdout}                      & FRAGMENTATION=1\\
+    IPVX\_INTERPRET          & 0                  & Interpret bogus IPvX packets                                        & \\
+    ANONYM\_IP               & 0                  & 1: No output of IP information                                      & \\
+    ETH\_STAT\_MODE          & 0                  & 0: use the innermost layer 2 type for the statistics                & \\
+                             &                    & 1: use the outermost layer 2 type for the statistics                & \\
+    \\
+    SUBNET\_ON               & 1                  & Core control of subnet function for plugins                         & \\
+    \\
+    RELTIME                  & 0                  & 0: absolute time                                                    & \\
+                             &                    & 1: relative time                                                    & \\
+    FDURLIMIT                & 0                  & If $>0$, force flow life span to $n\pm1$ seconds                    & \\
+    FDLSFINDEX               & 0                  & Findex for flows of a superflow                                     & FDURLIMIT=1\\
+                             &                    & \qquad 0: different findex                                          & \\
+                             &                    & \qquad 1: same findex                                               & \\
+    FLOW\_TIMEOUT            & 182                & Flow timeout after a packet is not seen after $n$ seconds           & \\
+    NOFLWCRT                 & 1                  & SIGINT 1 create no flow,                                            & \\
+                             &                    & SIGINT 2 release all flows, end report                              & \\
+    ZPKTITMUPD               & 1                  & 0: update if packets received                                       & \\
+                             &                    & 1: Zero Pkt actTime update active                                   & \\
+    ZPKTTMO                  & 1500               & Number of loops until actTime update                                & ZPKTITMUPD=1\\
+    \\
+    HASHFACTOR               & 1                  & default multiplication factor for {\tt\small HASHTABLE\_BASE\_SIZE} & \\
+                             &                    & (can be overwritten with {\tt --f} option)                          & \\
+    HASH\_CHAIN\_FACTOR      & 2                  & default multiplication factor for                                   & \\
+                             &                    & {\tt\small HASHCHAINTABLE\_BASE\_SIZE}                              & \\
+    \nameref{hash_autopilot} & 1                  & When main hash map is full:                                         & \\
+                             &                    & \qquad 0: terminate                                                 & \\
+                             &                    & \qquad 1: flushes oldest {\tt NUMFLWRM} flow(s)                     & \\
+    NUMFLWRM                 & 1                  & Number of flows to flush when main hash map is full                 & HASH\_AUTOPILOT=1\\
+    \bottomrule
+\end{longtable}
+
+Note that the {\tt PLUGIN\_FOLDER} flag ({\tt ".tranalyzer/plugins/"}) can be either set in this file or set at runtime with {\tt t2 --p} option.\\
+Although not recommended, the suffix for the generated files can also be changed by editing the {\tt PACKETS\_SUFFIX} ({\tt "\_packets.txt"}), {\tt LOG\_SUFFIX} ({\tt "\_log.txt"}) and {\tt MON\_SUFFIX} ({\tt "\_monitoring.txt"}) flags.
+
+\subsubsection{-D constants}
+the following constants influence the file name convention:
+
+\begin{longtable}{>{\tt}lcl}
+    \toprule
+    {\bf Name} & {\bf Default}   & {\bf Description}\\
+    \midrule\endhead%
+    RROP       & 0               & round robin operations \\
+    POLLTM     & 5               & poll timing for files \\
+    SCHR       & {\tt\small 'p'} & separating character for file number \\
+    \bottomrule
+\end{longtable}
+
+\subsubsection{alive signal}
+The alive signal is a derivative of the passive monitoring mode by the USR1 signal, where the
+report is deactivated. If {\tt REPSUP=1} then only the command defined by {\tt REPCMDAS/W} is sent to the
+control program defined by {\tt ALVPROG} as defined below:
+
+\begin{longtable}{>{\tt}lcl}
+    \toprule
+    {\bf Name} & {\bf Default}                                & {\bf Description}\\
+    \midrule\endhead%
+    REPSUP     & 0                                            & 0: alive mode off,\\
+               &                                              & 1: alive mode on, monitoring report suppressed \\
+    ALVPROG    & {\tt "t2alive"}                              & name of control program \\
+    REPCMDAS   & {\tt "a=`pgrep " ALVPROG "`; \textbackslash} & alive and stall USR1 signal (no packets) \\
+               & {\tt if [ \$a ]; then kill -USR1 \$a; fi"}   & \\
+    REPCMDAW   & {\tt "a=`pgrep " ALVPROG "`; \textbackslash} & alive and well USR2 signal (working) \\
+               & {\tt if [ \$a ]; then kill -USR2 \$a; fi"}   & \\
+    \bottomrule
+\end{longtable}
+
+If T2 crashes or is stopped a syslog message is issued by the \tranref{t2alive} daemon. Same if T2 gets started.
+
+\subsubsection{FORCE\_MODE}
+A 1 enables the force mode which enables any plugin to force the output of flows independent of the timeout value. Hence, Cisco NetFlow
+similar periodic output can be produced or overflows of counters can produce a flow and restart a new one. The macro which has to be present
+in the {\tt t2OnLayer4()} function is shown below:
+
+\begin{figure}[ht]
+\centering
+\begin{lstlisting}
+    T2_RM_FLOW(flowP);
+\end{lstlisting}
+\caption{Force code line in the {\em t2OnFlowTerminate()} plugin routine}
+\end{figure}
+
+\subsubsection{ALARM\_MODE}
+A 1 enables the alarm mode which differs from the default flow mode by the plugin based control of the Tranalyzer core flow output. It is useful for
+classification plugins generating alarms, thus emulating alarm based SW such as Snort, etc. The default value is 0.
+The plugin sets the global output suppress variable {\tt supOut=1} in the {\tt t2OnFlowTerminate()} function before any output is generated. This mode also allows multiple classification plugins producing an `AND' or an `OR' operation if many alarm generating plugins are loaded. The variable {\tt ALARM\_AND} controls the logical alarm operation. The macro which has to be present in the {\tt t2OnFlowTerminate()} function is shown below:
+
+\begin{figure}[ht]
+\centering
+\begin{lstlisting}
+    T2_REPORT_ALARMS(tcpWinFlowP->winThCnt);
+\end{lstlisting}
+\caption{Alarm code line in the {\em t2OnFlowTerminate()} plugin routine}
+\end{figure}
+
+\subsubsection{BLOCK\_BUF}
+if set to `1' unnecessary buffered output from all plugins is blocked when non Tranalyzer format event based plugins are active, e.g., text-based or binary output plugins are not loaded.
+
+\clearpage
+
+\subsubsection{Report Modes}
+Tranalyzer provides a user interrupt based report and a final report. The interrupt based mode can be configured in a variety of ways being defined below.
+
+\begin{longtable}{>{\tt}lcl}
+    \toprule
+    {\bf Name} & {\bf Default} & {\bf Description}\\
+    \midrule\endhead%
+    PLUGIN\_REPORT  & 0 & enable plugins to contribute to the tranalyzer command line end report \\
+    DIFF\_REPORT    & 0 & 1: differential, 0: Absolute tranalyzer command line {\tt USR1} report \\
+    MACHINE\_REPORT & 0 & {\tt USR1} Report 1: machine compliant; 0: human compliant \\
+    \bottomrule
+\end{longtable}
+
+The following interrupts are being caught by Tranalyzer2:
+
+\begin{longtable}{>{\tt}ll}
+    \toprule
+    {\bf Signal Name} & {\bf Description}\\
+    \midrule\endhead%
+    SIGINT  & like {\tt\textasciicircum{}C} terminates new flow production%
+              \footnote{If two {\tt SIGINT} interrupts are being sent in short order Tranalyzer will be terminated instantly.}\\
+    SIGTERM & terminates tranalyzer \\
+    SIGUSR1 & prints statistics report \\
+    SIGUSR2 & toggles repetitive statistics report \\
+    \bottomrule
+\end{longtable}
+
+\subsubsection{State and statistical save mode}
+T2 is capable to preserve its internal statistical state and certain viable global variables, such as the findex.
+
+\begin{longtable}{>{\tt\small}lcl}
+    \toprule
+    {\bf Name} & {\bf Default} & {\bf Description}\\
+    \midrule\endhead%
+    REPORT\_HIST       & 0                            & Store statistical report history after shutdown, reload it upon restart\\
+    REPORT\_HIST\_FILE & {\tt\small "stat\_hist.txt"} & default statistical report history filename\\
+    \bottomrule
+\end{longtable}
+The history file is stored by default under {\tt ./tranalyzer/plugins} or under the directory defined by a {\tt --p} option.
+
+\subsubsection{L2TP}
+A `1' activates the L2TP processing of the Tranalyzer2 core. All L2TP headers either encapsulated in MPLS or not will be processed and followed down via PPP headers to the IP header and then passed to the IP processing. The default value of the variable is `0'. Then the stack will be parsed until the first IP header is detected. So all L2TP UDP headers having source and destination port 1701 will be processed as normal UDP packets.
+
+\subsubsection{GRE}
+A `1' activates the L3 General Routing Encapsulation (GRE, {\tt l4proto=47}) processing of the Tranalyzer2 core. All GRE headers either encapsulated in MPLS or not will be processed and followed down via PPP headers to the IP header and then passed to the IP processing. The default value of the variable is 0. Then the stack will be parsed until the first IP header is detected. If the following content is not existing or compressed the flow will contain only {\tt l4Proto=47} information.
+
+\subsubsection{FRAGMENTATION}
+A `1' activates the fragmentation processing of the Tranalyzer2 core. All packets following the header packet will be assembled in the same flow. The core and the plugin \tranrefpl{tcpFlags} will provide special flags for fragmentation anomalies. If {\tt FRAGMENTATION} is set to 0 only the initial fragment will be processed; all later fragments will be ignored.
+
+\subsubsection{FRAG\_HLST\_CRFT}
+A `1' enables crafted packet processing even when the lead fragment is missing or packets contain senseless flags as being used in attacks or equipment failure.
+
+\subsubsection{FRAG\_ERROR\_DUMP}
+A `1' activates the dump of packet information on the command line for time based identification of ill-fated or crafted fragments in tcpdump or Wireshark. It provides the Unix timestamp, the six tuple, IPID and fragID as outlined in figure below.
+
+\begin{figure}[!ht]
+\begin{lstlisting}
+MsgType   msg   time   vlan   srcIP   srcPort   dstIP   dstPort   proto   fragID   fragOffset
+[WRN] packetCapture: 1. frag not found @ 1291753225.449690 20 X.Y.Z.U 42968 M.N.O.P 52027 17 - 0x191F 0x00A0
+[WRN] packetCapture: 1. frag not found @ 1291753225.482611 20 X.Y.Z.U 43044 M.N.O.P 1719 17 - 0x1922 0x00A0
+[WRN] packetCapture: 1. frag not found @ 1291753225.492830 20 X.Y.Z.U 55841 M.N.O.P 28463 17 - 0x1923 0x00A0
+[WRN] packetCapture: 1. frag not found @ 1291753225.503955 20 X.Y.Z.U 25668 M.N.O.P 8137 17 - 0x1924 0x00A0
+[WRN] packetCapture: 1. frag not found @ 1291753225.551094 20 X.W.Z.T 41494 T.V.W.Z 27796 17 - 0x5A21 0x00A0
+[WRN] packetCapture: 1. frag not found @ 1291753225.639627 20 A.B.C.D 38824 E.F.G.H 55133 17 - 0x0DAE 0x00AC
+\end{lstlisting}
+\caption{A sample report on stdout for packets with an elusive first fragment}
+\end{figure}
+
+{\bf WARNING:} If {\tt FRAG\_HLST\_CRFT == 1} then every fragmented headerless packet will be reported!
+
+\subsubsection{*\_SUFFIX}\label{file_suffixes}
+This constant defines the suffix of all plugin output files. For example if you specify the output {\em foo.foo} (with the {\tt --w} option), the generated file for the per-packet output will be in the default setting {\em foo.foo\_packets}.
+
+\subsubsection{RELTIME}
+{\tt RELTIME} renders all time based plugin output into relative to the beginning of the pcap or start of packet capture. In {\tt --D} or {\tt --R} read operation the first file defines the start time.
+
+\subsubsection{FLOW\_TIMEOUT}
+This constant specifies the default time in seconds (182) after which a flow will be considered as terminated since the last packet is captured. Note: Plugins are able to change the timeout values of a flow. For example the \tranrefpl{tcpStates} plugin adjusts the timeout of a flow according to the TCP state machine. A reduction of the flow timeout has an effect on the necessary flow memory defined in {\tt HASHCHAINTABLE\_SIZE}, see below.
+
+\subsubsection{FDURLIMIT}
+{\tt FDURLIMIT} defines the maximum flow duration in seconds which is then forced to be released.
+It is a special force mode for the duration of flows and a special feature for Dalhousie University.
+If {\tt FDURLIMIT > 0} then {\tt FLOW\_TIMEOUT} is overwritten if {\tt FURLIMIT} seconds are reached.
+
+\subsubsection{HASHFACTOR}
+A factor to be multiplied with the {\tt HASHTABLE\_SIZE} described below.
+It facilitates the correct setting of the hash space.
+Moreover, if T2 runs out of hash it will give an upper estimate the user can choose for {\tt HASHFACTOR}.
+Set it to this value, recompile and rerun T2.
+This constant is superseded by the \hyperref[s:foption]{{\tt --f} option}.
+
+\subsubsection{HASHTABLE\_SIZE}
+The number of buckets in the hash table.
+As a separate chaining hashing method is used, this value does not denote the amount of elements the hash table is able to manage!
+The larger, the less likely are hash collisions.
+The current default value is $2^{18}$.
+Its value should be selected at least two times larger as the value of {\tt HASHCHAINTABLE\_SIZE} discussed in the following chapter.
+
+\subsubsection{HASH\_CHAIN\_FACTOR}
+A factor to be multiplied with the {\tt HASHCHAINTABLE\_SIZE} described below.
+
+\subsubsection{HASHCHAINTABLE\_SIZE}
+Specifies the amount of flows the main hash table is able to manage.
+The default value is $2^{19}$, so roughly half the size of {\tt HASHTABLE\_SIZE}.
+T2 supplies information about the hash space in memory in: {\tt Max number of IPv4 flows in memory: 113244 (50.220\%)}.
+Together with the amount of traffic already processed the total value can be computed.
+An example is given in \reff{fig:t2finalreport}.
+
+\subsubsection{HASH\_AUTOPILOT}\label{hash_autopilot}
+Default 1. Avoids overrun of main hash, flushes oldest flow on every flow insert if hash map is full. 0 disables
+hash overrun protection. If speed is an issue avoid overruns by invoking T2 with the {\tt -f} option set to the value
+recommended by T2.
+
+\subsubsection{SUBNET\_ON}
+Since the version 0.8.8 the core controls the subnet functions instead of \tranrefpl{basicFlow} as
+now the aggregation mode according to countries or organization is possible.
+
+\subsubsection{utils.h}\label{s:utils.h}
+The following flags can be used to configure the subnet files and the output of the plugins:
+\begin{longtable}{>{\tt}lcl}
+    \toprule
+    {\bf Name} & {\bf Default} & {\bf Description}\\
+    \midrule\endhead%
+    SUBRNG  &  0 & Subnet definition:\\
+            &    & \qquad 0: CIDR only\\
+            &    & \qquad 1: Begin-End\\
+    CNTYCTY &  0 & 1: Add the county and city\\
+    CNTYLEN & 14 & length of County record\\
+    CTYLEN  & 14 & length of City record\\
+    WHOLEN  & 27 & length of Organization record\\
+    \bottomrule
+\end{longtable}
+
+If any of those flags is changed, \tranrefpl{tranalyzer} {\bf MUST} be recompiled with {\tt t2build -f} in
+order to generate a new binary subnet file, as we only load the info the user needs.
+
+\subsubsection{Format of the Subnet Files}
+The text format of the {\tt subnets4.txt} and {\tt subnets6.txt} files is defined as follows:
+\begin{itemize}
+    \item A {\tt `--'} in the first column ({\tt prefix/mask}) denotes a non-CIDR range.
+          In this case, Tranalyzer reads the 2nd column instead of the 1st when {\tt SUBRNG=1} in \nameref{s:utils.h}.
+    \item If {\tt SUBRNG=0}, the 2nd column is ignored and only CIDR ranges are accepted.
+    \item Country and Whois 32 bit hex code: {\tt cccc cccc cTww wwww wwww wwww wwww wwww} where
+          {\tt c}: Country, {\tt T} Tor address bit, {\tt w}: Organization
+    \item Autonomous System Number (ASN)
+    \item Uncertainty of location in km
+    \item Latitude
+    \item Longitude
+    \item Country
+    \item County
+    \item City
+    \item Organization
+\end{itemize}
+
+An extraction of {\tt subnets4.txt} is depicted below:
+
+\begin{figure}[!ht]
+\centering
+\begin{small}
+\begin{lstlisting}
+#       5       16122020
+# IPCIDR        IPrange CtryWhoCode     ASN     Uncert  Latitude        Longitude       Country County  City    Org
+# Begin IPv4 private address space
+10.0.0.0/8      10.0.0.0-10.255.255.255 0x0301c2a7      0       -1.0    666.000000      666.000000      04      -       -       Private network
+14.0.0.0/8      14.0.0.0-14.255.255.255 0x00000000      0       -1.0    666.000000      666.000000      03      -       -       Public data networks
+24.0.0.0/8      24.0.0.0-24.255.255.255 0x00000000      0       -1.0    666.000000      666.000000      09      -       -       Cable television networks
+127.0.0.0/8     127.0.0.0-127.255.255.255       0x01014fe7      0       -1.0    666.000000      666.000000      01      -       -       Loopback
+100.64.0.0/10   100.64.0.0-100.127.255.255      0x0702041f      0       -1.0    666.000000      666.000000      20      -       -       Shared address space
+169.254.0.0/16  169.254.0.0-169.254.255.255     0x02014965      0       -1.0    666.000000      666.000000      02      -       -       Link-local
+172.16.0.0/12   172.16.0.0-172.31.255.255       0x0381c2a7      0       -1.0    666.000000      666.000000      05      -       -       Private network
+192.0.0.0/24    192.0.0.0-192.0.0.255   0x0401c2a7      0       -1.0    666.000000      666.000000      06      -       -       Private network
+192.0.2.0/24    192.0.2.0-192.0.2.255   0x07823fb8      0       -1.0    666.000000      666.000000      21      -       -       TEST-NET-1
+192.88.99.0/24  192.88.99.0-192.88.99.255       0x0b011c29      0       -1.0    666.000000      666.000000      60      -       -       IPv6 to IPv4 relay
+192.168.0.0/16  192.168.0.0-192.168.255.255     0x0481c2a7      0       -1.0    666.000000      666.000000      07      -       -       Private network
+198.18.0.0/15   198.18.0.0-198.19.255.255       0x0501c2a7      0       -1.0    666.000000      666.000000      08      -       -       Private network
+198.51.100.0/24 198.51.100.0-198.51.100.255     0x08023fb9      0       -1.0    666.000000      666.000000      22      -       -       TEST-NET-2
+203.0.113.0/24  203.0.113.0-203.0.113.255       0x08823fba      0       -1.0    666.000000      666.000000      23      -       -       TEST-NET-3
+224.0.0.0/4     224.0.0.0-239.255.255.255       0x06017598      0       -1.0    666.000000      666.000000      10      -       -       Multicast
+...
+240.0.0.0/4     240.0.0.0-255.255.255.254       0x0901dd04      0       -1.0    666.000000      666.000000      24      -       -       Reserved
+255.255.255.255/32      255.255.255.255-255.255.255.255 0x06804ca0      0       -1.0    666.000000      666.000000      11      -       -       Broadcast
+# End IPv4 private address space
+1.0.0.0/24      1.0.0.0-1.0.0.255       0x8480205e      13335   80.000000       34.052231       -118.243683     us      California      Los Angeles     APNIC Research and Development
+1.0.1.0/24      1.0.1.0-1.0.1.255       0x260062cc      0       80.000000       26.061390       119.306107      cn      Fujian  Fuzhou  CHINANET FUJIAN PROVINCE NETWORK
+1.0.2.0/23      1.0.2.0-1.0.3.255       0x260062cc      0       80.000000       26.061390       119.306107      cn      Fujian  Fuzhou  CHINANET FUJIAN PROVINCE NETWORK
+1.0.4.0/24      1.0.4.0-1.0.4.255       0x148284d8      56203   80.000000       -37.813999      144.963318      au      Victoria        Melbourne       Wirefreebroadband Pty Ltd
+...
+\end{lstlisting}
+\end{small}
+\end{figure}
+
+The text files {\tt subnets4.txt} and {\tt subnets6.txt} can be edited and manually converted,
+just move to {\tt utils/subnet} directory and invoke the following command:
+
+\begin{center}
+{\tt ./subconv subnets4.txt} and
+{\tt ./subconv subnets6.txt}
+\end{center}
+
+\subsubsection{Tor Information}
+
+Since 0.8.8 Tor information is also available for IPv6. The conversion programs from the
+raw files to T2 format can be found under {\tt utils/subnet/tor}. It can be controlled also
+by {\tt subconv}, see options below:
+
+\begin{center}
+    \begin{verbatim}
+$ ./subconv -h
+Usage:
+    subconv [OPTION...] <subnets.txt>
+
+Optional arguments:
+    -4                Generate subnet file for IPv4
+    -6                Generate subnet file for IPv6
+
+    -t                Add Tor info to subnet file
+    -a                Download and add Tor info to subnet file
+    -c                Convert from Tor JSON info to subnet file
+
+    -h, --help        Show this help, then exit
+    \end{verbatim}
+\end{center}
+
+So to convert the IPv4 subnet file and add existing Tor info invoke the following command:
+
+\begin{center}
+{\tt ./subconv -t subnets4.txt}
+\end{center}
+
+
+\subsubsection{Aggregation Mode}
+The aggregation mode enables the user to confine certain IP, port or protocol ranges into a single flow. The variable {\tt AGGREGATIONFLAG} in \nameref{tranalyzer.h} defines a
+bit field which enables specific aggregation modes according to the six tuple values listed below.
+\begin{longtable}{>{\tt}l>{\tt}l}
+    \toprule
+    {\bf Aggregation Flag} & {\bf Value} \\
+    \midrule\endhead%
+    L4PROT  & 0x01 \\
+    DSTPORT & 0x02 \\
+    SRCPORT & 0x04 \\
+    DSTIP   & 0x08 \\
+    SRCIP   & 0x10 \\
+    VLANID  & 0x20 \\
+    SUBNET  & 0x80 \\
+    \bottomrule
+\end{longtable}
+
+If a certain aggregation mode is enabled the following variables in \nameref{tranalyzer.h}
+define the aggregation range.
+\begin{longtable}{>{\tt}l>{\tt}cl}
+    \toprule
+    {\bf Aggregation Flag} & {\bf Type} & {\bf Description}\\
+    \midrule\endhead%
+    SRCIP4CMSK & uint8\_t  & src IPv4 aggregation CIDR mask \\
+    DSTIP4CMSK & uint8\_t  & dst IPv4 aggregation CIDR mask \\
+    SRCIP6CMSK & uint8\_t  & src IPv6 aggregation CIDR mask \\
+    DSTIP6CMSK & uint8\_t  & dst IPv6 aggregation CIDR mask \\
+    SRCPORTLW  & uint16\_t & src port lower bound \\
+    SRCPORTHW  & uint16\_t & src port upper bound \\
+    DSTPORTLW  & uint16\_t & dst port lower bound \\
+    DSTPORTHW  & uint16\_t & dst port upper bound \\
+    \bottomrule
+\end{longtable}
+
+If {\tt SUBNET} is chosen then all flows are aggregated according to a 32-bit hex subnet mask
+of the organization country hex code.
+
+\begin{lstlisting}
+// SUBNET mode: IP flow aggregation network masks
+#define CNTRY_MSK 0xff800000
+#define TOR_MSK   0x00400000
+#define ORG_MSK   0x003fffff
+#define NETIDMSK  (CNTRY_MSK | ORG_MSK) // netID mask
+\end{lstlisting}
+
+\subsection{bin2txt.h}\label{bin2txt.h}
+\begin{longtable}{>{\tt}lcl}%l}
+    \toprule
+    {\bf Name} & {\bf Default} & {\bf Description}\\% & {\bf Flags}\\
+    \midrule\endhead%
+    IP4\_FORMAT                & 0                               & IPv4 addresses representation:\\
+                               &                                 & \qquad 0: normal,\\
+                               &                                 & \qquad 1: normalized (padded with zeros),\\
+                               &                                 & \qquad 2: one 32-bits hex number\\
+                               &                                 & \qquad 3: one 32-bits unsigned number\\
+    IP6\_FORMAT                & 0                               & IPv6 addresses representation:\\
+                               &                                 & \qquad 0: compressed,\\
+                               &                                 & \qquad 1: uncompressed,\\
+                               &                                 & \qquad 2: one 128-bits hex number,\\
+                               &                                 & \qquad 3: two 64-bits hex numbers\\
+    MAC\_FORMAT                & 0                               & MAC addresses representation:\\
+                               &                                 & \qquad 0: normal (edit {\tt MAC\_SEP} to change the separator),\\
+                               &                                 & \qquad 1: one 64-bits hex number,\\
+    MAC\_SEP                   & {\tt\small ":"}                 & Separator to use in MAC addresses: {\tt 11:22:33:44:55:66}\\
+    B2T\_NON\_IP\_STR          & {\tt\small "-"}                 & Representation of non-IPv4/IPv6 addresses in IP columns\\
+    HEX\_CAPITAL               & 0                               & Hex output: 0: lower case; 1: upper case\\
+    TFS\_EXTENDED\_HEADER      & 0                               & Extended header in flow file\\
+    TFS\_NC\_TYPE              & 2                               & Types in header file: 0: none, 1: numbers, 2: C types\\
+    TFS\_SAN\_UTF8             & 1                               & Activates the UTF-8 sanitizer for strings\\
+    B2T\_TIMESTR               & 0                               & Print Unix timestamps as human readable dates\\
+    HDR\_CHR                   & {\tt\small "\%"}                & start character(s) of comments\\
+    SEP\_CHR                   & {\tt\small "\textbackslash{}t"} & column separator in the flow file\\
+                               &                                 & {\tt ";"}, {\tt "."}, {\tt "\_"} and {\tt "\textbackslash""} should not be used\\
+    JSON\_KEEP\_EMPTY          & 0                               & Output empty fields\\
+    JSON\_PRETTY               & 0                               & Add spaces to make the output more readable\\
+    \bottomrule
+\end{longtable}
+
+\subsection{gz2txt.h}\label{gz2txt.h}
+\begin{longtable}{>{\tt}lcl}%l}
+    \toprule
+    {\bf Name} & {\bf Default} & {\bf Description}\\% & {\bf Flags}\\
+    \midrule\endhead%
+    USE\_ZLIB & 1 & Activate code for gzip-(de)compression\\
+    \bottomrule
+\end{longtable}
+
+\subsection{outputBuffer.h}\label{outputBuffer.h}
+\begin{longtable}{>{\tt}lcl>{\tt\small}l}
+    \toprule
+    {\bf Name} & {\bf Default} & {\bf Description} & {\bf Flags}\\
+    \midrule\endhead%
+    BUF\_DATA\_SHFT    & 0 & Adds for each binary output record the length and shifts    & \\
+                       &   & the record by $n$ {\tt uint32\_t} words to the right        & \\
+                       &   & (see \tranrefpl{binSink} and \tranrefpl{socketSink} plugin) & \\
+    OUTBUF\_AUTOPILOT  & 1 & Automatically increase the output buffer when required      & \\
+    OUTBUF\_MAXSIZE\_F & 5 & Maximal factor to increase the output buffer size to        & OUTBUF\_AUTOPILOT=1\\
+    \bottomrule
+\end{longtable}
+
+\subsection{rbTree.h}\label{rbTree.h}
+\begin{longtable}{>{\tt}lcl}%l}
+    \toprule
+    {\bf Name} & {\bf Default} & {\bf Description}\\% & {\bf Flags}\\
+    \midrule\endhead%
+    RBT\_DEBUG    & 0 & Enable debug output\\
+    RBT\_ROTATION & 0 & Activate the Red-Black Tree feature of rotating an unbalanced tree\\
+    \bottomrule
+\end{longtable}
+
+\subsection{subnetHL.h}\label{subnetHL.h}
+\begin{longtable}{>{\tt}lcl}%l}
+    \toprule
+    {\bf Name} & {\bf Default} & {\bf Description}\\% & {\bf Flags}\\
+    \midrule\endhead%
+    SUBRNG      & 0               & IP range definition:\\
+                &                 & \qquad 0: CIDR only,\\
+                &                 & \qquad 1: Begin-End\\
+    CNTYCTY     & 0               & Output the county and the city\\
+    WHOADDR     & 0               & Add whois address info\\
+    SUB\_MAP    & 1               & Use mmap to load the subnet file\\
+    CNTYLEN     & 14              & Length of County record\\
+    CTYLEN      & 14              & Length of City record\\
+    WHOLEN      & 30              & Length of Organization record\\
+    ADDRLEN     & 30              & Length of Address record\\
+    SUBNET\_UNK & {\tt\small "-"} & Representation of unknown locations\\
+    \bottomrule
+\end{longtable}
+
+\subsection{t2log.h}\label{t2log.h}
+\begin{longtable}{>{\tt}lcl}%l}
+    \toprule
+    {\bf Name} & {\bf Default} & {\bf Description}\\% & {\bf Flags}\\
+    \midrule\endhead%
+    T2\_LOG\_COLOR & 1 & Whether or not to color messages\\
+    \bottomrule
+\end{longtable}
+
+\subsection{Tranalyzer2 Output}\label{tranalyzer_output}
+As stated before, the functionality and output of Tranalyzer2 is defined by the activated plugins.
+Basically, there are two ways a plugin can generate output.
+First, it can generate its own output file and write any arbitrary content into any stream.
+The second way is called standard output or per-flow output. After flow termination Tranalyzer2 provides an output buffer and appends the direction of the flow to it. For example, in case of textual output, an {\tt ``A''} flow is normally followed by a {\tt ``B''} flow or if the {\tt ``B''} flow does not exist it is followed by the next {\tt ``A''} flow. Then, the output buffer is passed to the plugins providing their per-flow output. Finally the buffer is sent to the activated output plugins. This process repeats itself for the {\tt ``B''} flow. For detailed explanation about the functionality of the output plugins refer to the section plugins.
+
+\subsubsection{Hierarchical Ordering of Numerical or Text Output}
+Tranalyzer2 provides a hierarchical ordering of each output. Each plugin controls the:
+\begin{itemize}
+\item volume of its output
+\item number of values or bins
+\item hierarchical ordering of the data
+\item repetition of data substructures
+\end{itemize}
+Thus, complex structures such as lists or matrices can be presented in a single line.\\
+The following sample of text output shows the hierarchical ordering for four data outputs, separated by tabulators:
+\begin{figure*}[!ht]
+\centering
+\begin{lstlisting}
+A    0.3   2.0_3.4_2.1    2;4;2;1    (1_2_9)_(1_3_1)_(7_5_3)_(2_3_7)
+\end{lstlisting}
+\end{figure*}
+
+The {\tt A} indicates the direction of the flow; in this case it is the initial flow. The next number denotes a singular descriptive statistical result. Output number two consists of three values separated by ``\_'' characters. Output number three consists of one value, that can be repeated, indicated by the character ``;''. Output number four is a more complex example: It consists of four values containing three subvalues indicated by the braces. This could be interpreted as a matrix of size $4\times3$.
+
+\subsection{Final Report}
+Standard configuration of Tranalyzer2 produces a statistical report to {\em stdout} about timing, packets, protocol encapsulation type, average bandwidth, dump length, etc. A sample report including some current protocol relevant warnings is depicted in the figure below. Warnings are not fatal hence are listed at the end of the statistical report when Tranalyzer2 terminates naturally. The {\em Average total Bandwidth} estimation refers to the processed bandwidth during the data acquisition process. It is only equivalent to the actual bandwidth if the total packet length including all encapsulations is not truncated and all traffic is IP. The {\em Average IP Traffic Bandwidth} is an estimate comprising all IP traffic actually present on the wire. Plugins can report extra information when {\tt PLUGIN\_REPORT} is activated. This report can be saved in a file, by using one of the following command:
+
+\begin{center}
+    {\tt tranalyzer -r file.pcap -w out -l (See \refs{t2-loption})}\\
+    {\tt tranalyzer -r file.pcap -w out | tee out\_stdout.txt}\\
+    {\tt tranalyzer -r file.pcap -w out > out\_stdout.txt}
+\end{center}
+
+Both commands will create a file {\tt out\_stdout.txt} containing the report. The only difference between those two commands is that the first one still outputs the report to stdout.
+
+Fatal errors regarding the invocation, configuration and operation of Tranalyzer2 are printed to {\em stderr} after the plugins are loaded, thus before the processing is activated, see the {\em Hash table error} example in \refl{fig:t2finalreport}. These errors terminate Tranalyzer2 immediately and are located before the final statistical report as being indicated by the {\em ``Shutting down\ldots''} key phrase. If the final report is to be used in a following script a pipe can be appended and certain lines can be filtered using grep or awk.
+
+\begin{lstlisting}[
+    caption = {A sample Tranalyzer2 final report including encapsulation warning, Hash Autopilot engagement when hash table full},
+    label   = fig:t2finalreport,
+]
+$ ./tranalyzer -r ~/data/knoedel.pcap -w ~/results/
+================================================================================
+Tranalyzer 0.8.9 (Anteater), Tarantula. PID: 3426
+================================================================================
+[INF] Creating flows for L2, IPv4, IPv6
+Active plugins:
+    01: protoStats, 0.8.9
+    02: basicFlow, 0.8.9
+    03: macRecorder, 0.8.9
+    04: portClassifier, 0.8.9
+    05: basicStats, 0.8.9
+    06: tcpFlags, 0.8.9
+    07: tcpStates, 0.8.9
+    08: icmpDecode, 0.8.9
+    09: dnsDecode, 0.8.9
+    10: httpSniffer, 0.8.9
+    11: connStat, 0.8.9
+    12: txtSink, 0.8.9
+[INF] IPv4 Ver: 5, Rev: 16122020, Range Mode: 0, subnet ranges loaded: 406027 (406.03 K)
+[INF] IPv6 Ver: 5, Rev: 17122020, Range Mode: 0, subnet ranges loaded: 50974 (50.97 K)
+Processing file: /home/wurst/knoedel.pcap
+Link layer type: Ethernet [EN10MB/1]
+Dump start: 1291753225.446732 sec (Tue 07 Dec 2010 20:20:25 GMT)
+[WRN] snapL2Length: 1550 - snapL3Length: 1484 - IP length in header: 1492
+[WRN] Hash Autopilot: main HashMap full: flushing 1 oldest flow(s)
+[INF] Hash Autopilot: Fix: Invoke Tranalyzer with '-f 5'
+Dump stop : 1291753452.373884 sec (Tue 07 Dec 2010 20:24:12 GMT)
+Total dump duration: 226.927152 sec (3m 46s)
+Finished processing. Elapsed time: 171.835756 sec (2m 51s)
+Finished unloading flow memory. Time: 182.101116 sec (3m 2s)
+Percentage completed: 100.00%
+Number of processed packets: 53982409 (53.98 M)
+Number of processed bytes: 42085954664 (42.09 G)
+Number of raw bytes: 42101578296 (42.10 G)
+Number of pad bytes: 25023 (25.02 K)
+Number of pcap bytes: 42949673232 (42.95 G)
+Number of IPv4 packets: 53768017 (53.77 M) [99.60%]
+Number of IPv6 packets: 214107 (214.11 K) [0.40%]
+Number of A packets: 31005806 (31.01 M) [57.44%]
+Number of B packets: 22976603 (22.98 M) [42.56%]
+Number of A bytes: 14211017503 (14.21 G) [33.77%]
+Number of B bytes: 27874937161 (27.87 G) [66.23%]
+Average A packet load: 458.33
+Average B packet load: 1213.19 (1.21 K)
+--------------------------------------------------------------------------------
+macRecorder: MAC pairs per flow: min: 1, max: 3, average: 1.00
+basicStats: Biggest L2 talker: xx:xx:xx:xx:xx:xx: 68 [0.00%] packets
+basicStats: Biggest L2 talker: xx:xx:xx:xx:xx:xx: 85480 (85.48 K) [0.00%] bytes
+basicStats: Biggest L3 talker: v.v.v.v (GB): 154922 (154.92 K) [0.29%] packets
+basicStats: Biggest L3 talker: w.w.w.w (GB): 236308004 (236.31 M) [0.56%] bytes
+tcpFlags: Aggregated ipFlags: 0x3d6e
+tcpFlags: Aggregated tcpAnomaly: 0xfe07
+tcpFlags: Number of TCP scans attempted, successful: 88849 (88.85 K), 140408 (140.41 K) [158.03%]
+tcpFlags: Number of TCP SYN retries, seq retries: 65369 (65.37 K), 15783 (15.78 K)
+tcpFlags: Number WinSz below 1: 162725 (162.72 K) [0.38%]
+tcpFlags: Number of MPTCP packets: 6 [0.00%]
+tcpFlags: Aggregated MPTCP types: 0x0008 and flags: 0x00
+tcpStates: Aggregated tcpStates anomalies: 0xdf
+icmpDecode: Aggregated icmpStat: 0x31
+icmpDecode: Number of ICMP echo request packets: 14979 (14.98 K) [12.00%]
+icmpDecode: Number of ICMP echo reply packets: 2690 (2.69 K) [2.16%]
+icmpDecode: ICMP echo reply / request ratio: 0.18
+icmpDecode: Number of ICMPv6 echo request packets: 1440 (1.44 K) [9.63%]
+icmpDecode: Number of ICMPv6 echo reply packets: 951 [6.36%]
+icmpDecode: ICMPv6 echo reply / request ratio: 0.66
+dnsDecode: Number of DNS packets: 237597 (237.60 K) [0.44%]
+dnsDecode: Number of DNS Q packets: 125260 (125.26 K) [52.72%]
+dnsDecode: Number of DNS R packets: 112337 (112.34 K) [47.28%]
+dnsDecode: Aggregated dnsStat: 0xf72f
+httpSniffer: Number of HTTP packets: 36623492 (36.62 M) [67.84%]
+httpSniffer: Number of HTTP GET  requests: 426825 (426.82 K) [1.17%]
+httpSniffer: Number of HTTP POST requests: 39134 (39.13 K) [0.11%]
+httpSniffer: HTTP GET/POST ratio: 10.91
+httpSniffer: Aggregated httpStat     : 0x003f
+httpSniffer: Aggregated httpAFlags   : 0x5143
+httpSniffer: Aggregated httpCFlags   : 0x007a
+httpSniffer: Aggregated httpHeadMimes: 0x80ef
+httpSniffer: Number of files img_vid_aud_msg_txt_app_unk: 192890_5262_401_95_149772_91634_1958
+connStat: Number of unique source IPs: 275311 (275.31 K)
+connStat: Number of unique destination IPs: 301003 (301.00 K)
+connStat: Number of unique source/destination IPs connections: 1242 (1.24 K)
+connStat: Max unique number of source IP / destination port connections: 1521 (1.52 K)
+connStat: IP prtcon/sdcon, prtcon/scon: 1.224638, 0.005525
+connStat: Source IP with max connections: X.Y.Z.U (HU): 1515 (1.51 K) connections
+connStat: Destination IP with max connections: L.M.N.O (FI): 3241 (3.24 K) connections
+--------------------------------------------------------------------------------
+Headers count: min: 4, max: 13, average: 7.10
+Max VLAN header count: 1
+Max MPLS header count: 2
+Number of LLC packets: 285 [0.00%]
+Number of GRE packets: 285 [0.00%]
+Number of Teredo packets: 213876 (213.88 K) [0.40%]
+Number of AYIYA packets: 231 [0.00%]
+Number of IGMP packets: 401 [0.00%]
+Number of ICMP packets: 124800 (124.80 K) [0.23%]
+Number of ICMPv6 packets: 14946 (14.95 K) [0.03%]
+Number of TCP packets: 43273341 (43.27 M) [80.16%]
+Number of TCP bytes: 36129271238 (36.13 G) [85.85%]
+Number of UDP packets: 10311931 (10.31 M) [19.10%]
+Number of UDP bytes: 5832263590 (5.83 G) [13.86%]
+Number of IPv4 fragmented packets: 19155 (19.16 K) [0.04%]
+Number of IPv6 fragmented packets: 9950 (9.95 K) [4.65%]
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+Number of processed   flows: 1438758 (1.44 M)
+Number of processed A flows: 1209354 (1.21 M) [84.06%]
+Number of processed B flows: 229404 (229.40 K) [15.94%]
+Number of request     flows: 930585 (930.59 K) [64.68%]
+Number of reply       flows: 508173 (508.17 K) [35.32%]
+Total   A/B    flow asymmetry: 0.68
+Total req/rply flow asymmetry: 0.29
+Number of processed   packets/flows: 37.52
+Number of processed A packets/flows: 25.64
+Number of processed B packets/flows: 100.16
+Number of processed total packets/s: 237884.31 (237.88 K)
+Number of processed A+B   packets/s: 237884.31 (237.88 K)
+Number of processed A     packets/s: 136633.30 (136.63 K)
+Number of processed   B   packets/s: 101251.01 (101.25 K)
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+Number of average processed flows/s: 6340.18 (6.34 K)
+Average full raw bandwidth: 1484232320 b/s (1.48 Gb/s)
+Average snapped bandwidth : 1483681536 b/s (1.48 Gb/s)
+Average full bandwidth : 1483899136 b/s (1.48 Gb/s)
+Max number of flows in memory: 262144 (262.14 K) [100.00%]
+Number of flows terminated by autopilot: 815749 (815.75 K) [56.70%]
+Memory usage: 2.49 GB [3.70%]
+Aggregate flow status: 0x0c00bcfad298fb04
+[WRN] L3 SnapLength < Length in IP header
+[WRN] L4 header snapped
+[WRN] Consecutive duplicate IP ID
+[WRN] IPv4/6 payload length > framing length
+[WRN] IPv4/6 fragmentation header packet missing
+[WRN] IPv4/6 packet fragmentation sequence not finished
+[INF] Ethernet flows
+[INF] IPv4 flows
+[INF] IPv6 flows
+[INF] VLAN encapsulation
+[INF] IPv4/6 fragmentation
+[INF] MPLS encapsulation
+[INF] L2TP encapsulation
+[INF] PPP/HDLC encapsulation
+[INF] GRE encapsulation
+[INF] AYIYA tunnel
+[INF] Teredo tunnel
+[INF] CAPWAP/LWAPP tunnel
+[INF] IPsec AH
+[INF] IPsec ESP
+[INF] SSDP/UPnP
+[INF] SIP/RTP
+\end{lstlisting}
+%stopzone % hack to correct vim syntax highlighting
+
+T2 runs in IPv4 mode, but warns the user that there is IPv6 encapsulated.
+%Packets are dissected until a layer 4 is found. or an IPv6 header is found and then backtrack.
+Note that the new \hyperref[hash_autopilot]{Hash Autopilot} warns you when the main hash map is full.
+T2 then removes the oldest flow and continues processing your pcap.
+To avoid that, run T2 again, but this time, use the {\tt --f 5} option as indicated in the warning message:
+\begin{center}
+    {\tt [INF] Hash Autopilot: Fix: Invoke Tranalyzer with '-f 5'} \\
+    {\tt \$ t2 -r \textasciitilde/wurst/data/knoedel.pcap -w \textasciitilde/results -f 5}
+\end{center}
+
+or just let it run to the finish.
+
+\subsection{Monitoring Modes During Runtime}
+:If debugging is deactivated or the verbose level is zero (see \refs{tranalyzer.h}), Tranalyzer2 prints no status information or end report.
+Since 0.8.8 the control of T2 can be achieved without the knowledge of the PID via {\tt t2stat}:
+
+\begin{lstlisting}
+t2stat -h
+Usage:
+    t2stat [OPTION...]
+
+Optional arguments:
+    INTERVAL     Send a signal to Tranalyzer every INTERVAL seconds
+    -SIGNAME     Send SIGNAME signal instead of USR1
+    -s           Run the command as root (with sudo)
+    -p           Print Tranalyzer PID(s) and exit
+    -l           List Tranalyzer PID(s), commands, running time and exit
+    -i           Interactively cycle through all Tranalyzer processes
+
+Help and documentation arguments:
+    -h           Show help options and exit
+\end{lstlisting}
+
+Here are some examples
+
+\begin{longtable}{>{\tt}ll}
+    \toprule
+    {\bf Command} & {\bf Description}\\
+    \midrule\endhead%
+    t2stat         & T2 sends configured monitoring report to stdout\\
+    t2stat 5       & T2 sends configured monitoring report to stdout every 5 seconds\\
+    t2stat -USR2   & T2 toggles between on demand and continuous monitoring operation \\
+    t2stat -SIGINT & stop flow creation (like \verb!^C! in the shell) \\
+    t2stat -TERM   & terminate T2 immediately (Like two times \verb!^C! in the shell) \\
+    \bottomrule
+\end{longtable}
+
+The script {\tt t2stat} has the same function as {\tt kill -USR1 PID}.
+An example of a typical signal requested report ({\tt MACHINE\_REPORT=0}) is shown in \refl{fig:t2reportaggr}.
+
+\begin{lstlisting}[
+    caption = {A sample Tranalyzer2 human readable report aggregate mode},
+    label   = fig:t2reportaggr,
+]
+                                    @      @
+                                     |    |
+===============================vVv==(a    a)==vVv===============================
+=====================================\    /=====================================
+======================================\  /======================================
+                                       oo
+USR1 A type report: Tranalyzer 0.8.9 (Anteater), Tarantula. PID: 3434
+PCAP time: 1291753338.831347 sec (Tue 07 Dec 2010 20:22:18 GMT)
+PCAP duration: 113.384615 sec (1m 53s)
+Time: 1613737828.648459 sec (Fri 19 Feb 2021 13:30:28 CET)
+Elapsed time: 66.478134 sec (1m 6s)
+Processing file: /home/wurst/knoedel.pcap
+Total bytes to process: 42949673232 (42.95 G)
+Percentage completed: 50.60%
+Total bytes processed so far: 21730424832 (21.73 G)
+Remaining time: 64.914335 sec (1m 4s)
+ETF: 1613737893.562794 sec (Fri 19 Feb 2021 13:31:33 CET)
+Number of processed packets: 27154806 (27.15 M)
+Number of processed bytes: 21295948035 (21.30 G)
+Number of raw bytes: 21303536835 (21.30 G)
+Number of pad bytes: 12158 (12.16 K)
+Number of IPv4 packets: 27051228 (27.05 M) [99.62%]
+Number of IPv6 packets: 103450 (103.45 K) [0.38%]
+Number of A packets: 15590982 (15.59 M) [57.42%]
+Number of B packets: 11563824 (11.56 M) [42.58%]
+Number of A bytes: 7188873480 (7.19 G) [33.76%]
+Number of B bytes: 14107074555 (14.11 G) [66.24%]
+Average A packet load: 461.09
+Average B packet load: 1219.93 (1.22 K)
+--------------------------------------------------------------------------------
+tcpFlags: Number of TCP scans attempted, successful: 29501 (29.50 K), 51309 (51.31 K) [173.92%]
+tcpFlags: Number of TCP SYN retries, seq retries: 32048 (32.05 K), 7843 (7.84 K)
+icmpDecode: Aggregated icmpStat: 0x21
+icmpDecode: Number of ICMP echo request packets: 8244 (8.24 K) [11.58%]
+icmpDecode: Number of ICMP echo reply packets: 1948 (1.95 K) [2.74%]
+dnsDecode: Number of DNS packets: 122201 (122.20 K) [0.45%]
+dnsDecode: Number of DNS Q packets: 64102 (64.10 K) [52.46%]
+dnsDecode: Number of DNS R packets: 58099 (58.10 K) [47.54%]
+dnsDecode: Aggregated dnsStat: 0x0201
+httpSniffer: Number of HTTP packets: 18450263 (18.45 M) [67.94%]
+connStat: Number of unique source IPs: 136530 (136.53 K)
+connStat: Number of unique destination IPs: 151775 (151.78 K)
+connStat: Number of unique source/destination IPs connections: 1456 (1.46 K)
+connStat: Max unique number of source IP / destination port connections: 2019 (2.02 K)
+connStat: IP prtcon/sdcon, prtcon/scon: 1.386676, 0.014788
+connStat: Source IP with max connections: x.x.x.x (CH): 1165 (1.17 K) connections
+connStat: Destination IP with max connections: y.y.y.y (CH): 5028 (5.03 K) connections
+--------------------------------------------------------------------------------
+Headers count: min: 4, max: 13, average: 7.10
+Max VLAN header count: 1
+Max MPLS header count: 2
+Number of LLC packets: 128 [0.00%]
+Number of GRE packets: 128 [0.00%]
+Number of Teredo packets: 103318 (103.32 K) [0.38%]
+Number of AYIYA packets: 132 [0.00%]
+Number of IGMP packets: 168 [0.00%]
+Number of ICMP packets: 63517 (63.52 K) [0.23%]
+Number of ICMPv6 packets: 7691 (7.69 K) [0.03%]
+Number of TCP packets: 21820890 (21.82 M) [80.36%]
+Number of TCP bytes: 18347271411 (18.35 G) [86.15%]
+Number of UDP packets: 5137175 (5.14 M) [18.92%]
+Number of UDP bytes: 2890294860 (2.89 G) [13.57%]
+Number of IPv4 fragmented packets: 8295 (8.29 K) [0.03%]
+Number of IPv6 fragmented packets: 3238 (3.24 K) [3.13%]
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+Number of processed   flows: 707800 (707.80 K)
+Number of processed A flows: 593821 (593.82 K) [83.90%]
+Number of processed B flows: 113979 (113.98 K) [16.10%]
+Number of request     flows: 582056 (582.06 K) [82.23%]
+Number of reply       flows: 125744 (125.74 K) [17.77%]
+Total   A/B    flow asymmetry: 0.68
+Total req/rply flow asymmetry: 0.64
+Number of processed   packets/flows: 38.37
+Number of processed A packets/flows: 26.26
+Number of processed B packets/flows: 101.46
+Number of processed total packets/s: 239492.87 (239.49 K)
+Number of processed A+B   packets/s: 239492.87 (239.49 K)
+Number of processed A     packets/s: 137505.27 (137.50 K)
+Number of processed   B   packets/s: 101987.60 (101.99 K)
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+Number of average processed flows/s: 6242.47 (6.24 K)
+Average full raw bandwidth: 1503099136 b/s (1.50 Gb/s)
+Average snapped bandwidth : 1502563456 b/s (1.50 Gb/s)
+Average full bandwidth : 1502764416 b/s (1.50 Gb/s)
+Fill size of main hash map: 582178 [44.42%]
+Max number of flows in memory: 582178 (582.18 K) [44.42%]
+Memory usage: 5.61 GB [8.32%]
+Aggregate flow status: 0x0c00b872d298fb04
+[WRN] L3 SnapLength < Length in IP header
+[WRN] Consecutive duplicate IP ID
+[WRN] IPv4/6 payload length > framing length
+[WRN] IPv4/6 fragmentation header packet missing
+[INF] Ethernet flows
+[INF] IPv4 flows
+[INF] IPv6 flows
+[INF] VLAN encapsulation
+[INF] IPv4/6 fragmentation
+[INF] MPLS encapsulation
+[INF] L2TP encapsulation
+[INF] PPP/HDLC encapsulation
+[INF] GRE encapsulation
+[INF] AYIYA tunnel
+[INF] Teredo tunnel
+[INF] CAPWAP/LWAPP tunnel
+[INF] IPsec AH
+[INF] IPsec ESP
+[INF] SSDP/UPnP
+[INF] SIP/RTP
+================================================================================
+\end{lstlisting}
+
+Note at the beginning {\tt USR1 A type} denotes that there was a signal received and all reporting is aggregated from the beginning of T2 operation, almost like the end report.
+Note, that the reaction to signals depends to internal core configuration, discussed in a later chapter below. For the time being we stick with the default.
+If you require now a report every 30s then type {\tt t2stat 30}. Then a signal is sent to T2 every 30s, hence a remote control. Nevertheless, he can do it also
+by himself, more later. Note that the report does not only tell you all about packet statistics but also the
+
+\begin{enumerate}
+   \item pcap duration
+   \item Elapsed time
+   \item Total bytes to process
+   \item Percentage completed
+   \item Total bytes processed so far
+   \item Remaining time
+   \item Estimated Time Finish (ETF)
+\end{enumerate}
+
+Especially the ETF is very valuable for large or multiple large pcap operations, e.g., multiple 10TB files.
+So the Anteater tells you when to come back from your coffee break.
+
+\refl{fig:t2machinereport} illustrates the output of the header line and subsequent data lines generated when {\tt MACHINE\_REPORT=1}.
+\begin{lstlisting}[
+    caption = {A sample Tranalyzer2 machine report aggregate mode},
+    label   = fig:t2machinereport,
+]
+%repTyp   time                sensorID  dur           memUsageKB  fillSzHashMap  numFlows  ...
+USR1MR_A  1022171702.125000   666       0.308953000   31686       2152           2152      ...
+USR1MR_A  1022171703.027000   666       1.308855000   33914       3919           3919      ...
+USR1MR_A  1022171704.334000   666       2.309162000   34750       5031           5031      ...
+USR1MR_A  1022171705.030000   666       3.308858000   35258       5847           5847      ...
+\end{lstlisting}
+
+\subsubsection{Configuration for Monitoring Mode on interface real time mode}
+To enable monitoring mode, configure Tranalyzer as follows:
+
+\begin{longtable}{>{\tt}l>{\tt}lc>{\tt}l>{\tt}l}
+    \toprule
+    \multicolumn{2}{c}{\bf main.h} & \hspace{2cm} & \multicolumn{2}{c}{\bf tranalyzer.h}\\
+    \midrule
+    \#define MONINTTMPCP & 0       & \hspace{2cm} & \#define DIFF\_REPORT    & 1\\
+    \#define MONINTTHRD  & 1       & \hspace{2cm} & \#define MACHINE\_REPORT & 1\\
+    \bottomrule
+\end{longtable}
+
+\clearpage
+The following plugins contribute to the output:
+\begin{multicols}{3}
+    \begin{itemize}
+        \item \tranrefpl{arpDecode}
+        \item \tranrefpl{basicStats}
+        \item \tranrefpl{cdpDecode}
+        \item \tranrefpl{connStat}
+        \item \tranrefpl{dnsDecode}
+        \item \tranrefpl{ftpDecode}
+        \item \tranrefpl{httpSniffer}
+        \item \tranrefpl{icmpDecode}
+        \item \tranrefpl{lldpDecode}
+        \item \tranrefpl{modbus}
+        \item \tranrefpl{mqttDecode}
+        \item \tranrefpl{ntpDecode}
+        \item \tranrefpl{radiusDecode}
+        \item \tranrefpl{sshDecode}
+        \item \tranrefpl{stpDecode}
+        \item \tranrefpl{t2PSkel}
+        \item \tranrefpl{tcpFlags}
+        \item \tranrefpl{vrrpDecode}
+    \end{itemize}
+\end{multicols}
+
+The generated output is illustrated in \reff{fig:t2machinereport}.
+The columns are as follows:
+\begin{multicols}{2}
+    \begin{enumerate}
+        \item repType
+        \item sensorID
+        \item procID ({\tt t2 --i} option and {\tt DPDK\_MP=1} only)
+        \item time
+        \item duration
+        \item pktsRec ({\tt t2 --i} option only)
+        \item pktsDrp ({\tt t2 --i} option only)
+        \item ifDrp ({\tt t2 --i} option and {\tt DPDK\_MP=0} only)
+        \item pktsErr ({\tt t2 --i} option and {\tt DPDK\_MP=1} only)
+        \item bytesRec ({\tt t2 --i} option and {\tt DPDK\_MP=1} only)
+        \item memUsageKB
+        \item fillSzHashMap
+        \item numFlows
+        \item numAFlows
+        \item numBFlows
+        \item numPkts
+        \item numAPkts
+        \item numBPkts
+        \item numL2Pkts
+        \item numV4Pkts
+        \item numV6Pkts
+        \item numVxPkts
+        \item numBytes
+        \item numABytes
+        \item numBBytes
+        \item numFrgV4Pkts
+        \item numFrgV6Pkts
+        \item numAlarms
+        \item rawBandwidth
+        \item globalWarn
+        \item Layer 2 protocols stats (see {\tt MONPROTL2} in {\em main.h}):
+            \begin{itemize}
+                \item 0x0806Pkts (ARP)
+                \item 0x0806Bytes (ARP)
+                \item 0x8035Pkts (RARP)
+                \item 0x8035Bytes (RARP)
+            \end{itemize}
+        \item Layer 3 protocols stats (see {\tt MONPROTL3} in {\em main.h}):
+            \begin{itemize}
+                \item TCPPkts
+                \item TCPBytes
+                \item UDPPkts
+                \item UDPBytes
+                \item ICMPPkts
+                \item ICMPBytes
+                \item ICMPv6Pkts
+                \item ICMPv6Bytes
+                \item SCTPPkts
+                \item SCTPBytes
+            \end{itemize}
+    \end{enumerate}
+\end{multicols}
+
+\subsubsection{Monitoring Mode to Syslog}
+In order to send monitoring info to a syslog server T2 must be configured in machine mode as indicated above.
+Then the output has to be piped into the following script:
+
+\begin{lstlisting}
+t2 -D ... -w ... | gawk -F"\t" `{ print "<25> ", strftime("%b %d %T"), "Monitoring: " $0 }' | \
+        nc -u w.x.y.z 514
+\end{lstlisting}
+
+Netcat will send it to the syslog server at address {\tt w.x.y.z}.
+Specific columns from the monitoring output can be selected in the awk script.
+
+\subsubsection{RRD Graphing of Monitoring Output}
+The monitoring output can be stored in a RRD database using the \tranref{t2rrd} script.
+To start creating a RRD database, launch Tranalyzer2 (in monitoring mode) as follows:
+\begin{center}
+    {\tt t2 -r file.pcap -l | t2rrd -m}
+\end{center}
+Or for monitoring from a live interface:
+\begin{center}
+    {\tt st2 -i eth0 -l | t2rrd -m}
+\end{center}
+
+Plots for the various fields can then be generated using the same \tranref{t2rrd} script:
+
+\begin{center}
+    {\tt t2rrd -i 30s numAFlows numBFlows}
+\end{center}
+
+To specify intervals, use {\tt s} (seconds), {\tt m} (minutes), {\tt h} (hour), {\tt d} (day), {\tt w} (week), {\tt mo} (month), {\tt y} (year).
+For example, to plot the data from the last two weeks, use {\tt --i 2w} or {\tt --s --2w}.
+
+An example graph is depicted in \reff{fig:rrdplot}.
+
+\begin{figure}[!ht]
+    \centering
+    \tranimg[width=.6\textwidth]{rrdplot}
+    \caption{T2 monitoring using RRD}
+    \label{fig:rrdplot}
+\end{figure}
+
+\subsection{Cancellation of the Sniffing Process}
+Processing of a pcap file stops upon end of file. In case of live capture from an interface Tranalyzer2 stops upon {\tt CTRL+C} interrupt or a {\tt kill --9 PID} signal. The disconnection of the interface cable will stop Tranalyzer2 also after a timeout of 182 seconds. The console based {\tt CTRL+C} interrupt does not immediately terminate the program to avoid corrupted entries in the output files. It stops creating additional flows and finishes only currently active flows. Note that waiting the termination of active flow depends on the activity or the lifetime of a connection and can take a very long time. In order to mitigate that problem the user can issue the {\tt CTRL+C} for {\tt GI\_TERM\_THRESHOLD} times to immediately terminate the program.

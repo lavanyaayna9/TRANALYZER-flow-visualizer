@@ -1,0 +1,21 @@
+#H bit | voipStat   | Description
+#H =============================================================================
+     0 | 0x0001     | RTP detected
+     1 | 0x0002     | RTCP detected
+     2 | 0x0004     | SIP detected
+     3 | 0x0008     | STUN detected
+
+     4 | 0x0010     | RTP extension header
+     5 | 0x0020     | RT(C)P padding bytes
+     6 | 0x0040     | SDP detected
+     7 | 0x0080     | RTP marker
+
+     8 | 0x0100     | RTP content write operation
+     9 | 0x0200     | SIP audio RTP flow announced
+    10 | 0x0400     | SIP video RTP flow announced
+#W  11 | 0x0800     | voipSIPRFAdd field truncated... increase SIPRFXMAX
+
+#W  12 | 0x1000     | RTP packet loss detected
+#I  13 | 0x2000     | RTP sequence number jump to past
+    14 | 0x4000     | RTP new frame header flag
+#E  15 | 0x8000     | RTP error in detection

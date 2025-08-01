@@ -1,0 +1,74 @@
+#!/usr/bin/env bash
+
+source "$(dirname "$0")/../../../scripts/t2utils.sh"
+
+# TODO $1 $2
+usage() {
+    printf "Usage:\n"
+    printf "    $SNAME [OPTION...] -i <prefix>\n\n"
+    printf "Required arguments:\n"
+    printf "    -i      Prefix for IP file to use\n"
+    printf "\n"
+    printf "Optional arguments:\n"
+    printf "    -f      Database to use\n"
+    printf "    -h      display this help, then exit\n"
+}
+
+T2MMDB_DIR="$SHOME/t2mmdb"
+T2MMDB="$T2MMDB_DIR/t2mmdb"
+T2MMDB_OPTS=(-x)
+
+while [ $# -gt 0 ]; do
+    case "$1" in
+        -f)
+            validate_next_file "$1" "$2"
+            T2MMDB_OPTS+=("$1" "$2")
+            shift
+            ;;
+        -i)
+            validate_next_arg "$1" "$2"
+            IPFILE_PREFIX="$2"
+            shift
+            ;;
+        -h|-\?|--help)
+            usage
+            exit 0
+            ;;
+        *)
+            abort_option_unknown "$1"
+            ;;
+    esac
+    shift
+done
+
+if [ -z "$IPFILE_PREFIX" ]; then
+    printerr "'-i' option is required"
+    abort_with_help
+fi
+
+cat "$T2HOME/utils/subnet/priv4.txt" > subnetsA4.txt
+cat "$T2HOME/utils/subnet/priv6.txt" > subnetsA6.txt
+
+if [ ! -f "$T2MMDB" ]; then
+    printf "${ORANGE_BOLD}'t2mmdb'${ORANGE} executable does not exist... build it (Y/n)?${NOCOLOR} "
+    read ans
+    case "$ans" in
+        [Nn]|[Nn][Oo]) exit 0;;
+        *) ;;
+    esac
+    make -C "$T2MMDB_DIR" || exit 1
+fi
+
+"$T2MMDB" ${T2MMDB_OPTS[@]} -i "${IPFILE_PREFIX}4.txt" | sort -V -k1,1 | uniq >> subnetsA4.txt
+"$T2MMDB" ${T2MMDB_OPTS[@]} -i "${IPFILE_PREFIX}6.txt" | sort -V -k1,1 | uniq >> subnetsA6.txt
+
+AWK -F '\t' '!/^#/ { print tolower($11) }' subnetsA4.txt > finwurst.txt
+AWK -F '\t' '!/^#/ { print tolower($11) }' subnetsA6.txt >> finwurst.txt
+
+sort finwurst.txt | uniq | AWK -F'\t' '!/^$|^-$|*$/ { printf "0x%08x\t%s\n", ++i, $0 }' > whoOrgCds.txt
+
+printinf "Merge with subnetsA[46].txt into subnets[46].txt"
+"$SHOME/wholoc" -O whoOrgCds.txt subnetsA4.txt > subnets4.txt
+"$SHOME/wholoc" -O whoOrgCds.txt subnetsA6.txt > subnets6.txt
+
+rm finwurst.txt subnetsA[46].txt

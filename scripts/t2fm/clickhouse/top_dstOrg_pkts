@@ -1,0 +1,45 @@
+-- Top destination organization by number of packets
+
+SELECT
+    CASE org
+        WHEN 'Private network' THEN '--'
+        WHEN '--' THEN 'N/A'
+        WHEN '-' THEN 'N/A'
+        ELSE toValidUTF8(org)
+    END as orga,
+    SUM(pkts) AS cnt
+
+FROM (
+    -- A flows
+    SELECT
+        "dstIPOrg" AS org,
+        "pktsRcvd" AS pkts
+    FROM
+        flow
+    WHERE
+        "dir" = 'A'
+        AND bitTest("flowStat", 0) = 0
+        AND bitTestAny("flowStat", 14, 15) > 0  -- IPv4/6 only
+        AND "timeFirst" >= {time_from:DateTime64(6)}
+        AND "timeLast" <= {time_to:DateTime64(6)}
+
+    UNION ALL
+
+    -- B flows
+    SELECT
+        "srcIPOrg" AS org,
+        "pktsSnt" AS pkts
+    FROM
+        flow
+    WHERE
+        "dir" = 'A'
+        AND bitTest("flowStat", 0) = 1
+        AND bitTestAny("flowStat", 14, 15) > 0  -- IPv4/6 only
+        AND "timeFirst" >= {time_from:DateTime64(6)}
+        AND "timeLast" <= {time_to:DateTime64(6)}
+) AS flows
+
+GROUP BY orga
+ORDER BY multiply(cnt, {sort_order:Int8})
+
+LIMIT {n:UInt64}

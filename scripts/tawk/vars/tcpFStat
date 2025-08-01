@@ -1,0 +1,21 @@
+#H bit | tcpFStat | Description
+#H =============================================================================
+     0 | 0x0001   | Packet good for inter-distance assessment
+     1 | 0x0002   | TCP option init
+     2 | 0x0004   | Timestamp option decreasing
+#E   3 | 0x0008   | L4 option field corrupt or not acquired
+
+     4 | 0x0010   | Window state-machine initialized
+     5 | 0x0020   | Window update
+     6 | 0x0040   | Win 0 probe
+     7 | 0x0080   | Win 0 probe ACK
+
+#W   8 | 0x0100   | Min Window detected
+     9 | 0x0200   | WS used
+#W  10 | 0x0400   | Window full
+    11 | 0x0800   | Window state-machine count up(1)/down(0)
+
+    12 | 0x1000   | L4 checksum calculation if present
+#E  13 | 0x2000   | UDPLITE checksum coverage error
+    14 | 0x4000   | TCP Selective ACK option
+    15 | 0x8000   | MPTCP detected

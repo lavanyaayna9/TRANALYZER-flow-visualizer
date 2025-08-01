@@ -1,0 +1,43 @@
+-- Top source organization by number of flows
+
+SELECT
+    CASE org
+        WHEN 'Private network' THEN '--'
+        WHEN '--' THEN 'N/A'
+        WHEN '-' THEN 'N/A'
+        ELSE org
+    END as orga,
+    COUNT(*) AS cnt
+
+FROM (
+    -- A flows
+    SELECT
+        "srcIPOrg" AS org
+    FROM
+        flow
+    WHERE
+        "dir" = 'A'
+        AND ("flowStat"::BIGINT & 1) = 0::BIGINT
+        AND ("flowStat"::BIGINT & x'c000'::BIGINT) > 0::BIGINT  -- IPv4/6 only
+        AND "timeFirst" >= to_timestamp(:time_from)
+        AND "timeLast" <= to_timestamp(:time_to)
+
+    UNION ALL
+
+    -- B flows
+    SELECT
+        "dstIPOrg" AS org
+    FROM
+        flow
+    WHERE
+        "dir" = 'A'
+        AND ("flowStat"::BIGINT & 1) = 1::BIGINT
+        AND ("flowStat"::BIGINT & x'c000'::BIGINT) > 0::BIGINT  -- IPv4/6 only
+        AND "timeFirst" >= to_timestamp(:time_from)
+        AND "timeLast" <= to_timestamp(:time_to)
+) AS flows
+
+GROUP BY orga
+ORDER BY cnt :sort_order
+
+LIMIT :n

@@ -1,0 +1,22 @@
+#!/usr/bin/env awk
+#
+# Decode a base64 encoded string 's'.
+#
+# Dependencies:
+#   - None
+#
+# Parameters:
+#   - s: the string to decode from base64
+#
+# Examples:
+#   - tawk '{ print base64d("YWJjZAo=") }' file.txt
+
+function base64d(s,        _cmd, _t) {
+    if (tolower(s) !~ /^([a-z0-9+/]{4})*([a-z0-9+/]{4}|[a-z0-9+/]{3}=|[a-z0-9+/]{2}==)$/) {
+        return s
+    }
+    _cmd = "echo " s " | base64 -d"
+    _cmd | getline _t
+    close(_cmd)
+    return _t
+}

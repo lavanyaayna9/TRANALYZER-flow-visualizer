@@ -1,0 +1,26 @@
+# Flags to toggle
+#
+# Run the ../../../tests/test.sh script from the plugin main directory:
+#
+# cd $T2HOME/plugins/connStat
+# ../../tests/test.sh [OPTION...]
+#
+# If run from this folder, make sure to use absolute path for the '-p' option.
+#
+# Flag name     File
+
+# ../../tranalyzer2/src/networkHeaders.h
+IPV6_ACTIVATE   ../../tranalyzer2/src/networkHeaders.h
+
+# ../../tranalyzer2/src/tranalyzer.h
+BLOCK_BUF       ../../tranalyzer2/src/tranalyzer.h
+DIFF_REPORT     ../../tranalyzer2/src/tranalyzer.h
+ESOM_DEP        ../../tranalyzer2/src/tranalyzer.h
+ANONYM_IP       ../../tranalyzer2/src/tranalyzer.h
+SUBNET_ON       ../../tranalyzer2/src/tranalyzer.h
+
+# src/connStat.h
+CS_HSDRM        src/connStat.h
+CS_SDIPMAX      src/connStat.h
+CS_MR_SPOOF     src/connStat.h
+CS_PBNMAX       src/connStat.h

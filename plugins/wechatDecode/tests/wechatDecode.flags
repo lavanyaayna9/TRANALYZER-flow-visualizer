@@ -1,0 +1,14 @@
+# Flags to toggle
+#
+# Run the ../../../tests/test.sh script from the plugin main directory:
+#
+# cd $T2HOME/plugins/wechatDecode
+# ../../tests/test.sh [OPTION...]
+#
+# If run from this folder, make sure to use absolute path for the '-p' option.
+#
+# Flag name     File
+
+# src/wechatDecode.h
+WECHAT_VERBOSITY_LEVEL  src/wechatDecode.h
+WECHAT_JSON_ARRAY       src/wechatDecode.h

@@ -1,0 +1,56 @@
+#H bit | ospfLSType            | Description
+#H =============================================================================
+     0 | 0x0000 0000 0000 0001 | Reserved
+     1 | 0x0000 0000 0000 0002 | OSPFv2/3 Router-LSA
+     2 | 0x0000 0000 0000 0004 | OSPFv2/3 Network-LSA
+     3 | 0x0000 0000 0000 0008 | OSPFv2 Summary-LSA (IP network), OSPFv3 Inter-Area-Prefix-LSA
+
+     4 | 0x0000 0000 0000 0010 | OSPFv2 Summary-LSA (ASBR), OSPFv3 Inter-Area-Router-LSA
+     5 | 0x0000 0000 0000 0020 | OSPFv2/3 AS-External-LSA
+     6 | 0x0000 0000 0000 0040 | OSPFv2 Multicast group LSA (not implemented by Cisco), Deprecated in OSPFv3
+     7 | 0x0000 0000 0000 0080 | OSPFv2 Not-so-stubby area (NSSA) External LSA, OSPFv3 NSSA-LSA
+
+     8 | 0x0000 0000 0000 0100 | OSPFv2 External attribute LSA for BGP, OSPFv3 Link-LSA
+     9 | 0x0000 0000 0000 0200 | OSPFv2 Opaque LSA: Link-local scope, OSPFv3 Intra-Area-Prefix-LSA
+    10 | 0x0000 0000 0000 0400 | OSPFv2 Opaque LSA: Area-local scope, OSPFv3 Intra-Area-TE-LSA
+    11 | 0x0000 0000 0000 0800 | OSPFv2 Opaque LSA: autonomous system scope, OSPFv3 GRACE-LSA
+
+    12 | 0x0000 0000 0000 1000 | OSPFv3 Router Information (RI)
+    13 | 0x0000 0000 0000 2000 | OSPFv3 Inter-AS-TE-v3 LSA
+    14 | 0x0000 0000 0000 4000 | OSPFv3 L1VPN LSA
+    15 | 0x0000 0000 0000 8000 | OSPFv3 Autoconfiguration (AC) LSA
+
+    16 | 0x0000 0000 0001 0000 | OSPFv3 Dynamic Flooding LSA
+    17 | 0x0000 0000 0002 0000 | Unassigned
+    18 | 0x0000 0000 0004 0000 | Unassigned
+    19 | 0x0000 0000 0008 0000 | Unassigned
+
+    20 | 0x0000 0000 0010 0000 | Unassigned
+    21 | 0x0000 0000 0020 0000 | Unassigned
+    22 | 0x0000 0000 0040 0000 | Unassigned
+    23 | 0x0000 0000 0080 0000 | Unassigned
+
+    24 | 0x0000 0000 0100 0000 | Unassigned
+    25 | 0x0000 0000 0200 0000 | Unassigned
+    26 | 0x0000 0000 0400 0000 | Unassigned
+    27 | 0x0000 0000 0800 0000 | Unassigned
+
+    28 | 0x0000 0000 1000 0000 | Unassigned
+    29 | 0x0000 0000 2000 0000 | Unassigned
+    30 | 0x0000 0000 4000 0000 | Unassigned
+    31 | 0x0000 0000 8000 0000 | Unassigned
+
+    32 | 0x0000 0001 0000 0000 | Unassigned
+    33 | 0x0000 0002 0000 0000 | OSPFv3 E-Router-LSA
+    34 | 0x0000 0004 0000 0000 | OSPFv3 E-Network-LSA
+    35 | 0x0000 0008 0000 0000 | OSPFv3 E-Inter-Area-Prefix-LSA
+
+    36 | 0x0000 0010 0000 0000 | OSPFv3 E-Inter-Area-Router-LSA
+    37 | 0x0000 0020 0000 0000 | OSPFv3 E-AS-External-LSA
+    38 | 0x0000 0040 0000 0000 | OSPFv3 Unused (not be allocated)
+    39 | 0x0000 0080 0000 0000 | OSPFv3 E-Type-7-LSA
+
+    40 | 0x0000 0100 0000 0000 | OSPFv3 E-Link-LSA
+    41 | 0x0000 0200 0000 0000 | OSPFv3 E-Intra-Area-Prefix-LSA
+    42 | 0x0000 0400 0000 0000 | Unassigned
+    43 | 0x0000 0800 0000 0000 | Unassigned

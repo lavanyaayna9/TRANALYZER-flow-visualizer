@@ -1,0 +1,40 @@
+-- Top TCP destination port by number of bytes
+
+SELECT
+    port,
+    SUM(bytes) AS cnt
+
+FROM (
+    -- A flows
+    SELECT
+        "dstPort" AS port,
+        "l7BytesRcvd" AS bytes
+    FROM
+        flow
+    WHERE
+        "dir" = 'A'
+        AND bitTest("flowStat", 0) = 0
+        AND "l4Proto" = 6
+        AND "timeFirst" >= {time_from:DateTime64(6)}
+        AND "timeLast" <= {time_to:DateTime64(6)}
+
+    UNION ALL
+
+    -- B flows
+    SELECT
+        "srcPort" AS port,
+        "l7BytesSnt" AS bytes
+    FROM
+        flow
+    WHERE
+        "dir" = 'A'
+        AND bitTest("flowStat", 0) = 1
+        AND "l4Proto" = 6
+        AND "timeFirst" >= {time_from:DateTime64(6)}
+        AND "timeLast" <= {time_to:DateTime64(6)}
+) AS flows
+
+GROUP BY port
+ORDER BY multiply(cnt, {sort_order:Int8})
+
+LIMIT {n:UInt64}

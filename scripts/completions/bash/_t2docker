@@ -1,0 +1,121 @@
+# Bash completion for t2docker
+
+SHOME=
+
+_t2docker() {
+    local cur prev words cword
+
+    if type -t _init_completion &> /dev/null; then
+        _init_completion -n = || return
+    else
+        COMPREPLY=()
+        cur="${COMP_WORDS[COMP_CWORD]}"
+        prev="${COMP_WORDS[COMP_CWORD-1]}"
+    fi
+
+    local cmdline="${COMP_WORDS[*]}"
+    if grep -Fw tranalyzer <<< "$cmdline" &> /dev/null ||
+       grep -Fw t2 <<< "$cmdline" &> /dev/null
+    then
+        _t2
+        return
+    elif grep -Fw t2b2t <<< "$cmdline" &> /dev/null; then
+        _t2b2t
+        return
+    elif grep -Fw t2build <<< "$cmdline" &> /dev/null; then
+        _t2build
+        return
+    elif grep -Fw t2conf <<< "$cmdline" &> /dev/null; then
+        _t2conf
+        return
+    elif grep -Fw t2fm <<< "$cmdline" &> /dev/null; then
+        _t2fm
+        return
+    elif grep -Fw t2whois <<< "$cmdline" &> /dev/null; then
+        _t2whois
+        return
+    elif grep -Fw tawk <<< "$cmdline" &> /dev/null; then
+        _tawk
+        return
+    fi
+
+    case "$prev" in
+        -r|-R|-b|-e|-F|-w|-W)
+            _t2
+            return
+            ;;
+        -B|--build|-L|--load)
+            if type -t _filedir &> /dev/null; then
+                _filedir
+            else
+                compopt -o filenames 2> /dev/null
+                COMPREPLY=($(compgen -f -- "$cur"))
+            fi
+            return
+            ;;
+        -X|--execute)
+            if grep -Fw -e "-B" -e "-L" <<< "$cmdline" &> /dev/null; then
+                break
+            else
+                images="$(t2docker -ls 2> /dev/null | awk 'NR > 1 { print $1 }')"
+                COMPREPLY=($(compgen -W "${images[*]}" -- "$cur"))
+                return
+            fi
+            ;;
+        -S|--save)
+            if grep -Fw -e "-B" <<< "$cmdline" &> /dev/null; then
+                break
+            else
+                images="$(t2docker -ls 2> /dev/null | awk 'NR > 1 { print $1 }')"
+                COMPREPLY=($(compgen -W "${images[*]}" -- "$cur"))
+                return
+            fi
+            ;;
+        -os|--os)
+            os=(
+                centos
+                debian
+                fedora
+                opensuse/leap
+                opensuse/tumbleweed
+                ubuntu
+            )
+            COMPREPLY=($(compgen -W "${os[*]}" -- "$cur"))
+            return
+            ;;
+        -ov|--os-version)
+            break
+            ;;
+    esac
+
+    local args=(
+        t2 tranalyzer
+        t2b2t
+        t2build
+        t2conf
+        t2fm
+        t2whois
+        tawk
+        -B --build
+        -m --multi-stage
+        -X --execute
+        -ls --list
+        -S --save
+        -L --load
+        -os --os
+        -ov --os-version
+        --centos
+        --debian
+        --fedora
+        --opensuse/leap
+        --opensuse/tumbleweed
+        --ubuntu
+        --shred
+        --verbose
+        -h --help
+    )
+
+    COMPREPLY=($(compgen -W "${args[*]}" -- "$cur"))
+}
+
+complete -F _t2docker t2docker

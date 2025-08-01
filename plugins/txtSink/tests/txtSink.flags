@@ -1,0 +1,28 @@
+# Flags to toggle
+#
+# Run the ../../../tests/test.sh script from the plugin main directory:
+#
+# cd $T2HOME/plugins/txtSink
+# ../../tests/test.sh [OPTION...]
+#
+# If run from this folder, make sure to use absolute path for the '-p' option.
+#
+# Flag name     File
+
+# ../../tranalyzer2/src/tranalyzer.h
+ENVCNTRL                ../../tranalyzer2/src/tranalyzer.h
+BLOCK_BUF               ../../tranalyzer2/src/tranalyzer.h
+TSTAMP_PREC             ../../tranalyzer2/src/tranalyzer.h
+
+# ../../utils/bin2txt.h
+HEX_CAPITAL             ../../utils/bin2txt.h
+TFS_EXTENDED_HEADER     ../../utils/bin2txt.h
+TFS_NC_TYPE             ../../utils/bin2txt.h
+TFS_SAN_UTF8            ../../utils/bin2txt.h
+
+# src/txtSink.h
+TFS_GZ_COMPRESS         src/txtSink.h
+TFS_SPLIT               src/txtSink.h
+TFS_PRI_HDR             src/txtSink.h
+TFS_HDR_FILE            src/txtSink.h
+TFS_PRI_HDR_FW          src/txtSink.h

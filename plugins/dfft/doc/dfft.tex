@@ -1,0 +1,70 @@
+\IfFileExists{t2doc.cls}{
+    \documentclass[documentation]{subfiles}
+}{
+    \errmessage{Error: could not find 't2doc.cls'}
+}
+
+\begin{document}
+
+% Declare author and title here, so the main document can reuse it
+\trantitle
+    {dfft} % Plugin name
+    {Discrete Fast Fourier Transform} % Short description
+    {Tranalyzer Development Team} % author(s)
+
+\section{dfft}\label{s:dfft}
+
+\subsection{Description}
+The dfft plugin performs Discrete Fast Fourier Transform on packet signals.
+
+\subsection{Dependencies}
+
+\subsubsection{Other Plugins}
+This plugin requires the \tranrefpl{nFrstPkts} plugin.
+
+\subsection{Configuration Flags}
+The following flags can be used to control the output of the plugin:
+\begin{longtable}{>{\tt}lcl>{\tt\small}l}
+    \toprule
+    {\bf Name} & {\bf Default} & {\bf Description}               & {\bf Flags}\\
+    \midrule\endhead%
+    DFFT\_F     & 1            & Algorithm: 0: DFT, 1: FFT       & \\
+    DFFT\_N     & 16           & Number of complex imput samples & \\
+    \bottomrule
+\end{longtable}
+
+\subsection{Flow File Output}
+The dfft plugin outputs the following columns:
+\begin{longtable}{>{\tt}lll>{\tt\small}l}
+    \toprule
+    {\bf Column}                     & {\bf Type} & {\bf Description}             & {\bf Flags}\\
+    \midrule\endhead%
+    \nameref{dfftStat}               & H8         & Status                        & \\
+    dfftF                            & R          & real\_imag                    & \\
+    \bottomrule
+\end{longtable}
+
+\subsubsection{dfftStat}\label{dfftStat}
+The {\tt dfftStat} column is to be interpreted as follows:
+\begin{longtable}{>{\tt}rl}
+    \toprule
+    {\bf dfftStat} & {\bf Description}\\
+    \midrule\endhead%
+    0x0\textcolor{magenta}{1} & FT successful\\
+    0x0\textcolor{magenta}{2} & ---\\
+    0x0\textcolor{magenta}{4} & ---\\
+    0x0\textcolor{magenta}{8} & ---\\
+    0x\textcolor{magenta}{1}0 & Num input < N\\
+    0x\textcolor{magenta}{2}0 & Input clipped to N\\
+    0x\textcolor{magenta}{4}0 & ---\\
+    0x\textcolor{magenta}{8}0 & ---\\
+    \bottomrule
+\end{longtable}
+
+\subsection{Plugin Report Output}
+The following information is reported:
+\begin{itemize}
+    \item Aggregated {\tt\nameref{dfftStat}}
+\end{itemize}
+
+\end{document}

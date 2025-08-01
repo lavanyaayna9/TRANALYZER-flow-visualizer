@@ -1,0 +1,516 @@
+#!/usr/bin/env bash
+#
+# Configuration file for tranalyzer2
+# ==================================
+#
+# Usage
+# -----
+#
+# $ ./t2plconf
+#
+# Defining the configurations options
+# -----------------------------------
+#
+# If no configuration options are available, ITEMS must be set as follows:
+#   - ITEMS=(none)
+#
+# Otherwise, enter configurations items as follows:
+#   "NAME" "TYPE" "DEPENDENCIES" "DESCRIPTION"
+#
+#   - TYPE can be:
+#       - bitfield
+#       - check (boolean),
+#       - radio (set of values),
+#       - range (min <= val <= max)
+#       - text
+#
+#   - DEPENDENCIES MUST be numeric, e.g., "A == 1 && (B < 4 || C >= 1)"
+#
+#   - DESCRIPTION for type 'bitfield' MUST NOT contain '\t', ':' or ';'
+#   - DESCRIPTION for type 'check' MUST NOT contain tabs ('\t')
+#   - DESCRIPTION for type 'radio' MUST NOT contain '\t', ':' or ';'
+#   - DESCRIPTION for type 'range' MUST NOT contain '\t' or ':'
+#   - DESCRIPTION for type 'text'  MUST NOT contain '\t'
+#
+#   - DESCRIPTION MUST be formatted according to the type (see examples below):
+#       - bitfield : description ';' val1 ':' description1 ';' valN ':' descriptionN
+#       - check    : description
+#       - radio    : description ';' val1 ':' description1 ';' valN ':' descriptionN
+#       - range    : description ':' min ' ' max
+#       - text     : description
+#
+# Examples
+# --------
+#
+#ITEMS=(
+#    # An item can be specified in one line...
+#    T2PSKEL_VAR1 check "" "Description of option" # No dependencies
+#
+#    # Or span multiple lines
+#    T2PSKEL_VAR1 radio "T2PSKEL_VAR1 == 1"
+#           "Description of option; \
+#                   0: description of val 0; \
+#                   1: description of val 1; \
+#                   2: description of val 2"
+#
+#    T2PSKEL_SIZE range "T2PSKEL_VAR1 == 1 || T2PSKEL_VAR2 > 0"
+#           "Description: 0 255" # min=0, max=255
+#
+#    T2PSKEL_STR text
+#           "T2PSKEL_SIZE <= 5 && (T2PSKEL_VAR1 != 0 || T2PSKEL_VAR2 <= 1)"
+#           "Description"
+#
+#    T2PSKEL_BITFIELD bitfield ""
+#           "Description of option; \
+#                   0x01: description of bit 0; \
+#                   0x02: description of bit 1; \
+#                   0x04: description of bit 2; \
+#                   0x08: description of bit 3; \
+#                   0x10: description of bit 4; \
+#                   0x20: description of bit 5; \
+#                   0x40: description of bit 6; \
+#                   0x80: description of bit 7"
+#)
+#
+# If no configuration option is available, use the value 'none'
+#ITEMS=(none)
+#
+# Source the master t2plconf file
+# source ../../scripts/t2conf/t2plconf
+
+ITEMS=(
+
+    # ------------------------------------------------------------------------ #
+    # src/hashTable.h
+    # ------------------------------------------------------------------------ #
+
+    T2_HASH_FUNC radio "" "Hash function to use; \
+             0: standard; \
+             1: Murmur3 32-bits; \
+             2: Murmur3 128-bits (truncated to 64-bits); \
+             3: xxHash 32-bits; \
+             4: xxHash 64-bits; \
+             5: XXH3 64-bits; \
+             6: XXH3 128-bits (truncated to lower 64-bits); \
+             7: CityHash64; \
+             8: MUM-hash version 3 64-bits; \
+             9: hashlittle 32-bits; \
+            10: wyhash 64-bits; \
+            11: FastHash32; \
+            12: FastHash64; \
+            13: t1ha0 (Linux only) [meson build backend only]; \
+            14: t1ha2 [meson build backend only]"
+    HASHTABLE_DEBUG check "" "Print debug information"
+    HASHTABLE_NAME_LEN range "" "Maximum length of a hashTable's name: 0 255"
+
+    # ------------------------------------------------------------------------ #
+    # src/ioBuffer.h
+    # ------------------------------------------------------------------------ #
+
+    IO_BUFFERING check "" "Input buffering (store packets in a queue) \
+            Useful in live sniffing if there is a (short) packet burst"
+
+    IO_BUFFER_FULL_WAIT_MS range "IO_BUFFERING == 1"
+            "Number of ms to wait if queue is full: 0 65535"
+
+    IO_BUFFER_SIZE range "IO_BUFFERING == 1"
+            "Max number of packets that can be stored in the buffer (power of two is faster): 0 65535"
+
+    IO_BUFFER_MAX_MTU range "IO_BUFFERING == 1"
+            "Max size of a packet (divisible by 4): 0 65535"
+
+    # ------------------------------------------------------------------------ #
+    # src/loadPlugins.h
+    # ------------------------------------------------------------------------ #
+
+    USE_PLLIST radio "" "Behavior of -b option (plugin loading list); \
+            0: disable -b option and load all plugins from the plugin folder; \
+            1: only load plugins present in the list (whitelist); \
+            2: do not load plugins present in the list (blacklist)"
+
+    PLLIST text "USE_PLLIST == 1 || USE_PLLIST == 2"
+            "Default filename for plugin white-/black-list (-b option)"
+
+    # ------------------------------------------------------------------------ #
+    # src/main.h
+    # ------------------------------------------------------------------------ #
+
+    SPKTMD_PKTNO check "" "Print the packet number in packet mode (-s option)"
+    SPKTMD_PCNTC check "" "Print payload as characters in packet mode (-s option)"
+    SPKTMD_PCNTH check "" "Print payload as hex in packet mode (-s option)"
+
+    SPKTMD_PCNTH_PREF text "SPKTMD_PCNTH == 1"
+        "Prefix to add to every byte in packet mode as hex (e.g., \"\" => ab cd instead of 0xab 0xcd)"
+    SPKTMD_PCNTH_SEP  text "SPKTMD_PCNTH == 1"
+        "Byte separator in packet mode as hex (e.g., \",\" => 0xab,0xcd instead of 0xab 0xcd)"
+
+    SPKTMD_PCNTL radio "SPKTMD_PCNTC == 1 || SPKTMD_PCNTH == 1"
+        "Content field in packet mode (-s option); \
+            0: Print the full payload of the packet; \
+            1: Print payload from L2; \
+            2: Print payload from L3; \
+            3: Print payload from L4; \
+            4: Print payload from L7"
+
+    SPKTMD_BOPS bitfield "SPKTMD_PCNTC == 1 || SPKTMD_PCNTH == 1"
+        "Bit operations on content; \
+            0x01: LSB (default MSB); \
+            0x02: Nibble swap; \
+            0x10: Shift right; \
+            0x20: Shift last byte content into extra byte"
+
+    SPKTMD_BSHFT_POS range "" "Shift SPKTMD_BSHFT_POS-1 at 8-SPKTMD_BSHFT into following bytes: 0 255"
+    SPKTMD_BSHFT     range "" "Bitshift (require 'Shift right' in SPKTMD_BOPS): 0 255"
+
+    MONINTTHRD check "" "Threaded interrupt handling (monitoring mode)"
+
+    MONINTBLK check "" "Block interrupts in main loop during packet processing, disable MONINTTHRD"
+
+    MONINTPSYNC check "" "Synchronized print statistics"
+
+    MONINTTMPCP radio "" "Time-base for monitoring; \
+            0: real time base; \
+            1: pcap time base"
+
+    MONINTTMPCP_ON check "MONINTTMPCP == 0" "Automatic start of monitoring"
+
+    MONINTV range "" "Interval (seconds) of monitoring output (0 to disable)"
+
+    POLLENV check "" "Change monitoring interval via environment variable T2MTIME"
+
+    MONPROTMD radio ""
+        "Monitoring report protocol format; \
+            0: Protocol numbers; \
+            1: Protocol names (L3 only)"
+
+    MONPROTL2 text "" "Layer 2 protocols to monitor"
+    MONPROTL3 text "" "Layer 4 protocols to monitor"
+    MONPROTFL text "" "File containing protocols description"
+
+    DPDK_MP check "" "Use DPDK multi-process mode instead of libpcap"
+
+    MIN_MAX_ESTIMATE check "" "Output min max bandwidth statistics"
+    MMXLAGTMS range "MIN_MAX_ESTIMATE == 1" "Min Max interval (secs): .0000001 10000000"
+    MMXNO0 check "MIN_MAX_ESTIMATE == 1" "Suppress 0 content MIN estimation"
+
+    # ------------------------------------------------------------------------ #
+    # src/networkHeaders.h
+    # ------------------------------------------------------------------------ #
+
+    IPV6_ACTIVATE radio "" "IP version(s) to dissect; \
+            0: IPv4 only; \
+            1: IPv6 only; \
+            2: dual mode"
+
+    ETH_ACTIVATE radio "" "Handling of layer 2 flows; \
+            0: No Ethernet flows; \
+            1: Activate Ethernet flows; \
+            2: Also use Ethernet addresses for IPv4/6 flows"
+
+    LAPD_ACTIVATE check "" "Create one flow per LAPD streams"
+
+    LAPD_OVER_UDP check "LAPD_ACTIVATE == 1" "Dissect LAPD over UDP (experimental)"
+
+    SCTP_ACTIVATE radio "" "SCTP flow creation; \
+            0: standard flows; \
+            1: SCTP chunk streams -> flows; \
+            2: SCTP association -> flows; \
+            3: SCTP stream & association -> flows"
+
+    SCTP_STATFINDEX radio "SCTP_ACTIVATE == 1" "Handling of SCTP flows; \
+            0: findex increment; \
+            1: findex constant for all SCTP streams in a packet"
+
+    MULTIPKTSUP check "" "Multi-packet suppression"
+
+    T2_PRI_HDRDESC check "" "Keep track of the headers traversed"
+
+    T2_HDRDESC_AGGR check "T2_PRI_HDRDESC == 1"
+            "Aggregate repetitive headers, e.g., vlan{2} instead of vlan:vlan"
+
+    T2_HDRDESC_LEN range "T2_PRI_HDRDESC == 1"
+            "Max length of the headers description: 0 2048"
+
+    # ------------------------------------------------------------------------ #
+    # src/outputBuffer.h
+    # ------------------------------------------------------------------------ #
+
+    BUF_DATA_SHFT range "" "Add for each binary output record the length and shifts the record by n uint32_t words to the right (see binSink and socketSink plugins): 0 255"
+
+    OUTBUF_AUTOPILOT check "" "Automatically increase the output buffer when required"
+
+    OUTBUF_MAXSIZE_F range "" "Maximal factor to increase the output buffer size to (f * MAIN_OUTBUF_SIZE): 0 255"
+
+    # ------------------------------------------------------------------------ #
+    # src/packetCapture.h
+    # ------------------------------------------------------------------------ #
+
+    PACKETLENGTH radio "" "Interpretation of packet length (Following plugins are influenced by PACKETLENGTH: nFrstPkts, pktSIATHisto, basicStats, descriptiveStats); \
+            0: including L2, L3 and L4 header; \
+            1: including L3 and L4 header; \
+            2: including L4 header; \
+            3: only higher layer payload (Layer 7)"
+
+    FRGIPPKTLENVIEW radio "" "Handling of IP header for fragmented packets; \
+            0: IP header stays with 2nd++ fragmented packets; \
+            1: IP header stripped from 2nd++ fragmented packets"
+
+    NOLAYER2 radio "" "Position of layer 3 header; \
+            0: Automatic L3 header discovery; \
+            1: Manual L3 header positioning"
+
+    NOL2_L3HDROFFSET range "NOLAYER2 == 1" "Offset of L3 header: 0 65535"
+
+    MAXHDRCNT range "IPV6_ACTIVATE > 0" "Maximal header count for IPv6: 3 255"
+
+    SALRM    check ""           "Enable sending FL_ALARM for pcapd"
+    SALRMINV check "SALRM == 1" "Invert selection"
+
+    # ------------------------------------------------------------------------ #
+    # src/proto/capwap.h
+    # ------------------------------------------------------------------------ #
+
+    CAPWAP_SWAP_FC check "" "Swap CAPWAP frame control (required for Cisco)"
+
+    # ------------------------------------------------------------------------ #
+    # src/proto/ethertype.h
+    # ------------------------------------------------------------------------ #
+
+    PW_ETH_CW check "" "Detect Pseudowire (PW) Ethernet Control Word (Heuristic)"
+
+    # ------------------------------------------------------------------------ #
+    # src/proto/linktype.h
+    # ------------------------------------------------------------------------ #
+
+    LINKTYPE_JUNIPER check "" "Dissect PCAP with Juniper linktypes (Experimental)"
+
+    # ------------------------------------------------------------------------ #
+    # src/proto/lwapp.h
+    # ------------------------------------------------------------------------ #
+
+    LWAPP_SWAP_FC check "" "Swap LWAPP frame control (required for Cisco)"
+
+    # ------------------------------------------------------------------------ #
+    # src/tranalyzer.h
+    # ------------------------------------------------------------------------ #
+
+    T2_SENSORID range "" "Sensor ID (can be overwritten with -x option): 0 UINT16_MAX"
+
+    ENVCNTRL    radio "" "Plugins configuration mode; \
+            0: Values from header file during compilation; \
+            1: Values from header file at runtime; \
+            2: Values from environment, fallback to header file at runtime"
+
+    PLUGIN_FOLDER text "" "Folder to load plugins from (can be set with -p option)"
+
+    RROP check "" "Round robin operation (-D option)"
+
+    POLLTM range "" "Poll timing in seconds for files: 0 86400"
+
+    MFPTMOUT range "" "\n
+            > 0: timeout for poll timing > POLLTM,\n
+              0: no poll timeout"
+
+    ## separating char for number (refer to the doc for examples)
+    ##SCHR = 'p'
+
+    ## -W option parameters
+
+    ## Default fragmented output file length (500MB)
+    #OFRWFILELN = 5e8
+
+    REPSUP check "" "Activate alive mode"
+    ALVPROG text "REPSUP == 1" "Name of alive control program"
+
+    ## Alive and stall USR1 signal (no packets count)
+    ##REPCMDAS = "a=`pgrep " ALVPROG "`; if [ $a ]; then kill -USR1 $a; fi"
+
+    ## Alive and well USR2 signal (working)
+    ##REPCMDAW = "a=`pgrep " ALVPROG "`; if [ $a ]; then kill -USR2 $a; fi"
+
+    PID_FNM_ACT check ""                "Enable PID -> file"
+    PID_FNM     text "PID_FNM_ACT == 1" "Filename for PID file"
+
+    PACKETS_SUFFIX text "" "Suffix for the packet file (-s option)"
+    LOG_SUFFIX     text "" "Suffix for the log file (-l option)"
+    MON_SUFFIX     text "" "Suffix for the monitoring file (-m option)"
+
+    PKT_CB_STATS check "" "Compute statistics about time spent in perPacketCallback()"
+
+    DEBUG radio "" "Debug level; \
+            0: no debug output; \
+            1: debug output which occurs only once or very seldom (i.e. initialize stuff, errors, ...); \
+            2: + debug output which occurs in special situations, but not regularly (i.e. border conditions, restructure works, ...); \
+            3: + debug output which occurs regularly (i.e. every packet)"
+
+    VERBOSE radio "" "Verbose level of final report; \
+            0: no output; \
+            1: Basic pcap report; \
+            2: + full traffic statistics; \
+            3: + info about frag anomalies"
+
+    MEMORY_DEBUG check "" "Enable memory debug of buffers on the heap (allocated with malloc or calloc)"
+
+    ## Timing ops
+
+    NO_PKTS_DELAY_US range "" "If no packets are available for processing, sleep some time in us: 0 UINT16_MAX"
+
+    NON_BLOCKING_MODE check "" "Activate non blocking mode of pcap_dispatch (This is necessary when using the CTRL+C keystroke feature and complete flows are expected)"
+
+    ## Flow output buffer
+
+    MAIN_OUTBUF_SIZE range "" "Size of the main output buffer: 0 UINT32_MAX"
+
+    #SNAPLEN range "" "Snapshot length (live capture): 0 UINT16_MAX"
+    #CAPTURE_TIMEOUT range "" "Read timeout in milliseconds (live capture): 0 UINT16_MAX"
+
+    BPF_OPTIMIZE check "" "Optimize BPF filters"
+
+    TSTAMP_PREC radio "" "Timestamp precision; \
+            0: Microsecs; \
+            1: Nanosecs"
+
+    TSTAMP_UTC radio "" "Time representation; \
+            0: Localtime; \
+            1: UTC"
+
+    TSTAMP_R_UTC radio "" "Time report representation; \
+            0: Localtime; \
+            1: UTC"
+
+    ## Tranalyzer User Operational modes
+
+    ## Operation modes, Plugins which use these modes have to be recompiled
+
+    ALARM_MODE check "" "Only flow output if an alarm based plugin fires"
+
+    ALARM_AND radio "ALARM_MODE == 1" "; 0: OR; 1: AND"
+
+    FORCE_MODE check "" "NetFlow mode: parameter induced flow termination, implemented by plugins"
+
+    BLOCK_BUF check "" "Block unnecessary buffer output when non tranalyzer format event-based plugins are active: e.g. Syslog, ArcSight"
+
+    #USE_T2BUS check "" "Use t2Bus communication backend (experimental)"
+
+    ## End report / monitoring: USR1/2 interrupts
+
+    PLUGIN_REPORT check "" "Enable plugins to contribute to the tranalyzer command line end report"
+
+    DIFF_REPORT radio "" "; \
+            0: absolute tranalyzer command line USR1 report; \
+            1: differential"
+
+    MACHINE_REPORT radio "" "; \
+            0: human compliant; \
+            1: machine compliant"
+
+    ## state save mode: findex, report and statistical data
+
+    REPORT_HIST check "" "Store statistical report history after shutdown and reload it when restarted"
+
+    REPORT_HIST_FILE text "REPORT_HIST == 1" "Statistical report history filename"
+
+    ESOM_DEP check "" "Allow the classifiers to globally access dependent plugin variables"
+
+    ## Protocol stack
+
+    AYIYA  check "" "Activate AYIYA processing"
+    GENEVE check "" "Activate GENEVE processing"
+    TEREDO check "" "Activate TEREDO processing"
+    L2TP   check "" "Activate L2TP processing"
+    GRE    check "" "Activate GRE processing"
+    GTP    check "" "Activate GTP processing"
+    VXLAN  check "" "Activate VXLAN processing"
+    IPIP   check "" "Activate IPv4/6 in IPv4/6 processing"
+    ETHIP  check "" "Activate Ethernet over IP processing"
+    CAPWAP check "" "Activate CAPWAP processing"
+    LWAPP  check "" "Activate LWAPP processing"
+    DTLS   check "" "Activate DTLS processing"
+
+    FRAGMENTATION check "" "Activate fragmentation processing"
+
+    FRAG_HLST_CRFT check "FRAGMENTATION == 1" "Enable crafted packet processing (header missing, senseless flags etc)"
+
+    FRAG_ERROR_DUMP check "FRAGMENTATION == 1" "Dump flawed fragmented packet info on commandline for time-based identification (WARNING: if FRAG_HLST_CRFT != 0 then every headerless frag packet in a flow is reported!)"
+
+    IPVX_INTERPRET check "" "Interpret bogus IPvX packets and pack them into IPv4 or IPv6 flows"
+
+    ANONYM_IP check "" "Anonymize (do not output) IP information"
+
+    ETH_STAT_MODE radio "" "Layer 2 type to use for the statistics; \
+            0: use the innermost; \
+            1: use the outermost"
+
+    SUBNET_ON check "" "Subnet core control"
+
+    AGGREGATIONFLAG bitfield "" "Flow aggregation; \
+            0x01: L4PROT; \
+            0x02: DSTPORT; \
+            0x04: SRCPORT; \
+            0x08: DSTIP; \
+            0x10: SRCIP; \
+            0x20: VLANID; \
+            0x80: SUBNET"
+
+    ## FIXME description is not clear
+    ## src IPv4 aggregation CIDR mask
+    #SRCIP4CMSK = 24
+
+    ## FIXME description is not clear
+    ## dst IPv4 aggregation CIDR mask
+    #DSTIP4CMSK = 24
+
+    ## FIXME description is not clear
+    ## src IPv6 aggregation CIDR mask
+    #SRCIP6CMSK = 120
+
+    ## FIXME description is not clear
+    ## dst IPv6 aggregation CIDR mask
+    #DSTIP6CMSK = 120
+
+    ## FIXME description is not clear
+    ## src port lower bound
+    #SRCPORTLW = 1
+
+    ## FIXME description is not clear
+    ## src port upper bound
+    #SRCPORTHW = 1024
+
+    ## FIXME description is not clear
+    ## dst port lower bound
+    #DSTPORTLW = 1
+
+    ## FIXME description is not clear
+    ## dst port upper bound
+    #DSTPORTHW = 1024
+
+    ## Time mode
+
+    RELTIME radio "" "; \
+            0: Absolute time; \
+            1: Relative internal time"
+
+    FDURLIMIT range "" "Maximum lifetime of a flow (0: no max lifetime, > 0: forced flow life span of n +- 1 seconds): 0 UINT16_MAX"
+
+    FDLSFINDEX check "FDURLIMIT > 0" "; \
+            0: Different findex; \
+            1: Same findex for flows of a superflow"
+
+    # flow timeout after a packet is not seen after n seconds
+    FLOW_TIMEOUT range "" "Standard timeout for a flow in seconds: 0 65535"
+
+    NOFLWCRT check "" "SIGINT 1 then create no new flows"
+
+    ## The sizes of the hash table
+
+    HASHFACTOR range "" "Default multiplication factor for HASHTABLE_BASE_SIZE if no -f option: 0 255"
+
+    HASH_CHAIN_FACTOR range "" "Default multiplication factor for HASHCHAINTABLE_BASE_SIZE: 0 255"
+
+    HASH_AUTOPILOT check "" "Avoid overrun of main hash by flushing oldest NUMFLWRM flow(s) when hashTable is full"
+
+    NUMFLWRM range "HASH_AUTOPILOT == 1" "Number of flows to flush when main hash map is full: 0 65535"
+)
+
+# Source the master t2plconf file
+source "$(dirname "$0")/../scripts/t2conf/t2plconf"

@@ -1,0 +1,30 @@
+#H bit | natErr      | Description
+#H =============================================================================
+     0 | 0x0000 0001 | STUN try alt
+     1 | 0x0000 0002 | STUN bad request
+     1 | 0x0000 0002 | NAT-PMP unsupported version
+     2 | 0x0000 0004 | STUN unauthorized
+     2 | 0x0000 0004 | NAT-PMP not authorized/refused
+     3 | 0x0000 0008 | STUN forbidden
+     3 | 0x0000 0008 | NAT-PMP network failure
+
+     4 | 0x0000 0010 | STUN unknown attribute
+     4 | 0x0000 0010 | NAT-PMP out of resources
+     5 | 0x0000 0020 | STUN allocation mismatch
+     5 | 0x0000 0020 | NAT-PMP unsupported opcode
+     6 | 0x0000 0040 | STUN stale nonce
+     7 | 0x0000 0080 | STUN address family not supported
+
+     8 | 0x0000 0100 | STUN wrong credentials
+     9 | 0x0000 0200 | STUN unsupported transport protocol
+    10 | 0x0000 0400 | STUN peer address family mismatch
+    11 | 0x0000 0800 | STUN connection already exists
+
+    12 | 0x0000 1000 | STUN connection timeout or failure
+    13 | 0x0000 2000 | STUN allocation quota reached
+    14 | 0x0000 4000 | STUN role conflict
+    15 | 0x0000 8000 | STUN server error
+
+    16 | 0x0001 0000 | insufficient capacity
+
+    31 | 0x8000 0000 | Unhandled error

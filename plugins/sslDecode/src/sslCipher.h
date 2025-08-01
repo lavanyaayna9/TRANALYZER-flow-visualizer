@@ -1,0 +1,747 @@
+/*
+ * sslCipher.h
+ *
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 2, or (at your option)
+ * any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software Foundation,
+ * Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
+ */
+
+/*
+ * References:
+ *
+ * https://www.iana.org/assignments/tls-parameters/tls-parameters.xhtml
+ */
+
+#ifndef __SSL_CIPHER_H__
+#define __SSL_CIPHER_H__
+
+#define TLS_NULL_WITH_NULL_NULL                         0x0000 // INSECURE
+#define TLS_RSA_WITH_NULL_MD5                           0x0001 // INSECURE
+#define TLS_RSA_WITH_NULL_SHA                           0x0002 // INSECURE
+#define TLS_RSA_EXPORT_WITH_RC4_40_MD5                  0x0003 // INSECURE
+#define TLS_RSA_WITH_RC4_128_MD5                        0x0004 // INSECURE
+#define TLS_RSA_WITH_RC4_128_SHA                        0x0005 // INSECURE
+#define TLS_RSA_EXPORT_WITH_RC2_CBC_40_MD5              0x0006 // INSECURE
+#define TLS_RSA_WITH_IDEA_CBC_SHA                       0x0007 // WEAK
+#define TLS_RSA_EXPORT_WITH_DES40_CBC_SHA               0x0008 // INSECURE
+#define TLS_RSA_WITH_DES_CBC_SHA                        0x0009 // INSECURE
+#define TLS_RSA_WITH_3DES_EDE_CBC_SHA                   0x000a // WEAK
+#define TLS_DH_DSS_EXPORT_WITH_DES40_CBC_SHA            0x000b // INSECURE
+#define TLS_DH_DSS_WITH_DES_CBC_SHA                     0x000c // INSECURE
+#define TLS_DH_DSS_WITH_3DES_EDE_CBC_SHA                0x000d // WEAK
+#define TLS_DH_RSA_EXPORT_WITH_DES40_CBC_SHA            0x000e // INSECURE
+#define TLS_DH_RSA_WITH_DES_CBC_SHA                     0x000f // INSECURE
+#define TLS_DH_RSA_WITH_3DES_EDE_CBC_SHA                0x0010 // WEAK
+#define TLS_DHE_DSS_EXPORT_WITH_DES40_CBC_SHA           0x0011 // INSECURE
+#define TLS_DHE_DSS_WITH_DES_CBC_SHA                    0x0012 // INSECURE
+#define TLS_DHE_DSS_WITH_3DES_EDE_CBC_SHA               0x0013 // WEAK
+#define TLS_DHE_RSA_EXPORT_WITH_DES40_CBC_SHA           0x0014 // INSECURE
+#define TLS_DHE_RSA_WITH_DES_CBC_SHA                    0x0015 // INSECURE
+#define TLS_DHE_RSA_WITH_3DES_EDE_CBC_SHA               0x0016 // WEAK
+#define TLS_DH_anon_EXPORT_WITH_RC4_40_MD5              0x0017 // INSECURE
+#define TLS_DH_anon_WITH_RC4_128_MD5                    0x0018 // INSECURE
+#define TLS_DH_anon_EXPORT_WITH_DES40_CBC_SHA           0x0019 // INSECURE
+#define TLS_DH_anon_WITH_DES_CBC_SHA                    0x001a // INSECURE
+#define TLS_DH_anon_WITH_3DES_EDE_CBC_SHA               0x001b // INSECURE
+#define TLS_KRB5_WITH_DES_CBC_SHA                       0x001e // INSECURE
+#define TLS_KRB5_WITH_3DES_EDE_CBC_SHA                  0x001f // WEAK
+#define TLS_KRB5_WITH_RC4_128_SHA                       0x0020 // INSECURE
+#define TLS_KRB5_WITH_IDEA_CBC_SHA                      0x0021 // WEAK
+#define TLS_KRB5_WITH_DES_CBC_MD5                       0x0022 // INSECURE
+#define TLS_KRB5_WITH_3DES_EDE_CBC_MD5                  0x0023 // INSECURE
+#define TLS_KRB5_WITH_RC4_128_MD5                       0x0024 // INSECURE
+#define TLS_KRB5_WITH_IDEA_CBC_MD5                      0x0025 // INSECURE
+#define TLS_KRB5_EXPORT_WITH_DES_CBC_40_SHA             0x0026 // INSECURE
+#define TLS_KRB5_EXPORT_WITH_RC2_CBC_40_SHA             0x0027 // INSECURE
+#define TLS_KRB5_EXPORT_WITH_RC4_40_SHA                 0x0028 // INSECURE
+#define TLS_KRB5_EXPORT_WITH_DES_CBC_40_MD5             0x0029 // INSECURE
+#define TLS_KRB5_EXPORT_WITH_RC2_CBC_40_MD5             0x002a // INSECURE
+#define TLS_KRB5_EXPORT_WITH_RC4_40_MD5                 0x002b // INSECURE
+#define TLS_PSK_WITH_NULL_SHA                           0x002c // INSECURE
+#define TLS_DHE_PSK_WITH_NULL_SHA                       0x002d // INSECURE
+#define TLS_RSA_PSK_WITH_NULL_SHA                       0x002e // INSECURE
+#define TLS_RSA_WITH_AES_128_CBC_SHA                    0x002f // WEAK
+#define TLS_DH_DSS_WITH_AES_128_CBC_SHA                 0x0030 // WEAK
+#define TLS_DH_RSA_WITH_AES_128_CBC_SHA                 0x0031 // WEAK
+#define TLS_DHE_DSS_WITH_AES_128_CBC_SHA                0x0032 // WEAK
+#define TLS_DHE_RSA_WITH_AES_128_CBC_SHA                0x0033 // WEAK
+#define TLS_DH_anon_WITH_AES_128_CBC_SHA                0x0034 // INSECURE
+#define TLS_RSA_WITH_AES_256_CBC_SHA                    0x0035 // WEAK
+#define TLS_DH_DSS_WITH_AES_256_CBC_SHA                 0x0036 // WEAK
+#define TLS_DH_RSA_WITH_AES_256_CBC_SHA                 0x0037 // WEAK
+#define TLS_DHE_DSS_WITH_AES_256_CBC_SHA                0x0038 // WEAK
+#define TLS_DHE_RSA_WITH_AES_256_CBC_SHA                0x0039 // WEAK
+#define TLS_DH_anon_WITH_AES_256_CBC_SHA                0x003a // INSECURE
+#define TLS_RSA_WITH_NULL_SHA256                        0x003b // INSECURE
+#define TLS_RSA_WITH_AES_128_CBC_SHA256                 0x003c // WEAK
+#define TLS_RSA_WITH_AES_256_CBC_SHA256                 0x003d // WEAK
+#define TLS_DH_DSS_WITH_AES_128_CBC_SHA256              0x003e // WEAK
+#define TLS_DH_RSA_WITH_AES_128_CBC_SHA256              0x003f // WEAK
+#define TLS_DHE_DSS_WITH_AES_128_CBC_SHA256             0x0040 // WEAK
+#define TLS_RSA_WITH_CAMELLIA_128_CBC_SHA               0x0041 // WEAK
+#define TLS_DH_DSS_WITH_CAMELLIA_128_CBC_SHA            0x0042 // WEAK
+#define TLS_DH_RSA_WITH_CAMELLIA_128_CBC_SHA            0x0043 // WEAK
+#define TLS_DHE_DSS_WITH_CAMELLIA_128_CBC_SHA           0x0044 // WEAK
+#define TLS_DHE_RSA_WITH_CAMELLIA_128_CBC_SHA           0x0045 // WEAK
+#define TLS_DH_anon_WITH_CAMELLIA_128_CBC_SHA           0x0046 // INSECURE
+#define TLS_DHE_RSA_WITH_AES_128_CBC_SHA256             0x0067 // WEAK
+#define TLS_DH_DSS_WITH_AES_256_CBC_SHA256              0x0068 // WEAK
+#define TLS_DH_RSA_WITH_AES_256_CBC_SHA256              0x0069 // WEAK
+#define TLS_DHE_DSS_WITH_AES_256_CBC_SHA256             0x006a // WEAK
+#define TLS_DHE_RSA_WITH_AES_256_CBC_SHA256             0x006b // WEAK
+#define TLS_DH_anon_WITH_AES_128_CBC_SHA256             0x006c // INSECURE
+#define TLS_DH_anon_WITH_AES_256_CBC_SHA256             0x006d // INSECURE
+#define TLS_RSA_WITH_CAMELLIA_256_CBC_SHA               0x0084 // WEAK
+#define TLS_DH_DSS_WITH_CAMELLIA_256_CBC_SHA            0x0085 // WEAK
+#define TLS_DH_RSA_WITH_CAMELLIA_256_CBC_SHA            0x0086 // WEAK
+#define TLS_DHE_DSS_WITH_CAMELLIA_256_CBC_SHA           0x0087 // WEAK
+#define TLS_DHE_RSA_WITH_CAMELLIA_256_CBC_SHA           0x0088 // WEAK
+#define TLS_DH_anon_WITH_CAMELLIA_256_CBC_SHA           0x0089 // INSECURE
+#define TLS_PSK_WITH_RC4_128_SHA                        0x008a // INSECURE
+#define TLS_PSK_WITH_3DES_EDE_CBC_SHA                   0x008b // WEAK
+#define TLS_PSK_WITH_AES_128_CBC_SHA                    0x008c // WEAK
+#define TLS_PSK_WITH_AES_256_CBC_SHA                    0x008d // WEAK
+#define TLS_DHE_PSK_WITH_RC4_128_SHA                    0x008e // INSECURE
+#define TLS_DHE_PSK_WITH_3DES_EDE_CBC_SHA               0x008f // WEAK
+#define TLS_DHE_PSK_WITH_AES_128_CBC_SHA                0x0090 // WEAK
+#define TLS_DHE_PSK_WITH_AES_256_CBC_SHA                0x0091 // WEAK
+#define TLS_RSA_PSK_WITH_RC4_128_SHA                    0x0092 // INSECURE
+#define TLS_RSA_PSK_WITH_3DES_EDE_CBC_SHA               0x0093 // WEAK
+#define TLS_RSA_PSK_WITH_AES_128_CBC_SHA                0x0094 // WEAK
+#define TLS_RSA_PSK_WITH_AES_256_CBC_SHA                0x0095 // WEAK
+#define TLS_RSA_WITH_SEED_CBC_SHA                       0x0096 // WEAK
+#define TLS_DH_DSS_WITH_SEED_CBC_SHA                    0x0097 // WEAK
+#define TLS_DH_RSA_WITH_SEED_CBC_SHA                    0x0098 // WEAK
+#define TLS_DHE_DSS_WITH_SEED_CBC_SHA                   0x0099 // WEAK
+#define TLS_DHE_RSA_WITH_SEED_CBC_SHA                   0x009a // WEAK
+#define TLS_DH_anon_WITH_SEED_CBC_SHA                   0x009b // INSECURE
+#define TLS_RSA_WITH_AES_128_GCM_SHA256                 0x009c // WEAK
+#define TLS_RSA_WITH_AES_256_GCM_SHA384                 0x009d // WEAK
+#define TLS_DHE_RSA_WITH_AES_128_GCM_SHA256             0x009e // WEAK
+#define TLS_DHE_RSA_WITH_AES_256_GCM_SHA384             0x009f // WEAK
+#define TLS_DH_RSA_WITH_AES_128_GCM_SHA256              0x00a0 // WEAK
+#define TLS_DH_RSA_WITH_AES_256_GCM_SHA384              0x00a1 // WEAK
+#define TLS_DHE_DSS_WITH_AES_128_GCM_SHA256             0x00a2 // WEAK
+#define TLS_DHE_DSS_WITH_AES_256_GCM_SHA384             0x00a3 // WEAK
+#define TLS_DH_DSS_WITH_AES_128_GCM_SHA256              0x00a4 // WEAK
+#define TLS_DH_DSS_WITH_AES_256_GCM_SHA384              0x00a5 // WEAK
+#define TLS_DH_anon_WITH_AES_128_GCM_SHA256             0x00a6 // INSECURE
+#define TLS_DH_anon_WITH_AES_256_GCM_SHA384             0x00a7 // INSECURE
+#define TLS_PSK_WITH_AES_128_GCM_SHA256                 0x00a8 // WEAK
+#define TLS_PSK_WITH_AES_256_GCM_SHA384                 0x00a9 // WEAK
+#define TLS_DHE_PSK_WITH_AES_128_GCM_SHA256             0x00aa // WEAK
+#define TLS_DHE_PSK_WITH_AES_256_GCM_SHA384             0x00ab // WEAK
+#define TLS_RSA_PSK_WITH_AES_128_GCM_SHA256             0x00ac // WEAK
+#define TLS_RSA_PSK_WITH_AES_256_GCM_SHA384             0x00ad // WEAK
+#define TLS_PSK_WITH_AES_128_CBC_SHA256                 0x00ae // WEAK
+#define TLS_PSK_WITH_AES_256_CBC_SHA384                 0x00af // WEAK
+#define TLS_PSK_WITH_NULL_SHA256                        0x00b0 // INSECURE
+#define TLS_PSK_WITH_NULL_SHA384                        0x00b1 // INSECURE
+#define TLS_DHE_PSK_WITH_AES_128_CBC_SHA256             0x00b2 // WEAK
+#define TLS_DHE_PSK_WITH_AES_256_CBC_SHA384             0x00b3 // WEAK
+#define TLS_DHE_PSK_WITH_NULL_SHA256                    0x00b4 // INSECURE
+#define TLS_DHE_PSK_WITH_NULL_SHA384                    0x00b5 // INSECURE
+#define TLS_RSA_PSK_WITH_AES_128_CBC_SHA256             0x00b6 // WEAK
+#define TLS_RSA_PSK_WITH_AES_256_CBC_SHA384             0x00b7 // WEAK
+#define TLS_RSA_PSK_WITH_NULL_SHA256                    0x00b8 // INSECURE
+#define TLS_RSA_PSK_WITH_NULL_SHA384                    0x00b9 // INSECURE
+#define TLS_RSA_WITH_CAMELLIA_128_CBC_SHA256            0x00ba // WEAK
+#define TLS_DH_DSS_WITH_CAMELLIA_128_CBC_SHA256         0x00bb // WEAK
+#define TLS_DH_RSA_WITH_CAMELLIA_128_CBC_SHA256         0x00bc // WEAK
+#define TLS_DHE_DSS_WITH_CAMELLIA_128_CBC_SHA256        0x00bd // WEAK
+#define TLS_DHE_RSA_WITH_CAMELLIA_128_CBC_SHA256        0x00be // WEAK
+#define TLS_DH_anon_WITH_CAMELLIA_128_CBC_SHA256        0x00bf // INSECURE
+#define TLS_RSA_WITH_CAMELLIA_256_CBC_SHA256            0x00c0 // WEAK
+#define TLS_DH_DSS_WITH_CAMELLIA_256_CBC_SHA256         0x00c1 // WEAK
+#define TLS_DH_RSA_WITH_CAMELLIA_256_CBC_SHA256         0x00c2 // WEAK
+#define TLS_DHE_DSS_WITH_CAMELLIA_256_CBC_SHA256        0x00c3 // WEAK
+#define TLS_DHE_RSA_WITH_CAMELLIA_256_CBC_SHA256        0x00c4 // WEAK
+#define TLS_DH_anon_WITH_CAMELLIA_256_CBC_SHA256        0x00c5 // INSECURE
+#define TLS_SM4_GCM_SM3                                 0x00c6 // INSECURE
+#define TLS_SM4_CCM_SM3                                 0x00c7 // INSECURE
+#define TLS_EMPTY_RENEGOTIATION_INFO_SCSV               0x00ff
+#define TLS_AES_128_GCM_SHA256                          0x1301 // RECOMMENDED
+#define TLS_AES_256_GCM_SHA384                          0x1302 // RECOMMENDED
+#define TLS_CHACHA20_POLY1305_SHA256                    0x1303 // RECOMMENDED
+#define TLS_AES_128_CCM_SHA256                          0x1304 // SECURE
+#define TLS_AES_128_CCM_8_SHA256                        0x1305 // SECURE
+#define TLS_FALLBACK_SCSV                               0x5600
+#define TLS_ECDH_ECDSA_WITH_NULL_SHA                    0xc001 // INSECURE
+#define TLS_ECDH_ECDSA_WITH_RC4_128_SHA                 0xc002 // INSECURE
+#define TLS_ECDH_ECDSA_WITH_3DES_EDE_CBC_SHA            0xc003 // WEAK
+#define TLS_ECDH_ECDSA_WITH_AES_128_CBC_SHA             0xc004 // WEAK
+#define TLS_ECDH_ECDSA_WITH_AES_256_CBC_SHA             0xc005 // WEAK
+#define TLS_ECDHE_ECDSA_WITH_NULL_SHA                   0xc006 // INSECURE
+#define TLS_ECDHE_ECDSA_WITH_RC4_128_SHA                0xc007 // INSECURE
+#define TLS_ECDHE_ECDSA_WITH_3DES_EDE_CBC_SHA           0xc008 // WEAK
+#define TLS_ECDHE_ECDSA_WITH_AES_128_CBC_SHA            0xc009 // WEAK
+#define TLS_ECDHE_ECDSA_WITH_AES_256_CBC_SHA            0xc00a // WEAK
+#define TLS_ECDH_RSA_WITH_NULL_SHA                      0xc00b // INSECURE
+#define TLS_ECDH_RSA_WITH_RC4_128_SHA                   0xc00c // INSECURE
+#define TLS_ECDH_RSA_WITH_3DES_EDE_CBC_SHA              0xc00d // WEAK
+#define TLS_ECDH_RSA_WITH_AES_128_CBC_SHA               0xc00e // WEAK
+#define TLS_ECDH_RSA_WITH_AES_256_CBC_SHA               0xc00f // WEAK
+#define TLS_ECDHE_RSA_WITH_NULL_SHA                     0xc010 // INSECURE
+#define TLS_ECDHE_RSA_WITH_RC4_128_SHA                  0xc011 // INSECURE
+#define TLS_ECDHE_RSA_WITH_3DES_EDE_CBC_SHA             0xc012 // WEAK
+#define TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA              0xc013 // WEAK
+#define TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA              0xc014 // WEAK
+#define TLS_ECDH_anon_WITH_NULL_SHA                     0xc015 // INSECURE
+#define TLS_ECDH_anon_WITH_RC4_128_SHA                  0xc016 // INSECURE
+#define TLS_ECDH_anon_WITH_3DES_EDE_CBC_SHA             0xc017 // INSECURE
+#define TLS_ECDH_anon_WITH_AES_128_CBC_SHA              0xc018 // INSECURE
+#define TLS_ECDH_anon_WITH_AES_256_CBC_SHA              0xc019 // INSECURE
+#define TLS_SRP_SHA_WITH_3DES_EDE_CBC_SHA               0xc01a // WEAK
+#define TLS_SRP_SHA_RSA_WITH_3DES_EDE_CBC_SHA           0xc01b // WEAK
+#define TLS_SRP_SHA_DSS_WITH_3DES_EDE_CBC_SHA           0xc01c // WEAK
+#define TLS_SRP_SHA_WITH_AES_128_CBC_SHA                0xc01d // WEAK
+#define TLS_SRP_SHA_RSA_WITH_AES_128_CBC_SHA            0xc01e // WEAK
+#define TLS_SRP_SHA_DSS_WITH_AES_128_CBC_SHA            0xc01f // WEAK
+#define TLS_SRP_SHA_WITH_AES_256_CBC_SHA                0xc020 // WEAK
+#define TLS_SRP_SHA_RSA_WITH_AES_256_CBC_SHA            0xc021 // WEAK
+#define TLS_SRP_SHA_DSS_WITH_AES_256_CBC_SHA            0xc022 // WEAK
+#define TLS_ECDHE_ECDSA_WITH_AES_128_CBC_SHA256         0xc023 // WEAK
+#define TLS_ECDHE_ECDSA_WITH_AES_256_CBC_SHA384         0xc024 // WEAK
+#define TLS_ECDH_ECDSA_WITH_AES_128_CBC_SHA256          0xc025 // WEAK
+#define TLS_ECDH_ECDSA_WITH_AES_256_CBC_SHA384          0xc026 // WEAK
+#define TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256           0xc027 // WEAK
+#define TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384           0xc028 // WEAK
+#define TLS_ECDH_RSA_WITH_AES_128_CBC_SHA256            0xc029 // WEAK
+#define TLS_ECDH_RSA_WITH_AES_256_CBC_SHA384            0xc02a // WEAK
+#define TLS_ECDHE_ECDSA_WITH_AES_128_GCM_SHA256         0xc02b // RECOMMENDED
+#define TLS_ECDHE_ECDSA_WITH_AES_256_GCM_SHA384         0xc02c // RECOMMENDED
+#define TLS_ECDH_ECDSA_WITH_AES_128_GCM_SHA256          0xc02d // WEAK
+#define TLS_ECDH_ECDSA_WITH_AES_256_GCM_SHA384          0xc02e // WEAK
+#define TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256           0xc02f // SECURE
+#define TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384           0xc030 // SECURE
+#define TLS_ECDH_RSA_WITH_AES_128_GCM_SHA256            0xc031 // WEAK
+#define TLS_ECDH_RSA_WITH_AES_256_GCM_SHA384            0xc032 // WEAK
+#define TLS_ECDHE_PSK_WITH_RC4_128_SHA                  0xc033 // INSECURE
+#define TLS_ECDHE_PSK_WITH_3DES_EDE_CBC_SHA             0xc034 // WEAK
+#define TLS_ECDHE_PSK_WITH_AES_128_CBC_SHA              0xc035 // WEAK
+#define TLS_ECDHE_PSK_WITH_AES_256_CBC_SHA              0xc036 // WEAK
+#define TLS_ECDHE_PSK_WITH_AES_128_CBC_SHA256           0xc037 // WEAK
+#define TLS_ECDHE_PSK_WITH_AES_256_CBC_SHA384           0xc038 // WEAK
+#define TLS_ECDHE_PSK_WITH_NULL_SHA                     0xc039 // INSECURE
+#define TLS_ECDHE_PSK_WITH_NULL_SHA256                  0xc03a // INSECURE
+#define TLS_ECDHE_PSK_WITH_NULL_SHA384                  0xc03b // INSECURE
+#define TLS_RSA_WITH_ARIA_128_CBC_SHA256                0xc03c // WEAK
+#define TLS_RSA_WITH_ARIA_256_CBC_SHA384                0xc03d // WEAK
+#define TLS_DH_DSS_WITH_ARIA_128_CBC_SHA256             0xc03e // WEAK
+#define TLS_DH_DSS_WITH_ARIA_256_CBC_SHA384             0xc03f // WEAK
+#define TLS_DH_RSA_WITH_ARIA_128_CBC_SHA256             0xc040 // WEAK
+#define TLS_DH_RSA_WITH_ARIA_256_CBC_SHA384             0xc041 // WEAK
+#define TLS_DHE_DSS_WITH_ARIA_128_CBC_SHA256            0xc042 // WEAK
+#define TLS_DHE_DSS_WITH_ARIA_256_CBC_SHA384            0xc043 // WEAK
+#define TLS_DHE_RSA_WITH_ARIA_128_CBC_SHA256            0xc044 // WEAK
+#define TLS_DHE_RSA_WITH_ARIA_256_CBC_SHA384            0xc045 // WEAK
+#define TLS_DH_anon_WITH_ARIA_128_CBC_SHA256            0xc046 // INSECURE
+#define TLS_DH_anon_WITH_ARIA_256_CBC_SHA384            0xc047 // INSECURE
+#define TLS_ECDHE_ECDSA_WITH_ARIA_128_CBC_SHA256        0xc048 // WEAK
+#define TLS_ECDHE_ECDSA_WITH_ARIA_256_CBC_SHA384        0xc049 // WEAK
+#define TLS_ECDH_ECDSA_WITH_ARIA_128_CBC_SHA256         0xc04a // WEAK
+#define TLS_ECDH_ECDSA_WITH_ARIA_256_CBC_SHA384         0xc04b // WEAK
+#define TLS_ECDHE_RSA_WITH_ARIA_128_CBC_SHA256          0xc04c // WEAK
+#define TLS_ECDHE_RSA_WITH_ARIA_256_CBC_SHA384          0xc04d // WEAK
+#define TLS_ECDH_RSA_WITH_ARIA_128_CBC_SHA256           0xc04e // WEAK
+#define TLS_ECDH_RSA_WITH_ARIA_256_CBC_SHA384           0xc04f // WEAK
+#define TLS_RSA_WITH_ARIA_128_GCM_SHA256                0xc050 // WEAK
+#define TLS_RSA_WITH_ARIA_256_GCM_SHA384                0xc051 // WEAK
+#define TLS_DHE_RSA_WITH_ARIA_128_GCM_SHA256            0xc052 // WEAK
+#define TLS_DHE_RSA_WITH_ARIA_256_GCM_SHA384            0xc053 // WEAK
+#define TLS_DH_RSA_WITH_ARIA_128_GCM_SHA256             0xc054 // WEAK
+#define TLS_DH_RSA_WITH_ARIA_256_GCM_SHA384             0xc055 // WEAK
+#define TLS_DHE_DSS_WITH_ARIA_128_GCM_SHA256            0xc056 // WEAK
+#define TLS_DHE_DSS_WITH_ARIA_256_GCM_SHA384            0xc057 // WEAK
+#define TLS_DH_DSS_WITH_ARIA_128_GCM_SHA256             0xc058 // WEAK
+#define TLS_DH_DSS_WITH_ARIA_256_GCM_SHA384             0xc059 // WEAK
+#define TLS_DH_anon_WITH_ARIA_128_GCM_SHA256            0xc05a // INSECURE
+#define TLS_DH_anon_WITH_ARIA_256_GCM_SHA384            0xc05b // INSECURE
+#define TLS_ECDHE_ECDSA_WITH_ARIA_128_GCM_SHA256        0xc05c // RECOMMENDED
+#define TLS_ECDHE_ECDSA_WITH_ARIA_256_GCM_SHA384        0xc05d // RECOMMENDED
+#define TLS_ECDH_ECDSA_WITH_ARIA_128_GCM_SHA256         0xc05e // WEAK
+#define TLS_ECDH_ECDSA_WITH_ARIA_256_GCM_SHA384         0xc05f // WEAK
+#define TLS_ECDHE_RSA_WITH_ARIA_128_GCM_SHA256          0xc060 // SECURE
+#define TLS_ECDHE_RSA_WITH_ARIA_256_GCM_SHA384          0xc061 // SECURE
+#define TLS_ECDH_RSA_WITH_ARIA_128_GCM_SHA256           0xc062 // WEAK
+#define TLS_ECDH_RSA_WITH_ARIA_256_GCM_SHA384           0xc063 // WEAK
+#define TLS_PSK_WITH_ARIA_128_CBC_SHA256                0xc064 // WEAK
+#define TLS_PSK_WITH_ARIA_256_CBC_SHA384                0xc065 // WEAK
+#define TLS_DHE_PSK_WITH_ARIA_128_CBC_SHA256            0xc066 // WEAK
+#define TLS_DHE_PSK_WITH_ARIA_256_CBC_SHA384            0xc067 // WEAK
+#define TLS_RSA_PSK_WITH_ARIA_128_CBC_SHA256            0xc068 // WEAK
+#define TLS_RSA_PSK_WITH_ARIA_256_CBC_SHA384            0xc069 // WEAK
+#define TLS_PSK_WITH_ARIA_128_GCM_SHA256                0xc06a // WEAK
+#define TLS_PSK_WITH_ARIA_256_GCM_SHA384                0xc06b // WEAK
+#define TLS_DHE_PSK_WITH_ARIA_128_GCM_SHA256            0xc06c // WEAK
+#define TLS_DHE_PSK_WITH_ARIA_256_GCM_SHA384            0xc06d // WEAK
+#define TLS_RSA_PSK_WITH_ARIA_128_GCM_SHA256            0xc06e // WEAK
+#define TLS_RSA_PSK_WITH_ARIA_256_GCM_SHA384            0xc06f // WEAK
+#define TLS_ECDHE_PSK_WITH_ARIA_128_CBC_SHA256          0xc070 // WEAK
+#define TLS_ECDHE_PSK_WITH_ARIA_256_CBC_SHA384          0xc071 // WEAK
+#define TLS_ECDHE_ECDSA_WITH_CAMELLIA_128_CBC_SHA256    0xc072 // WEAK
+#define TLS_ECDHE_ECDSA_WITH_CAMELLIA_256_CBC_SHA384    0xc073 // WEAK
+#define TLS_ECDH_ECDSA_WITH_CAMELLIA_128_CBC_SHA256     0xc074 // WEAK
+#define TLS_ECDH_ECDSA_WITH_CAMELLIA_256_CBC_SHA384     0xc075 // WEAK
+#define TLS_ECDHE_RSA_WITH_CAMELLIA_128_CBC_SHA256      0xc076 // WEAK
+#define TLS_ECDHE_RSA_WITH_CAMELLIA_256_CBC_SHA384      0xc077 // WEAK
+#define TLS_ECDH_RSA_WITH_CAMELLIA_128_CBC_SHA256       0xc078 // WEAK
+#define TLS_ECDH_RSA_WITH_CAMELLIA_256_CBC_SHA384       0xc079 // WEAK
+#define TLS_RSA_WITH_CAMELLIA_128_GCM_SHA256            0xc07a // WEAK
+#define TLS_RSA_WITH_CAMELLIA_256_GCM_SHA384            0xc07b // WEAK
+#define TLS_DHE_RSA_WITH_CAMELLIA_128_GCM_SHA256        0xc07c // WEAK
+#define TLS_DHE_RSA_WITH_CAMELLIA_256_GCM_SHA384        0xc07d // WEAK
+#define TLS_DH_RSA_WITH_CAMELLIA_128_GCM_SHA256         0xc07e // WEAK
+#define TLS_DH_RSA_WITH_CAMELLIA_256_GCM_SHA384         0xc07f // WEAK
+#define TLS_DHE_DSS_WITH_CAMELLIA_128_GCM_SHA256        0xc080 // WEAK
+#define TLS_DHE_DSS_WITH_CAMELLIA_256_GCM_SHA384        0xc081 // WEAK
+#define TLS_DH_DSS_WITH_CAMELLIA_128_GCM_SHA256         0xc082 // WEAK
+#define TLS_DH_DSS_WITH_CAMELLIA_256_GCM_SHA384         0xc083 // WEAK
+#define TLS_DH_anon_WITH_CAMELLIA_128_GCM_SHA256        0xc084 // INSECURE
+#define TLS_DH_anon_WITH_CAMELLIA_256_GCM_SHA384        0xc085 // INSECURE
+#define TLS_ECDHE_ECDSA_WITH_CAMELLIA_128_GCM_SHA256    0xc086 // RECOMMENDED
+#define TLS_ECDHE_ECDSA_WITH_CAMELLIA_256_GCM_SHA384    0xc087 // RECOMMENDED
+#define TLS_ECDH_ECDSA_WITH_CAMELLIA_128_GCM_SHA256     0xc088 // WEAK
+#define TLS_ECDH_ECDSA_WITH_CAMELLIA_256_GCM_SHA384     0xc089 // WEAK
+#define TLS_ECDHE_RSA_WITH_CAMELLIA_128_GCM_SHA256      0xc08a // SECURE
+#define TLS_ECDHE_RSA_WITH_CAMELLIA_256_GCM_SHA384      0xc08b // SECURE
+#define TLS_ECDH_RSA_WITH_CAMELLIA_128_GCM_SHA256       0xc08c // WEAK
+#define TLS_ECDH_RSA_WITH_CAMELLIA_256_GCM_SHA384       0xc08d // WEAK
+#define TLS_PSK_WITH_CAMELLIA_128_GCM_SHA256            0xc08e // WEAK
+#define TLS_PSK_WITH_CAMELLIA_256_GCM_SHA384            0xc08f // WEAK
+#define TLS_DHE_PSK_WITH_CAMELLIA_128_GCM_SHA256        0xc090 // WEAK
+#define TLS_DHE_PSK_WITH_CAMELLIA_256_GCM_SHA384        0xc091 // WEAK
+#define TLS_RSA_PSK_WITH_CAMELLIA_128_GCM_SHA256        0xc092 // WEAK
+#define TLS_RSA_PSK_WITH_CAMELLIA_256_GCM_SHA384        0xc093 // WEAK
+#define TLS_PSK_WITH_CAMELLIA_128_CBC_SHA256            0xc094 // WEAK
+#define TLS_PSK_WITH_CAMELLIA_256_CBC_SHA384            0xc095 // WEAK
+#define TLS_DHE_PSK_WITH_CAMELLIA_128_CBC_SHA256        0xc096 // WEAK
+#define TLS_DHE_PSK_WITH_CAMELLIA_256_CBC_SHA384        0xc097 // WEAK
+#define TLS_RSA_PSK_WITH_CAMELLIA_128_CBC_SHA256        0xc098 // WEAK
+#define TLS_RSA_PSK_WITH_CAMELLIA_256_CBC_SHA384        0xc099 // WEAK
+#define TLS_ECDHE_PSK_WITH_CAMELLIA_128_CBC_SHA256      0xc09a // WEAK
+#define TLS_ECDHE_PSK_WITH_CAMELLIA_256_CBC_SHA384      0xc09b // WEAK
+#define TLS_RSA_WITH_AES_128_CCM                        0xc09c // WEAK
+#define TLS_RSA_WITH_AES_256_CCM                        0xc09d // WEAK
+#define TLS_DHE_RSA_WITH_AES_128_CCM                    0xc09e // WEAK
+#define TLS_DHE_RSA_WITH_AES_256_CCM                    0xc09f // WEAK
+#define TLS_RSA_WITH_AES_128_CCM_8                      0xc0a0 // WEAK
+#define TLS_RSA_WITH_AES_256_CCM_8                      0xc0a1 // WEAK
+#define TLS_DHE_RSA_WITH_AES_128_CCM_8                  0xc0a2 // WEAK
+#define TLS_DHE_RSA_WITH_AES_256_CCM_8                  0xc0a3 // WEAK
+#define TLS_PSK_WITH_AES_128_CCM                        0xc0a4 // WEAK
+#define TLS_PSK_WITH_AES_256_CCM                        0xc0a5 // WEAK
+#define TLS_DHE_PSK_WITH_AES_128_CCM                    0xc0a6 // WEAK
+#define TLS_DHE_PSK_WITH_AES_256_CCM                    0xc0a7 // WEAK
+#define TLS_PSK_WITH_AES_128_CCM_8                      0xc0a8 // WEAK
+#define TLS_PSK_WITH_AES_256_CCM_8                      0xc0a9 // WEAK
+#define TLS_PSK_DHE_WITH_AES_128_CCM_8                  0xc0aa // WEAK
+#define TLS_PSK_DHE_WITH_AES_256_CCM_8                  0xc0ab // WEAK
+#define TLS_ECDHE_ECDSA_WITH_AES_128_CCM                0xc0ac // SECURE
+#define TLS_ECDHE_ECDSA_WITH_AES_256_CCM                0xc0ad // SECURE
+#define TLS_ECDHE_ECDSA_WITH_AES_128_CCM_8              0xc0ae // SECURE
+#define TLS_ECDHE_ECDSA_WITH_AES_256_CCM_8              0xc0af // SECURE
+#define TLS_ECCPWD_WITH_AES_128_GCM_SHA256              0xc0b0 // RECOMMENDED
+#define TLS_ECCPWD_WITH_AES_256_GCM_SHA384              0xc0b1 // RECOMMENDED
+#define TLS_ECCPWD_WITH_AES_128_CCM_SHA256              0xc0b2 // SECURE
+#define TLS_ECCPWD_WITH_AES_256_CCM_SHA384              0xc0b3 // SECURE
+#define TLS_SHA256_SHA256                               0xc0b4 // INSECURE
+#define TLS_SHA384_SHA384                               0xc0b5 // INSECURE
+#define TLS_GOSTR341112_256_WITH_KUZNYECHIK_CTR_OMAC    0xc100 // INSECURE
+#define TLS_GOSTR341112_256_WITH_MAGMA_CTR_OMAC         0xc101 // INSECURE
+#define TLS_GOSTR341112_256_WITH_28147_CNT_IMIT         0xc102 // INSECURE
+#define TLS_GOSTR341112_256_WITH_KUZNYECHIK_MGM_L       0xc103 // INSECURE
+#define TLS_GOSTR341112_256_WITH_MAGMA_MGM_L            0xc104 // INSECURE
+#define TLS_GOSTR341112_256_WITH_KUZNYECHIK_MGM_S       0xc105 // INSECURE
+#define TLS_GOSTR341112_256_WITH_MAGMA_MGM_S            0xc106 // INSECURE
+#define TLS_ECDHE_RSA_WITH_CHACHA20_POLY1305_SHA256     0xcca8 // SECURE
+#define TLS_ECDHE_ECDSA_WITH_CHACHA20_POLY1305_SHA256   0xcca9 // RECOMMENDED
+#define TLS_DHE_RSA_WITH_CHACHA20_POLY1305_SHA256       0xccaa // WEAK
+#define TLS_PSK_WITH_CHACHA20_POLY1305_SHA256           0xccab // WEAK
+#define TLS_ECDHE_PSK_WITH_CHACHA20_POLY1305_SHA256     0xccac // RECOMMENDED
+#define TLS_DHE_PSK_WITH_CHACHA20_POLY1305_SHA256       0xccad // WEAK
+#define TLS_RSA_PSK_WITH_CHACHA20_POLY1305_SHA256       0xccae // WEAK
+// 0xd000 unassigned
+#define TLS_ECDHE_PSK_WITH_AES_128_GCM_SHA256           0xd001 // RECOMMENDED
+#define TLS_ECDHE_PSK_WITH_AES_256_GCM_SHA384           0xd002 // RECOMMENDED
+#define TLS_ECDHE_PSK_WITH_AES_128_CCM_8_SHA256         0xd003 // SECURE
+// 0xd004 unassigned
+#define TLS_ECDHE_PSK_WITH_AES_128_CCM_SHA256           0xd005 // SECURE
+
+#define SSL_FLAG_WEAK_CIPHER(ssl, c) \
+    switch ((c)) { \
+        /* Recommended ciphers */ \
+        case TLS_AES_128_GCM_SHA256: \
+        case TLS_AES_256_GCM_SHA384: \
+        case TLS_CHACHA20_POLY1305_SHA256: \
+        case TLS_ECDHE_ECDSA_WITH_AES_128_GCM_SHA256: \
+        case TLS_ECDHE_ECDSA_WITH_AES_256_GCM_SHA384: \
+        case TLS_ECDHE_ECDSA_WITH_ARIA_128_GCM_SHA256: \
+        case TLS_ECDHE_ECDSA_WITH_ARIA_256_GCM_SHA384: \
+        case TLS_ECDHE_ECDSA_WITH_CAMELLIA_128_GCM_SHA256: \
+        case TLS_ECDHE_ECDSA_WITH_CAMELLIA_256_GCM_SHA384: \
+        case TLS_ECCPWD_WITH_AES_128_GCM_SHA256: \
+        case TLS_ECCPWD_WITH_AES_256_GCM_SHA384: \
+        case TLS_ECDHE_ECDSA_WITH_CHACHA20_POLY1305_SHA256: \
+        case TLS_ECDHE_PSK_WITH_CHACHA20_POLY1305_SHA256: \
+        case TLS_ECDHE_PSK_WITH_AES_128_GCM_SHA256: \
+        case TLS_ECDHE_PSK_WITH_AES_256_GCM_SHA384: \
+            ssl->stat |= (SSL_STAT_RECOMMENDED_CIPHER | SSL_STAT_SECURE_CIPHER); \
+            break; \
+        /* Secure ciphers */ \
+        case TLS_AES_128_CCM_SHA256: \
+        case TLS_AES_128_CCM_8_SHA256: \
+        case TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256: \
+        case TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384: \
+        case TLS_ECDHE_RSA_WITH_ARIA_128_GCM_SHA256: \
+        case TLS_ECDHE_RSA_WITH_ARIA_256_GCM_SHA384: \
+        case TLS_ECDHE_RSA_WITH_CAMELLIA_128_GCM_SHA256: \
+        case TLS_ECDHE_RSA_WITH_CAMELLIA_256_GCM_SHA384: \
+        case TLS_ECDHE_ECDSA_WITH_AES_128_CCM: \
+        case TLS_ECDHE_ECDSA_WITH_AES_256_CCM: \
+        case TLS_ECDHE_ECDSA_WITH_AES_128_CCM_8: \
+        case TLS_ECDHE_ECDSA_WITH_AES_256_CCM_8: \
+        case TLS_ECCPWD_WITH_AES_128_CCM_SHA256: \
+        case TLS_ECCPWD_WITH_AES_256_CCM_SHA384: \
+        case TLS_ECDHE_RSA_WITH_CHACHA20_POLY1305_SHA256: \
+        case TLS_ECDHE_PSK_WITH_AES_128_CCM_8_SHA256: \
+        case TLS_ECDHE_PSK_WITH_AES_128_CCM_SHA256: \
+            ssl->stat |= SSL_STAT_SECURE_CIPHER; \
+            break; \
+        /* Weak ciphers */ \
+        case TLS_RSA_WITH_IDEA_CBC_SHA: \
+        case TLS_RSA_WITH_3DES_EDE_CBC_SHA: \
+        case TLS_DH_DSS_WITH_3DES_EDE_CBC_SHA: \
+        case TLS_DH_RSA_WITH_3DES_EDE_CBC_SHA: \
+        case TLS_DHE_DSS_WITH_3DES_EDE_CBC_SHA: \
+        case TLS_DHE_RSA_WITH_3DES_EDE_CBC_SHA: \
+        case TLS_KRB5_WITH_3DES_EDE_CBC_SHA: \
+        case TLS_KRB5_WITH_IDEA_CBC_SHA: \
+        case TLS_RSA_WITH_AES_128_CBC_SHA: \
+        case TLS_DH_DSS_WITH_AES_128_CBC_SHA: \
+        case TLS_DH_RSA_WITH_AES_128_CBC_SHA: \
+        case TLS_DHE_DSS_WITH_AES_128_CBC_SHA: \
+        case TLS_DHE_RSA_WITH_AES_128_CBC_SHA: \
+        case TLS_RSA_WITH_AES_256_CBC_SHA: \
+        case TLS_DH_DSS_WITH_AES_256_CBC_SHA: \
+        case TLS_DH_RSA_WITH_AES_256_CBC_SHA: \
+        case TLS_DHE_DSS_WITH_AES_256_CBC_SHA: \
+        case TLS_DHE_RSA_WITH_AES_256_CBC_SHA: \
+        case TLS_RSA_WITH_AES_128_CBC_SHA256: \
+        case TLS_RSA_WITH_AES_256_CBC_SHA256: \
+        case TLS_DH_DSS_WITH_AES_128_CBC_SHA256: \
+        case TLS_DH_RSA_WITH_AES_128_CBC_SHA256: \
+        case TLS_DHE_DSS_WITH_AES_128_CBC_SHA256: \
+        case TLS_RSA_WITH_CAMELLIA_128_CBC_SHA: \
+        case TLS_DH_DSS_WITH_CAMELLIA_128_CBC_SHA: \
+        case TLS_DH_RSA_WITH_CAMELLIA_128_CBC_SHA: \
+        case TLS_DHE_DSS_WITH_CAMELLIA_128_CBC_SHA: \
+        case TLS_DHE_RSA_WITH_CAMELLIA_128_CBC_SHA: \
+        case TLS_DHE_RSA_WITH_AES_128_CBC_SHA256: \
+        case TLS_DH_DSS_WITH_AES_256_CBC_SHA256: \
+        case TLS_DH_RSA_WITH_AES_256_CBC_SHA256: \
+        case TLS_DHE_DSS_WITH_AES_256_CBC_SHA256: \
+        case TLS_DHE_RSA_WITH_AES_256_CBC_SHA256: \
+        case TLS_RSA_WITH_CAMELLIA_256_CBC_SHA: \
+        case TLS_DH_DSS_WITH_CAMELLIA_256_CBC_SHA: \
+        case TLS_DH_RSA_WITH_CAMELLIA_256_CBC_SHA: \
+        case TLS_DHE_DSS_WITH_CAMELLIA_256_CBC_SHA: \
+        case TLS_DHE_RSA_WITH_CAMELLIA_256_CBC_SHA: \
+        case TLS_PSK_WITH_3DES_EDE_CBC_SHA: \
+        case TLS_PSK_WITH_AES_128_CBC_SHA: \
+        case TLS_PSK_WITH_AES_256_CBC_SHA: \
+        case TLS_DHE_PSK_WITH_3DES_EDE_CBC_SHA: \
+        case TLS_DHE_PSK_WITH_AES_128_CBC_SHA: \
+        case TLS_DHE_PSK_WITH_AES_256_CBC_SHA: \
+        case TLS_RSA_PSK_WITH_3DES_EDE_CBC_SHA: \
+        case TLS_RSA_PSK_WITH_AES_128_CBC_SHA: \
+        case TLS_RSA_PSK_WITH_AES_256_CBC_SHA: \
+        case TLS_RSA_WITH_SEED_CBC_SHA: \
+        case TLS_DH_DSS_WITH_SEED_CBC_SHA: \
+        case TLS_DH_RSA_WITH_SEED_CBC_SHA: \
+        case TLS_DHE_DSS_WITH_SEED_CBC_SHA: \
+        case TLS_DHE_RSA_WITH_SEED_CBC_SHA: \
+        case TLS_RSA_WITH_AES_128_GCM_SHA256: \
+        case TLS_RSA_WITH_AES_256_GCM_SHA384: \
+        case TLS_DHE_RSA_WITH_AES_128_GCM_SHA256: \
+        case TLS_DHE_RSA_WITH_AES_256_GCM_SHA384: \
+        case TLS_DH_RSA_WITH_AES_128_GCM_SHA256: \
+        case TLS_DH_RSA_WITH_AES_256_GCM_SHA384: \
+        case TLS_DHE_DSS_WITH_AES_128_GCM_SHA256: \
+        case TLS_DHE_DSS_WITH_AES_256_GCM_SHA384: \
+        case TLS_DH_DSS_WITH_AES_128_GCM_SHA256: \
+        case TLS_DH_DSS_WITH_AES_256_GCM_SHA384: \
+        case TLS_PSK_WITH_AES_128_GCM_SHA256: \
+        case TLS_PSK_WITH_AES_256_GCM_SHA384: \
+        case TLS_DHE_PSK_WITH_AES_128_GCM_SHA256: \
+        case TLS_DHE_PSK_WITH_AES_256_GCM_SHA384: \
+        case TLS_RSA_PSK_WITH_AES_128_GCM_SHA256: \
+        case TLS_RSA_PSK_WITH_AES_256_GCM_SHA384: \
+        case TLS_PSK_WITH_AES_128_CBC_SHA256: \
+        case TLS_PSK_WITH_AES_256_CBC_SHA384: \
+        case TLS_DHE_PSK_WITH_AES_128_CBC_SHA256: \
+        case TLS_DHE_PSK_WITH_AES_256_CBC_SHA384: \
+        case TLS_RSA_PSK_WITH_AES_128_CBC_SHA256: \
+        case TLS_RSA_PSK_WITH_AES_256_CBC_SHA384: \
+        case TLS_RSA_WITH_CAMELLIA_128_CBC_SHA256: \
+        case TLS_DH_DSS_WITH_CAMELLIA_128_CBC_SHA256: \
+        case TLS_DH_RSA_WITH_CAMELLIA_128_CBC_SHA256: \
+        case TLS_DHE_DSS_WITH_CAMELLIA_128_CBC_SHA256: \
+        case TLS_DHE_RSA_WITH_CAMELLIA_128_CBC_SHA256: \
+        case TLS_RSA_WITH_CAMELLIA_256_CBC_SHA256: \
+        case TLS_DH_DSS_WITH_CAMELLIA_256_CBC_SHA256: \
+        case TLS_DH_RSA_WITH_CAMELLIA_256_CBC_SHA256: \
+        case TLS_DHE_DSS_WITH_CAMELLIA_256_CBC_SHA256: \
+        case TLS_DHE_RSA_WITH_CAMELLIA_256_CBC_SHA256: \
+        case TLS_ECDH_ECDSA_WITH_3DES_EDE_CBC_SHA: \
+        case TLS_ECDH_ECDSA_WITH_AES_128_CBC_SHA: \
+        case TLS_ECDH_ECDSA_WITH_AES_256_CBC_SHA: \
+        case TLS_ECDHE_ECDSA_WITH_3DES_EDE_CBC_SHA: \
+        case TLS_ECDHE_ECDSA_WITH_AES_128_CBC_SHA: \
+        case TLS_ECDHE_ECDSA_WITH_AES_256_CBC_SHA: \
+        case TLS_ECDH_RSA_WITH_3DES_EDE_CBC_SHA: \
+        case TLS_ECDH_RSA_WITH_AES_128_CBC_SHA: \
+        case TLS_ECDH_RSA_WITH_AES_256_CBC_SHA: \
+        case TLS_ECDHE_RSA_WITH_3DES_EDE_CBC_SHA: \
+        case TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA: \
+        case TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA: \
+        case TLS_SRP_SHA_WITH_3DES_EDE_CBC_SHA: \
+        case TLS_SRP_SHA_RSA_WITH_3DES_EDE_CBC_SHA: \
+        case TLS_SRP_SHA_DSS_WITH_3DES_EDE_CBC_SHA: \
+        case TLS_SRP_SHA_WITH_AES_128_CBC_SHA: \
+        case TLS_SRP_SHA_RSA_WITH_AES_128_CBC_SHA: \
+        case TLS_SRP_SHA_DSS_WITH_AES_128_CBC_SHA: \
+        case TLS_SRP_SHA_WITH_AES_256_CBC_SHA: \
+        case TLS_SRP_SHA_RSA_WITH_AES_256_CBC_SHA: \
+        case TLS_SRP_SHA_DSS_WITH_AES_256_CBC_SHA: \
+        case TLS_ECDHE_ECDSA_WITH_AES_128_CBC_SHA256: \
+        case TLS_ECDHE_ECDSA_WITH_AES_256_CBC_SHA384: \
+        case TLS_ECDH_ECDSA_WITH_AES_128_CBC_SHA256: \
+        case TLS_ECDH_ECDSA_WITH_AES_256_CBC_SHA384: \
+        case TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256: \
+        case TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384: \
+        case TLS_ECDH_RSA_WITH_AES_128_CBC_SHA256: \
+        case TLS_ECDH_RSA_WITH_AES_256_CBC_SHA384: \
+        case TLS_ECDH_ECDSA_WITH_AES_128_GCM_SHA256: \
+        case TLS_ECDH_ECDSA_WITH_AES_256_GCM_SHA384: \
+        case TLS_ECDH_RSA_WITH_AES_128_GCM_SHA256: \
+        case TLS_ECDH_RSA_WITH_AES_256_GCM_SHA384: \
+        case TLS_ECDHE_PSK_WITH_3DES_EDE_CBC_SHA: \
+        case TLS_ECDHE_PSK_WITH_AES_128_CBC_SHA: \
+        case TLS_ECDHE_PSK_WITH_AES_256_CBC_SHA: \
+        case TLS_ECDHE_PSK_WITH_AES_128_CBC_SHA256: \
+        case TLS_ECDHE_PSK_WITH_AES_256_CBC_SHA384: \
+        case TLS_RSA_WITH_ARIA_128_CBC_SHA256: \
+        case TLS_RSA_WITH_ARIA_256_CBC_SHA384: \
+        case TLS_DH_DSS_WITH_ARIA_128_CBC_SHA256: \
+        case TLS_DH_DSS_WITH_ARIA_256_CBC_SHA384: \
+        case TLS_DH_RSA_WITH_ARIA_128_CBC_SHA256: \
+        case TLS_DH_RSA_WITH_ARIA_256_CBC_SHA384: \
+        case TLS_DHE_DSS_WITH_ARIA_128_CBC_SHA256: \
+        case TLS_DHE_DSS_WITH_ARIA_256_CBC_SHA384: \
+        case TLS_DHE_RSA_WITH_ARIA_128_CBC_SHA256: \
+        case TLS_DHE_RSA_WITH_ARIA_256_CBC_SHA384: \
+        case TLS_ECDHE_ECDSA_WITH_ARIA_128_CBC_SHA256: \
+        case TLS_ECDHE_ECDSA_WITH_ARIA_256_CBC_SHA384: \
+        case TLS_ECDH_ECDSA_WITH_ARIA_128_CBC_SHA256: \
+        case TLS_ECDH_ECDSA_WITH_ARIA_256_CBC_SHA384: \
+        case TLS_ECDHE_RSA_WITH_ARIA_128_CBC_SHA256: \
+        case TLS_ECDHE_RSA_WITH_ARIA_256_CBC_SHA384: \
+        case TLS_ECDH_RSA_WITH_ARIA_128_CBC_SHA256: \
+        case TLS_ECDH_RSA_WITH_ARIA_256_CBC_SHA384: \
+        case TLS_RSA_WITH_ARIA_128_GCM_SHA256: \
+        case TLS_RSA_WITH_ARIA_256_GCM_SHA384: \
+        case TLS_DHE_RSA_WITH_ARIA_128_GCM_SHA256: \
+        case TLS_DHE_RSA_WITH_ARIA_256_GCM_SHA384: \
+        case TLS_DH_RSA_WITH_ARIA_128_GCM_SHA256: \
+        case TLS_DH_RSA_WITH_ARIA_256_GCM_SHA384: \
+        case TLS_DHE_DSS_WITH_ARIA_128_GCM_SHA256: \
+        case TLS_DHE_DSS_WITH_ARIA_256_GCM_SHA384: \
+        case TLS_DH_DSS_WITH_ARIA_128_GCM_SHA256: \
+        case TLS_DH_DSS_WITH_ARIA_256_GCM_SHA384: \
+        case TLS_ECDH_ECDSA_WITH_ARIA_128_GCM_SHA256: \
+        case TLS_ECDH_ECDSA_WITH_ARIA_256_GCM_SHA384: \
+        case TLS_ECDH_RSA_WITH_ARIA_128_GCM_SHA256: \
+        case TLS_ECDH_RSA_WITH_ARIA_256_GCM_SHA384: \
+        case TLS_PSK_WITH_ARIA_128_CBC_SHA256: \
+        case TLS_PSK_WITH_ARIA_256_CBC_SHA384: \
+        case TLS_DHE_PSK_WITH_ARIA_128_CBC_SHA256: \
+        case TLS_DHE_PSK_WITH_ARIA_256_CBC_SHA384: \
+        case TLS_RSA_PSK_WITH_ARIA_128_CBC_SHA256: \
+        case TLS_RSA_PSK_WITH_ARIA_256_CBC_SHA384: \
+        case TLS_PSK_WITH_ARIA_128_GCM_SHA256: \
+        case TLS_PSK_WITH_ARIA_256_GCM_SHA384: \
+        case TLS_DHE_PSK_WITH_ARIA_128_GCM_SHA256: \
+        case TLS_DHE_PSK_WITH_ARIA_256_GCM_SHA384: \
+        case TLS_RSA_PSK_WITH_ARIA_128_GCM_SHA256: \
+        case TLS_RSA_PSK_WITH_ARIA_256_GCM_SHA384: \
+        case TLS_ECDHE_PSK_WITH_ARIA_128_CBC_SHA256: \
+        case TLS_ECDHE_PSK_WITH_ARIA_256_CBC_SHA384: \
+        case TLS_ECDHE_ECDSA_WITH_CAMELLIA_128_CBC_SHA256: \
+        case TLS_ECDHE_ECDSA_WITH_CAMELLIA_256_CBC_SHA384: \
+        case TLS_ECDH_ECDSA_WITH_CAMELLIA_128_CBC_SHA256: \
+        case TLS_ECDH_ECDSA_WITH_CAMELLIA_256_CBC_SHA384: \
+        case TLS_ECDHE_RSA_WITH_CAMELLIA_128_CBC_SHA256: \
+        case TLS_ECDHE_RSA_WITH_CAMELLIA_256_CBC_SHA384: \
+        case TLS_ECDH_RSA_WITH_CAMELLIA_128_CBC_SHA256: \
+        case TLS_ECDH_RSA_WITH_CAMELLIA_256_CBC_SHA384: \
+        case TLS_RSA_WITH_CAMELLIA_128_GCM_SHA256: \
+        case TLS_RSA_WITH_CAMELLIA_256_GCM_SHA384: \
+        case TLS_DHE_RSA_WITH_CAMELLIA_128_GCM_SHA256: \
+        case TLS_DHE_RSA_WITH_CAMELLIA_256_GCM_SHA384: \
+        case TLS_DH_RSA_WITH_CAMELLIA_128_GCM_SHA256: \
+        case TLS_DH_RSA_WITH_CAMELLIA_256_GCM_SHA384: \
+        case TLS_DHE_DSS_WITH_CAMELLIA_128_GCM_SHA256: \
+        case TLS_DHE_DSS_WITH_CAMELLIA_256_GCM_SHA384: \
+        case TLS_DH_DSS_WITH_CAMELLIA_128_GCM_SHA256: \
+        case TLS_DH_DSS_WITH_CAMELLIA_256_GCM_SHA384: \
+        case TLS_ECDH_ECDSA_WITH_CAMELLIA_128_GCM_SHA256: \
+        case TLS_ECDH_ECDSA_WITH_CAMELLIA_256_GCM_SHA384: \
+        case TLS_ECDH_RSA_WITH_CAMELLIA_128_GCM_SHA256: \
+        case TLS_ECDH_RSA_WITH_CAMELLIA_256_GCM_SHA384: \
+        case TLS_PSK_WITH_CAMELLIA_128_GCM_SHA256: \
+        case TLS_PSK_WITH_CAMELLIA_256_GCM_SHA384: \
+        case TLS_DHE_PSK_WITH_CAMELLIA_128_GCM_SHA256: \
+        case TLS_DHE_PSK_WITH_CAMELLIA_256_GCM_SHA384: \
+        case TLS_RSA_PSK_WITH_CAMELLIA_128_GCM_SHA256: \
+        case TLS_RSA_PSK_WITH_CAMELLIA_256_GCM_SHA384: \
+        case TLS_PSK_WITH_CAMELLIA_128_CBC_SHA256: \
+        case TLS_PSK_WITH_CAMELLIA_256_CBC_SHA384: \
+        case TLS_DHE_PSK_WITH_CAMELLIA_128_CBC_SHA256: \
+        case TLS_DHE_PSK_WITH_CAMELLIA_256_CBC_SHA384: \
+        case TLS_RSA_PSK_WITH_CAMELLIA_128_CBC_SHA256: \
+        case TLS_RSA_PSK_WITH_CAMELLIA_256_CBC_SHA384: \
+        case TLS_ECDHE_PSK_WITH_CAMELLIA_128_CBC_SHA256: \
+        case TLS_ECDHE_PSK_WITH_CAMELLIA_256_CBC_SHA384: \
+        case TLS_RSA_WITH_AES_128_CCM: \
+        case TLS_RSA_WITH_AES_256_CCM: \
+        case TLS_DHE_RSA_WITH_AES_128_CCM: \
+        case TLS_DHE_RSA_WITH_AES_256_CCM: \
+        case TLS_RSA_WITH_AES_128_CCM_8: \
+        case TLS_RSA_WITH_AES_256_CCM_8: \
+        case TLS_DHE_RSA_WITH_AES_128_CCM_8: \
+        case TLS_DHE_RSA_WITH_AES_256_CCM_8: \
+        case TLS_PSK_WITH_AES_128_CCM: \
+        case TLS_PSK_WITH_AES_256_CCM: \
+        case TLS_DHE_PSK_WITH_AES_128_CCM: \
+        case TLS_DHE_PSK_WITH_AES_256_CCM: \
+        case TLS_PSK_WITH_AES_128_CCM_8: \
+        case TLS_PSK_WITH_AES_256_CCM_8: \
+        case TLS_PSK_DHE_WITH_AES_128_CCM_8: \
+        case TLS_PSK_DHE_WITH_AES_256_CCM_8: \
+        case TLS_DHE_RSA_WITH_CHACHA20_POLY1305_SHA256: \
+        case TLS_PSK_WITH_CHACHA20_POLY1305_SHA256: \
+        case TLS_DHE_PSK_WITH_CHACHA20_POLY1305_SHA256: \
+        case TLS_RSA_PSK_WITH_CHACHA20_POLY1305_SHA256: \
+            ssl->stat |= SSL_STAT_WEAK_CIPHER; \
+            break; \
+        /* Insecure ciphers */ \
+        case TLS_NULL_WITH_NULL_NULL: \
+        case TLS_RSA_WITH_NULL_MD5: \
+        case TLS_RSA_WITH_NULL_SHA: \
+        case TLS_RSA_EXPORT_WITH_RC4_40_MD5: \
+        case TLS_RSA_WITH_RC4_128_MD5: \
+        case TLS_RSA_WITH_RC4_128_SHA: \
+        case TLS_RSA_EXPORT_WITH_RC2_CBC_40_MD5: \
+        case TLS_RSA_EXPORT_WITH_DES40_CBC_SHA: \
+        case TLS_RSA_WITH_DES_CBC_SHA: \
+        case TLS_DH_DSS_EXPORT_WITH_DES40_CBC_SHA: \
+        case TLS_DH_DSS_WITH_DES_CBC_SHA: \
+        case TLS_DH_RSA_EXPORT_WITH_DES40_CBC_SHA: \
+        case TLS_DH_RSA_WITH_DES_CBC_SHA: \
+        case TLS_DHE_DSS_EXPORT_WITH_DES40_CBC_SHA: \
+        case TLS_DHE_DSS_WITH_DES_CBC_SHA: \
+        case TLS_DHE_RSA_EXPORT_WITH_DES40_CBC_SHA: \
+        case TLS_DHE_RSA_WITH_DES_CBC_SHA: \
+        case TLS_DH_anon_EXPORT_WITH_RC4_40_MD5: \
+        case TLS_DH_anon_WITH_RC4_128_MD5: \
+        case TLS_DH_anon_EXPORT_WITH_DES40_CBC_SHA: \
+        case TLS_DH_anon_WITH_DES_CBC_SHA: \
+        case TLS_DH_anon_WITH_3DES_EDE_CBC_SHA: \
+        case TLS_KRB5_WITH_DES_CBC_SHA: \
+        case TLS_KRB5_WITH_RC4_128_SHA: \
+        case TLS_KRB5_WITH_DES_CBC_MD5: \
+        case TLS_KRB5_WITH_3DES_EDE_CBC_MD5: \
+        case TLS_KRB5_WITH_RC4_128_MD5: \
+        case TLS_KRB5_WITH_IDEA_CBC_MD5: \
+        case TLS_KRB5_EXPORT_WITH_DES_CBC_40_SHA: \
+        case TLS_KRB5_EXPORT_WITH_RC2_CBC_40_SHA: \
+        case TLS_KRB5_EXPORT_WITH_RC4_40_SHA: \
+        case TLS_KRB5_EXPORT_WITH_DES_CBC_40_MD5: \
+        case TLS_KRB5_EXPORT_WITH_RC2_CBC_40_MD5: \
+        case TLS_KRB5_EXPORT_WITH_RC4_40_MD5: \
+        case TLS_PSK_WITH_NULL_SHA: \
+        case TLS_DHE_PSK_WITH_NULL_SHA: \
+        case TLS_RSA_PSK_WITH_NULL_SHA: \
+        case TLS_DH_anon_WITH_AES_128_CBC_SHA: \
+        case TLS_DH_anon_WITH_AES_256_CBC_SHA: \
+        case TLS_RSA_WITH_NULL_SHA256: \
+        case TLS_DH_anon_WITH_CAMELLIA_128_CBC_SHA: \
+        case TLS_DH_anon_WITH_AES_128_CBC_SHA256: \
+        case TLS_DH_anon_WITH_AES_256_CBC_SHA256: \
+        case TLS_DH_anon_WITH_CAMELLIA_256_CBC_SHA: \
+        case TLS_PSK_WITH_RC4_128_SHA: \
+        case TLS_DHE_PSK_WITH_RC4_128_SHA: \
+        case TLS_RSA_PSK_WITH_RC4_128_SHA: \
+        case TLS_DH_anon_WITH_SEED_CBC_SHA: \
+        case TLS_DH_anon_WITH_AES_128_GCM_SHA256: \
+        case TLS_DH_anon_WITH_AES_256_GCM_SHA384: \
+        case TLS_PSK_WITH_NULL_SHA256: \
+        case TLS_PSK_WITH_NULL_SHA384: \
+        case TLS_DHE_PSK_WITH_NULL_SHA256: \
+        case TLS_DHE_PSK_WITH_NULL_SHA384: \
+        case TLS_RSA_PSK_WITH_NULL_SHA256: \
+        case TLS_RSA_PSK_WITH_NULL_SHA384: \
+        case TLS_DH_anon_WITH_CAMELLIA_128_CBC_SHA256: \
+        case TLS_DH_anon_WITH_CAMELLIA_256_CBC_SHA256: \
+        case TLS_SM4_GCM_SM3: \
+        case TLS_SM4_CCM_SM3: \
+        case TLS_ECDH_ECDSA_WITH_NULL_SHA: \
+        case TLS_ECDH_ECDSA_WITH_RC4_128_SHA: \
+        case TLS_ECDHE_ECDSA_WITH_NULL_SHA: \
+        case TLS_ECDHE_ECDSA_WITH_RC4_128_SHA: \
+        case TLS_ECDH_RSA_WITH_NULL_SHA: \
+        case TLS_ECDH_RSA_WITH_RC4_128_SHA: \
+        case TLS_ECDHE_RSA_WITH_NULL_SHA: \
+        case TLS_ECDHE_RSA_WITH_RC4_128_SHA: \
+        case TLS_ECDH_anon_WITH_NULL_SHA: \
+        case TLS_ECDH_anon_WITH_RC4_128_SHA: \
+        case TLS_ECDH_anon_WITH_3DES_EDE_CBC_SHA: \
+        case TLS_ECDH_anon_WITH_AES_128_CBC_SHA: \
+        case TLS_ECDH_anon_WITH_AES_256_CBC_SHA: \
+        case TLS_ECDHE_PSK_WITH_RC4_128_SHA: \
+        case TLS_ECDHE_PSK_WITH_NULL_SHA: \
+        case TLS_ECDHE_PSK_WITH_NULL_SHA256: \
+        case TLS_ECDHE_PSK_WITH_NULL_SHA384: \
+        case TLS_DH_anon_WITH_ARIA_128_CBC_SHA256: \
+        case TLS_DH_anon_WITH_ARIA_256_CBC_SHA384: \
+        case TLS_DH_anon_WITH_ARIA_128_GCM_SHA256: \
+        case TLS_DH_anon_WITH_ARIA_256_GCM_SHA384: \
+        case TLS_DH_anon_WITH_CAMELLIA_128_GCM_SHA256: \
+        case TLS_DH_anon_WITH_CAMELLIA_256_GCM_SHA384: \
+        case TLS_SHA256_SHA256: \
+        case TLS_SHA384_SHA384: \
+        case TLS_GOSTR341112_256_WITH_KUZNYECHIK_CTR_OMAC: \
+        case TLS_GOSTR341112_256_WITH_MAGMA_CTR_OMAC: \
+        case TLS_GOSTR341112_256_WITH_28147_CNT_IMIT: \
+        case TLS_GOSTR341112_256_WITH_KUZNYECHIK_MGM_L: \
+        case TLS_GOSTR341112_256_WITH_MAGMA_MGM_L: \
+        case TLS_GOSTR341112_256_WITH_KUZNYECHIK_MGM_S: \
+        case TLS_GOSTR341112_256_WITH_MAGMA_MGM_S: \
+            ssl->stat |= SSL_STAT_INSECURE_CIPHER; \
+            break; \
+        default: \
+            break; \
+    }
+
+#endif // __SSL_CIPHER_H__

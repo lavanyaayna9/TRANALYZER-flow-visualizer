@@ -1,0 +1,29 @@
+# Flags to toggle
+#
+# Run the ../../../tests/test.sh script from the plugin main directory:
+#
+# cd $T2HOME/plugins/t2PSkel
+# ../../tests/test.sh [OPTION...]
+#
+# If run from this folder, make sure to use absolute path for the '-p' option.
+#
+# Flag name     File
+
+# ../../tranalyzer2/src/networkHeaders.h
+ETH_ACTIVATE        ../../tranalyzer2/src/networkHeaders.h
+
+# ../../tranalyzer2/src/tranalyzer.h
+BLOCK_BUF           ../../tranalyzer2/src/tranalyzer.h
+DIFF_REPORT         ../../tranalyzer2/src/tranalyzer.h
+ENVCNTRL            ../../tranalyzer2/src/tranalyzer.h
+USE_T2BUS           ../../tranalyzer2/src/tranalyzer.h
+
+# src/t2PSkel.h
+T2PSKEL_SAVE        src/t2PSkel.h
+T2PSKEL_RMDIR       src/t2PSkel.h
+T2PSKEL_STATS       src/t2PSkel.h
+T2PSKEL_LOAD        src/t2PSkel.h
+T2PSKEL_VAR1        src/t2PSkel.h
+T2PSKEL_IP          src/t2PSkel.h # Optional comment
+T2PSKEL_VEC         src/t2PSkel.h
+T2PSKEL_ENV_NUM     src/t2PSkel.h

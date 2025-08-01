@@ -1,0 +1,109 @@
+\IfFileExists{t2doc.cls}{
+    \documentclass[documentation]{subfiles}
+}{
+    \errmessage{Error: could not find 't2doc.cls'}
+}
+
+\begin{document}
+
+\trantitle
+    {regex\_re2}
+    {Traffic pattern matching using the RE2 library.}
+    {Tranalyzer Development Team} % author(s)
+
+\section{regex\_re2}\label{s:regex_re2}
+
+\subsection{Description}
+This plugin applies regexes on the network traffic using the RE2 library: \url{https://github.com/google/re2}.
+The regexes are applied per packet from the layer 7.
+
+\subsection{Dependencies}
+
+\subsubsection{External Libraries}
+This plugin depends on the RE2 library.
+\begin{table}[!ht]
+    \centering
+    \begin{tabular}{>{\bf}r>{\tt}l>{\tt}l}
+        \toprule
+        %                             &                      & {\bf OPT1=1}\\
+        %\midrule
+        Ubuntu 15.10+:               & sudo apt-get install & g++ libre2-dev\\
+        Arch:                        & sudo pacman -S       & re2\\
+        Gentoo:                      & sudo emerge          & re2\\
+        openSUSE:                    & sudo zypper install  & re2-devel\\
+        Red Hat/Fedora\tablefootnote{If the {\tt dnf} command could not be found, try with {\tt yum} instead}:
+                                     & sudo dnf install     & gcc-c++ re2-devel\\
+        macOS\tablefootnote{Brew is a packet manager for macOS that can be found here: \url{https://brew.sh}}:
+                                     & brew install         & re2\\
+        \bottomrule
+    \end{tabular}
+\end{table}
+
+Alternatively (or for older Ubuntu versions), compile it from source:
+\begin{verbatim}
+sudo apt-get install git g++
+git clone https://github.com/google/re2.git
+cd re2
+make
+sudo make install
+sudo ldconfig
+\end{verbatim}
+
+\subsubsection{Required Files}
+\label{re2RequiredFiles}
+The file {\tt re2file.txt} contains the regexes and their corresponding ID.
+The lines starting with {\tt \%} are comments. The other lines must contain two columns:
+\begin{longtable}{cl}
+    \toprule
+    {\bf Column} & {\bf Description}\\
+    \midrule\endhead%
+    1 & A string ID which will appear in the \hyperref[re2FlowOutput]{flow output} if the flow matches
+    the regex in column 2.\\
+    2 & A regex in the RE2 syntax: \url{https://github.com/google/re2/wiki/Syntax}\\
+    \bottomrule
+\end{longtable}
+
+When the regex file located in the plugin folder is modified, it is automatically reloaded by tranalyzer.
+
+\subsection{Configuration Flags}
+The following flags can be used to control the output of the plugin:
+\begin{longtable}{>{\tt}lcl}
+    \toprule
+    {\bf Name} & {\bf Default} & {\bf Description}\\
+    \midrule\endhead%
+    RE2\_DEBUG\_MESSAGES         & 0                         & Activate debug output\\
+    RE2\_REGEX\_FILE             & {\tt\small "re2file.txt"} & The name of the file described in \refs{re2RequiredFiles}.\\
+    RE2\_MAX\_MEMORY             & $2^{31}$ (= 2GB)          & Max. memory RE2 can use to build the regex automaton.\\
+    RE2\_MERGE                   & 1                         & 0: Compiles each regex separately $\rightarrow$ slower, less memory.\\
+                                 &                           & 1: Merge all regexes into one automaton $\rightarrow$ faster, more memory.\\
+    RE2\_RELOADING               & 1                         & Automatically reload regex file when modified.\\
+                                 &                           & (disabled for macOS, refer to \refs{s:re2-bugs})\\
+    RE2\_MAX\_MATCH\_PER\_PACKET & 8                         & Max. number of regexes which can match on a single packet.\\
+    RE2\_MAX\_MATCH\_PER\_FLOW   & 32                        & Max. number of regexes which can match on a single flow.\\
+    \bottomrule
+\end{longtable}
+
+\subsection{Flow File Output}
+\label{re2FlowOutput}
+The regex\_re2 plugin outputs the following columns:
+\begin{longtable}{>{\tt}lll>{\tt}l}
+    \toprule
+    {\bf Column} & {\bf Type} & {\bf Description} & {\bf Flags}\\
+    \midrule\endhead%
+    re2match & RS & IDs of all regexes matching this flow & \\
+    \bottomrule
+\end{longtable}
+
+\subsection{Plugin Report Output}
+The following information is reported:
+\begin{itemize}
+    \item Number of signatures matched
+    \item Number of flows with matched signatures
+\end{itemize}
+
+\subsection{Known Bugs and Limitations}\label{s:re2-bugs}
+\begin{itemize}
+    \item macOS does not provide the inotify library, therefore modified regex files cannot be automatically reloaded.
+\end{itemize}
+
+\end{document}

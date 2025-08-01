@@ -1,0 +1,69 @@
+#!/bin/bash
+
+source "$(dirname "$0")/../../../scripts/t2utils.sh"
+
+usage() {
+    echo "Usage:"
+    echo "    $SNAME [OPTION...] <mactypefile>"
+    echo
+    echo "Optional arguments:"
+    echo "    -h, --help        Show this help, then exit"
+}
+
+if [ "$1" == "-h" ] || [ "$1" == "--help" ]; then
+    usage
+    exit 0
+elif [ ! -f "$1" ]; then
+    abort_required_file
+fi
+
+FILE="$($READLINK -f "$1")"
+
+sort -k1,1 -k2,2 "$FILE" | AWKF -M '
+BEGIN {
+    i = 0;
+    G[0] = 0;
+    t = 0;
+    l = 0;
+}
+!/^#/ {
+    c = and(strtonum($1), 0xffffffffffff0000);
+    e = and(strtonum($1), 0xffff);
+    if (c != a) {
+        if (j > 1) {
+            for (k = 1; k <= j; k++) {
+                split(A[k], B, "\t");
+                if (e) print B[1], B[2], B[3], or(lshift(b, 1), B[4]), B[5], B[6];
+                else print A[k];
+            }
+        } else if (j == 1) {
+            print A[1];
+        }
+        j = 0;
+        a = strtonum(c);
+    }
+    i++;
+    if ($2 == 48) {
+        t = G[l];
+    } else if (and(strtonum($3), 1) == 0) {
+        t = G[l];
+        G[++l] = i;
+    } else {
+        t = G[--l];
+    }
+    A[++j] = $1 "\t" $2 "\t" t "\t" $3 "\t" $4 "\t" $5;
+    b = i;
+}
+END{
+    if (j > 1) {
+       for (k = 1; k <= j; k++) {
+          split(A[k], B, "\t");
+          print B[1], B[2], B[3], or(lshift(b, 1), B[4]), B[5], B[6];
+       }
+    } else if (j == 1) {
+        print A[1];
+    }
+ }' > "$SHOME/../macEthlbl_HLP.txt"
+
+"$SHOME/mbm" "$SHOME/../macEthlbl_HLP.txt" "$SHOME/../macEthlbl_HLP.bin"
+

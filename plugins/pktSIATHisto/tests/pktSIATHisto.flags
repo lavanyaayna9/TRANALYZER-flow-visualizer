@@ -1,0 +1,27 @@
+# Flags to toggle
+#
+# Run the ../../../tests/test.sh script from the plugin main directory:
+#
+# cd $T2HOME/plugins/pktSIATHisto
+# ../../tests/test.sh [OPTION...]
+#
+# If run from this folder, make sure to use absolute path for the '-p' option.
+#
+# Flag name     File
+
+# ../../tranalyzer2/src/tranalyzer.h
+BLOCK_BUF               ../../tranalyzer2/src/tranalyzer.h
+DEBUG                   ../../tranalyzer2/src/tranalyzer.h
+ENVCNTRL                ../../tranalyzer2/src/tranalyzer.h
+
+# ../../utils/rbTree.h
+RBT_ROTATION            ../../utils/rbTree.h
+
+# src/pktSIATHisto.h
+PRINT_HISTO             src/pktSIATHisto.h
+HISTO_PRINT_BIN         src/pktSIATHisto.h
+PSI_XCLD                src/pktSIATHisto.h
+PSI_XMIN                src/pktSIATHisto.h
+PSI_MOD                 src/pktSIATHisto.h
+HISTO_EARLY_CLEANUP     src/pktSIATHisto.h
+HISTO_DEBUG             src/pktSIATHisto.h

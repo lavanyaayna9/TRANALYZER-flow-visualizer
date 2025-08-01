@@ -1,0 +1,23 @@
+-- Top HTTP response code by number of flows
+
+SELECT
+    rscode,
+    COUNT(*) AS cnt
+
+FROM (
+    SELECT
+        rscode
+    FROM
+        flow
+    ARRAY JOIN
+        "httpRSCode" AS rscode
+    WHERE
+        notEmpty("httpRSCode")
+        AND "timeFirst" >= {time_from:DateTime64(6)}
+        AND "timeLast" <= {time_to:DateTime64(6)}
+) AS flows
+
+GROUP BY rscode
+ORDER BY multiply(cnt, {sort_order:Int8})
+
+LIMIT {n:UInt64}

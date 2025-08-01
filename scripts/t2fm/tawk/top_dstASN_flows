@@ -1,0 +1,29 @@
+#!/usr/bin/env awk
+
+hdr() {
+    next
+}
+
+!bitsanyset($flowStat, 0xc000) {  # IPv4/6 only
+    next
+}
+
+# A flows
+$dir == "A" && !bitsallset($flowStat, 1) {
+    if (dstIPASN != 0) {
+        asn = $dstIPASN
+    } else {
+        asn = "UNK"
+    }
+    aggr(asn, "flows", n)
+}
+
+# B flows
+$dir == "A" && bitsallset($flowStat, 1) {
+    if (srcIPASN != 0) {
+        asn = $srcIPASN
+    } else {
+        asn = "UNK"
+    }
+    aggr(asn, "flows", n)
+}

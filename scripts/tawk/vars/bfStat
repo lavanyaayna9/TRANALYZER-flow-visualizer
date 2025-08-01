@@ -1,0 +1,11 @@
+#H bit | bfStat | Description
+#H =============================================================================
+     0 | 0x01   | Pattern found
+     1 | 0x02   | Length byte, word found
+     2 | 0x04   | -
+     3 | 0x08   | Save content
+
+     4 | 0x10   | BF_PWDTN0
+     5 | 0x20   | BF_PWDTN1
+     6 | 0x40   | BF_PWDTN2
+     7 | 0x80   | -

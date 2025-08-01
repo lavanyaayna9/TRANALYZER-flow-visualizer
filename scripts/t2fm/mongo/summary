@@ -1,0 +1,30 @@
+cursor = db.flow.aggregate([
+    {
+        $match : {
+            timeFirst : { $gte : time_from },
+            timeLast  : { $lte : time_to },
+        }
+    },
+    {
+        $group : {
+            _id       : null,
+            timeFirst : { $min : "$timeFirst" },
+            timeLast  : { $max : "$timeLast"  },
+            flows     : { $sum : 1 },
+            pkts      : { $sum : "$pktsSnt"  },
+            bytes     : { $sum : "$l7BytesSnt" },
+        }
+    }
+])
+
+cursor.forEach(
+    function(e) {
+        print(
+              e.timeFirst / 1000 + "\t"
+            + e.timeLast  / 1000 + "\t"
+            + e.flows            + "\t"
+            + e.pkts             + "\t"
+            + e.bytes
+        )
+    }
+)

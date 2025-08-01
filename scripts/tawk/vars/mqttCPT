@@ -1,0 +1,21 @@
+#H bit | mqttCPT | Description
+#H =============================================================================
+     0 | 0x0001  | Reserved
+     1 | 0x0002  | Client request to connect to server
+     2 | 0x0004  | Connect acknowledgment
+     3 | 0x0008  | Publish message
+
+     4 | 0x0010  | Publish acknowledgment
+     5 | 0x0020  | Publish complete (assured delivery part 1)
+     6 | 0x0040  | Publish complete (assured delivery part 2)
+     7 | 0x0080  | Publish complete (assured delivery part 3)
+
+     8 | 0x0100  | Subscribe request
+     9 | 0x0200  | Subscribe acknowledgment
+    10 | 0x0400  | Unsubscribe request
+    11 | 0x0800  | Unsubscribe acknowledgment
+
+    12 | 0x1000  | PING request
+    13 | 0x2000  | PING response
+    14 | 0x4000  | Client is disconnecting
+    15 | 0x8000  | Reserved

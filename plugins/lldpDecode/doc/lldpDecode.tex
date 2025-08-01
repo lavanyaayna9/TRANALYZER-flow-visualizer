@@ -1,0 +1,172 @@
+\IfFileExists{t2doc.cls}{
+    \documentclass[documentation]{subfiles}
+}{
+    \errmessage{Error: could not find 't2doc.cls'}
+}
+
+\begin{document}
+
+\trantitle
+    {lldpDecode} % Plugin name
+    {Link Layer Discovery Protocol (LLDP)} % Short description
+    {Tranalyzer Development Team} % author(s)
+
+\section{lldpDecode}\label{s:lldpDecode}
+
+\subsection{Description}
+The lldpDecode plugin analyzes LLDP traffic.
+
+\subsection{Dependencies}
+
+\subsubsection{Core Configuration}
+This plugin requires the following core configuration:
+\begin{itemize}
+    \item {\em \$T2HOME/tranalyzer2/src/networkHeaders.h}:
+        \begin{itemize}
+            \item {\tt ETH\_ACTIVATE>0}
+        \end{itemize}
+\end{itemize}
+
+\subsection{Configuration Flags}
+The following flags can be used to control the output of the plugin:
+\begin{longtable}{>{\tt}lcl}
+    \toprule
+    {\bf Name} & {\bf Default} & {\bf Description}\\
+    \midrule\endhead%
+    LLDP\_TTL\_AGGR &   1 & Aggregate TTL values\\
+    LLDP\_NUM\_TTL  &   8 & Number of different TTL values to store\\
+    LLDP\_OPT\_TLV  &   1 & Output optional TLVs info\\
+    LLDP\_STRLEN    &  20 & Maximum length of short strings to store\\
+    LLDP\_LSTRLEN   & 100 & Maximum length of long strings to store\\
+    \bottomrule
+\end{longtable}
+
+\subsection{Flow File Output}
+The lldpDecode plugin outputs the following columns:
+\begin{longtable}{>{\tt}lll>{\tt\small}l}
+    \toprule
+    {\bf Column}           & {\bf Type} & {\bf Description}                  & {\bf Flags}\\
+    \midrule\endhead%
+    \nameref{lldpStat}     & H16        & Status                             & \\
+    lldpTTL                & R(U16)     & Time To Live (sec)                 & \\
+    \nameref{lldpTLVTypes} & H32        & TLV types                          & \\
+    lldpChassis            & SC         & Chassis ID                         & \\
+    lldpPort               & S          & Port ID                            & \\
+    lldpPortDesc           & S          & Port description                   & LLDP\_OPT\_TLV=1\\
+    lldpSysName            & S          & System name                        & LLDP\_OPT\_TLV=1\\
+    lldpSysDesc            & S          & System description                 & LLDP\_OPT\_TLV=1\\
+    \nameref{lldpCaps}     & H16\_H16   & Supported and enabled capabilities & LLDP\_OPT\_TLV=1\\
+    lldpMngmtAddr          & SC         & Management address                 & LLDP\_OPT\_TLV=1\\
+    \bottomrule
+\end{longtable}
+
+\subsubsection{lldpStat}\label{lldpStat}
+The {\tt lldpStat} column is to be interpreted as follows:
+\begin{longtable}{>{\tt}rl}
+    \toprule
+    {\bf lldpStat} & {\bf Description}\\
+    \midrule\endhead%
+    0x0001 & Flow is LLDP\\
+    0x0002 & Mandatory TLV missing\\
+    0x0004 & Optional TLV present\\
+    0x0008 & Reserved TLV type/subtype used\\
+    \\
+    0x0010 & Organization specific TLV used\\
+    0x0020 & Unhandled TLV used\\
+    0x0040 & Invalid TLV length\\
+    0x0080 & ---\\
+    \\
+    0x0100 & ---\\
+    0x0200 & ---\\
+    0x0400 & ---\\
+    0x0800 & ---\\
+    \\
+    0x1000 & ---\\
+    0x2000 & String truncated\ldots increase {\tt LLDP\_STRLEN}\\
+    0x4000 & Too many TTL\ldots increase {\tt LLDP\_NUM\_TTL}\\
+    0x8000 & Snapped payload\\
+    \bottomrule
+\end{longtable}
+
+\subsubsection{lldpTLVTypes}\label{lldpTLVTypes}
+The {\tt lldpTLVTypes} column is to be interpreted as follows:
+\begin{longtable}{>{\tt}rl}
+    \toprule
+    {\bf lldpTLVTypes}            & {\bf Description}\\
+    \midrule\endhead%
+    $2^{0}$  (=0x0000 0001) & End of LLDPDU\\
+    $2^{1}$  (=0x0000 0002) & Chassis ID\\
+    $2^{2}$  (=0x0000 0004) & Port ID\\
+    $2^{3}$  (=0x0000 0008) & Time To Live (sec)\\
+    \\
+    $2^{4}$  (=0x0000 0010) & Port description\\
+    $2^{5}$  (=0x0000 0020) & System name\\
+    $2^{6}$  (=0x0000 0040) & System description\\
+    $2^{7}$  (=0x0000 0080) & System capabilities\\
+    \\
+    $2^{8}$  (=0x0000 0100) & Management address\\
+    \\
+    \multicolumn{2}{l}{TLV types 9 to 126 are reserved}\\
+    \\
+    $2^{31}$ (=0x8000 0000) & TLV type $\geq$ 31\\
+    \bottomrule
+\end{longtable}
+
+\subsubsection{lldpCaps\_enCaps}\label{lldpCaps}
+The {\tt lldpCaps\_enCaps} column is to be interpreted as follows:
+\begin{longtable}{>{\tt}rl}
+    \toprule
+    {\bf lldpCaps/lldpEnCaps} & {\bf Description}\\
+    \midrule\endhead%
+    0x0001         & Other\\
+    0x0002         & Repeater\\
+    0x0004         & Bridge\\
+    0x0008         & WLAN access point\\
+    \\
+    0x0010         & Router\\
+    0x0020         & Telephone\\
+    0x0040         & DOCSIS cable device\\
+    0x0080         & Station only\\
+    \\
+    0x0100--0x8000 & Reserved\\
+    \bottomrule
+\end{longtable}
+
+\subsection{Packet File Output}
+In packet mode ({\tt --s} option), the lldpDecode plugin outputs the following columns:
+\begin{longtable}{>{\tt}lll>{\tt\small}l}
+    \toprule
+    {\bf Column} & {\bf Type} & {\bf Description} & {\bf Flags}\\
+    \midrule\endhead%
+    \nameref{lldpStat}     & H16      & Status                             & \\
+    lldpTTL                & U16      & Time To Live (sec)                 & \\
+    \nameref{lldpTLVTypes} & H32      & TLV types                          & \\
+    lldpChassis            & SC       & Chassis ID                         & \\
+    lldpPort               & SC       & Port ID                            & \\
+    lldpPortDesc           & SC       & Port description                   & LLDP\_OPT\_TLV=1\\
+    lldpSysName            & SC       & System name                        & LLDP\_OPT\_TLV=1\\
+    \nameref{lldpCaps}     & H16\_H16 & Supported and enabled capabilities & LLDP\_OPT\_TLV=1\\
+    lldpMngmtAddr          & SC       & Management address                 & LLDP\_OPT\_TLV=1\\
+    \bottomrule
+\end{longtable}
+
+\subsection{Monitoring Output}
+In monitoring mode, the lldpDecode plugin outputs the following columns:
+\begin{longtable}{>{\tt}lll>{\tt\small}l}
+    \toprule
+    {\bf Column} & {\bf Type} & {\bf Description} & {\bf Flags}\\
+    \midrule\endhead%
+    lldpPkts & U64 & Number of LLDP packets & \\
+    \bottomrule
+\end{longtable}
+
+\subsection{Plugin Report Output}
+The following information is reported:
+\begin{itemize}
+    \item Aggregated {\tt\nameref{lldpStat}}
+    \item Aggregated {\tt\nameref{lldpTLVTypes}}
+    \item Aggregated {\tt\nameref{lldpCaps}}
+    \item Number of LLDP packets
+\end{itemize}
+
+\end{document}

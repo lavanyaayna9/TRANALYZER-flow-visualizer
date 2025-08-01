@@ -1,0 +1,38 @@
+-- Top destination ASN by number of flows
+
+SELECT
+    asn,
+    COUNT(*) AS cnt
+
+FROM (
+    -- A flows
+    SELECT
+        "dstIPASN" AS asn
+    FROM
+        flow
+    WHERE
+        "dir" = 'A'
+        AND bitTest("flowStat", 0) = 0
+        AND bitTestAny("flowStat", 14, 15) > 0  -- IPv4/6 only
+        AND "timeFirst" >= {time_from:DateTime64(6)}
+        AND "timeLast" <= {time_to:DateTime64(6)}
+
+    UNION ALL
+
+    -- B flows
+    SELECT
+        "srcIPASN" AS asn
+    FROM
+        flow
+    WHERE
+        "dir" = 'A'
+        AND bitTest("flowStat", 0) = 1
+        AND bitTestAny("flowStat", 14, 15) > 0  -- IPv4/6 only
+        AND "timeFirst" >= {time_from:DateTime64(6)}
+        AND "timeLast" <= {time_to:DateTime64(6)}
+) AS flows
+
+GROUP BY asn
+ORDER BY multiply(cnt, {sort_order:Int8})
+
+LIMIT {n:UInt64}

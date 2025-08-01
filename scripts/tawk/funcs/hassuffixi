@@ -1,0 +1,25 @@
+#!/usr/bin/env awk
+#
+# Return true if 'val' finishes with the suffix 'suf' (case insensitive).
+#
+# Parameters:
+#   - val : the value to test
+#   - pre : the suffix to search for
+#
+# Dependencies:
+#   - None
+#
+# See also:
+#   - hasprefix
+#   - hasprefixi
+#   - hassuffix
+#
+# Examples:
+#   - tawk 'hassuffixi($srcIP, "255")' file.txt
+#   - tawk 'hassuffixi("facebook", "BOOK") { print }' file.txt
+
+@include "hassuffix"
+
+function hassuffixi(val, suf) {
+    return hassuffix(val, suf, 1)
+}

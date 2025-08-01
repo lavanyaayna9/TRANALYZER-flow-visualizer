@@ -1,0 +1,65 @@
+Workstation1
+------------
+  OS: Arch Linux (x86_64)
+  Kernel: 3.15.8-1-ARCH
+  IP: 10.20.7.26
+  Hostname: caprica
+  MAC: 60:a4:4c:52:d6:e9
+
+VM1
+---
+  Qemu KVM running on Workstation1
+  OS: Ubuntu Server 14.04 (x86_64)
+  Kernel: 3.13.0-24-generic
+  IP: 10.20.5.48 (connected to bridge on Workstation1)
+  MAC: 52:54:00:12:34:56
+
+
+Network scheme
+-------------
+                 (br0)
+    VM1     ---------------   Workstation1
+icmptx server                 record traffic on br0
+                              icmptx client
+
+
+Trace capture procedure
+-----------------------
+1) Start workstation
+2) Start Ubuntu VM
+3) Record traffic on Workstation1
+    sudo tcpdump -s 0 -i br0 -w icmptx.dmp
+4) Start the icmptx server on WM1
+    echo 1 | sudo tee /proc/sys/net/ipv4/ip_forward
+    echo 1 | sudo tee /proc/sys/net/ipv4/icmp_echo_ignore_all
+    sudo ./icmptx -s 10.20.5.48
+    sudo ip link set tun0 up
+    sudo ip link set dev tun0 mtu 1200
+    sudo ip addr add 10.0.3.1/24 dev tun0
+5) NAT packets coming out of tunnel on VM1
+    sudo iptables -t nat -A POSTROUTING -s 10.0.3.0/24 -j MASQUERADE
+6) Start the icmptx client on Workstation1
+    echo 1 | sudo tee /proc/sys/net/ipv4/icmp_echo_ignore_all
+    sudo ./icmptx  -c 10.20.5.48
+    sudo ip link set tun0 up
+    sudo ip link set dev tun0 mtu 1200
+    sudo ip addr add 10.0.3.2/24 dev tun0
+7) Configure routes on Workstation1
+    sudo ip route add 195.154.14.46 via 10.0.3.1
+    (replace 195.154.14.46 by the current IP of nio.lu)
+8) Create an SSH socks tunnel to nio.lu through the ICMP tunnel
+    ssh -D 9050 -N -C -4 root@nio.lu
+9) Start firefox with socks profile and load random pages
+    firefox -P
+
+
+Notes
+-----
+Source: https://github.com/jakkarth/icmptx
+
+MTU of tun0 needs to be changed such that (tun0 MTU + ICMP wrapping) < eth0 MTU
+
+
+Conclusion
+----------
+The covertChannels plugin can successfully detect icmptx

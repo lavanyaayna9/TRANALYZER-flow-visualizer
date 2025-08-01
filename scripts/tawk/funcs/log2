@@ -1,0 +1,41 @@
+#!/usr/bin/env awk
+#
+# Return the binary logarithm (log base 2) of a number 'n'.
+#
+# Parameters:
+#   - n: the number to compute the log2 of
+#
+# Dependencies:
+#   - None
+#
+# Examples:
+#   - tawk '{
+#         print log2($pktsSnt)
+#     }' file.txt
+#   - tawk '{
+#         sum += $pktsSnt
+#     } END {
+#         print log2(sum)
+#     }' file.txt
+
+@include "hdr"
+
+function log2(n        , _n) {
+    if (hdr()) {
+        if (!__PRIHDR__) {
+            next
+        }
+        for (i = 1; i <= NF; i++) {
+            if (n == COL[i]) {
+                return "log2(" n ")"
+            }
+        }
+        return "log2"
+    }
+    _n = strtonum(n)
+    if (_n <= 0) {
+        printerr("log2() only defined for n > 0")
+        return 0
+    }
+    return (log(_n) / log(2))
+}

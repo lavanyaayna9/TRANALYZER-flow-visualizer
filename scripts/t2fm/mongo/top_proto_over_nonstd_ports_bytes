@@ -1,0 +1,428 @@
+cursor = db.flow.aggregate([
+    {
+        $match : {
+            flowStat  : { $bitsAllClear : NumberInt(0x1) },  // 'A' flows only
+            timeFirst : { $gte : time_from },
+            timeLast  : { $lte : time_to },
+        }
+    },
+    {
+        $project : {
+            detected : {
+                $slice : [
+                    {
+                        $split : [
+                            { $toLower : "$nDPIclass" },
+                            "."
+                        ]
+                    },
+                    1
+                ]
+            },
+            expected : { $toLower : "$dstPortClass" },
+            expected_n : "$dstPortClassN",
+            bytes : {
+                $add : [
+                    "$l7BytesSnt",
+                    "$l7BytesRcvd"
+                ]
+            },
+        }
+    },
+    {
+        $addFields : {
+            asExpected : {
+                $in : [
+                    "$expected",
+                    "$detected"
+                ]
+            }
+        }
+    },
+    {
+        $match : {
+            asExpected : false,
+            detected : { $ne : "unknown" },
+            expected : { $ne : "unknown" },
+            $nor : [
+                {
+                    $and : [
+                        { detected : { $eq : "apple" } },
+                        { expected : { $eq : "http" } },
+                    ],
+                },
+                {
+                    $and : [
+                        { detected : { $eq : "bjnp" } },
+                        {
+                            $or : [
+                                { expected : { $eq : "canon-bjnp2" } },
+                                { expected : { $eq : "canon-mfnp" } },
+                            ]
+                        }
+                    ],
+                },
+                {
+                    $and : [
+                        { detected : { $eq : "capwap" } },
+                        {
+                            $or : [
+                                { expected : { $eq : "capwap-control" } },
+                                { expected : { $eq : "capwap-data" } },
+                            ]
+                        }
+                    ],
+                },
+                {
+                    $and : [
+                        { detected : { $eq : "ciscoskinny" } },
+                        { expected : { $eq : "cisco-sccp" } },
+                    ],
+                },
+                {
+                    $and : [
+                        { detected : { $eq : "citrix" } },
+                        {
+                            $or : [
+                                { expected : { $eq : "citriximaclient" } },
+                                { expected : { $eq : "ica" } },
+                            ]
+                        }
+                    ],
+                },
+                {
+                    $and : [
+                        { detected : { $eq : "dce_rpc" } },
+                        { expected : { $eq : "epmap" } },
+                    ],
+                },
+                {
+                    $and : [
+                        { detected : { $eq : "dhcp" } },
+                        { expected : { $eq : "bootps" } },
+                    ],
+                },
+                {
+                    $and : [
+                        { detected : { $eq : "dhcpv6" } },
+                        { expected : { $eq : "dhcpv6-client" } },
+                    ],
+                },
+                {
+                    $and : [
+                        { detected : { $eq : "direct_download_link" } },
+                        { expected : { $eq : "http" } },
+                    ],
+                },
+                {
+                    $and : [
+                        { detected : { $eq : "dnp3" } },
+                        { expected : { $eq : "dnp" } },
+                    ],
+                },
+                {
+                    $and : [
+                        { detected : { $eq : "dns" } },
+                        { expected : { $eq : "domain" } },
+                    ],
+                },
+                {
+                    $and : [
+                        { detected : { $eq : "dropbox" } },
+                        { expected : { $eq : "db-lsp-disc" } },
+                    ],
+                },
+                {
+                    $and : [
+                        { detected : { $eq : "ftp_control" } },
+                        { expected : { $eq : "ftp" } },
+                    ],
+                },
+                {
+                    $and : [
+                        { detected : { $eq : "ftp_data" } },
+                        { expected : { $eq : "ftp-data" } },
+                    ],
+                },
+                {
+                    $and : [
+                        { detected : { $eq : "gnutella" } },
+                        { expected : { $eq : "gnutella-svc" } },
+                    ],
+                },
+                {
+                    $and : [
+                        { detected : { $eq : "google" } },
+                        { expected : { $eq : "http" } },
+                    ],
+                },
+                {
+                    $and : [
+                        { detected : { $eq : "http" } },
+                        { expected : { $eq : "http-alt" } },
+                    ],
+                },
+                {
+                    $and : [
+                        { detected : { $eq : "http_connect" } },
+                        { expected : { $eq : "http" } },
+                    ],
+                },
+                {
+                    $and : [
+                        { detected : { $eq : "http_proxy" } },
+                        {
+                            $or : [
+                                { expected : { $eq : "http" } },
+                                { expected : { $eq : "http-alt" } },
+                            ]
+                        }
+                    ],
+                },
+                {
+                    $and : [
+                        { detected : { $eq : "iec60870" } },
+                        { expected : { $eq : "iec-104" } },
+                    ],
+                },
+                {
+                    $and : [
+                        { detected : { $eq : "ipsec" } },
+                        {
+                            $or : [
+                                { expected : { $eq : "ipsec-nat-t" } },
+                                { expected : { $eq : "isakmp" } },
+                            ]
+                        }
+                    ],
+                },
+                {
+                    $and : [
+                        { detected : { $eq : "irc" } },
+                        { expected : { $eq : "ircu" } },
+                    ],
+                },
+                {
+                    $and : [
+                        { detected : { $eq : "jabber" } },
+                        { expected : { $eq : "xmpp-client" } },
+                    ],
+                },
+                {
+                    $and : [
+                        { detected : { $eq : "mining" } },
+                        { expected : { $eq : "bitcoin" } },
+                    ],
+                },
+                {
+                    $and : [
+                        { detected : { $eq : "msn" } },
+                        {
+                            $or : [
+                                { expected : { $eq : "http" } },
+                                { expected : { $eq : "msnp" } },
+                            ]
+                        }
+                    ],
+                },
+                {
+                    $and : [
+                        { detected : { $eq : "mssql-tds" } },
+                        { expected : { $eq : "ms-wbt-server" } },
+                    ],
+                },
+                {
+                    $and : [
+                        { detected : { $eq : "netbios" } },
+                        {
+                            $or : [
+                                { expected : { $eq : "microsoft-ds" } },
+                                { expected : { $eq : "netbios-dgm" } },
+                                { expected : { $eq : "netbios-ns" } },
+                                { expected : { $eq : "netbios-ssn" } },
+                            ]
+                        }
+                    ],
+                },
+                {
+                    $and : [
+                        { detected : { $eq : "ookla" } },
+                        { expected : { $eq : "http-alt" } },
+                    ],
+                },
+                {
+                    $and : [
+                        { detected : { $eq : "pops" } },
+                        { expected : { $eq : "pop3s" } },
+                    ],
+                },
+                {
+                    $and : [
+                        { detected : { $eq : "quic" } },
+                        { expected : { $eq : "https" } },
+                    ],
+                },
+                {
+                    $and : [
+                        { detected : { $eq : "radius" } },
+                        { expected : { $eq : "radius-acct" } },
+                    ],
+                },
+                {
+                    $and : [
+                        { detected : { $eq : "rdp" } },
+                        { expected : { $eq : "ms-wbt-server" } },
+                    ],
+                },
+                {
+                    $and : [
+                        { detected : { $eq : "rpc" } },
+                        { expected : { $eq : "epmap" } },
+                    ],
+                },
+                {
+                    $and : [
+                        { detected : { $eq : "rtmp" } },
+                        {
+                            $or : [
+                                { expected : { $eq : "https" } },
+                                { expected : { $eq : "macromedia-fcs" } },
+                            ]
+                        }
+                    ],
+                },
+                {
+                    $and : [
+                        { detected : { $eq : "sip" } },
+                        { expected : { $eq : "sip-tls" } },
+                    ],
+                },
+                {
+                    $and : [
+                        { detected : { $eq : "skype" } },
+                        { expected : { $eq : "https" } },
+                    ],
+                },
+                {
+                    $and : [
+                        { detected : { $eq : "smbv1" } },
+                        { expected : { $eq : "microsoft-ds" } },
+                    ],
+                },
+                {
+                    $and : [
+                        { detected : { $eq : "smbv23" } },
+                        { expected : { $eq : "microsoft-ds" } },
+                    ],
+                },
+                {
+                    $and : [
+                        { detected : { $eq : "ssl" } },
+                        {
+                            $or : [
+                                { expected : { $eq : "https" } },
+                                { expected : { $eq : "imaps" } },
+                                { expected : { $eq : "nntps" } },
+                                { expected : { $eq : "pcsync-https" } },
+                                { expected : { $eq : "pop3s" } },
+                            ]
+                        }
+                    ],
+                },
+                {
+                    $and : [
+                        { detected : { $eq : "tls" } },
+                        {
+                            $or : [
+                                { expected : { $eq : "https" } },
+                                { expected : { $eq : "imaps" } },
+                                { expected : { $eq : "nntps" } },
+                                { expected : { $eq : "pcsync-https" } },
+                                { expected : { $eq : "pop3s" } },
+                            ]
+                        }
+                    ],
+                },
+                {
+                    $and : [
+                        { detected : { $eq : "ssl_no_cert" } },
+                        { expected : { $eq : "https" } },
+                    ],
+                },
+                {
+                    $and : [
+                        { detected : { $eq : "tor" } },
+                        { expected : { $eq : "https" } },
+                    ],
+                },
+                {
+                    $and : [
+                        { detected : { $eq : "unencrypted_jabber" } },
+                        { expected : { $eq : "xmpp-client" } },
+                    ],
+                },
+                {
+                    $and : [
+                        { detected : { $eq : "upnp" } },
+                        { expected : { $eq : "ssdp" } },
+                    ],
+                },
+                {
+                    $and : [
+                        { detected : { $eq : "vnc" } },
+                        { expected : { $eq : "vnc-server" } },
+                    ],
+                },
+                {
+                    $and : [
+                        { detected : { $eq : "wsd" } },
+                        { expected : { $eq : "ws-discovery" } },
+                    ],
+                },
+                {
+                    $and : [
+                        { detected : { $eq : "yahoo" } },
+                        { expected : { $eq : "http" } },
+                    ],
+                },
+            ]
+        }
+    },
+    {
+        $group : {
+            _id : {
+                detected : "$detected",
+                expected_n : "$expected_n",
+                expected : "$expected",
+            },
+            bytes : { $sum : "$bytes" },
+        }
+    },
+    {
+        $addFields : {
+            sort_id: {
+                $multiply : [
+                    sort_order,
+                    "$bytes"
+                ]
+            },
+        }
+    },
+    {
+        $sort : { sort_id : -1 }
+    },
+    {
+        $limit : n
+    }
+])
+
+cursor.forEach(
+    function(e) {
+        print(
+              e._id.detected   + "\t"
+            + e._id.expected_n + "\t"
+            + e._id.expected   + "\t"
+            + e.bytes
+        )
+    }
+)

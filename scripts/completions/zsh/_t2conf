@@ -1,0 +1,94 @@
+# ZSH completion for t2conf
+
+_t2conf() {
+    #compdef t2conf
+
+    local cur="${words[CURRENT]}"
+    [ $CURRENT -gt 2 ] && local prev="${words[CURRENT-1]}"
+
+    case "$prev" in
+        -t|-p)
+            _files -/
+            return
+            ;;
+        -s|-r|--patch|--rpatch|-C|--config)
+            _files
+            return
+            ;;
+        -D|-G)
+            local plugins=(tranalyzer2 utils)
+            for i in "$T2PLHOME/"*; do
+                local b=$(basename "$i")
+                if [ -d "$i" ] && [ "$b" != "t2PSkel" ]; then
+                    plugins+=($b)
+                fi
+            done
+            local pname
+            if [ $CURRENT -gt 2 ]; then
+                for i in $(seq 1 $((CURRENT-2))); do
+                    if grep -Fw "${words[i]}" <<< "${plugins[@]}" &> /dev/null; then
+                        pname="${words[i]}"
+                    fi
+                done
+            fi
+            local flags
+            if [ -n "$pname" ]; then
+                local path
+                if [ "$pname" = "tranalyzer2" ] || [ "$pname" = "utils" ]; then
+                    path="$T2HOME/$pname"
+                else
+                    path="$T2PLHOME/$pname"
+                fi
+                if [ -f "$path/default.config" ]; then
+                    flags=($($AWK -F= '
+                        /^#/ || NF < 2 { next }
+                        {
+                            print $1
+                        }' "$path/default.config"))
+                    flags+=($($AWK -F- '
+                        /^#\s+:from:\s+.+\s+:import:\s+#$/ { p = 1 }
+                        p && /^#\s+-\s+/ && NF == 2 {
+                            gsub(/\s+#$/, "", $2)
+                            print $2
+                        }' "$path/default.config"))
+                elif [ -f "$path/t2plconf" ]; then
+                    flags=($($AWK '
+                        /^ITEMS=/ {
+                            start = 1
+                            next
+                        }
+                        /^\)\s*$/ {
+                            start = 0
+                            exit
+                        }
+                        start && /^\s*[A-Z_]+\s*/ {
+                            print $1
+                        }' "$path/t2plconf"))
+                else
+                    flags=($($AWK '
+                        !/^#/ && NF == 2 {
+                            print $1
+                        }' "$path/tests/$pname.flags"))
+                fi
+            fi
+            compadd "${flags[@]}"
+            return
+            ;;
+    esac
+
+    local plugins=(tranalyzer2 utils)
+    for i in "$T2PLHOME/"*; do
+        local b=$(basename "$i")
+        if [ -d "$i" ] && [ "$b" != "t2PSkel" ]; then
+            plugins+=($b)
+        fi
+    done
+
+    if [[ "$cur" == -* ]]; then
+        _arguments --
+    else
+        compadd "${plugins[@]}"
+    fi
+}
+
+compdef _t2conf t2conf

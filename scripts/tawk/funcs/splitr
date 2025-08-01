@@ -1,0 +1,34 @@
+#!/usr/bin/env awk
+#
+# Split repetitive values and provides easy access to each repetition.
+#
+# If 'num' is omitted or 0, 'val' is split into 'osep' separated columns.
+# If 'num' > 0, return the 'num' repetition.
+# If 'num' < 0, return the 'num' item from the end, e.g., -1 for last element.
+#
+# Multiple 'num' can be specified, e.g., "1;-1;2".
+#
+# Parameters:
+#   - val    : the value to split
+#   - [num]  : the index of the subvalue(s) to extract (see above)
+#   - [osep] : output separator (default: OFS)
+#
+# Dependencies:
+#   - None
+#
+# See also:
+#   - splitc
+#   - t2split
+#
+# Examples:
+#   - tawk '{ print splitr($vlanID, 2) }' file.txt
+#   - tawk 'splitr($vlanID, 2) == 20 { print splitr($vlanID) }' file.txt
+#   - tawk 'flow(2) { print splitc(splitr($L2L3L4Pl_Iat, 0, "\n")) }' file.txt
+#   - tawk '{ split($Ps_Iat_Cnt_PsCnt_IatCnt, x, ";"); for (i in x) { print splitc(x[i], "2;3") } }' file.txt
+#   - tawk '{ print splitr($vlanID, "1;-1") }' file.txt
+
+@include "t2split"
+
+function splitr(val, num, osep) {
+    return t2split(val, ";", num, osep)
+}

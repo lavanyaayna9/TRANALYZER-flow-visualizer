@@ -1,0 +1,148 @@
+\IfFileExists{t2doc.cls}{
+    \documentclass[documentation]{subfiles}
+}{
+    \errmessage{Error: could not find 't2doc.cls'}
+}
+
+\begin{document}
+
+\trantitle
+    {mongoSink} % Plugin name
+    {MongoDB} % Short description
+    {Tranalyzer Development Team} % author(s)
+
+\section{mongoSink}\label{s:mongoSink}
+
+\subsection{Description}
+The mongoSink plugin outputs flows to a MongoDB database.
+
+\subsection{Dependencies}
+
+\subsubsection{External Libraries}
+This plugin depends on the {\bf libmongoc} library.
+\begin{table}[!ht]
+    \centering
+    \begin{tabular}{>{\bf}r>{\tt}l>{\tt}l}
+        \toprule
+        %                             &                      &              \\
+        %\midrule
+        Ubuntu:                      & sudo apt-get install & libmongoc-dev\\
+        Arch:                        & sudo pacman -S       & mongo-c-driver\\
+        Gentoo:                      & sudo emerge          & mongo-c-driver\\
+        %openSUSE:                    & sudo zypper install  & libXXX-devel\\
+        Red Hat/Fedora\tablefootnote{If the {\tt dnf} command could not be found, try with {\tt yum} instead}:
+                                     & sudo dnf install     & mongo-c-driver-devel\\
+        macOS\tablefootnote{Brew is a packet manager for macOS that can be found here: \url{https://brew.sh}}:
+                                     & brew install         & mongo-c-driver\\
+        \bottomrule
+    \end{tabular}
+\end{table}
+
+\subsubsection{Core Configuration}
+This plugin requires the following core configuration:
+\begin{itemize}
+    \item {\em \$T2HOME/tranalyzer2/src/tranalyzer.h}:
+        \begin{itemize}
+            \item {\tt BLOCK\_BUF=0}
+        \end{itemize}
+\end{itemize}
+
+\subsection{Configuration Flags}
+The following flags can be used to control the output of the plugin:
+\begin{longtable}{>{\tt}lcl}
+    \toprule
+    {\bf Name} & {\bf Default} & {\bf Description}\\
+    \midrule\endhead%
+    MONGO\_HOST        & {\small\tt "127.0.0.1"}  & Address of the database\\
+    MONGO\_PORT        & {\small\tt 27017}        & Port the database is listening to\\
+    MONGO\_DBNAME      & {\small\tt "tranalyzer"} & Name of the database\\
+    MONGO\_TABLE\_NAME & {\small\tt "flow"}       & Name of the database flow table\\
+    MONGO\_NUM\_DOCS   & 1                        & Number of documents (flows) to write in bulk\\
+    \\
+    MONGO\_QRY\_LEN    & 2048                     & Max length for query\\
+    \hyperref[mongo:select]{MONGO\_SELECT}
+                       & 0                        & Only insert specific fields into the DB\\
+    \hyperref[mongo:select]{MONGO\_SELECT\_FILE}
+                       & {\small\tt "mongo-columns.txt"}
+                                                  & Filename of the field selector (one column name per line)\\
+    \\
+    BSON\_SUPPRESS\_EMPTY\_ARRAY & 1              & Output empty fields\\
+    BSON\_DEBUG                  & 0              & Print debug messages\\
+    \bottomrule
+\end{longtable}
+
+\subsubsection{Environment Variable Configuration Flags}
+The following configuration flags can also be configured with environment variables ({\tt ENVCNTRL>0}):
+\begin{itemize}
+    \item {\tt MONGO\_HOST}
+    \item {\tt MONGO\_PORT}
+    \item {\tt MONGO\_DBNAME}
+    \item {\tt MONGO\_TABLE\_NAME}
+    \item {\tt MONGO\_SELECT\_FILE} (require {\tt MONGO\_SELECT=1})
+\end{itemize}
+
+\subsection{Insertion of Selected Fields Only}\label{mongo:select}
+When {\tt MONGO\_SELECT=1}, the columns to insert into the DB can be customized with the help of {\tt MONGO\_SELECT\_FILE}.
+The filename defaults to {\tt mongo-columns.txt} in the user plugin folder, e.g., {\em \textasciitilde{}/.tranalyzer/plugins}.
+The format of the file is simply one field name per line with lines starting with a {\tt `\#'} being ignored.
+For example, to only insert source and destination addresses and ports, create the following file:
+
+\begin{verbatim}
+# Lines starting with a '#' are ignored and can be used to add comments
+srcIP
+srcPort
+dstIP
+dstPort
+\end{verbatim}
+
+\subsection{Working with Timestamps (ISODate)}
+MongoDB stores timestamps in UTC as {\tt ISODate}.
+To convert them to localtime, you may use the following query:
+\begin{verbatim}
+> db.flow.aggregate([{
+      $project: {
+          localTime: {
+              $dateToString: {
+                  date: "$timeFirst",
+                  format: "%Y-%m-%d %H:%M:%S",
+                  timezone: "Europe/Berlin"
+              }
+          }
+      }
+  }])
+\end{verbatim}
+
+\subsection{Example}
+
+{\tt\color{blue} \# Run Tranalyzer}\\
+{\tt \$ t2 -r file.pcap}\\
+
+\noindent
+{\tt\color{blue} \# Connect to the Mongo database}\\
+{\tt \$ mongosh tranalyzer}\\
+
+\noindent
+{\tt\color{blue} \# Number of flows}\\
+{\tt > db.flow.countDocuments()}\\
+
+\noindent
+{\tt\color{blue} \# 10 first srcIP/dstIP pairs}\\
+{\tt > db.flow.find(\{\}, \{ \_id: 0, srcIP: 1, dstIP: 1 \}).limit(10)}\\
+
+\noindent
+{\tt\color{blue} \# All flows from 1.2.3.4 to 1.2.3.5}\\
+{\tt > db.flow.find(\{ srcIP: "1.2.3.4", dstIP: "1.2.3.5" \})}\\
+
+\noindent
+For examples of more complex queries, have a look in {\tt \$T2HOME/scripts/t2fm/mongo/}.
+
+\subsubsection{Clean up an existing database}
+
+{\tt\color{blue} \# Connect to the Mongo database}\\
+{\tt \$ mongosh tranalyzer}\\
+
+\noindent
+{\tt\color{blue} \# Drop the database}\\
+{\tt > db.flow.drop()}\\
+
+\end{document}

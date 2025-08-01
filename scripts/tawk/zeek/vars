@@ -1,0 +1,39 @@
+# Mapping between Tranalyzer column names and other program names
+#
+# Note that if a column name is already defined as a function in tawk, you
+# will get the following error:
+#
+#     gawk: cmd. line:1: error: function `name' called with space between name and `(',
+#     or used as a variable or an array
+#
+# To fix that, either rename your column differently or use tawk -t option
+# to have tawk suffix the column name with an underscore, e.g., proto -> proto_
+#
+# The following naming conventions is used:
+#   _my_t2ColName = other_prog_col_name  # Column description
+
+BEGIN {
+    _my_flowInd   = uid          # Flow index
+    #_my_pktNo     = pktNo        # Packet number
+    #_my_srcMac    = srcMac       # Source MAC address
+    _my_srcIP     = id_orig_h    # Source IP
+    _my_srcPort   = id_orig_p    # Source port
+    #_my_dstMac    = dstMac       # Destination MAC address
+    _my_dstIP     = id_resp_h    # Destination IP
+    _my_dstPort   = id_resp_p    # Destination IP
+    #_my_ethType   = ethType      # Ethernet type
+    _my_l4Proto   = proto_       # Protocol
+    #_my_vlanID    = vlanID       # VLAN ID
+    _my_timeFirst = ts           # Time of the first packet seen
+    #_my_timeLast  = timeLast     # Time of the last packet seen
+    #_my_duration  = duration     # Flow duration
+    _my_bytesRcvd = resp_bytes   # Number of bytes received
+    _my_bytesSnt  = orig_bytes   # Number of bytes sent
+    _my_pktsRcvd  = resp_pkts    # Number of packets received
+    _my_pktsSnt   = orig_pkts    # Number of packets sent
+    #_my_avgPktSz  = avgPktSz     # Average packet size (bytes)
+    #_my_bps       = bytps        # Bytes per seconds
+    #_my_pps       = pktps        # Packets per seconds
+    #_my_ack       = ack          # TCP acknowledgment number
+    #_my_seq       = seq          # TCP sequence number
+}

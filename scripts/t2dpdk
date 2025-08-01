@@ -1,0 +1,70 @@
+#!/usr/bin/env bash
+#
+# Runs N instances of T2 in DPDK multi-process mode
+#
+# T2 must be compiled with DPDK_MP = 1:
+#   $ t2conf tranalyzer2 -D DPDK_MP=1 && t2build -R
+
+source "$(dirname "${0}")/t2utils.sh"
+
+NUM_PROCS=''
+
+usage() {
+    echo "${SNAME} - Run N instances of T2 in DPDK multi-process mode"
+    echo
+    echo "Usage:"
+    echo "    ${SNAME} -N NUM_PROCS [OPTION...]"
+    echo
+    echo "Mandatory argument:"
+    echo "    -N NUM_PROCS    number of T2 DPDK processes"
+    echo
+    echo "Tranalyzer2 arguments:"
+    echo "    ${SNAME} supports Tranalyzer2 options."
+    echo "    Run t2 --help for more information."
+    echo
+    echo "Help and documentation arguments:"
+    echo "    -h, --help    Show this help, then exit"
+}
+
+T2_OPTS=()
+while [[ "${#}" -ne 0 ]]; do
+    case "${1}" in
+        -N)
+            validate_next_num "${1}" "${2}"
+            NUM_PROCS="${2}"
+            shift
+            ;;
+        -h|-\?|--help)
+            usage
+            exit 0
+            ;;
+        *)
+            T2_OPTS+=("${1}")
+            ;;
+    esac
+    shift
+done
+
+if [[ -z "${NUM_PROCS}" || "${NUM_PROCS}" -lt 2 ]]; then
+    printerr "Missing or invalid -N argument: must be >= 2"
+    abort_with_help
+fi
+
+if [[ "$(id -u)" -ne 0 ]]; then
+    fatal "${SNAME} needs to be run as root, please use sudo"
+fi
+
+# Do not exit on Ctrl-C but forward SIGINT to children processes (t2 instances)
+trap '' INT
+
+T2_PIDS=()
+
+for ((i = 1; i <= "${NUM_PROCS}"; i++)); do
+    proc_id="$((i - 1))"
+    T2 -l "${i}" -n "${NUM_PROCS}" --proc-type=auto -- --num-procs="${NUM_PROCS}" --proc-id="${proc_id}" "${T2_OPTS[@]}" &
+    T2_PIDS+=("${!}")
+    sleep 0.1
+done
+
+echo "T2 DPDK processes PIDs: ${T2_PIDS[*]}"
+wait "${T2_PIDS[@]}"

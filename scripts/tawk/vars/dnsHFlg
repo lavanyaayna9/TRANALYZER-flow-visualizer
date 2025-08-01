@@ -1,0 +1,11 @@
+#H bit | dnsHFlg | Short   | Description
+#H =============================================================================
+#W  0  |   0x01  |   CD    | Checking disabled
+    1  |   0x02  |   AD    | Authenticated data
+#W  2  |   0x04  |   Z     | Zone transfer
+    3  |   0x08  |   RA    | Recursive query support available
+
+    4  |   0x10  |   RD    | Recursion desired
+#W  5  |   0x20  |   TC    | Message truncated
+    6  |   0x40  |   AA    | Is authoritative
+    7  |   0x80  |   QR    | 0: Query / 1: Response

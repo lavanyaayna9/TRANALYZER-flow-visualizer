@@ -1,0 +1,11 @@
+#H bit | bgpMsgT | Description
+#H =============================================================================
+     0 | 0x01    | -
+     1 | 0x02    | OPEN
+     2 | 0x04    | UPDATE
+     3 | 0x08    | NOTIFICATION
+
+     4 | 0x10    | KEEPALIVE
+     5 | 0x20    | ROUT-REFRESH
+     6 | 0x40    | -
+     7 | 0x80    | -

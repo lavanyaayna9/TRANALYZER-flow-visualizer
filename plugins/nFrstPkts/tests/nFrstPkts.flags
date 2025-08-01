@@ -1,0 +1,28 @@
+# Flags to toggle
+#
+# Run the ../../../tests/test.sh script from the plugin main directory:
+#
+# cd $T2HOME/plugins/nFrstPkts
+# ../../tests/test.sh [OPTION...]
+#
+# If run from this folder, make sure to use absolute path for the '-p' option.
+#
+# Flag name     File
+
+# ../../tranalyzer2/src/networkHeaders.h
+ETH_ACTIVATE        ../../tranalyzer2/src/networkHeaders.h
+
+# ../../tranalyzer2/src/tranalyzer.h
+BLOCK_BUF           ../../tranalyzer2/src/tranalyzer.h
+TSTAMP_PREC         ../../tranalyzer2/src/tranalyzer.h
+
+# src/nFrstPkts.h
+NFRST_IAT           src/nFrstPkts.h
+NFRST_BCORR         src/nFrstPkts.h
+NFRST_HDRINFO       src/nFrstPkts.h
+NFRST_MINIATS       src/nFrstPkts.h
+NFRST_MINIATU       src/nFrstPkts.h
+NFRST_MINPLENFRC    src/nFrstPkts.h
+NFRST_PLAVE         src/nFrstPkts.h
+NFRST_XMIN          src/nFrstPkts.h
+NFRST_XMAX          src/nFrstPkts.h

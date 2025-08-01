@@ -1,0 +1,191 @@
+#!/usr/bin/env bash
+#
+# Configuration file for gsmDecode
+# ================================
+#
+# Usage
+# -----
+#
+# $ ./t2plconf
+#
+# Defining the configurations options
+# -----------------------------------
+#
+# If no configuration options are available, ITEMS must be set as follows:
+#   - ITEMS=(none)
+#
+# Otherwise, enter configurations items as follows:
+#   "NAME" "TYPE" "DEPENDENCIES" "DESCRIPTION"
+#
+#   - TYPE can be:
+#       - bitfield
+#       - check (boolean),
+#       - radio (set of values),
+#       - range (min <= val <= max)
+#       - text
+#
+#   - DEPENDENCIES MUST be numeric, e.g., "A == 1 && (B < 4 || C >= 1)"
+#
+#   - DESCRIPTION for type 'bitfield' MUST NOT contain '\t', ':' or ';'
+#   - DESCRIPTION for type 'check' MUST NOT contain tabs ('\t')
+#   - DESCRIPTION for type 'radio' MUST NOT contain '\t', ':' or ';'
+#   - DESCRIPTION for type 'range' MUST NOT contain '\t' or ':'
+#   - DESCRIPTION for type 'text'  MUST NOT contain '\t'
+#
+#   - DESCRIPTION MUST be formatted according to the type (see examples below):
+#       - bitfield : description ';' val1 ':' description1 ';' valN ':' descriptionN
+#       - check    : description
+#       - radio    : description ';' val1 ':' description1 ';' valN ':' descriptionN
+#       - range    : description ':' min ' ' max
+#       - text     : description
+#
+# Examples
+# --------
+#
+#ITEMS=(
+#    # An item can be specified in one line...
+#    T2PSKEL_VAR1 check "" "Description of option" # No dependencies
+#
+#    # Or span multiple lines
+#    T2PSKEL_VAR1 radio "T2PSKEL_VAR1 == 1"
+#           "Description of option; \
+#                   0: description of val 0; \
+#                   1: description of val 1; \
+#                   2: description of val 2"
+#
+#    T2PSKEL_SIZE range "T2PSKEL_VAR1 == 1 || T2PSKEL_VAR2 > 0"
+#           "Description: 0 255" # min=0, max=255
+#
+#    T2PSKEL_STR text
+#           "T2PSKEL_SIZE <= 5 && (T2PSKEL_VAR1 != 0 || T2PSKEL_VAR2 <= 1)"
+#           "Description"
+#
+#    T2PSKEL_BITFIELD bitfield ""
+#           "Description of option; \
+#                   0x01: description of bit 0; \
+#                   0x02: description of bit 1; \
+#                   0x04: description of bit 2; \
+#                   0x08: description of bit 3; \
+#                   0x10: description of bit 4; \
+#                   0x20: description of bit 5; \
+#                   0x40: description of bit 6; \
+#                   0x80: description of bit 7"
+#)
+#
+# If no configuration option is available, use the value 'none'
+#ITEMS=(none)
+#
+# Source the master t2plconf file
+# source ../../scripts/t2conf/t2plconf
+
+ITEMS=(
+    GSM_ARFCNFILE  check "" "Save ARFCN in a separate file"
+    GSM_CALLFILE   check "" "Save calls in a separate file"
+    GSM_CDFILE     check "" "Save channels in a separate file"
+    GSM_IMMASSFILE check "" "Save Immediate Assignments in a separate file"
+    GSM_IMSIFILE   check "" "Save IMSI/TMSI/... in a separate file"
+    GSM_OPFILE     check "" "Save operator names in a separate file"
+    GSM_SMSFILE    check "" "Save SMS messages in a separate file"
+    GSM_SPEECHFILE check "" "Save audio conversations in a separate file"
+    GSM_STATFILE   check "" "Save GSM statistics in a separate file"
+
+    GSM_SPEECH_SPLIT radio "GSM_SPEECHFILE == 1" "Speech frames handling; \
+        0: Save A and B flows in the same file; \
+        1: Create one file per direction"
+
+    GSM_TMSI_FORMAT radio ""
+        "Format for TMSI; \
+            0: Integer; \
+            1: Hexadecimal"
+
+    GSM_E164_FORMAT "radio" ""
+        "Format for E.164 countries;
+            0: Country code; \
+            1: Country name"
+
+    GSM_MCC_FORMAT "radio" ""
+        "Format to use for MCC;
+            0: Country code; \
+            1: Country name"
+
+    GSM_MNC_FORMAT "radio" ""
+        "Format to use for MNC;
+            0: Operator name; \
+            1: Brand name"
+
+    GSM_NOT_FOUND  text "" "Value to use when no entry was found"
+
+    GSM_SPEECH_DIR text  "GSM_SPEECHFILE == 1" "Folder for extracted audio conversations"
+    GSM_TXT_DIR    text  ""                    "Folder for output files"
+    GSM_RMDIR      check "GSM_SPEECHFILE == 1" "Empty GSM_SPEECH_DIR before starting"
+
+    GSM_ROTATE_TIME range
+            "GSM_ARFCNFILE  == 1 || \
+             GSM_ARFCNFILE  == 1 || \
+             GSM_CALLFILE   == 1 || \
+             GSM_CDFILE     == 1 || \
+             GSM_IMMASSFILE == 1 || \
+             GSM_IMSIFILE   == 1 || \
+             GSM_OPFILE     == 1 || \
+             GSM_SMSFILE    == 1"
+            "Create new files every GSM_ROTATE_TIME seconds (use 0 to deactivate the feature): 0 UINT32_MAX"
+
+    GSM_ARFCNFILE_SUFFIX  text "GSM_ARFCNFILE == 1"  "Suffix for ARFCN file"
+    GSM_CALLFILE_SUFFIX   text "GSM_CALLFILE == 1"   "Suffix for calls file"
+    GSM_CDFILE_SUFFIX     text "GSM_CDFILE == 1"     "Suffix for channels file"
+    GSM_IMMASSFILE_SUFFIX text "GSM_IMMASSFILE == 1" "Suffix for Immediate Assignments file"
+    GSM_IMSIFILE_SUFFIX   text "GSM_IMSIFILE == 1"   "Suffix for IMSI file"
+    GSM_OPFILE_SUFFIX     text "GSM_OPFILE == 1"     "Suffix for operators file"
+    GSM_SMSFILE_SUFFIX    text "GSM_SMSFILE == 1"    "Suffix for SMS file"
+    GSM_STATFILE_SUFFIX   text "GSM_STATFILE == 1"   "Suffix for GSM statistics file"
+
+    GSM_FILES_AMR_EXT     text "GSM_SPEECHFILE == 1" "File extension for audio files"
+    GSM_FILES_TMP_EXT     text
+            "GSM_ARFCNFILE  == 1 || \
+             GSM_ARFCNFILE  == 1 || \
+             GSM_CALLFILE   == 1 || \
+             GSM_CDFILE     == 1 || \
+             GSM_IMMASSFILE == 1 || \
+             GSM_IMSIFILE   == 1 || \
+             GSM_OPFILE     == 1 || \
+             GSM_SMSFILE    == 1 || \
+             GSM_SPEECHFILE == 1"
+            "File extension for temporary files"
+    GSM_FILES_TXT_EXT     text
+            "GSM_ARFCNFILE  == 1 || \
+             GSM_ARFCNFILE  == 1 || \
+             GSM_CALLFILE   == 1 || \
+             GSM_CDFILE     == 1 || \
+             GSM_IMMASSFILE == 1 || \
+             GSM_IMSIFILE   == 1 || \
+             GSM_OPFILE     == 1 || \
+             GSM_SMSFILE    == 1"
+            "File extension for text files"
+
+    GSM_DEBUG           check ""                      "Print generic debug messages"
+    GSM_DBG_UNK         check "GSM_DEBUG == 1"        "Report unknown values for other messages"
+
+    GSM_DEBUG_A_RP      check ""                      "Print debug messages for A-I/F RP layer"
+    GSM_DBG_A_RP_UNK    check "GSM_DEBUG_A_RP == 1"   "Report unknown values for A-I/F RP layer"
+
+    GSM_DEBUG_DTAP      check ""                      "Print debug messages for A-I/F DTAP layer"
+    GSM_DBG_DTAP_UNK    check "GSM_DEBUG_DTAP == 1"   "Report unknown values for A-I/F DTAP layer"
+
+    GSM_DEBUG_GSMTAP    check ""                      "Print debug messages for GSMTAP layer"
+    GSM_DBG_GSMTAP_UNK  check "GSM_DEBUG_GSMTAP == 1" "Report unknown values for GSMTAP layer"
+
+    GSM_DEBUG_LAPD      check ""                      "Print debug messages for LAPD layer"
+    GSM_DBG_LAPD_UNK    check "GSM_DEBUG_LAPD == 1"   "Report unknown values for LAPD layer"
+
+    GSM_DEBUG_LAPDM     check ""                      "Print debug messages for LAPDm layer"
+    GSM_DBG_LAPDM_UNK   check "GSM_DEBUG_LAPDM == 1"  "Report unknown values for LAPDm layer"
+
+    GSM_DEBUG_RSL       check ""                      "Print debug messages for RSL layer"
+    GSM_DBG_RSL_UNK     check "GSM_DEBUG_RSL == 1"    "Report unknown values for RSL layer"
+
+    GSM_DEBUG_SMS       check ""                      "Print debug messages for SMS layer"
+    GSM_DBG_SMS_UNK     check "GSM_DEBUG_SMS == 1"    "Report unknown values for SMS layer"
+)
+
+# Source the master t2plconf file
+source "$(dirname "$0")/../../scripts/t2conf/t2plconf"

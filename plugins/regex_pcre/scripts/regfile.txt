@@ -1,0 +1,30 @@
+#ID	PreID	Flags	ClassID	Severity	Sel	Regexmode	FlwStat	Proto	srcPort	dstPort	offset	Regex
+
+# standalone rule: Alarm, start L7, Regexmode: default, select FlwStat: Req; Proto, dstPort
+1	0	0x10	15	3	0x8000000d	0x0000000	0x00000000	6	0	80	0	(OPTIONS|GET|HEAD|POST|PUT|DELETE|TRACE|CONNECT)[^\r\n]*\/u7avi*\.bin
+
+# standalone rule: Alarm, disabled, start L7, select Regexmode: (PCRE_CASELESS|PCRE_DOTALL), FlwStat: Teredo, IPv6, Vlan, Repl; Proto, srcPort
+3	0	0x10	15	3	0x0800000e	0x0000005	0x00088101	6	80	0	0	\x31\xDB\x8D\x43\x0D\xCD\x80\x66.*\x31
+
+# standalone rule: Alarm, start L7, Regexmode: default, FlwStat: IPv4, Rply
+4	0	0x10	15	3	0x8000000c	0x0000000	0x00004001	6	80	0	20	\x38\x55\x42\x66\xe2\xb5\x34.*\xb5\x95\xbb
+
+# standalone rule, Alarm, start L7, select Regexmode: (PCRE_CASELESS|PCRE_DOTALL)
+100	0	0x10	1	0	0x88000000	0x0000005	0x00000000	6	0	80	0	^http/1.0
+
+# root rules to following tree, Reset if leaf fires
+202	0	0x40	10	4	0x80000000	0x0000000	0x00000001	6	0	80	0	(GET|PUT).*update/u7avi1777u1705ff.bin
+203	202,4	0x41	20	4	0x88000000	0x0000005	0x00000001	6	0	80	0	302 (?i)Found
+
+# successors and predecessors, Reset if leaf fires
+204	202,203	0x41	43	5	0x80000000	0x0000000	0x00000001	6	0	21	0	(?i)\.exe
+
+# successors 206 & 205 to 204 AND ruleset, don't reset tree if 205 fires
+205	204	0x16	40	4	0x80000002	0x0000000	0x00000000	6	0	20	0	^get .*porno.*
+206	204	0x56	35	6	0x8000000c	0x0000000	0x00000001	6	0	21	0	igfxzoom\.exe
+
+# shell code obfuscated
+300	0	0x10	36	6	0x80000000	0x0000000	0x00000000	17	0	0	0	\xeb.*\x31.*\x20\x8b.*\x74\x07\xeb.*\xe8.*\xff\xff\xff
+
+# malicious shell code clear text
+301	0	0x10	36	6	0x80000000	0x0000000	0x00000000	17	0	0	0	(wget |chmod |clear |history -c)

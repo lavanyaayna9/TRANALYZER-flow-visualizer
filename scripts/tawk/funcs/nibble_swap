@@ -1,0 +1,53 @@
+#!/usr/bin/env awk
+#
+# Swap the nibbles of a byte or of a list of bytes 'n'.
+#
+# Parameters:
+#   - n   : the byte (or list of bytes) to swap
+#   - [b] : base for input number
+#           (currently only 16 is supported to force interpretation of, e.g., 45 as 0x45)
+#
+# Dependencies:
+#   - None
+#
+# See also:
+#   - bitshift
+#   - tobits
+#
+# Examples:
+#   - tawk '{ $l7HexContent = nibble_swap($l7HexContent); print }' file_packets.txt
+#   - tawk '{ print nibble_swap($l7HexContent, 16) }' file_packets.txt
+#   - tawk '{ print nibble_swap(0x45) }' file.txt
+
+@include "hdr"
+
+function nibble_swap(n, b,        _a, _i, _n, _r, _s, _x) {
+    if (hdr()) return n
+
+    if (!n) return "0x00"
+
+    _n = split(n, _a, /[\t ,]+/, _s)
+
+    _r = ""
+    for (_i = 1; _i <= _n; _i++) {
+        if (_a[_i] !~ /^[0-9a-fA-F]{2}$/ && _a[_i] !~ /^0x[0-9a-fA-F]{2}$/) {
+            _r = _r _a[_i] _s[_i]
+            continue
+        }
+
+        if (b == 16 && _a[_i] !~ /^0x/) {
+            _x = strtonum("0x" _a[_i])
+        } else {
+            _x = strtonum(_a[_i])
+        }
+
+        _x = or(rshift(_x, 4), and(lshift(_x, 4), 0xf0))
+        if (_a[_i] !~ /^0x/) {
+            _r = _r sprintf("%02x", _x) _s[_i]
+        } else {
+            _r = _r sprintf("0x%02x", _x) _s[_i]
+        }
+    }
+
+    return _r
+}

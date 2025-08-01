@@ -1,0 +1,24 @@
+# Flags to toggle
+#
+# Run the ../../../tests/test.sh script from the plugin main directory:
+#
+# cd $T2HOME/plugins/telnetDecode
+# ../../tests/test.sh [OPTION...]
+#
+# If run from this folder, make sure to use absolute path for the '-p' option.
+#
+# Flag name     File
+
+# ../../tranalyzer2/src/tranalyzer.h
+BLOCK_BUF       ../../tranalyzer2/src/tranalyzer.h
+ENVCNTRL        ../../tranalyzer2/src/tranalyzer.h
+
+# src/telnetDecode.h
+TEL_SAVE        src/telnetDecode.h
+TEL_RMDIR       src/telnetDecode.h
+TEL_SAVE_SPLIT  src/telnetDecode.h
+TEL_SEQPOS      src/telnetDecode.h
+TEL_CMDOPTS     src/telnetDecode.h
+TEL_CMD_AGGR    src/telnetDecode.h
+TEL_OPT_AGGR    src/telnetDecode.h
+TEL_BTFLD       src/telnetDecode.h

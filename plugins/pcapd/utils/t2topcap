@@ -1,0 +1,155 @@
+#!/usr/bin/env bash
+#
+# Convert pcapng files to pcap
+#
+# TODO
+#   - add option to save specific packets only (PD_STRTPKT, PD_ENDPKT, ...)
+#   - add option to save opposite flow as well (PD_OPP=1)
+#   - add option to create one pcap per flow (PD_MODE_OUT=1)
+#   - add options to modify TTL, MAC/IP addresse, VLAN IDs, ...
+
+source "$(dirname "${0}")/../../../scripts/t2utils.sh"
+
+usage() {
+    echo "${SNAME} - Convert pcapng files to pcap"
+    echo
+    echo "Usage:"
+    echo "    ${SNAME} [OPTION...] <FILE.PCAPNG>"
+    echo
+    echo "Optional arguments:"
+    echo "    -w outname        Output file name or directory"
+    echo
+    echo "    -f file           Only extract flows whose index is listed in file"
+    echo "                      (one flow index per row)"
+    echo
+    echo "    -A                Only extract A flows"
+    echo "    -B                Only extract B flows"
+    echo "    -n                Only extract flows whose index is NOT listed in file"
+    echo "                      (-f option)"
+    echo
+    echo "    -y                Do not ask for confirmation before executing an action"
+    echo
+    echo "Help and documentation arguments:"
+    echo "    -?, -h, --help    Show help options and exit"
+}
+
+_cleanup() {
+    "${T2CONF}" pcapd --reset
+    if [[ -d "${TMPDIR}" ]]; then
+        rm -rf "${TMPDIR}"
+    fi
+}
+
+# Default configuration
+PD_EQ=1       # Save matching flows
+PD_MODE_IN=1  # Dump all packets
+PD_DIRSEL=0   # Extract both directions
+
+while [[ "${#}" -gt 0 ]]; do
+    case "${1}" in
+        -w)
+            validate_next_arg "${1}" "${2}"
+            OPREF="${2}"
+            shift
+            ;;
+        -f)
+            validate_next_file "${1}" "${2}"
+            ESOMFILE="${2}"
+            shift
+            ;;
+        -n)
+            PD_EQ=0
+            ;;
+        -A)
+            PD_DIRSEL=2
+            ;;
+        -B)
+            PD_DIRSEL=3
+            ;;
+        -y|--yes)
+            YES="yes"
+            ;;
+        -h|--help|-\?)
+            usage
+            exit 0
+            ;;
+        *)
+            if [[ -n "${PCAP}" ]]; then
+                printerr "Only one input file can be specified"
+                abort_with_help
+            elif [[ -f "${1}" ]]; then
+                PCAP="${1}"
+            else
+                abort_option_unknown "${1}"
+            fi
+            ;;
+    esac
+    shift
+done
+
+if [[ ! -f "${PCAP}" ]]; then
+    printerr "No input file provided"
+    abort_with_help
+elif file -b "${PCAP}" | grep -qFw pcap; then
+    printinf "Input is already a pcap file"
+    exit 0
+elif ! file -b "${PCAP}" | grep -qFw pcapng; then
+    fatal "Input is not a pcapng file"
+elif [[ "${PCAP}" =~ .pcap$ ]]; then
+    printwrn "Input is a pcapng, but ends with a .pcap extension"
+fi
+
+if [[ ! -f "${ESOMFILE}" ]]; then
+    PD_MODE_IN=1  # Dump all packets
+else
+    PD_MODE_IN=0
+    ESOMOPT="-e"
+fi
+
+printfinf "Configuring pcapd... "
+if "${T2CONF}" pcapd -D PD_MODE_IN="${PD_MODE_IN}" -D PD_EQ="${PD_EQ}" -D PD_DIRSEL="${PD_DIRSEL}" -D PD_SUFFIX=".pcap"; then
+    printok "OK"
+else
+    fatal "FAILED"
+fi
+
+TMPDIR="$(mktemp --directory)"
+
+trap _cleanup EXIT
+
+printfinf "Building tranalyzer2 and pcapd... "
+if "${T2BUILD}" tranalyzer2 pcapd -p "${TMPDIR}" &> /dev/null; then
+    printok "OK"
+else
+    fatal "FAILED"
+fi
+
+printfinf "Running tranalyzer2... "
+if T2 -p "${TMPDIR}" -r "${PCAP}" -w "${TMPDIR}" -l ${ESOMOPT} ${ESOMFILE}; then
+    printok "OK"
+else
+    fatal "FAILED"
+fi
+
+TMPFILE="$(find "${TMPDIR}" -type f -name "*.pcap")"
+
+if [[ -d "${OPREF}" ]]; then
+    OUTFILE="${OPREF}/$(basename "${TMPFILE}")"
+elif [[ -n "${OPREF}" ]]; then
+    OUTFILE="${OPREF}"
+else
+    OUTDIR="$(dirname "${PCAP}")"
+    OUTFILE="${OUTDIR}/$(basename "${PCAP}" .pcapng).pcap"
+fi
+
+OUTFILE="$("${READLINK}" -f "${OUTFILE}")"
+
+if [[ -f "${OUTFILE}" ]]; then
+    ask_default_no "${OUTFILE} already exists... overwrite" $YES || exit 1
+fi
+
+if ! mv "${TMPFILE}" "${OUTFILE}"; then
+    fatal "Failed to create ${OUTFILE}"
+fi
+
+printok "Successfully generated ${OUTFILE}"

@@ -1,0 +1,41 @@
+#!/usr/bin/env bash
+
+source "$(dirname "${0}")/../../t2utils.sh"
+
+OPTS=()
+while [[ "${#}" -ne 0 ]]; do
+    case "${1}" in
+        -n)
+            validate_next_int "${1}" "${2}"
+            N="${2}"
+            shift
+            ;;
+        *)
+            OPTS+=("${1}")
+            ;;
+    esac
+    shift
+done
+
+TOP_ASNS="$(nfdump ${OPTS[@]} -s 'srcas/packets' | "${TAWK}" -F, -v n="${N}" '
+    NF > 1 && NR > 1 {
+        asn = $5
+        if (asn == 0) {
+            asn = "--"
+        }
+        aggr(asn, $8, n)
+    }')"
+
+if [[ "$(wc -l <<< "${TOP_ASNS}")" -eq 1 ]]; then
+    TOP_ASNS="$(nfdump ${OPTS[@]} -s 'srcip/packets' | "${TAWK}" -F, -v n="${N}" '
+        NF > 1 && NR > 1 {
+            if (privip($5)) {
+                asn = "--"
+            } else {
+                asn = t2whois($5, "asn")
+            }
+            aggr(asn, $8, n)
+        }')"
+fi
+
+echo "${TOP_ASNS}"

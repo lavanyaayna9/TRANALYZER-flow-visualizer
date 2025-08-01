@@ -1,0 +1,193 @@
+#!/usr/bin/env bash
+#
+# Extract and convert fields from a _bgp_s.txt file to a format
+# usable with netgraph (Source '\t' Destination '\t' Value)
+
+source "$(dirname "$0")/../../../scripts/t2utils.sh"
+
+usage() {
+    printf "Usage:\n"
+    printf "    $SNAME [OPTION...] <FILE_bgp_s.txt>\n"
+    printf "\nOptional arguments:\n"
+    printf "    -h          display this help, then exit\n"
+}
+
+while [ $# -gt 0 ]; do
+    case "$1" in
+        -h|-\?|--help)
+            usage
+            exit 0
+            ;;
+        *)
+            if [ ! -f "$1" ]; then
+                abort_option_unknown "$1"
+            fi
+            INFILE="$1"
+            ;;
+    esac
+    shift
+done
+
+if [ ! -f "$INFILE" ]; then
+    abort_required_file
+fi
+
+#D=0 # NLRI, NextHop, ASPathLen
+
+#D=1 # AS1, ASN, ASPathLen
+#D=2 # AS1, AS2, ASPathLen
+
+#D=3 # CN1, CNN, ASPathLen
+#D=4 # CN1, CN2, ASPathLen
+
+#D=5 # Cont1, ContN, ASPathLen
+#D=6 # Cont1, Cont2, ASPathLen
+
+#D=7 # NLRI, NextHop, ASPathLen, AS1, ASN, CN1, CNN, Cont1, ContN
+
+for ((i = 0; i < 8; i++)); do
+    OUT="$(basename "$INFILE" _s.txt)_netgraph$i.txt"
+    echo "Generating '$OUT'"
+    AWKF -v d="$i" '
+        NR == 1 {
+            sub(/^%[[:space:]]*/, "")
+            for (i = 1; i <= NF; i++) {
+                if ($i == "AW") AW = i
+                else if ($i == "NLRI") NLRI = i
+                else if ($i == "NextHop") NextHop = i
+                else if ($i == "MED") MED = i
+                else if ($i == "LocPref") LocPref = i
+                else if ($i == "Origin") Origin = i
+                else if ($i == "ASPathLen") ASPathLen = i
+                else if ($i == "ASPath") ASPath = i
+                else if ($i == "ASPathCountries") ASPathCountries = i
+                else if ($i == "ASPathContinents") ASPathContinents = i
+                else if ($i == "WithdrawnRoutes") WithdrawnRoutes = i
+                else if ($i == "flowInd") flowInd = i
+            }
+        }
+
+        NR > 1 && $AW !~ /^W$/ && $ASPath !~ /.*[\[{].*;.*[\]}].*/ { # ignore withdrawn routes and sets with multiple AS
+            if (d == 0) {
+                print $NLRI, $NextHop, $ASPathLen
+            } else if (d == 1 || d == 2) {
+                sub(/;+$/, "", $ASPath);
+                n = split($ASPath, a, ";");
+                if (d == 1) {
+                    if (a[1] ~ /^\{[[:digit:]]+\}$/) { # set with a single as: {as}->as
+                        sub(/^\{/, "", a[1])
+                        sub(/\}$/, "", a[1])
+                    }
+                    if (a[n] ~ /^\{[[:digit:]]+\}$/) { # set with a single as: {as}->as
+                        sub(/^\{/, "", a[n])
+                        sub(/\}$/, "", a[n])
+                    }
+                    print a[1], a[n], $ASPathLen # AS1, ASN, ASPathLen
+                } else if (d == 2) {
+                    for (i = 1; i <= n; i++) {
+                        if (a[i] ~ /^\{[[:digit:]]+\}$/) { # set with a single as: {as}->as
+                            sub(/^\{/, "", a[i])
+                            sub(/\}$/, "", a[i])
+                        }
+                    }
+                    for (i = 1; i < n; i++) {
+                        printf "%s\t%s\t1\n", a[i], a[i+1]
+                    }
+                }
+            } else if (d == 3 || d == 4) {
+                sub(/;+$/, "", $ASPathCountries);
+                n = split($ASPathCountries, a, ";");
+                if (d == 3) {
+                    if (a[1] ~ /^\{[A-Za-z]+\}$/) { # set with a single as: {as}->as
+                        sub(/^\{/, "", a[1])
+                        sub(/\}$/, "", a[1])
+                    }
+                    if (a[n] ~ /^\{[A-Za-z]+\}$/) { # set with a single as: {as}->as
+                        sub(/^\{/, "", a[n])
+                        sub(/\}$/, "", a[n])
+                    }
+                    print a[1], a[n], $ASPathLen # CN1, CNN, ASPathLen
+                } else if (d == 4) {
+                    for (i = 1; i <= n; i++) {
+                        if (a[i] ~ /^\{[A-Za-z]+\}$/) { # set with a single as: {as}->as
+                            sub(/^\{/, "", a[i])
+                            sub(/\}$/, "", a[i])
+                        }
+                    }
+                    for (i = 1; i < n; i++) {
+                        print a[i], a[i+1], 1
+                    }
+                }
+            } else if (d == 5 || d == 6) {
+                sub(/;+$/, "", $ASPathContinents);
+                n = split($ASPathContinents, a, ";");
+                if (d == 5) {
+                    if (a[1] ~ /^\{[A-Za-z]+\}$/) { # set with a single as: {as}->as
+                        sub(/^\{/, "", a[1])
+                        sub(/\}$/, "", a[1])
+                    }
+                    if (a[n] ~ /^\{[A-Za-z]+\}$/) { # set with a single as: {as}->as
+                        sub(/^\{/, "", a[n])
+                        sub(/\}$/, "", a[n])
+                    }
+                    print a[1], a[n], $ASPathLen # Cont1, ContN, ASPathLen
+                } else if (d == 6) {
+                    for (i = 1; i <= n; i++) {
+                        if (a[i] ~ /^\{[A-Za-z]+\}$/) { # set with a single as: {as}->as
+                            sub(/^\{/, "", a[i])
+                            sub(/\}$/, "", a[i])
+                        }
+                    }
+                    for (i = 1; i < n; i++) {
+                        print a[i], a[i+1], 1
+                    }
+                }
+            } else if (d == 7) {
+                sub(/;+$/, "", $ASPath);
+                n = split($ASPath, a, ";");
+                sub(/;+$/, "", $ASPathCountries);
+                split($ASPathCountries, c, ";");
+                sub(/;+$/, "", $ASPathContinents);
+                split($ASPathContinents, k, ";");
+                if (a[1] ~ /^\{[0-9A-Za-z]+\}$/) { # set with a single as: {as}->as
+                    sub(/^\{/, "", a[1])
+                    sub(/\}$/, "", a[1])
+                    sub(/^\{/, "", c[1])
+                    sub(/\}$/, "", c[1])
+                    sub(/^\{/, "", k[1])
+                    sub(/\}$/, "", k[1])
+                }
+                if (a[n] ~ /^\{[0-9A-Za-z]+\}$/) { # set with a single as: {as}->as
+                    sub(/^\{/, "", a[n])
+                    sub(/\}$/, "", a[n])
+                    sub(/^\{/, "", c[n])
+                    sub(/\}$/, "", c[n])
+                    sub(/^\{/, "", k[n])
+                    sub(/\}$/, "", k[n])
+                }
+                print $NLRI, $NextHop, $ASPathLen, a[1], a[n], c[1], c[n], k[1], k[n], $ASPath
+            }
+        }' "$INFILE" > "$OUT"
+
+        # Remove duplicated entries
+        case "$i" in
+              7) sort -Vk1,1 -Vk2,2 -k3,3 -k4,4 -k5,5 -k6,6 -k7,7 -k8,8 -k9,9 -k10,10 -u -o "$OUT" "$OUT";;
+              0) sort -Vk1,1 -Vk2,2 -u -o "$OUT" "$OUT";;
+            1|2) sort -nk1,1 -nk2,2 -u -o "$OUT" "$OUT";;
+              *) sort -k1,1  -k2,2  -u -o "$OUT" "$OUT";;
+        esac
+
+        # Prepend the header
+        case "$i" in
+            0) HDR="%NLRI\tNextHop\tASPathLen";;
+            1) HDR="%AS1\tASN\tASPathLen";;
+            2) HDR="%AS1\tAS2\tValue";;
+            3) HDR="%CN1\tCNN\tASPathLen";;
+            4) HDR="%CN1\tCN2\tValue";;
+            5) HDR="%Cont1\tContN\tASPathLen";;
+            6) HDR="%Cont1\tCont2\tValue";;
+            7) HDR="%NLRI\tNextHop\tASPathLen\tAS1\tASN\tCN1\tCNN\tCont1\tContN\tASPath";;
+            *) HDR="Unknown";;
+        esac
+        $SED -i "1s/^/$HDR\n/" "$OUT"
+done

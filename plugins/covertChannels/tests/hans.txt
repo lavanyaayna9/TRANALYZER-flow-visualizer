@@ -1,0 +1,81 @@
+Workstation1
+------------
+  OS: Arch Linux (x86_64)
+  Kernel: 3.11.2-1-ARCH
+  IP: 10.20.5.161
+  Hostname: caprica
+
+VM1
+---
+  Qemu KVM running on Workstation1
+  OS: Debian Wheezy (i386)
+  Kernel: 3.2.0-4-686-pae
+  IP: 10.20.6.145 (connected to bridge on Workstation2)
+  MAC: 52:54:00:12:34:56
+
+Workstation2
+------------
+  OS: Ubuntu 12.04.3 Desktop LTS (x86_64)
+  Kernel: 3.8.0-31-generic
+  IP: 10.20.7.225
+  Hostname: tauron
+
+VM2
+---
+  Qemu KVM running on Workstation2
+  OS: Debian Wheezy (i386)
+  Kernel: 3.2.0-4-686-pae
+  IP: 10.20.5.200 (connected to bridge on Workstation2)
+  Web server: Apache/2.2.22
+  MAC: 52:54:00:12:34:57
+
+
+Network scheme
+--------------
+
+Receiver VM1                  Sender VM2
+     |                             |
+     | (bridge)           (bridge) |
+     |                             |
+Workstation1 ---- switch ---- Workstation2
+
+
+Trace capture procedure
+-----------------------
+1) Start both workstations
+2) Start VMs on both workstations
+3) Check that WM1 can ping VM2
+4) Record traffic on Workstation1
+    sudo tcpdump -s 0 -i eth0 -w hans.dmp
+5) Start the hans server on VM2
+    ./hans -s 10.1.2.0 -p pass1234 -fv
+6) Connect to hans server from VM1
+    ./hans -c 10.20.5.200 -p pass1234 -fv
+7) Add route to use tun0 for specific IP on VM1
+    ip route add 130.59.10.36 dev tun0
+    (replace 130.59.10.36 by the current IP of mirror.switch.ch)
+8) Download a file from this "tunneled IP" from VM1
+    wget -4 "http://mirror.switch.ch/ftp/mirror/ubuntu-cdimage/13.10/ubuntu-13.10-desktop-amd64.iso"
+
+
+Notes
+-----
+Source: http://code.gerade.org/hans/  https://github.com/friedrich/hans
+
+VM2 must be configured to properly forward packet from the Hans tunnel
+
+echo 1 > /proc/sys/net/ipv4/ip_forward
+iptables -A INPUT -i tun0 -j ACCEPT
+iptables -A INPUT -m state --state ESTABLISHED,RELATED -j ACCEPT
+iptables -A FORWARD -i tun0 -j ACCEPT
+iptables -A FORWARD -i eth0 -m state --state ESTABLISHED,RELATED -j ACCEPT
+iptables -t nat -A POSTROUTING -o eth0 -j MASQUERADE
+# test, to see if these rules limit the number of replies per request
+iptables -A INPUT -m conntrack --ctstate INVALID -j DROP
+iptables -A INPUT -p icmp --icmp-type 8 -m conntrack --ctstate NEW -j ACCEPT
+
+
+Conclusion
+----------
+The data were successfully transmitted through the tunnel.
+The classifier used for Loki is also able to detect Hans.

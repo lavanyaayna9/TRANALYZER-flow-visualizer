@@ -1,0 +1,18 @@
+#!/usr/bin/env awk
+
+hdr() {
+    next
+}
+
+$vlanID {
+    split($vlanID, _vlans, ";")
+    for (_v in _vlans) {
+        __vlan[_vlans[_v]] = 1
+    }
+}
+
+END {
+    for (_v in __vlan) {
+        print _v
+    }
+}

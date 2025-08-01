@@ -1,0 +1,37 @@
+#!/usr/bin/env awk
+#
+# Return true if the protocol number is equal to 6 (TCP).
+#
+# Parameters:
+#   - [p] : the protocol to test [default: $l4Proto]
+#
+# Dependencies:
+#   - basicFlow
+#
+# See also:
+#   - proto
+#   - proto2str : string representation of a protocol
+#   - icmp      : alias for proto(1)
+#   - igmp      : alias for proto(2)
+#   - udp       : alias for proto(17)
+#   - rsvp      : alias for proto(46)
+#   - gre       : alias for proto(47)
+#   - esp       : alias for proto(50)
+#   - ah        : alias for proto(51)
+#   - icmp6     : alias for proto(58)
+#   - sctp      : alias for proto(132)
+#
+# Examples:
+#   - tawk 'tcp()' file.txt
+#   - tawk 'tcp() { print $srcIP }' file.txt
+#   - tawk 'tcp($l4Proto)' file.txt
+#   - tawk 'tcp($l4Proto) { print $srcIP }' file.txt
+
+@include "hdr"
+@include "proto"
+
+function tcp(p) {
+    if (hdr()) return __PRIHDR__
+    if (p) return p == 6
+    else return proto(6)
+}

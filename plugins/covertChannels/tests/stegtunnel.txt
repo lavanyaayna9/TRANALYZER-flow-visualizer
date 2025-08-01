@@ -1,0 +1,75 @@
+Workstation1
+------------
+  OS: Arch Linux (x86_64)
+  Kernel: 3.15.8-1-ARCH
+  IP: 10.20.7.26
+  Hostname: caprica
+  MAC: 60:a4:4c:52:d6:e9
+
+VM1
+---
+  Qemu KVM running on Workstation1
+  OS: Debian Wheezy (i386)
+  Kernel: 3.2.0-4-686-pae
+  IP: 10.20.5.48 (connected to bridge on Workstation1)
+  MAC: 52:54:00:12:34:56
+
+VM2
+---
+  Qemu KVM running on Workstation1
+  OS: Debian Wheezy (i386)
+  Kernel: 3.2.0-4-686-pae
+  IP: 10.20.5.57 (connected to bridge on Workstation1)
+  MAC: 02:A2:3F:28:9B:C7
+
+
+Network scheme
+-------------
+
+      VM1                VM2
+   stegclient         stegserver
+         \               /
+          \             /
+    (tap0) \           / (tap1)
+            \         /
+             \ (br0) /
+            Workstation1
+        record traffic on br0
+
+
+Trace capture procedure
+-----------------------
+1) Start workstation
+2) Start Ubuntu VM
+3) Record traffic on Workstation1
+    sudo tcpdump -s 0 -i br0 -w stegtunnel.dmp
+4) Start the stegserver on WM2
+    sudo ./stegserver -f secret.txt
+5) Start the stegclient on WM1
+    sudo ./stegclient -r 10.20.5.57
+
+
+Notes
+-----
+Source: http://packetstormsecurity.com/files/31731/stegtunnel-0.4.tar.gz.html
+
+Some problems to build it on Ubuntu/Debian:
+    apt-get install libdnet-dev libdumpnet-dev libpcap-dev
+    ln -s /usr/include/dumbnet.h /usr/include/dnet.h
+    stegtunnel.c:126 (only on Ubuntu)
+        file_ctx->fd = open(file_ctx->name_buf, O_RDWR|O_CREAT|O_EXCL, S_IRUSR|S_IWUSR);
+
+
+Conclusion
+----------
+Crash with:
+    handle_open: fw_open failed
+    packetp_start: handle_open() failed
+    message from: packetp-0.4.1/packetp.c:291
+
+dnet fw_open should return a handle to firewall config but does not
+seems to be a known issue: http://sourceforge.net/p/libdnet/mailman/message/22611320/
+
+iptables/netfilter works correctly on the VMs
+
+Tested on Ubuntu 14.04 (64bits), Debian Wheezy, Squeeze and Sarge (32bits). Works on none of those.

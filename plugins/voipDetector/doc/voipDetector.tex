@@ -1,0 +1,255 @@
+\IfFileExists{t2doc.cls}{%
+    \documentclass[documentation]{subfiles}
+}{
+    \errmessage{Error: could not find t2doc.cls}
+}
+
+\begin{document}
+
+\trantitle
+    {voipDetector}
+    {Voice over IP (VoIP)}
+    {Tranalyzer Development Team}
+
+\section{voipDetector}\label{s:voipDetector}
+
+\subsection{Description}
+The idea of this plugin is to identify SIP, RTP and RTCP flows independently of each other, so
+that also non standard traffic can be detected. Moreover certain QoS values are extracted.
+
+\subsection{Configuration Flags}
+The following flags can be used to control the output of the plugin:
+\begin{longtable}{>{\tt}lcl>{\tt\small}l}
+    \toprule
+    {\bf Name} & {\bf Default} & {\bf Description} & {\bf Flags}\\
+    \midrule\endhead%
+    VOIP\_SIP      &    2 & 0: do not decode SIP,                                              & \\
+                   &      & 1: Enable SIP decoder,                                             & \\
+                   &      & 2: Decode SIP and add RTP/SIP findex/ssrc flow correlation         & \\
+    VOIP\_SIP\_PRV &    0 & 0: No RTP/SIP flow correlation enhancement,                        & VOIP\_SIP=2\\
+                   &      & 1: add RTP srcIP,                                                  & VOIP\_SIP=2\\
+                   &      & 2: add srcIP of SIP flow                                           & VOIP\_SIP=2\\
+    VOIP\_RTP      &    1 & Enable RTP decoder                                                 & \\
+    VOIP\_RTCP     &    1 & Enable RTCP decoder                                                & \\
+    VOIP\_ANALEN   &    0 & 0: only ssrc check,                                                & \\
+                   &      & 1: additional check report len against payload length              & \\
+    VOIP\_SAVE     &    0 & Save RTP content to {\tt\small VOIP\_V\_PATH}                      & \\
+    VOIP\_BUFMODE  &    1 & Enable buffering of saved RTP content                              & VOIP\_SAVE=1\\
+    VOIP\_SILREST  &    1 & Restore back G.711 suppressed silences                             & VOIP\_SAVE=1\\
+    VOIP\_PLDOFF   &    0 & Offset for payload to save                                         & VOIP\_SAVE=1\\
+    VOIP\_SVFDX    &    1 & Merge ops: 1: findex, 0: SSRC                                      & VOIP\_SAVE=1\\
+    VOIP\_MINPKT   &    1 & Minimum packet length of a flow                                    & VOIP\_SAVE=1\\
+    RTPFMAX        &   10 & Maximal SSRC files                                                 & VOIP\_SAVE=1\&\&\\
+                   &      &                                                                    & VOIP\_SVFDX=0\\
+    SIPNMMAX       &   35 & Maximal SIP caller name length                                     & \\
+    SIPSTATMAX     &    8 & Maximal SIP state requests                                         & \\
+    SIPCLMAX       &    3 & Maximal SIP state requests name length                             & \\
+    SIPRFXMAX      &  100 & Maximal SIP IP, m=audio / video ports                              & \\
+    RTPBUFSIZE     & 4096 & Size of buffer for RTP content                                     & VOIP\_SAVE=1\\
+    RTPMAXVERS     &    1 &  Maximal number of version violations                              & \\
+    VOIP\_RMDIR    &    1 & Empty {\tt\small VOIP\_V\_PATH} before starting                    & VOIP\_SAVE=1\\
+    VOIP\_PERM     & {\tt\small S\_IRWXU}
+                          & File permissions                                                   & VOIP\_SAVE=1\\
+    VOIP\_V\_PATH  & {\tt\small "/tmp/TranVoIP"}
+                          & Path for extracted content                                         & VOIP\_SAVE=1\\
+    VOIP\_FNAME    & {\tt\small "nudel"}
+                          & Default content file name prefix                                   & VOIP\_SAVE=1\\
+    \bottomrule
+\end{longtable}
+
+\subsubsection{Environment Variable Configuration Flags}
+The following configuration flags can also be configured with environment variables ({\tt ENVCNTRL>0}):
+\begin{itemize}
+    \item {\tt VOIP\_RMDIR}
+    \item {\tt VOIP\_V\_PATH}
+    \item {\tt VOIP\_FNAME}
+\end{itemize}
+
+\subsection{Flow File Output}
+The voipDetector plugin outputs the following columns:
+
+\begin{longtable}{>{\tt}lll>{\tt\small}l}
+    \toprule
+    {\bf Column}         & {\bf Type} & {\bf Description} & {\bf Flags}\\
+    \midrule\endhead%
+    \nameref{voipStat}   & H16        & Status                                     & \\
+    voipType             & R(U8)      & RTP/RTCP type                              & \\
+    voipSSRC             & R(H32)     & RTP/RTCP Synchronization Source Identifier & \\
+    voipCSRC             & R(H32)     & RTP/RTCP Contributing Sources              & \\
+    voipSRCnt            & U8         & RTP SID / RTCP record count                & \\
+    rtpPMCnt             & U32        & RTP packet miss count                      & \\
+    rtpPMr               & F          & RTP packet miss ratio                      & \\
+                         &            &                                            & \\
+    % SIP
+    \nameref{sipMethods} & H16        & SIP methods                                & VOIP\_SIP>0\\
+    sipStatCnt           & U8         & SIP stat count                             & VOIP\_SIP>0\\
+    sipReqCnt            & U8         & SIP request count                          & VOIP\_SIP>0\\
+    sipUsrAgnt           & S          & SIP User-Agent                             & VOIP\_SIP>0\\
+    sipRealIP            & S          & SIP X-Real-IP                              & VOIP\_SIP>0\\
+    sipFrom              & R(S)       & SIP Caller                                 & VOIP\_SIP>0\\
+    sipTo                & R(S)       & SIP Callee                                 & VOIP\_SIP>0\\
+    sipCallID            & R(S)       & SIP Call-ID                                & VOIP\_SIP>0\\
+    sipContact           & R(S)       & SIP Contact                                & VOIP\_SIP>0\\
+    sipStat              & R(U16)     & SIP stat                                   & VOIP\_SIP>0\\
+    sipReq               & R(SC)      & SIP request                                & VOIP\_SIP>0\\
+                         &            &                                            & \\
+    % SDP
+    sdpSessID            & R(S)       & SDP session ID                             & VOIP\_SIP>0\\
+    sdpRFAdd             & R(IP)      & SDP RTP audio/video flow address           & VOIP\_SIP>0\\
+    sdpRAFPrt            & R(U16)     & SDP RTP audio flow port                    & VOIP\_SIP>0\\
+    sdpRVFPrt            & R(U16)     & SDP RTP video flow port                    & VOIP\_SIP>0\\
+    sdpRTPMap            & R(SC)      & SDP rtpmap                                 & VOIP\_SIP>0\\
+    voipFindex           & R(U64)     & SIP RTP findex                             & VOIP\_SIP>1\\
+                         &            &                                            & \\
+    % RTCP
+    rtcpTPCnt            & U32        & RTCP cumulated transmitter packet count    & VOIP\_RTCP=1\\
+    rtcpTBCnt            & U32        & RTCP cumulated transmitter byte count      & VOIP\_RTCP=1\\
+    rtcpFracLst          & U8         & RTCP cumulated fraction lost               & VOIP\_RTCP=1\\
+    rtcpCPMCnt           & U32        & RTCP cumulated packet miss count           & VOIP\_RTCP=1\\
+    rtcpMaxIAT           & U32        & RTCP max inter-arrival time                & VOIP\_RTCP=1\\
+                         &            &                                            & \\
+    voipFname            & S          & RTP content filename                       & VOIP\_SAVE=1\\
+    \bottomrule
+\end{longtable}
+
+\subsubsection{voipStat}\label{voipStat}
+The {\tt voipStat} column is to be interpreted as follows:
+
+\begin{longtable}{>{\tt}rl}
+    \toprule
+    {\bf voipStat}     & {\bf Description}\\
+    \midrule\endhead%
+    $2^{0}$  (=0x0001) & RTP detected\\
+    $2^{1}$  (=0x0002) & RTCP detected\\
+    $2^{2}$  (=0x0004) & SIP detected\\
+    $2^{3}$  (=0x0008) & STUN detected\\
+    \\
+    $2^{4}$  (=0x0010) & RTP extension header\\
+    $2^{5}$  (=0x0020) & RT(C)P padding bytes\\
+    $2^{6}$  (=0x0040) & SDP detected\\
+    $2^{7}$  (=0x0080) & RTP marker\\
+    \\
+    $2^{8}$  (=0x0100) & RTP content write operation \\
+    $2^{9}$  (=0x0200) & SIP audio RTP flow announced\\
+    $2^{10}$ (=0x0400) & SIP video RTP flow announced\\
+    $2^{11}$ (=0x0800) & {\tt sdpRFAdd} field truncated\ldots increase {\tt SIPRFXMAX}\\
+    \\
+    $2^{12}$ (=0x1000) & RTP packet loss detected\\
+    $2^{13}$ (=0x2000) & RTP sequence number jump to past\\
+    $2^{14}$ (=0x4000) & RTP new frame header flag\\
+    $2^{15}$ (=0x8000) & RTP error in detection\\
+    \bottomrule
+\end{longtable}
+
+\subsubsection{sipMethods}\label{sipMethods}
+The {\tt sipMethods} column is to be interpreted as follows:
+
+\begin{longtable}{>{\tt}rl}
+    \toprule
+    {\bf sipMethods}   & {\bf Description}\\
+    \midrule\endhead%
+    $2^{0}$  (=0x0001) & Unknown method\\
+    $2^{1}$  (=0x0002) & INVITE\\
+    $2^{2}$  (=0x0004) & ACK\\
+    $2^{3}$  (=0x0008) & BYE\\
+    \\
+    $2^{4}$  (=0x0010) & CANCEL\\
+    $2^{5}$  (=0x0020) & REGISTER\\
+    $2^{6}$  (=0x0040) & OPTIONS\\
+    $2^{7}$  (=0x0080) & PRACK\\
+    \\
+    $2^{8}$  (=0x0100) & SUBSCRIBE\\
+    $2^{9}$  (=0x0200) & NOTIFY\\
+    $2^{10}$ (=0x0400) & PUBLISH\\
+    $2^{11}$ (=0x0800) & INFO\\
+    \\
+    $2^{12}$ (=0x1000) & REFER\\
+    $2^{13}$ (=0x2000) & MESSAGE\\
+    $2^{14}$ (=0x4000) & UPDATE\\
+    $2^{15}$ (=0x8000) & ---\\
+    \bottomrule
+\end{longtable}
+
+\subsection{Packet File Output}
+In packet mode ({\tt --s} option), the voipDetector plugin outputs the following columns:
+\begin{longtable}{>{\tt}lll>{\tt\small}l}
+    \toprule
+    {\bf Column}       & {\bf Type} & {\bf Description}               & {\bf Flags}\\
+    \midrule\endhead%
+    \nameref{voipStat} & H16        & Status                          & \\
+    voipType           & R(U8)      & RTP / RTCP type                 & \\
+    voipSeqN           & U8         & RTP / RTCP sequence number      & \\
+    voipTs             & U32        & RTP / RTCP timestamp            & \\
+    voipTsDiff         & I32        & RTP / RTCP timestamp difference & \\
+    voipSSRC           & H32        & RTP / RTCP ID                   & \\
+    \bottomrule
+\end{longtable}
+
+\subsection{Monitoring Output}
+In monitoring mode, the voipDetector plugin outputs the following columns:
+\begin{longtable}{>{\tt}lll>{\tt\small}l}
+    \toprule
+    {\bf Column} & {\bf Type} & {\bf Description} & {\bf Flags}\\
+    \midrule\endhead%
+    voipFHndl  & U64 & Number of file handles                   & VOIP\_SAVE=1\\
+    sipPkts    & U64 & Number of SIP packets                    & VOIP\_SIP>0 \\
+    sipUnkPkts & U64 & Number of SIP UNKNOWN packets            & VOIP\_SIP>0 \\
+    sipInvPkts & U64 & Number of SIP INVITE packets             & VOIP\_SIP>0 \\
+    sipAckPkts & U64 & Number of SIP ACK packets                & VOIP\_SIP>0 \\
+    sipByePkts & U64 & Number of SIP BYE packets                & VOIP\_SIP>0 \\
+    sipCanPkts & U64 & Number of SIP CANCEL packets             & VOIP\_SIP>0 \\
+    sipRegPkts & U64 & Number of SIP REGISTER packets           & VOIP\_SIP>0 \\
+    sipOptPkts & U64 & Number of SIP OPTIONS packets            & VOIP\_SIP>0 \\
+    sipPraPkts & U64 & Number of SIP PRACK packets              & VOIP\_SIP>0 \\
+    sipSubPkts & U64 & Number of SIP SUBSCRIBE packets          & VOIP\_SIP>0 \\
+    sipNotPkts & U64 & Number of SIP NOTIFY packets             & VOIP\_SIP>0 \\
+    sipPubPkts & U64 & Number of SIP PUBLISH packets            & VOIP\_SIP>0 \\
+    sipInfPkts & U64 & Number of SIP INFO packets               & VOIP\_SIP>0 \\
+    sipRefPkts & U64 & Number of SIP REFER packets              & VOIP\_SIP>0 \\
+    sipMsgPkts & U64 & Number of SIP MESSAGE packets            & VOIP\_SIP>0 \\
+    sipUpdPkts & U64 & Number of SIP UPDATE packets             & VOIP\_SIP>0 \\
+    sdpPkts    & U64 & Number of SDP packets                    & VOIP\_SIP>0 \\
+    sipAPCnt   & U64 & Number of unique SDP audio address, port & VOIP\_SIP>0 \\
+    sipFdxMtch & U64 & Number of SIP/RTP matches                & VOIP\_SIP>0\\
+    rtpPkts    & U64 & Number of RTP packets                    & VOIP\_RTP=1 \\
+    rtcpPkts   & U64 & Number of RTCP packets                   & VOIP\_RTCP=1\\
+    \bottomrule
+\end{longtable}
+
+\subsection{Plugin Report Output}
+The following information is reported:
+\begin{itemize}
+    \item Aggregated {\tt\nameref{voipStat}}
+    \item Aggregated {\tt\nameref{sipMethods}}
+    \item Number of SIP packets ({\tt VOIP\_SIP=1})
+    \item Number of SIP UNKNOWN packets ({\tt VOIP\_SIP=1})
+    \item Number of SIP INVITE packets ({\tt VOIP\_SIP=1})
+    \item Number of SIP ACK packets ({\tt VOIP\_SIP=1})
+    \item Number of SIP BYE packets ({\tt VOIP\_SIP=1})
+    \item Number of SIP CANCEL packets ({\tt VOIP\_SIP=1})
+    \item Number of SIP REGISTER packets ({\tt VOIP\_SIP=1})
+    \item Number of SIP OPTIONS packets ({\tt VOIP\_SIP=1})
+    \item Number of SIP PRACK packets ({\tt VOIP\_SIP=1})
+    \item Number of SIP SUBSCRIBE packets ({\tt VOIP\_SIP=1})
+    \item Number of SIP NOTIFY packets ({\tt VOIP\_SIP=1})
+    \item Number of SIP PUBLISH packets ({\tt VOIP\_SIP=1})
+    \item Number of SIP INFO packets ({\tt VOIP\_SIP=1})
+    \item Number of SIP REFER packets ({\tt VOIP\_SIP=1})
+    \item Number of SIP MESSAGE packets ({\tt VOIP\_SIP=1})
+    \item Number of SIP UPDATE packets ({\tt VOIP\_SIP=1})
+    \item Number of SDP packets ({\tt VOIP\_SIP=1})
+    \item Number of unique SDP audio address, port ({\tt VOIP\_SIP=1})
+    \item Number of unique SIP/RTP flow matches ({\tt VOIP\_SIP=1})
+    \item Number of RTP packets ({\tt VOIP\_RTP=1})
+    \item Number of RTCP packets ({\tt VOIP\_RTCP=1})
+    \item Max number of file handles ({\tt VOIP\_SAVE=1})
+\end{itemize}
+
+\subsection{TODO}
+
+\begin{itemize}
+    \item Skype
+    \item Google Talk
+\end{itemize}
+
+\end{document}

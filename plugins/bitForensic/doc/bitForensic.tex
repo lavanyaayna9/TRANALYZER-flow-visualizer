@@ -1,0 +1,109 @@
+\IfFileExists{t2doc.cls}{
+    \documentclass[documentation]{subfiles}
+}{
+    \errmessage{Error: could not find 't2doc.cls'}
+}
+
+\begin{document}
+
+% Declare author and title here, so the main document can reuse it
+\trantitle
+    {bitForensic} % Plugin name
+    {Search packets for specific bits patterns} % Short description
+    {Tranalyzer Development Team} % author(s)
+
+\section{bitForensic}\label{s:bitForensic}
+
+\subsection{Description}
+The bitForensic plugin enables the user to search the packets for specific {\tt uint8\_t},
+{\tt uint16\_t}, {\tt uint32\_t} and {\tt uint64\_t} patterns, combined with user-defined
+bit masks and nibble swap operations.
+
+\subsection{Dependencies}
+None.
+
+\subsubsection{Core Configuration}
+This plugin requires no special core configuration.
+
+\subsection{Configuration Flags}
+The following flags can be used to control the output of the plugin:
+\begin{longtable}{>{\tt}lcl>{\tt\small}l}
+    \toprule
+    {\bf Name} & {\bf Default} & {\bf Description} & {\bf Flags}\\
+    \midrule\endhead%
+    BF\_PLEN      &  0            & 0: Pattern search,                                    & \\
+                  &               & 1: Length                                             & \\
+    BF\_TOTLEN    &  0            & 0: Residual length,                                   & BF\_PLEN=1\\
+                  &               & 1: Total length                                       & \\
+    BF\_EXLEN     &  2            & Length excluded                                       & BF\_PLEN=1\\
+    BF\_PAT       &  {\tt 0x0915} & Pattern: 1,2,4,8 bytes, defines {\tt\small BF\_PWDTH} & \\
+    BF\_MSK       &  {\tt 0xffff} & Mask: 1,2,4,8 bytes, defines {\tt\small BF\_PWDTH}    & \\
+    BF\_NETODR    &  1            & Search pattern network order                          & \\
+    BF\_NIBBLESWP &  0            & Swap nibbles in search pattern (0-1)                  & \\
+    BF\_DNUM      & 10            & Max {\tt bPDPos} flow storage                         & \\
+    BF\_SAVE\_BCH &  0            & Extract content: B/D info                             & \\
+    BF\_BSHIFT    & 14            & Start byte shift                                      & BF\_SAVE\_BCH=1\\
+    BF\_RMDIR     &  1            & Empty {\tt\small BF\_V\_PATH} before starting         & BF\_SAVE\_BCH=1\\
+
+    BF\_V\_PATH   & {\tt\small "/tmp/BF/"} & Path for raw content             & \\
+    BF\_FNAME     & {\tt\small "bfnudel"}  & Default content file name prefix & \\
+    \bottomrule
+\end{longtable}
+
+\subsubsection{Environment Variable Configuration Flags}
+The following configuration flags can also be configured with environment variables ({\tt ENVCNTRL>0}):
+\begin{itemize}
+    \item {\tt BF\_RMDIR}
+    \item {\tt BF\_V\_PATH}
+    \item {\tt BF\_FNAME}
+\end{itemize}
+
+\subsection{Flow File Output}
+The bitForensic plugin outputs the following columns:
+\begin{longtable}{>{\tt}lll>{\tt\small}l}
+    \toprule
+    {\bf Column} & {\bf Type} & {\bf Description} & {\bf Flags}\\
+    \midrule\endhead%
+    \nameref{bfStat} & H8     & Status                  & \\
+    bfPDPos          & R(U16) & Pattern Detect Position & \\
+    \bottomrule
+\end{longtable}
+
+\subsubsection{bfStat}\label{bfStat}
+The {\tt bfStat} column is to be interpreted as follows:
+\begin{longtable}{>{\tt}rl}
+    \toprule
+    {\bf bfStat} & {\bf Description}\\
+    \midrule\endhead%
+    0x0\textcolor{magenta}{1} & Pattern found           \\
+    0x0\textcolor{magenta}{2} & Length byte, word found \\
+    0x0\textcolor{magenta}{4} & ---                     \\
+    0x0\textcolor{magenta}{8} & Save content            \\
+    \\
+    0x\textcolor{magenta}{1}0 & {\tt BF\_PWDTN0}        \\
+    0x\textcolor{magenta}{2}0 & {\tt BF\_PWDTN1}        \\
+    0x\textcolor{magenta}{4}0 & {\tt BF\_PWDTN2}        \\
+    0x\textcolor{magenta}{8}0 & ---                     \\
+    \bottomrule
+\end{longtable}
+
+\subsection{Packet File Output}
+In packet mode ({\tt --s} option), the bitForensic plugin outputs the following columns:
+\begin{longtable}{>{\tt}lll>{\tt\small}l}
+    \toprule
+    {\bf Column} & {\bf Type} & {\bf Description} & {\bf Flags}\\
+    \midrule\endhead%
+    \nameref{bfStat}  & H8     & Status                  & \\
+    bfPDPos           & R(U16) & Pattern Detect Position & \\
+    \bottomrule
+\end{longtable}
+
+\subsection{Plugin Report Output}
+The following information is reported:
+\begin{itemize}
+    \item Aggregated {\tt\nameref{bfStat}}
+    \item Number of bit patterns
+    \item Max. number of file handles ({\tt BF\_SAVE\_BCH=1})
+\end{itemize}
+
+\end{document}

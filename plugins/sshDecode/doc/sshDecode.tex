@@ -1,0 +1,194 @@
+\IfFileExists{t2doc.cls}{
+    \documentclass[documentation]{subfiles}
+}{
+    \errmessage{Error: could not find t2doc.cls}
+}
+
+\begin{document}
+
+\trantitle
+    {sshDecode}
+    {Secure Shell (SSH)}
+    {Tranalyzer Development Team}
+
+\section{sshDecode}\label{s:sshDecode}
+
+\subsection{Description}
+This plugin analyzes SSH traffic.
+
+\subsection{Dependencies}
+This plugin requires the {\bf libssl}.
+\begin{table}[!ht]
+    \centering
+    \begin{tabular}{>{\bf}r>{\tt}l>{\tt}l>{\tt}l}
+        \toprule
+        %                             &                      &                 \\
+        %\midrule
+        Ubuntu:                      & sudo apt-get install & libssl-dev      \\
+        Arch:                        & sudo pacman -S       & openssl         \\
+        %Gentoo:                      & sudo emerge          & openssl         \\
+        openSUSE:                    & sudo zypper install  & libopenssl-devel\\
+        Red Hat/Fedora\tablefootnote{If the {\tt dnf} command could not be found, try with {\tt yum} instead}:
+                                     & sudo dnf install     & openssl-devel   \\
+        macOS\tablefootnote{Brew is a packet manager for macOS that can be found here: \url{https://brew.sh}}:
+                                     & brew install         & openssl@1.1     \\
+        \bottomrule
+    \end{tabular}
+\end{table}
+
+\subsection{Configuration Flags}
+The following flags can be used to control the output of the plugin:
+\begin{longtable}{>{\tt}lcl>{\tt\small}l}
+    \toprule
+    {\bf Name} & {\bf Default} & {\bf Description} & {\bf Flags}\\
+    \midrule\endhead%
+    SSH\_USE\_PORT       & 0    & 1: Count all packets to/from {\tt SSH\_PORT} as SSH & \\
+                         &      & (useful if version exchange was not captured)       & \\
+    SSH\_DECODE          & 2    & 0: Do not decode SSH handshake messages             & \\
+                         &      & 1: Only decode SSH Key Exchange Init messages       & \\
+                         &      & 2: Decode all SSH Exchange messages                 & \\
+    SSH\_FINGERPRINT     & 1    & Algorithm to use for the fingerprint:               & SSH\_DECODE=2\\
+                         &      & \qquad 0: No fingerprint, 1: MD5, 1: SHA256         & \\
+    SSH\_ALGO            & 1    & Output chosen algorithms                            & SSH\_DECODE>0\\
+    SSH\_LISTS           & 0    & Output lists of supported algorithms                & SSH\_DECODE>0\\
+    SSH\_HASSH           & 1    & Output HASSH fingerprint (hash and description)     & \\
+    SSH\_HASSH\_STR      & 0    & Also output HASSH fingerprint before hashing        & SSH\_HASSH=1\\
+    SSH\_HASSH\_DLEN     & 512  & Max length for HASSH descriptions                   & SSH\_HASSH=1\\
+    SSH\_HASSH\_STR\_LEN & 1024 & Max length for uncompressed HASSH signatures        & SSH\_HASSH=1\\
+    SSH\_BUF\_SIZE       & 512  & Max length for strings                              & \\
+    SSH\_HKT\_SIZE       & 48   & Max length for host key type and chosen algorithms  & \\
+    SSH\_DEBUG           & 0    & Activate debug output                               & \\
+    \bottomrule
+\end{longtable}
+
+In addition, the name of the HASSH database is controlled by the {\tt SSH\_HASSH\_NAME} flag and defaults to\\
+{\tt "hassh\_fingerprints.tsv"}.
+
+\subsubsection{Environment Variable Configuration Flags}
+The following configuration flags can also be configured with environment variables ({\tt ENVCNTRL>0}):
+\begin{itemize}
+    \item {\tt SSH\_HASSH\_NAME}
+\end{itemize}
+
+\subsection{Flow File Output}
+The sshDecode plugin outputs the following columns:
+\begin{longtable}{>{\tt}lll>{\tt\small}l}
+    \toprule
+    {\bf Column} & {\bf Type} & {\bf Description} & {\bf Flags}\\
+    \midrule\endhead%
+    \nameref{sshStat}        & H16   & Status                                            & \\
+    sshVersion               & R(S)  & SSH version and software                          & \\
+    sshHostKeyType           & R(SC) & SSH host key type                                 & SSH\_DECODE=2\\
+    \nameref{sshFingerprint} & R(SC) & SSH public key fingerprint                        & SSH\_DECODE=2\&\&\\
+                             &       &                                                   & SSH\_FINGERPRINT>0\\
+    sshCookie                & R(SC) & SSH cookie                                        & SSH\_DECODE>0\\
+
+    \\
+    \multicolumn{4}{l}{If {\tt SSH\_DECODE>0\&\&SSH\_ALGO=1}, the following columns are displayed:}\\
+    \\
+
+    sshKEX                   & R(S)  & SSH chosen KEX algorithm                          & \\
+    sshSrvHKeyAlgo           & R(S)  & SSH chosen server host key algorithm              & \\
+    sshEncCS                 & R(S)  & SSH chosen encryption algorithm client to server  & \\
+    sshEncSC                 & R(S)  & SSH chosen encryption algorithm server to client  & \\
+    sshMacCS                 & R(S)  & SSH chosen MAC algorithm client to server         & \\
+    sshMacSC                 & R(S)  & SSH chosen MAC algorithm server to client         & \\
+    sshCompCS                & R(S)  & SSH chosen compression algorithm client to server & \\
+    sshCompSC                & R(S)  & SSH chosen compression algorithm server to client & \\
+    sshLangCS                & R(S)  & SSH chosen language client to server              & \\
+    sshLangSC                & R(S)  & SSH chosen language server to client              & \\
+
+    \\
+    \multicolumn{4}{l}{If {\tt SSH\_DECODE>0\&\&SSH\_LISTS=1}, the following columns are displayed:}\\
+    \\
+
+    sshKEXList               & R(S)  & SSH KEX algorithms                                & \\
+    sshSrvHKeyAlgoList       & R(S)  & SSH server host key algorithms                    & \\
+    sshEncCSList             & R(S)  & SSH encryption algorithms client to server        & \\
+    sshEncSCList             & R(S)  & SSH encryption algorithms server to client        & \\
+    sshMacCSList             & R(S)  & SSH MAC algorithms client to server               & \\
+    sshMacSCList             & R(S)  & SSH MAC algorithms server to client               & \\
+    sshCompCSList            & R(S)  & SSH compression algorithms client to server       & \\
+    sshCompSCList            & R(S)  & SSH compression algorithms server to client       & \\
+    sshLangCSList            & R(S)  & SSH languages client to server                    & \\
+    sshLangSCList            & R(S)  & SSH languages server to client                    & \\
+
+    \\
+    \multicolumn{4}{l}{If {\tt SSH\_HASSH=1}, the following columns are displayed:}\\
+    \\
+
+    sshHassh                 & R(SC) & SSH HASSH fingerprint                             & \\
+    sshHasshDesc             & R(S)  & SSH HASSH description                             & \\
+    sshHasshStr              & R(S)  & SSH HASSH string                                  & \\
+    \bottomrule
+\end{longtable}
+
+\subsubsection{sshStat}\label{sshStat}
+The {\tt sshStat} column is to be interpreted as follows:
+\begin{longtable}{>{\tt}rl}
+    \toprule
+    {\bf sshStat} & {\bf Description}\\
+    \midrule\endhead%
+    $2^{0}$  (=0x0001) & Flow contains SSH protocol\\
+    $2^{1}$  (=0x0002) & Keeps track of who sent the SSH banner first\\
+    $2^{2}$  (=0x0004) & Banner does not end with CRLF or contains NULL byte\\
+    $2^{3}$  (=0x0008) & Key Exchange Init message seen\\
+    \\
+    $2^{4}$  (=0x0010) & Diffie-Hellman Key Exchange Init message seen\\
+    $2^{5}$  (=0x0020) & Diffie-Hellman Key Exchange Reply message seen\\
+    $2^{6}$  (=0x0040) & Elliptic Curve Diffie-Hellman Key Exchange Init message seen\\
+    $2^{7}$  (=0x0080) & Elliptic Curve Diffie-Hellman Key Exchange Reply message seen\\
+    \\
+    $2^{8}$  (=0x0100) & Diffie-Hellman Group Exchange Group message seen\\
+    $2^{9}$  (=0x0200) & Diffie-Hellman Group Exchange Init message seen\\
+    $2^{10}$ (=0x0400) & Diffie-Hellman Group Exchange Request message seen\\
+    $2^{11}$ (=0x0800) & Diffie-Hellman Group Exchange Reply message seen\\
+    \\
+    $2^{12}$ (=0x1000) & New Keys message seen\\
+    $2^{13}$ (=0x2000) & String truncated... increase {\tt SSH\_BUF\_SIZE}\\
+    $2^{14}$ (=0x4000) & Host key type or chosen algorithm truncated... increase {\tt SSH\_HKT\_SIZE}\\
+    $2^{15}$ (=0x8000) & Malformed (decoding error, encrypted, ...)\\
+    \bottomrule
+\end{longtable}
+
+\subsubsection{sshFingerprint}\label{sshFingerprint}
+The fingerprint of a public key can be computed as follows:
+\begin{center}
+    {\tt ssh-keygen -lf id\_rsa.pub}
+\end{center}
+To compute the fingerprint of each host listed in {\em \textasciitilde{}/.ssh/known\_hosts}, use the following command:
+\begin{center}
+    {\tt ssh-keygen -lf \textasciitilde{}/.ssh/known\_hosts}
+\end{center}
+Note that the default SHA256 algorithm can be changed with the {\tt --E md5} option.
+
+\subsection{Packet File Output}
+In packet mode ({\tt --s} option), the sshDecode plugin outputs the following columns:
+\begin{longtable}{>{\tt}lll>{\tt\small}l}
+    \toprule
+    {\bf Column} & {\bf Type} & {\bf Description} & {\bf Flags}\\
+    \midrule\endhead%
+    \nameref{sshStat} & H16 & Status & \\
+    \bottomrule
+\end{longtable}
+
+\subsection{Monitoring Output}
+In monitoring mode, the sshDecode plugin outputs the following columns:
+\begin{longtable}{>{\tt}lll>{\tt\small}l}
+    \toprule
+    {\bf Column} & {\bf Type} & {\bf Description} & {\bf Flags}\\
+    \midrule\endhead%
+    sshNFlows         & U64 & Number of SSH flows & \\
+    \nameref{sshStat} & H16 & Status              & \\
+    \bottomrule
+\end{longtable}
+
+\subsection{Plugin Report Output}
+The following information is reported:
+\begin{itemize}
+    \item Aggregated {\tt\nameref{sshStat}}
+    \item Number of SSH flows
+    \item Number of HASSH signatures matched
+\end{itemize}
+
+\end{document}

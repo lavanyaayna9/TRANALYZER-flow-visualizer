@@ -1,0 +1,36 @@
+# ZSH completion for t2test
+
+_t2test() {
+    #compdef t2test
+
+    local cur="${words[CURRENT]}"
+    [ $CURRENT -gt 2 ] && local prev="${words[CURRENT-1]}"
+
+    case "$prev" in
+        -p)
+            _files -/
+            return
+            ;;
+        -P|-f)
+            _files
+            return
+            ;;
+    esac
+
+    if [[ "$cur" == -* ]]; then
+        _arguments --
+        return
+    fi
+
+    local plugins=(tranalyzer2)
+    for i in "$T2PLHOME/"*; do
+        local b=$(basename "$i")
+        if [ -d "$i" ] && [ "$b" != "t2PSkel" ]; then
+            plugins+=($b)
+        fi
+    done
+
+    compadd "${plugins[@]}"
+}
+
+compdef _t2test t2test T2Tester.py

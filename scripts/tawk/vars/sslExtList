@@ -1,0 +1,88 @@
+#H sslExtList | Description
+#H =============================================================================
+       0x0000 | Server name
+       0x0001 | Max fragment length
+       0x0002 | Client certificate URL
+       0x0003 | Trusted CA keys
+       0x0004 | Truncated HMAC
+       0x0005 | Status request
+       0x0006 | User mapping
+       0x0007 | Client authz
+       0x0008 | Server authz
+       0x0009 | Cert type
+       0x000a | Supported groups (elliptic curves)
+       0x000b | EC point formats
+       0x000c | Secure Remote Password (SRP) Protocol for TLS Authentication
+       0x000d | Signature hash algorithms
+       0x000e | Use SRTP
+       0x000f | Heartbeat
+       0x0010 | Application Layer Protocol Negotiation (ALPN)
+       0x0011 | Status request v2
+       0x0012 | Signed certificate timestamp
+       0x0013 | Client certificate type
+       0x0014 | Server certificate type
+       0x0015 | Padding
+       0x0016 | Encrypt then MAC
+       0x0017 | Extended master secret
+       0x0018 | Token binding
+       0x0019 | Cached info
+       0x001a | TLS 1.2 Update for Long-term Support (TLS LTS)
+       0x001b | Compress certificate
+       0x001c | Record size limit
+       0x001d | Pwd protect
+       0x001e | Pwd clear
+       0x001f | Password salt
+       0x0020 | Ticket pinning
+       0x0021 | TLS cert with extern PSK
+       0x0022 | Delegated credential
+       0x0023 | Session ticket
+       0x0024 | Transport Layer Middlebox Security Protocol (TLMSP)
+       0x0025 | Transport Layer Middlebox Security Protocol (TLMSP) proxying
+       0x0026 | Transport Layer Middlebox Security Protocol (TLMSP) delegate
+       0x0027 | Supported EKT ciphers
+       0x0028 | Extended random
+       0x0029 | Pre-Shared Key (PSK)
+       0x002a | Early data
+       0x002b | Supported versions
+       0x002c | Cookie
+       0x002d | PSK key exchange modes
+       0x002f | Certificate authorities
+       0x0030 | OID filters
+       0x0031 | Post handshake auth
+       0x0032 | Signature algorithms cert
+       0x0033 | Key share
+       0x0034 | Transparency info
+       0x0035 | Connection ID (deprecated)
+       0x0036 | Connection ID
+       0x0037 | External ID hash
+       0x0038 | External session ID
+       0x0039 | QUIC transport parameters
+       0x0040 | Ticket request
+       0x0041 | DNSSEC chain
+       0x0042 | Sequence number encryption algorithms (DTLS)
+       0x0043 | Return Routability Check (RRC) for DTLS
+       0x0a0a | GREASE value
+       0x1a1a | GREASE value
+       0x2a2a | GREASE value
+       0x3374 | Next Protocol Negotiation (NPN)
+       0x3377 | Origin bound cert
+       0x337c | Encrypted client cert
+       0x3a3a | GREASE value
+       0x4469 | Application settings (ALPS)
+       0x4a4a | GREASE value
+       0x5a5a | GREASE value
+       0x6a6a | GREASE value
+       0x754f | Channel ID old
+       0x7550 | Channel ID
+       0x7a7a | GREASE value
+       0x8a8a | GREASE value
+       0x9a9a | GREASE value
+       0xaaaa | GREASE value
+       0xbaba | GREASE value
+       0xcaca | GREASE value
+       0xdada | GREASE value
+       0xeaea | GREASE value
+       0xfafa | GREASE value
+       0xfd00 | Encrypted Client Hello outer extensions
+       0xfe0d | Encrypted Client Hello
+       0xff01 | Renegotiation info

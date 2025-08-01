@@ -1,0 +1,1688 @@
+
+---
+events:
+  -
+    kind: "message-v1"
+    backtrace:
+      - "/usr/share/cmake-3.28/Modules/CMakeDetermineSystem.cmake:233 (message)"
+      - "CMakeLists.txt:2 (project)"
+    message: |
+      The system is: Linux - 6.6.87.2-microsoft-standard-WSL2 - x86_64
+  -
+    kind: "message-v1"
+    backtrace:
+      - "/usr/share/cmake-3.28/Modules/CMakeDetermineCompilerId.cmake:17 (message)"
+      - "/usr/share/cmake-3.28/Modules/CMakeDetermineCompilerId.cmake:64 (__determine_compiler_id_test)"
+      - "/usr/share/cmake-3.28/Modules/CMakeDetermineCCompiler.cmake:123 (CMAKE_DETERMINE_COMPILER_ID)"
+      - "CMakeLists.txt:2 (project)"
+    message: |
+      Compiling the C compiler identification source file "CMakeCCompilerId.c" succeeded.
+      Compiler: /usr/bin/cc 
+      Build flags: 
+      Id flags:  
+      
+      The output was:
+      0
+      
+      
+      Compilation of the C compiler identification source "CMakeCCompilerId.c" produced "a.out"
+      
+      The C compiler identification is GNU, found in:
+        /home/lavanya/tranalyzer2-0.9.3/plugins/regexHyperscan/src/hyperscan/build/CMakeFiles/3.28.3/CompilerIdC/a.out
+      
+  -
+    kind: "message-v1"
+    backtrace:
+      - "/usr/share/cmake-3.28/Modules/CMakeDetermineCompilerId.cmake:17 (message)"
+      - "/usr/share/cmake-3.28/Modules/CMakeDetermineCompilerId.cmake:64 (__determine_compiler_id_test)"
+      - "/usr/share/cmake-3.28/Modules/CMakeDetermineCXXCompiler.cmake:126 (CMAKE_DETERMINE_COMPILER_ID)"
+      - "CMakeLists.txt:2 (project)"
+    message: |
+      Compiling the CXX compiler identification source file "CMakeCXXCompilerId.cpp" succeeded.
+      Compiler: /usr/bin/c++ 
+      Build flags: 
+      Id flags:  
+      
+      The output was:
+      0
+      
+      
+      Compilation of the CXX compiler identification source "CMakeCXXCompilerId.cpp" produced "a.out"
+      
+      The CXX compiler identification is GNU, found in:
+        /home/lavanya/tranalyzer2-0.9.3/plugins/regexHyperscan/src/hyperscan/build/CMakeFiles/3.28.3/CompilerIdCXX/a.out
+      
+  -
+    kind: "try_compile-v1"
+    backtrace:
+      - "/usr/share/cmake-3.28/Modules/CMakeDetermineCompilerABI.cmake:57 (try_compile)"
+      - "/usr/share/cmake-3.28/Modules/CMakeTestCCompiler.cmake:26 (CMAKE_DETERMINE_COMPILER_ABI)"
+      - "CMakeLists.txt:2 (project)"
+    checks:
+      - "Detecting C compiler ABI info"
+    directories:
+      source: "/home/lavanya/tranalyzer2-0.9.3/plugins/regexHyperscan/src/hyperscan/build/CMakeFiles/CMakeScratch/TryCompile-E0Qfdw"
+      binary: "/home/lavanya/tranalyzer2-0.9.3/plugins/regexHyperscan/src/hyperscan/build/CMakeFiles/CMakeScratch/TryCompile-E0Qfdw"
+    cmakeVariables:
+      CMAKE_C_FLAGS: ""
+      CMAKE_POSITION_INDEPENDENT_CODE: "ON"
+    buildResult:
+      variable: "CMAKE_C_ABI_COMPILED"
+      cached: true
+      stdout: |
+        Change Dir: '/home/lavanya/tranalyzer2-0.9.3/plugins/regexHyperscan/src/hyperscan/build/CMakeFiles/CMakeScratch/TryCompile-E0Qfdw'
+        
+        Run Build Command(s): /usr/bin/cmake -E env VERBOSE=1 /usr/bin/gmake -f Makefile cmTC_23055/fast
+        /usr/bin/gmake  -f CMakeFiles/cmTC_23055.dir/build.make CMakeFiles/cmTC_23055.dir/build
+        gmake[1]: Entering directory '/home/lavanya/tranalyzer2-0.9.3/plugins/regexHyperscan/src/hyperscan/build/CMakeFiles/CMakeScratch/TryCompile-E0Qfdw'
+        Building C object CMakeFiles/cmTC_23055.dir/CMakeCCompilerABI.c.o
+        /usr/bin/cc   -fPIE   -v -o CMakeFiles/cmTC_23055.dir/CMakeCCompilerABI.c.o -c /usr/share/cmake-3.28/Modules/CMakeCCompilerABI.c
+        Using built-in specs.
+        COLLECT_GCC=/usr/bin/cc
+        OFFLOAD_TARGET_NAMES=nvptx-none:amdgcn-amdhsa
+        OFFLOAD_TARGET_DEFAULT=1
+        Target: x86_64-linux-gnu
+        Configured with: ../src/configure -v --with-pkgversion='Ubuntu 13.3.0-6ubuntu2~24.04' --with-bugurl=file:///usr/share/doc/gcc-13/README.Bugs --enable-languages=c,ada,c++,go,d,fortran,objc,obj-c++,m2 --prefix=/usr --with-gcc-major-version-only --program-suffix=-13 --program-prefix=x86_64-linux-gnu- --enable-shared --enable-linker-build-id --libexecdir=/usr/libexec --without-included-gettext --enable-threads=posix --libdir=/usr/lib --enable-nls --enable-bootstrap --enable-clocale=gnu --enable-libstdcxx-debug --enable-libstdcxx-time=yes --with-default-libstdcxx-abi=new --enable-libstdcxx-backtrace --enable-gnu-unique-object --disable-vtable-verify --enable-plugin --enable-default-pie --with-system-zlib --enable-libphobos-checking=release --with-target-system-zlib=auto --enable-objc-gc=auto --enable-multiarch --disable-werror --enable-cet --with-arch-32=i686 --with-abi=m64 --with-multilib-list=m32,m64,mx32 --enable-multilib --with-tune=generic --enable-offload-targets=nvptx-none=/build/gcc-13-fG75Ri/gcc-13-13.3.0/debian/tmp-nvptx/usr,amdgcn-amdhsa=/build/gcc-13-fG75Ri/gcc-13-13.3.0/debian/tmp-gcn/usr --enable-offload-defaulted --without-cuda-driver --enable-checking=release --build=x86_64-linux-gnu --host=x86_64-linux-gnu --target=x86_64-linux-gnu --with-build-config=bootstrap-lto-lean --enable-link-serialization=2
+        Thread model: posix
+        Supported LTO compression algorithms: zlib zstd
+        gcc version 13.3.0 (Ubuntu 13.3.0-6ubuntu2~24.04) 
+        COLLECT_GCC_OPTIONS='-fPIE' '-v' '-o' 'CMakeFiles/cmTC_23055.dir/CMakeCCompilerABI.c.o' '-c' '-mtune=generic' '-march=x86-64' '-dumpdir' 'CMakeFiles/cmTC_23055.dir/'
+         /usr/libexec/gcc/x86_64-linux-gnu/13/cc1 -quiet -v -imultiarch x86_64-linux-gnu /usr/share/cmake-3.28/Modules/CMakeCCompilerABI.c -quiet -dumpdir CMakeFiles/cmTC_23055.dir/ -dumpbase CMakeCCompilerABI.c.c -dumpbase-ext .c -mtune=generic -march=x86-64 -version -fPIE -fasynchronous-unwind-tables -fstack-protector-strong -Wformat -Wformat-security -fstack-clash-protection -fcf-protection -o /tmp/cc0jdBaA.s
+        GNU C17 (Ubuntu 13.3.0-6ubuntu2~24.04) version 13.3.0 (x86_64-linux-gnu)
+        	compiled by GNU C version 13.3.0, GMP version 6.3.0, MPFR version 4.2.1, MPC version 1.3.1, isl version isl-0.26-GMP
+        
+        GGC heuristics: --param ggc-min-expand=100 --param ggc-min-heapsize=131072
+        ignoring nonexistent directory "/usr/local/include/x86_64-linux-gnu"
+        ignoring nonexistent directory "/usr/lib/gcc/x86_64-linux-gnu/13/include-fixed/x86_64-linux-gnu"
+        ignoring nonexistent directory "/usr/lib/gcc/x86_64-linux-gnu/13/include-fixed"
+        ignoring nonexistent directory "/usr/lib/gcc/x86_64-linux-gnu/13/../../../../x86_64-linux-gnu/include"
+        #include "..." search starts here:
+        #include <...> search starts here:
+         /usr/lib/gcc/x86_64-linux-gnu/13/include
+         /usr/local/include
+         /usr/include/x86_64-linux-gnu
+         /usr/include
+        End of search list.
+        Compiler executable checksum: 38987c28e967c64056a6454abdef726e
+        COLLECT_GCC_OPTIONS='-fPIE' '-v' '-o' 'CMakeFiles/cmTC_23055.dir/CMakeCCompilerABI.c.o' '-c' '-mtune=generic' '-march=x86-64' '-dumpdir' 'CMakeFiles/cmTC_23055.dir/'
+         as -v --64 -o CMakeFiles/cmTC_23055.dir/CMakeCCompilerABI.c.o /tmp/cc0jdBaA.s
+        GNU assembler version 2.42 (x86_64-linux-gnu) using BFD version (GNU Binutils for Ubuntu) 2.42
+        COMPILER_PATH=/usr/libexec/gcc/x86_64-linux-gnu/13/:/usr/libexec/gcc/x86_64-linux-gnu/13/:/usr/libexec/gcc/x86_64-linux-gnu/:/usr/lib/gcc/x86_64-linux-gnu/13/:/usr/lib/gcc/x86_64-linux-gnu/
+        LIBRARY_PATH=/usr/lib/gcc/x86_64-linux-gnu/13/:/usr/lib/gcc/x86_64-linux-gnu/13/../../../x86_64-linux-gnu/:/usr/lib/gcc/x86_64-linux-gnu/13/../../../../lib/:/lib/x86_64-linux-gnu/:/lib/../lib/:/usr/lib/x86_64-linux-gnu/:/usr/lib/../lib/:/usr/lib/gcc/x86_64-linux-gnu/13/../../../:/lib/:/usr/lib/
+        COLLECT_GCC_OPTIONS='-fPIE' '-v' '-o' 'CMakeFiles/cmTC_23055.dir/CMakeCCompilerABI.c.o' '-c' '-mtune=generic' '-march=x86-64' '-dumpdir' 'CMakeFiles/cmTC_23055.dir/CMakeCCompilerABI.c.'
+        Linking C executable cmTC_23055
+        /usr/bin/cmake -E cmake_link_script CMakeFiles/cmTC_23055.dir/link.txt --verbose=1
+        /usr/bin/cc  -v -rdynamic CMakeFiles/cmTC_23055.dir/CMakeCCompilerABI.c.o -o cmTC_23055 
+        Using built-in specs.
+        COLLECT_GCC=/usr/bin/cc
+        COLLECT_LTO_WRAPPER=/usr/libexec/gcc/x86_64-linux-gnu/13/lto-wrapper
+        OFFLOAD_TARGET_NAMES=nvptx-none:amdgcn-amdhsa
+        OFFLOAD_TARGET_DEFAULT=1
+        Target: x86_64-linux-gnu
+        Configured with: ../src/configure -v --with-pkgversion='Ubuntu 13.3.0-6ubuntu2~24.04' --with-bugurl=file:///usr/share/doc/gcc-13/README.Bugs --enable-languages=c,ada,c++,go,d,fortran,objc,obj-c++,m2 --prefix=/usr --with-gcc-major-version-only --program-suffix=-13 --program-prefix=x86_64-linux-gnu- --enable-shared --enable-linker-build-id --libexecdir=/usr/libexec --without-included-gettext --enable-threads=posix --libdir=/usr/lib --enable-nls --enable-bootstrap --enable-clocale=gnu --enable-libstdcxx-debug --enable-libstdcxx-time=yes --with-default-libstdcxx-abi=new --enable-libstdcxx-backtrace --enable-gnu-unique-object --disable-vtable-verify --enable-plugin --enable-default-pie --with-system-zlib --enable-libphobos-checking=release --with-target-system-zlib=auto --enable-objc-gc=auto --enable-multiarch --disable-werror --enable-cet --with-arch-32=i686 --with-abi=m64 --with-multilib-list=m32,m64,mx32 --enable-multilib --with-tune=generic --enable-offload-targets=nvptx-none=/build/gcc-13-fG75Ri/gcc-13-13.3.0/debian/tmp-nvptx/usr,amdgcn-amdhsa=/build/gcc-13-fG75Ri/gcc-13-13.3.0/debian/tmp-gcn/usr --enable-offload-defaulted --without-cuda-driver --enable-checking=release --build=x86_64-linux-gnu --host=x86_64-linux-gnu --target=x86_64-linux-gnu --with-build-config=bootstrap-lto-lean --enable-link-serialization=2
+        Thread model: posix
+        Supported LTO compression algorithms: zlib zstd
+        gcc version 13.3.0 (Ubuntu 13.3.0-6ubuntu2~24.04) 
+        COMPILER_PATH=/usr/libexec/gcc/x86_64-linux-gnu/13/:/usr/libexec/gcc/x86_64-linux-gnu/13/:/usr/libexec/gcc/x86_64-linux-gnu/:/usr/lib/gcc/x86_64-linux-gnu/13/:/usr/lib/gcc/x86_64-linux-gnu/
+        LIBRARY_PATH=/usr/lib/gcc/x86_64-linux-gnu/13/:/usr/lib/gcc/x86_64-linux-gnu/13/../../../x86_64-linux-gnu/:/usr/lib/gcc/x86_64-linux-gnu/13/../../../../lib/:/lib/x86_64-linux-gnu/:/lib/../lib/:/usr/lib/x86_64-linux-gnu/:/usr/lib/../lib/:/usr/lib/gcc/x86_64-linux-gnu/13/../../../:/lib/:/usr/lib/
+        COLLECT_GCC_OPTIONS='-v' '-rdynamic' '-o' 'cmTC_23055' '-mtune=generic' '-march=x86-64' '-dumpdir' 'cmTC_23055.'
+         /usr/libexec/gcc/x86_64-linux-gnu/13/collect2 -plugin /usr/libexec/gcc/x86_64-linux-gnu/13/liblto_plugin.so -plugin-opt=/usr/libexec/gcc/x86_64-linux-gnu/13/lto-wrapper -plugin-opt=-fresolution=/tmp/ccki2g1T.res -plugin-opt=-pass-through=-lgcc -plugin-opt=-pass-through=-lgcc_s -plugin-opt=-pass-through=-lc -plugin-opt=-pass-through=-lgcc -plugin-opt=-pass-through=-lgcc_s --build-id --eh-frame-hdr -m elf_x86_64 --hash-style=gnu --as-needed -export-dynamic -dynamic-linker /lib64/ld-linux-x86-64.so.2 -pie -z now -z relro -o cmTC_23055 /usr/lib/gcc/x86_64-linux-gnu/13/../../../x86_64-linux-gnu/Scrt1.o /usr/lib/gcc/x86_64-linux-gnu/13/../../../x86_64-linux-gnu/crti.o /usr/lib/gcc/x86_64-linux-gnu/13/crtbeginS.o -L/usr/lib/gcc/x86_64-linux-gnu/13 -L/usr/lib/gcc/x86_64-linux-gnu/13/../../../x86_64-linux-gnu -L/usr/lib/gcc/x86_64-linux-gnu/13/../../../../lib -L/lib/x86_64-linux-gnu -L/lib/../lib -L/usr/lib/x86_64-linux-gnu -L/usr/lib/../lib -L/usr/lib/gcc/x86_64-linux-gnu/13/../../.. CMakeFiles/cmTC_23055.dir/CMakeCCompilerABI.c.o -lgcc --push-state --as-needed -lgcc_s --pop-state -lc -lgcc --push-state --as-needed -lgcc_s --pop-state /usr/lib/gcc/x86_64-linux-gnu/13/crtendS.o /usr/lib/gcc/x86_64-linux-gnu/13/../../../x86_64-linux-gnu/crtn.o
+        COLLECT_GCC_OPTIONS='-v' '-rdynamic' '-o' 'cmTC_23055' '-mtune=generic' '-march=x86-64' '-dumpdir' 'cmTC_23055.'
+        gmake[1]: Leaving directory '/home/lavanya/tranalyzer2-0.9.3/plugins/regexHyperscan/src/hyperscan/build/CMakeFiles/CMakeScratch/TryCompile-E0Qfdw'
+        
+      exitCode: 0
+  -
+    kind: "message-v1"
+    backtrace:
+      - "/usr/share/cmake-3.28/Modules/CMakeDetermineCompilerABI.cmake:127 (message)"
+      - "/usr/share/cmake-3.28/Modules/CMakeTestCCompiler.cmake:26 (CMAKE_DETERMINE_COMPILER_ABI)"
+      - "CMakeLists.txt:2 (project)"
+    message: |
+      Parsed C implicit include dir info: rv=done
+        found start of include info
+        found start of implicit include info
+          add: [/usr/lib/gcc/x86_64-linux-gnu/13/include]
+          add: [/usr/local/include]
+          add: [/usr/include/x86_64-linux-gnu]
+          add: [/usr/include]
+        end of search list found
+        collapse include dir [/usr/lib/gcc/x86_64-linux-gnu/13/include] ==> [/usr/lib/gcc/x86_64-linux-gnu/13/include]
+        collapse include dir [/usr/local/include] ==> [/usr/local/include]
+        collapse include dir [/usr/include/x86_64-linux-gnu] ==> [/usr/include/x86_64-linux-gnu]
+        collapse include dir [/usr/include] ==> [/usr/include]
+        implicit include dirs: [/usr/lib/gcc/x86_64-linux-gnu/13/include;/usr/local/include;/usr/include/x86_64-linux-gnu;/usr/include]
+      
+      
+  -
+    kind: "message-v1"
+    backtrace:
+      - "/usr/share/cmake-3.28/Modules/CMakeDetermineCompilerABI.cmake:159 (message)"
+      - "/usr/share/cmake-3.28/Modules/CMakeTestCCompiler.cmake:26 (CMAKE_DETERMINE_COMPILER_ABI)"
+      - "CMakeLists.txt:2 (project)"
+    message: |
+      Parsed C implicit link information:
+        link line regex: [^( *|.*[/\\])(ld|CMAKE_LINK_STARTFILE-NOTFOUND|([^/\\]+-)?ld|collect2)[^/\\]*( |$)]
+        ignore line: [Change Dir: '/home/lavanya/tranalyzer2-0.9.3/plugins/regexHyperscan/src/hyperscan/build/CMakeFiles/CMakeScratch/TryCompile-E0Qfdw']
+        ignore line: []
+        ignore line: [Run Build Command(s): /usr/bin/cmake -E env VERBOSE=1 /usr/bin/gmake -f Makefile cmTC_23055/fast]
+        ignore line: [/usr/bin/gmake  -f CMakeFiles/cmTC_23055.dir/build.make CMakeFiles/cmTC_23055.dir/build]
+        ignore line: [gmake[1]: Entering directory '/home/lavanya/tranalyzer2-0.9.3/plugins/regexHyperscan/src/hyperscan/build/CMakeFiles/CMakeScratch/TryCompile-E0Qfdw']
+        ignore line: [Building C object CMakeFiles/cmTC_23055.dir/CMakeCCompilerABI.c.o]
+        ignore line: [/usr/bin/cc   -fPIE   -v -o CMakeFiles/cmTC_23055.dir/CMakeCCompilerABI.c.o -c /usr/share/cmake-3.28/Modules/CMakeCCompilerABI.c]
+        ignore line: [Using built-in specs.]
+        ignore line: [COLLECT_GCC=/usr/bin/cc]
+        ignore line: [OFFLOAD_TARGET_NAMES=nvptx-none:amdgcn-amdhsa]
+        ignore line: [OFFLOAD_TARGET_DEFAULT=1]
+        ignore line: [Target: x86_64-linux-gnu]
+        ignore line: [Configured with: ../src/configure -v --with-pkgversion='Ubuntu 13.3.0-6ubuntu2~24.04' --with-bugurl=file:///usr/share/doc/gcc-13/README.Bugs --enable-languages=c ada c++ go d fortran objc obj-c++ m2 --prefix=/usr --with-gcc-major-version-only --program-suffix=-13 --program-prefix=x86_64-linux-gnu- --enable-shared --enable-linker-build-id --libexecdir=/usr/libexec --without-included-gettext --enable-threads=posix --libdir=/usr/lib --enable-nls --enable-bootstrap --enable-clocale=gnu --enable-libstdcxx-debug --enable-libstdcxx-time=yes --with-default-libstdcxx-abi=new --enable-libstdcxx-backtrace --enable-gnu-unique-object --disable-vtable-verify --enable-plugin --enable-default-pie --with-system-zlib --enable-libphobos-checking=release --with-target-system-zlib=auto --enable-objc-gc=auto --enable-multiarch --disable-werror --enable-cet --with-arch-32=i686 --with-abi=m64 --with-multilib-list=m32 m64 mx32 --enable-multilib --with-tune=generic --enable-offload-targets=nvptx-none=/build/gcc-13-fG75Ri/gcc-13-13.3.0/debian/tmp-nvptx/usr amdgcn-amdhsa=/build/gcc-13-fG75Ri/gcc-13-13.3.0/debian/tmp-gcn/usr --enable-offload-defaulted --without-cuda-driver --enable-checking=release --build=x86_64-linux-gnu --host=x86_64-linux-gnu --target=x86_64-linux-gnu --with-build-config=bootstrap-lto-lean --enable-link-serialization=2]
+        ignore line: [Thread model: posix]
+        ignore line: [Supported LTO compression algorithms: zlib zstd]
+        ignore line: [gcc version 13.3.0 (Ubuntu 13.3.0-6ubuntu2~24.04) ]
+        ignore line: [COLLECT_GCC_OPTIONS='-fPIE' '-v' '-o' 'CMakeFiles/cmTC_23055.dir/CMakeCCompilerABI.c.o' '-c' '-mtune=generic' '-march=x86-64' '-dumpdir' 'CMakeFiles/cmTC_23055.dir/']
+        ignore line: [ /usr/libexec/gcc/x86_64-linux-gnu/13/cc1 -quiet -v -imultiarch x86_64-linux-gnu /usr/share/cmake-3.28/Modules/CMakeCCompilerABI.c -quiet -dumpdir CMakeFiles/cmTC_23055.dir/ -dumpbase CMakeCCompilerABI.c.c -dumpbase-ext .c -mtune=generic -march=x86-64 -version -fPIE -fasynchronous-unwind-tables -fstack-protector-strong -Wformat -Wformat-security -fstack-clash-protection -fcf-protection -o /tmp/cc0jdBaA.s]
+        ignore line: [GNU C17 (Ubuntu 13.3.0-6ubuntu2~24.04) version 13.3.0 (x86_64-linux-gnu)]
+        ignore line: [	compiled by GNU C version 13.3.0  GMP version 6.3.0  MPFR version 4.2.1  MPC version 1.3.1  isl version isl-0.26-GMP]
+        ignore line: []
+        ignore line: [GGC heuristics: --param ggc-min-expand=100 --param ggc-min-heapsize=131072]
+        ignore line: [ignoring nonexistent directory "/usr/local/include/x86_64-linux-gnu"]
+        ignore line: [ignoring nonexistent directory "/usr/lib/gcc/x86_64-linux-gnu/13/include-fixed/x86_64-linux-gnu"]
+        ignore line: [ignoring nonexistent directory "/usr/lib/gcc/x86_64-linux-gnu/13/include-fixed"]
+        ignore line: [ignoring nonexistent directory "/usr/lib/gcc/x86_64-linux-gnu/13/../../../../x86_64-linux-gnu/include"]
+        ignore line: [#include "..." search starts here:]
+        ignore line: [#include <...> search starts here:]
+        ignore line: [ /usr/lib/gcc/x86_64-linux-gnu/13/include]
+        ignore line: [ /usr/local/include]
+        ignore line: [ /usr/include/x86_64-linux-gnu]
+        ignore line: [ /usr/include]
+        ignore line: [End of search list.]
+        ignore line: [Compiler executable checksum: 38987c28e967c64056a6454abdef726e]
+        ignore line: [COLLECT_GCC_OPTIONS='-fPIE' '-v' '-o' 'CMakeFiles/cmTC_23055.dir/CMakeCCompilerABI.c.o' '-c' '-mtune=generic' '-march=x86-64' '-dumpdir' 'CMakeFiles/cmTC_23055.dir/']
+        ignore line: [ as -v --64 -o CMakeFiles/cmTC_23055.dir/CMakeCCompilerABI.c.o /tmp/cc0jdBaA.s]
+        ignore line: [GNU assembler version 2.42 (x86_64-linux-gnu) using BFD version (GNU Binutils for Ubuntu) 2.42]
+        ignore line: [COMPILER_PATH=/usr/libexec/gcc/x86_64-linux-gnu/13/:/usr/libexec/gcc/x86_64-linux-gnu/13/:/usr/libexec/gcc/x86_64-linux-gnu/:/usr/lib/gcc/x86_64-linux-gnu/13/:/usr/lib/gcc/x86_64-linux-gnu/]
+        ignore line: [LIBRARY_PATH=/usr/lib/gcc/x86_64-linux-gnu/13/:/usr/lib/gcc/x86_64-linux-gnu/13/../../../x86_64-linux-gnu/:/usr/lib/gcc/x86_64-linux-gnu/13/../../../../lib/:/lib/x86_64-linux-gnu/:/lib/../lib/:/usr/lib/x86_64-linux-gnu/:/usr/lib/../lib/:/usr/lib/gcc/x86_64-linux-gnu/13/../../../:/lib/:/usr/lib/]
+        ignore line: [COLLECT_GCC_OPTIONS='-fPIE' '-v' '-o' 'CMakeFiles/cmTC_23055.dir/CMakeCCompilerABI.c.o' '-c' '-mtune=generic' '-march=x86-64' '-dumpdir' 'CMakeFiles/cmTC_23055.dir/CMakeCCompilerABI.c.']
+        ignore line: [Linking C executable cmTC_23055]
+        ignore line: [/usr/bin/cmake -E cmake_link_script CMakeFiles/cmTC_23055.dir/link.txt --verbose=1]
+        ignore line: [/usr/bin/cc  -v -rdynamic CMakeFiles/cmTC_23055.dir/CMakeCCompilerABI.c.o -o cmTC_23055 ]
+        ignore line: [Using built-in specs.]
+        ignore line: [COLLECT_GCC=/usr/bin/cc]
+        ignore line: [COLLECT_LTO_WRAPPER=/usr/libexec/gcc/x86_64-linux-gnu/13/lto-wrapper]
+        ignore line: [OFFLOAD_TARGET_NAMES=nvptx-none:amdgcn-amdhsa]
+        ignore line: [OFFLOAD_TARGET_DEFAULT=1]
+        ignore line: [Target: x86_64-linux-gnu]
+        ignore line: [Configured with: ../src/configure -v --with-pkgversion='Ubuntu 13.3.0-6ubuntu2~24.04' --with-bugurl=file:///usr/share/doc/gcc-13/README.Bugs --enable-languages=c ada c++ go d fortran objc obj-c++ m2 --prefix=/usr --with-gcc-major-version-only --program-suffix=-13 --program-prefix=x86_64-linux-gnu- --enable-shared --enable-linker-build-id --libexecdir=/usr/libexec --without-included-gettext --enable-threads=posix --libdir=/usr/lib --enable-nls --enable-bootstrap --enable-clocale=gnu --enable-libstdcxx-debug --enable-libstdcxx-time=yes --with-default-libstdcxx-abi=new --enable-libstdcxx-backtrace --enable-gnu-unique-object --disable-vtable-verify --enable-plugin --enable-default-pie --with-system-zlib --enable-libphobos-checking=release --with-target-system-zlib=auto --enable-objc-gc=auto --enable-multiarch --disable-werror --enable-cet --with-arch-32=i686 --with-abi=m64 --with-multilib-list=m32 m64 mx32 --enable-multilib --with-tune=generic --enable-offload-targets=nvptx-none=/build/gcc-13-fG75Ri/gcc-13-13.3.0/debian/tmp-nvptx/usr amdgcn-amdhsa=/build/gcc-13-fG75Ri/gcc-13-13.3.0/debian/tmp-gcn/usr --enable-offload-defaulted --without-cuda-driver --enable-checking=release --build=x86_64-linux-gnu --host=x86_64-linux-gnu --target=x86_64-linux-gnu --with-build-config=bootstrap-lto-lean --enable-link-serialization=2]
+        ignore line: [Thread model: posix]
+        ignore line: [Supported LTO compression algorithms: zlib zstd]
+        ignore line: [gcc version 13.3.0 (Ubuntu 13.3.0-6ubuntu2~24.04) ]
+        ignore line: [COMPILER_PATH=/usr/libexec/gcc/x86_64-linux-gnu/13/:/usr/libexec/gcc/x86_64-linux-gnu/13/:/usr/libexec/gcc/x86_64-linux-gnu/:/usr/lib/gcc/x86_64-linux-gnu/13/:/usr/lib/gcc/x86_64-linux-gnu/]
+        ignore line: [LIBRARY_PATH=/usr/lib/gcc/x86_64-linux-gnu/13/:/usr/lib/gcc/x86_64-linux-gnu/13/../../../x86_64-linux-gnu/:/usr/lib/gcc/x86_64-linux-gnu/13/../../../../lib/:/lib/x86_64-linux-gnu/:/lib/../lib/:/usr/lib/x86_64-linux-gnu/:/usr/lib/../lib/:/usr/lib/gcc/x86_64-linux-gnu/13/../../../:/lib/:/usr/lib/]
+        ignore line: [COLLECT_GCC_OPTIONS='-v' '-rdynamic' '-o' 'cmTC_23055' '-mtune=generic' '-march=x86-64' '-dumpdir' 'cmTC_23055.']
+        link line: [ /usr/libexec/gcc/x86_64-linux-gnu/13/collect2 -plugin /usr/libexec/gcc/x86_64-linux-gnu/13/liblto_plugin.so -plugin-opt=/usr/libexec/gcc/x86_64-linux-gnu/13/lto-wrapper -plugin-opt=-fresolution=/tmp/ccki2g1T.res -plugin-opt=-pass-through=-lgcc -plugin-opt=-pass-through=-lgcc_s -plugin-opt=-pass-through=-lc -plugin-opt=-pass-through=-lgcc -plugin-opt=-pass-through=-lgcc_s --build-id --eh-frame-hdr -m elf_x86_64 --hash-style=gnu --as-needed -export-dynamic -dynamic-linker /lib64/ld-linux-x86-64.so.2 -pie -z now -z relro -o cmTC_23055 /usr/lib/gcc/x86_64-linux-gnu/13/../../../x86_64-linux-gnu/Scrt1.o /usr/lib/gcc/x86_64-linux-gnu/13/../../../x86_64-linux-gnu/crti.o /usr/lib/gcc/x86_64-linux-gnu/13/crtbeginS.o -L/usr/lib/gcc/x86_64-linux-gnu/13 -L/usr/lib/gcc/x86_64-linux-gnu/13/../../../x86_64-linux-gnu -L/usr/lib/gcc/x86_64-linux-gnu/13/../../../../lib -L/lib/x86_64-linux-gnu -L/lib/../lib -L/usr/lib/x86_64-linux-gnu -L/usr/lib/../lib -L/usr/lib/gcc/x86_64-linux-gnu/13/../../.. CMakeFiles/cmTC_23055.dir/CMakeCCompilerABI.c.o -lgcc --push-state --as-needed -lgcc_s --pop-state -lc -lgcc --push-state --as-needed -lgcc_s --pop-state /usr/lib/gcc/x86_64-linux-gnu/13/crtendS.o /usr/lib/gcc/x86_64-linux-gnu/13/../../../x86_64-linux-gnu/crtn.o]
+          arg [/usr/libexec/gcc/x86_64-linux-gnu/13/collect2] ==> ignore
+          arg [-plugin] ==> ignore
+          arg [/usr/libexec/gcc/x86_64-linux-gnu/13/liblto_plugin.so] ==> ignore
+          arg [-plugin-opt=/usr/libexec/gcc/x86_64-linux-gnu/13/lto-wrapper] ==> ignore
+          arg [-plugin-opt=-fresolution=/tmp/ccki2g1T.res] ==> ignore
+          arg [-plugin-opt=-pass-through=-lgcc] ==> ignore
+          arg [-plugin-opt=-pass-through=-lgcc_s] ==> ignore
+          arg [-plugin-opt=-pass-through=-lc] ==> ignore
+          arg [-plugin-opt=-pass-through=-lgcc] ==> ignore
+          arg [-plugin-opt=-pass-through=-lgcc_s] ==> ignore
+          arg [--build-id] ==> ignore
+          arg [--eh-frame-hdr] ==> ignore
+          arg [-m] ==> ignore
+          arg [elf_x86_64] ==> ignore
+          arg [--hash-style=gnu] ==> ignore
+          arg [--as-needed] ==> ignore
+          arg [-export-dynamic] ==> ignore
+          arg [-dynamic-linker] ==> ignore
+          arg [/lib64/ld-linux-x86-64.so.2] ==> ignore
+          arg [-pie] ==> ignore
+          arg [-znow] ==> ignore
+          arg [-zrelro] ==> ignore
+          arg [-o] ==> ignore
+          arg [cmTC_23055] ==> ignore
+          arg [/usr/lib/gcc/x86_64-linux-gnu/13/../../../x86_64-linux-gnu/Scrt1.o] ==> obj [/usr/lib/gcc/x86_64-linux-gnu/13/../../../x86_64-linux-gnu/Scrt1.o]
+          arg [/usr/lib/gcc/x86_64-linux-gnu/13/../../../x86_64-linux-gnu/crti.o] ==> obj [/usr/lib/gcc/x86_64-linux-gnu/13/../../../x86_64-linux-gnu/crti.o]
+          arg [/usr/lib/gcc/x86_64-linux-gnu/13/crtbeginS.o] ==> obj [/usr/lib/gcc/x86_64-linux-gnu/13/crtbeginS.o]
+          arg [-L/usr/lib/gcc/x86_64-linux-gnu/13] ==> dir [/usr/lib/gcc/x86_64-linux-gnu/13]
+          arg [-L/usr/lib/gcc/x86_64-linux-gnu/13/../../../x86_64-linux-gnu] ==> dir [/usr/lib/gcc/x86_64-linux-gnu/13/../../../x86_64-linux-gnu]
+          arg [-L/usr/lib/gcc/x86_64-linux-gnu/13/../../../../lib] ==> dir [/usr/lib/gcc/x86_64-linux-gnu/13/../../../../lib]
+          arg [-L/lib/x86_64-linux-gnu] ==> dir [/lib/x86_64-linux-gnu]
+          arg [-L/lib/../lib] ==> dir [/lib/../lib]
+          arg [-L/usr/lib/x86_64-linux-gnu] ==> dir [/usr/lib/x86_64-linux-gnu]
+          arg [-L/usr/lib/../lib] ==> dir [/usr/lib/../lib]
+          arg [-L/usr/lib/gcc/x86_64-linux-gnu/13/../../..] ==> dir [/usr/lib/gcc/x86_64-linux-gnu/13/../../..]
+          arg [CMakeFiles/cmTC_23055.dir/CMakeCCompilerABI.c.o] ==> ignore
+          arg [-lgcc] ==> lib [gcc]
+          arg [--push-state] ==> ignore
+          arg [--as-needed] ==> ignore
+          arg [-lgcc_s] ==> lib [gcc_s]
+          arg [--pop-state] ==> ignore
+          arg [-lc] ==> lib [c]
+          arg [-lgcc] ==> lib [gcc]
+          arg [--push-state] ==> ignore
+          arg [--as-needed] ==> ignore
+          arg [-lgcc_s] ==> lib [gcc_s]
+          arg [--pop-state] ==> ignore
+          arg [/usr/lib/gcc/x86_64-linux-gnu/13/crtendS.o] ==> obj [/usr/lib/gcc/x86_64-linux-gnu/13/crtendS.o]
+          arg [/usr/lib/gcc/x86_64-linux-gnu/13/../../../x86_64-linux-gnu/crtn.o] ==> obj [/usr/lib/gcc/x86_64-linux-gnu/13/../../../x86_64-linux-gnu/crtn.o]
+        collapse obj [/usr/lib/gcc/x86_64-linux-gnu/13/../../../x86_64-linux-gnu/Scrt1.o] ==> [/usr/lib/x86_64-linux-gnu/Scrt1.o]
+        collapse obj [/usr/lib/gcc/x86_64-linux-gnu/13/../../../x86_64-linux-gnu/crti.o] ==> [/usr/lib/x86_64-linux-gnu/crti.o]
+        collapse obj [/usr/lib/gcc/x86_64-linux-gnu/13/../../../x86_64-linux-gnu/crtn.o] ==> [/usr/lib/x86_64-linux-gnu/crtn.o]
+        collapse library dir [/usr/lib/gcc/x86_64-linux-gnu/13] ==> [/usr/lib/gcc/x86_64-linux-gnu/13]
+        collapse library dir [/usr/lib/gcc/x86_64-linux-gnu/13/../../../x86_64-linux-gnu] ==> [/usr/lib/x86_64-linux-gnu]
+        collapse library dir [/usr/lib/gcc/x86_64-linux-gnu/13/../../../../lib] ==> [/usr/lib]
+        collapse library dir [/lib/x86_64-linux-gnu] ==> [/lib/x86_64-linux-gnu]
+        collapse library dir [/lib/../lib] ==> [/lib]
+        collapse library dir [/usr/lib/x86_64-linux-gnu] ==> [/usr/lib/x86_64-linux-gnu]
+        collapse library dir [/usr/lib/../lib] ==> [/usr/lib]
+        collapse library dir [/usr/lib/gcc/x86_64-linux-gnu/13/../../..] ==> [/usr/lib]
+        implicit libs: [gcc;gcc_s;c;gcc;gcc_s]
+        implicit objs: [/usr/lib/x86_64-linux-gnu/Scrt1.o;/usr/lib/x86_64-linux-gnu/crti.o;/usr/lib/gcc/x86_64-linux-gnu/13/crtbeginS.o;/usr/lib/gcc/x86_64-linux-gnu/13/crtendS.o;/usr/lib/x86_64-linux-gnu/crtn.o]
+        implicit dirs: [/usr/lib/gcc/x86_64-linux-gnu/13;/usr/lib/x86_64-linux-gnu;/usr/lib;/lib/x86_64-linux-gnu;/lib]
+        implicit fwks: []
+      
+      
+  -
+    kind: "try_compile-v1"
+    backtrace:
+      - "/usr/share/cmake-3.28/Modules/CMakeDetermineCompilerABI.cmake:57 (try_compile)"
+      - "/usr/share/cmake-3.28/Modules/CMakeTestCXXCompiler.cmake:26 (CMAKE_DETERMINE_COMPILER_ABI)"
+      - "CMakeLists.txt:2 (project)"
+    checks:
+      - "Detecting CXX compiler ABI info"
+    directories:
+      source: "/home/lavanya/tranalyzer2-0.9.3/plugins/regexHyperscan/src/hyperscan/build/CMakeFiles/CMakeScratch/TryCompile-KGxaAE"
+      binary: "/home/lavanya/tranalyzer2-0.9.3/plugins/regexHyperscan/src/hyperscan/build/CMakeFiles/CMakeScratch/TryCompile-KGxaAE"
+    cmakeVariables:
+      CMAKE_CXX_FLAGS: ""
+      CMAKE_POSITION_INDEPENDENT_CODE: "ON"
+    buildResult:
+      variable: "CMAKE_CXX_ABI_COMPILED"
+      cached: true
+      stdout: |
+        Change Dir: '/home/lavanya/tranalyzer2-0.9.3/plugins/regexHyperscan/src/hyperscan/build/CMakeFiles/CMakeScratch/TryCompile-KGxaAE'
+        
+        Run Build Command(s): /usr/bin/cmake -E env VERBOSE=1 /usr/bin/gmake -f Makefile cmTC_8cdb1/fast
+        /usr/bin/gmake  -f CMakeFiles/cmTC_8cdb1.dir/build.make CMakeFiles/cmTC_8cdb1.dir/build
+        gmake[1]: Entering directory '/home/lavanya/tranalyzer2-0.9.3/plugins/regexHyperscan/src/hyperscan/build/CMakeFiles/CMakeScratch/TryCompile-KGxaAE'
+        Building CXX object CMakeFiles/cmTC_8cdb1.dir/CMakeCXXCompilerABI.cpp.o
+        /usr/bin/c++   -fPIE   -v -o CMakeFiles/cmTC_8cdb1.dir/CMakeCXXCompilerABI.cpp.o -c /usr/share/cmake-3.28/Modules/CMakeCXXCompilerABI.cpp
+        Using built-in specs.
+        COLLECT_GCC=/usr/bin/c++
+        OFFLOAD_TARGET_NAMES=nvptx-none:amdgcn-amdhsa
+        OFFLOAD_TARGET_DEFAULT=1
+        Target: x86_64-linux-gnu
+        Configured with: ../src/configure -v --with-pkgversion='Ubuntu 13.3.0-6ubuntu2~24.04' --with-bugurl=file:///usr/share/doc/gcc-13/README.Bugs --enable-languages=c,ada,c++,go,d,fortran,objc,obj-c++,m2 --prefix=/usr --with-gcc-major-version-only --program-suffix=-13 --program-prefix=x86_64-linux-gnu- --enable-shared --enable-linker-build-id --libexecdir=/usr/libexec --without-included-gettext --enable-threads=posix --libdir=/usr/lib --enable-nls --enable-bootstrap --enable-clocale=gnu --enable-libstdcxx-debug --enable-libstdcxx-time=yes --with-default-libstdcxx-abi=new --enable-libstdcxx-backtrace --enable-gnu-unique-object --disable-vtable-verify --enable-plugin --enable-default-pie --with-system-zlib --enable-libphobos-checking=release --with-target-system-zlib=auto --enable-objc-gc=auto --enable-multiarch --disable-werror --enable-cet --with-arch-32=i686 --with-abi=m64 --with-multilib-list=m32,m64,mx32 --enable-multilib --with-tune=generic --enable-offload-targets=nvptx-none=/build/gcc-13-fG75Ri/gcc-13-13.3.0/debian/tmp-nvptx/usr,amdgcn-amdhsa=/build/gcc-13-fG75Ri/gcc-13-13.3.0/debian/tmp-gcn/usr --enable-offload-defaulted --without-cuda-driver --enable-checking=release --build=x86_64-linux-gnu --host=x86_64-linux-gnu --target=x86_64-linux-gnu --with-build-config=bootstrap-lto-lean --enable-link-serialization=2
+        Thread model: posix
+        Supported LTO compression algorithms: zlib zstd
+        gcc version 13.3.0 (Ubuntu 13.3.0-6ubuntu2~24.04) 
+        COLLECT_GCC_OPTIONS='-fPIE' '-v' '-o' 'CMakeFiles/cmTC_8cdb1.dir/CMakeCXXCompilerABI.cpp.o' '-c' '-shared-libgcc' '-mtune=generic' '-march=x86-64' '-dumpdir' 'CMakeFiles/cmTC_8cdb1.dir/'
+         /usr/libexec/gcc/x86_64-linux-gnu/13/cc1plus -quiet -v -imultiarch x86_64-linux-gnu -D_GNU_SOURCE /usr/share/cmake-3.28/Modules/CMakeCXXCompilerABI.cpp -quiet -dumpdir CMakeFiles/cmTC_8cdb1.dir/ -dumpbase CMakeCXXCompilerABI.cpp.cpp -dumpbase-ext .cpp -mtune=generic -march=x86-64 -version -fPIE -fasynchronous-unwind-tables -fstack-protector-strong -Wformat -Wformat-security -fstack-clash-protection -fcf-protection -o /tmp/cc8HpZkp.s
+        GNU C++17 (Ubuntu 13.3.0-6ubuntu2~24.04) version 13.3.0 (x86_64-linux-gnu)
+        	compiled by GNU C version 13.3.0, GMP version 6.3.0, MPFR version 4.2.1, MPC version 1.3.1, isl version isl-0.26-GMP
+        
+        GGC heuristics: --param ggc-min-expand=100 --param ggc-min-heapsize=131072
+        ignoring duplicate directory "/usr/include/x86_64-linux-gnu/c++/13"
+        ignoring nonexistent directory "/usr/local/include/x86_64-linux-gnu"
+        ignoring nonexistent directory "/usr/lib/gcc/x86_64-linux-gnu/13/include-fixed/x86_64-linux-gnu"
+        ignoring nonexistent directory "/usr/lib/gcc/x86_64-linux-gnu/13/include-fixed"
+        ignoring nonexistent directory "/usr/lib/gcc/x86_64-linux-gnu/13/../../../../x86_64-linux-gnu/include"
+        #include "..." search starts here:
+        #include <...> search starts here:
+         /usr/include/c++/13
+         /usr/include/x86_64-linux-gnu/c++/13
+         /usr/include/c++/13/backward
+         /usr/lib/gcc/x86_64-linux-gnu/13/include
+         /usr/local/include
+         /usr/include/x86_64-linux-gnu
+         /usr/include
+        End of search list.
+        Compiler executable checksum: c81c05345ce537099dafd5580045814a
+        COLLECT_GCC_OPTIONS='-fPIE' '-v' '-o' 'CMakeFiles/cmTC_8cdb1.dir/CMakeCXXCompilerABI.cpp.o' '-c' '-shared-libgcc' '-mtune=generic' '-march=x86-64' '-dumpdir' 'CMakeFiles/cmTC_8cdb1.dir/'
+         as -v --64 -o CMakeFiles/cmTC_8cdb1.dir/CMakeCXXCompilerABI.cpp.o /tmp/cc8HpZkp.s
+        GNU assembler version 2.42 (x86_64-linux-gnu) using BFD version (GNU Binutils for Ubuntu) 2.42
+        COMPILER_PATH=/usr/libexec/gcc/x86_64-linux-gnu/13/:/usr/libexec/gcc/x86_64-linux-gnu/13/:/usr/libexec/gcc/x86_64-linux-gnu/:/usr/lib/gcc/x86_64-linux-gnu/13/:/usr/lib/gcc/x86_64-linux-gnu/
+        LIBRARY_PATH=/usr/lib/gcc/x86_64-linux-gnu/13/:/usr/lib/gcc/x86_64-linux-gnu/13/../../../x86_64-linux-gnu/:/usr/lib/gcc/x86_64-linux-gnu/13/../../../../lib/:/lib/x86_64-linux-gnu/:/lib/../lib/:/usr/lib/x86_64-linux-gnu/:/usr/lib/../lib/:/usr/lib/gcc/x86_64-linux-gnu/13/../../../:/lib/:/usr/lib/
+        COLLECT_GCC_OPTIONS='-fPIE' '-v' '-o' 'CMakeFiles/cmTC_8cdb1.dir/CMakeCXXCompilerABI.cpp.o' '-c' '-shared-libgcc' '-mtune=generic' '-march=x86-64' '-dumpdir' 'CMakeFiles/cmTC_8cdb1.dir/CMakeCXXCompilerABI.cpp.'
+        Linking CXX executable cmTC_8cdb1
+        /usr/bin/cmake -E cmake_link_script CMakeFiles/cmTC_8cdb1.dir/link.txt --verbose=1
+        /usr/bin/c++  -v -rdynamic CMakeFiles/cmTC_8cdb1.dir/CMakeCXXCompilerABI.cpp.o -o cmTC_8cdb1 
+        Using built-in specs.
+        COLLECT_GCC=/usr/bin/c++
+        COLLECT_LTO_WRAPPER=/usr/libexec/gcc/x86_64-linux-gnu/13/lto-wrapper
+        OFFLOAD_TARGET_NAMES=nvptx-none:amdgcn-amdhsa
+        OFFLOAD_TARGET_DEFAULT=1
+        Target: x86_64-linux-gnu
+        Configured with: ../src/configure -v --with-pkgversion='Ubuntu 13.3.0-6ubuntu2~24.04' --with-bugurl=file:///usr/share/doc/gcc-13/README.Bugs --enable-languages=c,ada,c++,go,d,fortran,objc,obj-c++,m2 --prefix=/usr --with-gcc-major-version-only --program-suffix=-13 --program-prefix=x86_64-linux-gnu- --enable-shared --enable-linker-build-id --libexecdir=/usr/libexec --without-included-gettext --enable-threads=posix --libdir=/usr/lib --enable-nls --enable-bootstrap --enable-clocale=gnu --enable-libstdcxx-debug --enable-libstdcxx-time=yes --with-default-libstdcxx-abi=new --enable-libstdcxx-backtrace --enable-gnu-unique-object --disable-vtable-verify --enable-plugin --enable-default-pie --with-system-zlib --enable-libphobos-checking=release --with-target-system-zlib=auto --enable-objc-gc=auto --enable-multiarch --disable-werror --enable-cet --with-arch-32=i686 --with-abi=m64 --with-multilib-list=m32,m64,mx32 --enable-multilib --with-tune=generic --enable-offload-targets=nvptx-none=/build/gcc-13-fG75Ri/gcc-13-13.3.0/debian/tmp-nvptx/usr,amdgcn-amdhsa=/build/gcc-13-fG75Ri/gcc-13-13.3.0/debian/tmp-gcn/usr --enable-offload-defaulted --without-cuda-driver --enable-checking=release --build=x86_64-linux-gnu --host=x86_64-linux-gnu --target=x86_64-linux-gnu --with-build-config=bootstrap-lto-lean --enable-link-serialization=2
+        Thread model: posix
+        Supported LTO compression algorithms: zlib zstd
+        gcc version 13.3.0 (Ubuntu 13.3.0-6ubuntu2~24.04) 
+        COMPILER_PATH=/usr/libexec/gcc/x86_64-linux-gnu/13/:/usr/libexec/gcc/x86_64-linux-gnu/13/:/usr/libexec/gcc/x86_64-linux-gnu/:/usr/lib/gcc/x86_64-linux-gnu/13/:/usr/lib/gcc/x86_64-linux-gnu/
+        LIBRARY_PATH=/usr/lib/gcc/x86_64-linux-gnu/13/:/usr/lib/gcc/x86_64-linux-gnu/13/../../../x86_64-linux-gnu/:/usr/lib/gcc/x86_64-linux-gnu/13/../../../../lib/:/lib/x86_64-linux-gnu/:/lib/../lib/:/usr/lib/x86_64-linux-gnu/:/usr/lib/../lib/:/usr/lib/gcc/x86_64-linux-gnu/13/../../../:/lib/:/usr/lib/
+        COLLECT_GCC_OPTIONS='-v' '-rdynamic' '-o' 'cmTC_8cdb1' '-shared-libgcc' '-mtune=generic' '-march=x86-64' '-dumpdir' 'cmTC_8cdb1.'
+         /usr/libexec/gcc/x86_64-linux-gnu/13/collect2 -plugin /usr/libexec/gcc/x86_64-linux-gnu/13/liblto_plugin.so -plugin-opt=/usr/libexec/gcc/x86_64-linux-gnu/13/lto-wrapper -plugin-opt=-fresolution=/tmp/ccnFTU0l.res -plugin-opt=-pass-through=-lgcc_s -plugin-opt=-pass-through=-lgcc -plugin-opt=-pass-through=-lc -plugin-opt=-pass-through=-lgcc_s -plugin-opt=-pass-through=-lgcc --build-id --eh-frame-hdr -m elf_x86_64 --hash-style=gnu --as-needed -export-dynamic -dynamic-linker /lib64/ld-linux-x86-64.so.2 -pie -z now -z relro -o cmTC_8cdb1 /usr/lib/gcc/x86_64-linux-gnu/13/../../../x86_64-linux-gnu/Scrt1.o /usr/lib/gcc/x86_64-linux-gnu/13/../../../x86_64-linux-gnu/crti.o /usr/lib/gcc/x86_64-linux-gnu/13/crtbeginS.o -L/usr/lib/gcc/x86_64-linux-gnu/13 -L/usr/lib/gcc/x86_64-linux-gnu/13/../../../x86_64-linux-gnu -L/usr/lib/gcc/x86_64-linux-gnu/13/../../../../lib -L/lib/x86_64-linux-gnu -L/lib/../lib -L/usr/lib/x86_64-linux-gnu -L/usr/lib/../lib -L/usr/lib/gcc/x86_64-linux-gnu/13/../../.. CMakeFiles/cmTC_8cdb1.dir/CMakeCXXCompilerABI.cpp.o -lstdc++ -lm -lgcc_s -lgcc -lc -lgcc_s -lgcc /usr/lib/gcc/x86_64-linux-gnu/13/crtendS.o /usr/lib/gcc/x86_64-linux-gnu/13/../../../x86_64-linux-gnu/crtn.o
+        COLLECT_GCC_OPTIONS='-v' '-rdynamic' '-o' 'cmTC_8cdb1' '-shared-libgcc' '-mtune=generic' '-march=x86-64' '-dumpdir' 'cmTC_8cdb1.'
+        gmake[1]: Leaving directory '/home/lavanya/tranalyzer2-0.9.3/plugins/regexHyperscan/src/hyperscan/build/CMakeFiles/CMakeScratch/TryCompile-KGxaAE'
+        
+      exitCode: 0
+  -
+    kind: "message-v1"
+    backtrace:
+      - "/usr/share/cmake-3.28/Modules/CMakeDetermineCompilerABI.cmake:127 (message)"
+      - "/usr/share/cmake-3.28/Modules/CMakeTestCXXCompiler.cmake:26 (CMAKE_DETERMINE_COMPILER_ABI)"
+      - "CMakeLists.txt:2 (project)"
+    message: |
+      Parsed CXX implicit include dir info: rv=done
+        found start of include info
+        found start of implicit include info
+          add: [/usr/include/c++/13]
+          add: [/usr/include/x86_64-linux-gnu/c++/13]
+          add: [/usr/include/c++/13/backward]
+          add: [/usr/lib/gcc/x86_64-linux-gnu/13/include]
+          add: [/usr/local/include]
+          add: [/usr/include/x86_64-linux-gnu]
+          add: [/usr/include]
+        end of search list found
+        collapse include dir [/usr/include/c++/13] ==> [/usr/include/c++/13]
+        collapse include dir [/usr/include/x86_64-linux-gnu/c++/13] ==> [/usr/include/x86_64-linux-gnu/c++/13]
+        collapse include dir [/usr/include/c++/13/backward] ==> [/usr/include/c++/13/backward]
+        collapse include dir [/usr/lib/gcc/x86_64-linux-gnu/13/include] ==> [/usr/lib/gcc/x86_64-linux-gnu/13/include]
+        collapse include dir [/usr/local/include] ==> [/usr/local/include]
+        collapse include dir [/usr/include/x86_64-linux-gnu] ==> [/usr/include/x86_64-linux-gnu]
+        collapse include dir [/usr/include] ==> [/usr/include]
+        implicit include dirs: [/usr/include/c++/13;/usr/include/x86_64-linux-gnu/c++/13;/usr/include/c++/13/backward;/usr/lib/gcc/x86_64-linux-gnu/13/include;/usr/local/include;/usr/include/x86_64-linux-gnu;/usr/include]
+      
+      
+  -
+    kind: "message-v1"
+    backtrace:
+      - "/usr/share/cmake-3.28/Modules/CMakeDetermineCompilerABI.cmake:159 (message)"
+      - "/usr/share/cmake-3.28/Modules/CMakeTestCXXCompiler.cmake:26 (CMAKE_DETERMINE_COMPILER_ABI)"
+      - "CMakeLists.txt:2 (project)"
+    message: |
+      Parsed CXX implicit link information:
+        link line regex: [^( *|.*[/\\])(ld|CMAKE_LINK_STARTFILE-NOTFOUND|([^/\\]+-)?ld|collect2)[^/\\]*( |$)]
+        ignore line: [Change Dir: '/home/lavanya/tranalyzer2-0.9.3/plugins/regexHyperscan/src/hyperscan/build/CMakeFiles/CMakeScratch/TryCompile-KGxaAE']
+        ignore line: []
+        ignore line: [Run Build Command(s): /usr/bin/cmake -E env VERBOSE=1 /usr/bin/gmake -f Makefile cmTC_8cdb1/fast]
+        ignore line: [/usr/bin/gmake  -f CMakeFiles/cmTC_8cdb1.dir/build.make CMakeFiles/cmTC_8cdb1.dir/build]
+        ignore line: [gmake[1]: Entering directory '/home/lavanya/tranalyzer2-0.9.3/plugins/regexHyperscan/src/hyperscan/build/CMakeFiles/CMakeScratch/TryCompile-KGxaAE']
+        ignore line: [Building CXX object CMakeFiles/cmTC_8cdb1.dir/CMakeCXXCompilerABI.cpp.o]
+        ignore line: [/usr/bin/c++   -fPIE   -v -o CMakeFiles/cmTC_8cdb1.dir/CMakeCXXCompilerABI.cpp.o -c /usr/share/cmake-3.28/Modules/CMakeCXXCompilerABI.cpp]
+        ignore line: [Using built-in specs.]
+        ignore line: [COLLECT_GCC=/usr/bin/c++]
+        ignore line: [OFFLOAD_TARGET_NAMES=nvptx-none:amdgcn-amdhsa]
+        ignore line: [OFFLOAD_TARGET_DEFAULT=1]
+        ignore line: [Target: x86_64-linux-gnu]
+        ignore line: [Configured with: ../src/configure -v --with-pkgversion='Ubuntu 13.3.0-6ubuntu2~24.04' --with-bugurl=file:///usr/share/doc/gcc-13/README.Bugs --enable-languages=c ada c++ go d fortran objc obj-c++ m2 --prefix=/usr --with-gcc-major-version-only --program-suffix=-13 --program-prefix=x86_64-linux-gnu- --enable-shared --enable-linker-build-id --libexecdir=/usr/libexec --without-included-gettext --enable-threads=posix --libdir=/usr/lib --enable-nls --enable-bootstrap --enable-clocale=gnu --enable-libstdcxx-debug --enable-libstdcxx-time=yes --with-default-libstdcxx-abi=new --enable-libstdcxx-backtrace --enable-gnu-unique-object --disable-vtable-verify --enable-plugin --enable-default-pie --with-system-zlib --enable-libphobos-checking=release --with-target-system-zlib=auto --enable-objc-gc=auto --enable-multiarch --disable-werror --enable-cet --with-arch-32=i686 --with-abi=m64 --with-multilib-list=m32 m64 mx32 --enable-multilib --with-tune=generic --enable-offload-targets=nvptx-none=/build/gcc-13-fG75Ri/gcc-13-13.3.0/debian/tmp-nvptx/usr amdgcn-amdhsa=/build/gcc-13-fG75Ri/gcc-13-13.3.0/debian/tmp-gcn/usr --enable-offload-defaulted --without-cuda-driver --enable-checking=release --build=x86_64-linux-gnu --host=x86_64-linux-gnu --target=x86_64-linux-gnu --with-build-config=bootstrap-lto-lean --enable-link-serialization=2]
+        ignore line: [Thread model: posix]
+        ignore line: [Supported LTO compression algorithms: zlib zstd]
+        ignore line: [gcc version 13.3.0 (Ubuntu 13.3.0-6ubuntu2~24.04) ]
+        ignore line: [COLLECT_GCC_OPTIONS='-fPIE' '-v' '-o' 'CMakeFiles/cmTC_8cdb1.dir/CMakeCXXCompilerABI.cpp.o' '-c' '-shared-libgcc' '-mtune=generic' '-march=x86-64' '-dumpdir' 'CMakeFiles/cmTC_8cdb1.dir/']
+        ignore line: [ /usr/libexec/gcc/x86_64-linux-gnu/13/cc1plus -quiet -v -imultiarch x86_64-linux-gnu -D_GNU_SOURCE /usr/share/cmake-3.28/Modules/CMakeCXXCompilerABI.cpp -quiet -dumpdir CMakeFiles/cmTC_8cdb1.dir/ -dumpbase CMakeCXXCompilerABI.cpp.cpp -dumpbase-ext .cpp -mtune=generic -march=x86-64 -version -fPIE -fasynchronous-unwind-tables -fstack-protector-strong -Wformat -Wformat-security -fstack-clash-protection -fcf-protection -o /tmp/cc8HpZkp.s]
+        ignore line: [GNU C++17 (Ubuntu 13.3.0-6ubuntu2~24.04) version 13.3.0 (x86_64-linux-gnu)]
+        ignore line: [	compiled by GNU C version 13.3.0  GMP version 6.3.0  MPFR version 4.2.1  MPC version 1.3.1  isl version isl-0.26-GMP]
+        ignore line: []
+        ignore line: [GGC heuristics: --param ggc-min-expand=100 --param ggc-min-heapsize=131072]
+        ignore line: [ignoring duplicate directory "/usr/include/x86_64-linux-gnu/c++/13"]
+        ignore line: [ignoring nonexistent directory "/usr/local/include/x86_64-linux-gnu"]
+        ignore line: [ignoring nonexistent directory "/usr/lib/gcc/x86_64-linux-gnu/13/include-fixed/x86_64-linux-gnu"]
+        ignore line: [ignoring nonexistent directory "/usr/lib/gcc/x86_64-linux-gnu/13/include-fixed"]
+        ignore line: [ignoring nonexistent directory "/usr/lib/gcc/x86_64-linux-gnu/13/../../../../x86_64-linux-gnu/include"]
+        ignore line: [#include "..." search starts here:]
+        ignore line: [#include <...> search starts here:]
+        ignore line: [ /usr/include/c++/13]
+        ignore line: [ /usr/include/x86_64-linux-gnu/c++/13]
+        ignore line: [ /usr/include/c++/13/backward]
+        ignore line: [ /usr/lib/gcc/x86_64-linux-gnu/13/include]
+        ignore line: [ /usr/local/include]
+        ignore line: [ /usr/include/x86_64-linux-gnu]
+        ignore line: [ /usr/include]
+        ignore line: [End of search list.]
+        ignore line: [Compiler executable checksum: c81c05345ce537099dafd5580045814a]
+        ignore line: [COLLECT_GCC_OPTIONS='-fPIE' '-v' '-o' 'CMakeFiles/cmTC_8cdb1.dir/CMakeCXXCompilerABI.cpp.o' '-c' '-shared-libgcc' '-mtune=generic' '-march=x86-64' '-dumpdir' 'CMakeFiles/cmTC_8cdb1.dir/']
+        ignore line: [ as -v --64 -o CMakeFiles/cmTC_8cdb1.dir/CMakeCXXCompilerABI.cpp.o /tmp/cc8HpZkp.s]
+        ignore line: [GNU assembler version 2.42 (x86_64-linux-gnu) using BFD version (GNU Binutils for Ubuntu) 2.42]
+        ignore line: [COMPILER_PATH=/usr/libexec/gcc/x86_64-linux-gnu/13/:/usr/libexec/gcc/x86_64-linux-gnu/13/:/usr/libexec/gcc/x86_64-linux-gnu/:/usr/lib/gcc/x86_64-linux-gnu/13/:/usr/lib/gcc/x86_64-linux-gnu/]
+        ignore line: [LIBRARY_PATH=/usr/lib/gcc/x86_64-linux-gnu/13/:/usr/lib/gcc/x86_64-linux-gnu/13/../../../x86_64-linux-gnu/:/usr/lib/gcc/x86_64-linux-gnu/13/../../../../lib/:/lib/x86_64-linux-gnu/:/lib/../lib/:/usr/lib/x86_64-linux-gnu/:/usr/lib/../lib/:/usr/lib/gcc/x86_64-linux-gnu/13/../../../:/lib/:/usr/lib/]
+        ignore line: [COLLECT_GCC_OPTIONS='-fPIE' '-v' '-o' 'CMakeFiles/cmTC_8cdb1.dir/CMakeCXXCompilerABI.cpp.o' '-c' '-shared-libgcc' '-mtune=generic' '-march=x86-64' '-dumpdir' 'CMakeFiles/cmTC_8cdb1.dir/CMakeCXXCompilerABI.cpp.']
+        ignore line: [Linking CXX executable cmTC_8cdb1]
+        ignore line: [/usr/bin/cmake -E cmake_link_script CMakeFiles/cmTC_8cdb1.dir/link.txt --verbose=1]
+        ignore line: [/usr/bin/c++  -v -rdynamic CMakeFiles/cmTC_8cdb1.dir/CMakeCXXCompilerABI.cpp.o -o cmTC_8cdb1 ]
+        ignore line: [Using built-in specs.]
+        ignore line: [COLLECT_GCC=/usr/bin/c++]
+        ignore line: [COLLECT_LTO_WRAPPER=/usr/libexec/gcc/x86_64-linux-gnu/13/lto-wrapper]
+        ignore line: [OFFLOAD_TARGET_NAMES=nvptx-none:amdgcn-amdhsa]
+        ignore line: [OFFLOAD_TARGET_DEFAULT=1]
+        ignore line: [Target: x86_64-linux-gnu]
+        ignore line: [Configured with: ../src/configure -v --with-pkgversion='Ubuntu 13.3.0-6ubuntu2~24.04' --with-bugurl=file:///usr/share/doc/gcc-13/README.Bugs --enable-languages=c ada c++ go d fortran objc obj-c++ m2 --prefix=/usr --with-gcc-major-version-only --program-suffix=-13 --program-prefix=x86_64-linux-gnu- --enable-shared --enable-linker-build-id --libexecdir=/usr/libexec --without-included-gettext --enable-threads=posix --libdir=/usr/lib --enable-nls --enable-bootstrap --enable-clocale=gnu --enable-libstdcxx-debug --enable-libstdcxx-time=yes --with-default-libstdcxx-abi=new --enable-libstdcxx-backtrace --enable-gnu-unique-object --disable-vtable-verify --enable-plugin --enable-default-pie --with-system-zlib --enable-libphobos-checking=release --with-target-system-zlib=auto --enable-objc-gc=auto --enable-multiarch --disable-werror --enable-cet --with-arch-32=i686 --with-abi=m64 --with-multilib-list=m32 m64 mx32 --enable-multilib --with-tune=generic --enable-offload-targets=nvptx-none=/build/gcc-13-fG75Ri/gcc-13-13.3.0/debian/tmp-nvptx/usr amdgcn-amdhsa=/build/gcc-13-fG75Ri/gcc-13-13.3.0/debian/tmp-gcn/usr --enable-offload-defaulted --without-cuda-driver --enable-checking=release --build=x86_64-linux-gnu --host=x86_64-linux-gnu --target=x86_64-linux-gnu --with-build-config=bootstrap-lto-lean --enable-link-serialization=2]
+        ignore line: [Thread model: posix]
+        ignore line: [Supported LTO compression algorithms: zlib zstd]
+        ignore line: [gcc version 13.3.0 (Ubuntu 13.3.0-6ubuntu2~24.04) ]
+        ignore line: [COMPILER_PATH=/usr/libexec/gcc/x86_64-linux-gnu/13/:/usr/libexec/gcc/x86_64-linux-gnu/13/:/usr/libexec/gcc/x86_64-linux-gnu/:/usr/lib/gcc/x86_64-linux-gnu/13/:/usr/lib/gcc/x86_64-linux-gnu/]
+        ignore line: [LIBRARY_PATH=/usr/lib/gcc/x86_64-linux-gnu/13/:/usr/lib/gcc/x86_64-linux-gnu/13/../../../x86_64-linux-gnu/:/usr/lib/gcc/x86_64-linux-gnu/13/../../../../lib/:/lib/x86_64-linux-gnu/:/lib/../lib/:/usr/lib/x86_64-linux-gnu/:/usr/lib/../lib/:/usr/lib/gcc/x86_64-linux-gnu/13/../../../:/lib/:/usr/lib/]
+        ignore line: [COLLECT_GCC_OPTIONS='-v' '-rdynamic' '-o' 'cmTC_8cdb1' '-shared-libgcc' '-mtune=generic' '-march=x86-64' '-dumpdir' 'cmTC_8cdb1.']
+        link line: [ /usr/libexec/gcc/x86_64-linux-gnu/13/collect2 -plugin /usr/libexec/gcc/x86_64-linux-gnu/13/liblto_plugin.so -plugin-opt=/usr/libexec/gcc/x86_64-linux-gnu/13/lto-wrapper -plugin-opt=-fresolution=/tmp/ccnFTU0l.res -plugin-opt=-pass-through=-lgcc_s -plugin-opt=-pass-through=-lgcc -plugin-opt=-pass-through=-lc -plugin-opt=-pass-through=-lgcc_s -plugin-opt=-pass-through=-lgcc --build-id --eh-frame-hdr -m elf_x86_64 --hash-style=gnu --as-needed -export-dynamic -dynamic-linker /lib64/ld-linux-x86-64.so.2 -pie -z now -z relro -o cmTC_8cdb1 /usr/lib/gcc/x86_64-linux-gnu/13/../../../x86_64-linux-gnu/Scrt1.o /usr/lib/gcc/x86_64-linux-gnu/13/../../../x86_64-linux-gnu/crti.o /usr/lib/gcc/x86_64-linux-gnu/13/crtbeginS.o -L/usr/lib/gcc/x86_64-linux-gnu/13 -L/usr/lib/gcc/x86_64-linux-gnu/13/../../../x86_64-linux-gnu -L/usr/lib/gcc/x86_64-linux-gnu/13/../../../../lib -L/lib/x86_64-linux-gnu -L/lib/../lib -L/usr/lib/x86_64-linux-gnu -L/usr/lib/../lib -L/usr/lib/gcc/x86_64-linux-gnu/13/../../.. CMakeFiles/cmTC_8cdb1.dir/CMakeCXXCompilerABI.cpp.o -lstdc++ -lm -lgcc_s -lgcc -lc -lgcc_s -lgcc /usr/lib/gcc/x86_64-linux-gnu/13/crtendS.o /usr/lib/gcc/x86_64-linux-gnu/13/../../../x86_64-linux-gnu/crtn.o]
+          arg [/usr/libexec/gcc/x86_64-linux-gnu/13/collect2] ==> ignore
+          arg [-plugin] ==> ignore
+          arg [/usr/libexec/gcc/x86_64-linux-gnu/13/liblto_plugin.so] ==> ignore
+          arg [-plugin-opt=/usr/libexec/gcc/x86_64-linux-gnu/13/lto-wrapper] ==> ignore
+          arg [-plugin-opt=-fresolution=/tmp/ccnFTU0l.res] ==> ignore
+          arg [-plugin-opt=-pass-through=-lgcc_s] ==> ignore
+          arg [-plugin-opt=-pass-through=-lgcc] ==> ignore
+          arg [-plugin-opt=-pass-through=-lc] ==> ignore
+          arg [-plugin-opt=-pass-through=-lgcc_s] ==> ignore
+          arg [-plugin-opt=-pass-through=-lgcc] ==> ignore
+          arg [--build-id] ==> ignore
+          arg [--eh-frame-hdr] ==> ignore
+          arg [-m] ==> ignore
+          arg [elf_x86_64] ==> ignore
+          arg [--hash-style=gnu] ==> ignore
+          arg [--as-needed] ==> ignore
+          arg [-export-dynamic] ==> ignore
+          arg [-dynamic-linker] ==> ignore
+          arg [/lib64/ld-linux-x86-64.so.2] ==> ignore
+          arg [-pie] ==> ignore
+          arg [-znow] ==> ignore
+          arg [-zrelro] ==> ignore
+          arg [-o] ==> ignore
+          arg [cmTC_8cdb1] ==> ignore
+          arg [/usr/lib/gcc/x86_64-linux-gnu/13/../../../x86_64-linux-gnu/Scrt1.o] ==> obj [/usr/lib/gcc/x86_64-linux-gnu/13/../../../x86_64-linux-gnu/Scrt1.o]
+          arg [/usr/lib/gcc/x86_64-linux-gnu/13/../../../x86_64-linux-gnu/crti.o] ==> obj [/usr/lib/gcc/x86_64-linux-gnu/13/../../../x86_64-linux-gnu/crti.o]
+          arg [/usr/lib/gcc/x86_64-linux-gnu/13/crtbeginS.o] ==> obj [/usr/lib/gcc/x86_64-linux-gnu/13/crtbeginS.o]
+          arg [-L/usr/lib/gcc/x86_64-linux-gnu/13] ==> dir [/usr/lib/gcc/x86_64-linux-gnu/13]
+          arg [-L/usr/lib/gcc/x86_64-linux-gnu/13/../../../x86_64-linux-gnu] ==> dir [/usr/lib/gcc/x86_64-linux-gnu/13/../../../x86_64-linux-gnu]
+          arg [-L/usr/lib/gcc/x86_64-linux-gnu/13/../../../../lib] ==> dir [/usr/lib/gcc/x86_64-linux-gnu/13/../../../../lib]
+          arg [-L/lib/x86_64-linux-gnu] ==> dir [/lib/x86_64-linux-gnu]
+          arg [-L/lib/../lib] ==> dir [/lib/../lib]
+          arg [-L/usr/lib/x86_64-linux-gnu] ==> dir [/usr/lib/x86_64-linux-gnu]
+          arg [-L/usr/lib/../lib] ==> dir [/usr/lib/../lib]
+          arg [-L/usr/lib/gcc/x86_64-linux-gnu/13/../../..] ==> dir [/usr/lib/gcc/x86_64-linux-gnu/13/../../..]
+          arg [CMakeFiles/cmTC_8cdb1.dir/CMakeCXXCompilerABI.cpp.o] ==> ignore
+          arg [-lstdc++] ==> lib [stdc++]
+          arg [-lm] ==> lib [m]
+          arg [-lgcc_s] ==> lib [gcc_s]
+          arg [-lgcc] ==> lib [gcc]
+          arg [-lc] ==> lib [c]
+          arg [-lgcc_s] ==> lib [gcc_s]
+          arg [-lgcc] ==> lib [gcc]
+          arg [/usr/lib/gcc/x86_64-linux-gnu/13/crtendS.o] ==> obj [/usr/lib/gcc/x86_64-linux-gnu/13/crtendS.o]
+          arg [/usr/lib/gcc/x86_64-linux-gnu/13/../../../x86_64-linux-gnu/crtn.o] ==> obj [/usr/lib/gcc/x86_64-linux-gnu/13/../../../x86_64-linux-gnu/crtn.o]
+        collapse obj [/usr/lib/gcc/x86_64-linux-gnu/13/../../../x86_64-linux-gnu/Scrt1.o] ==> [/usr/lib/x86_64-linux-gnu/Scrt1.o]
+        collapse obj [/usr/lib/gcc/x86_64-linux-gnu/13/../../../x86_64-linux-gnu/crti.o] ==> [/usr/lib/x86_64-linux-gnu/crti.o]
+        collapse obj [/usr/lib/gcc/x86_64-linux-gnu/13/../../../x86_64-linux-gnu/crtn.o] ==> [/usr/lib/x86_64-linux-gnu/crtn.o]
+        collapse library dir [/usr/lib/gcc/x86_64-linux-gnu/13] ==> [/usr/lib/gcc/x86_64-linux-gnu/13]
+        collapse library dir [/usr/lib/gcc/x86_64-linux-gnu/13/../../../x86_64-linux-gnu] ==> [/usr/lib/x86_64-linux-gnu]
+        collapse library dir [/usr/lib/gcc/x86_64-linux-gnu/13/../../../../lib] ==> [/usr/lib]
+        collapse library dir [/lib/x86_64-linux-gnu] ==> [/lib/x86_64-linux-gnu]
+        collapse library dir [/lib/../lib] ==> [/lib]
+        collapse library dir [/usr/lib/x86_64-linux-gnu] ==> [/usr/lib/x86_64-linux-gnu]
+        collapse library dir [/usr/lib/../lib] ==> [/usr/lib]
+        collapse library dir [/usr/lib/gcc/x86_64-linux-gnu/13/../../..] ==> [/usr/lib]
+        implicit libs: [stdc++;m;gcc_s;gcc;c;gcc_s;gcc]
+        implicit objs: [/usr/lib/x86_64-linux-gnu/Scrt1.o;/usr/lib/x86_64-linux-gnu/crti.o;/usr/lib/gcc/x86_64-linux-gnu/13/crtbeginS.o;/usr/lib/gcc/x86_64-linux-gnu/13/crtendS.o;/usr/lib/x86_64-linux-gnu/crtn.o]
+        implicit dirs: [/usr/lib/gcc/x86_64-linux-gnu/13;/usr/lib/x86_64-linux-gnu;/usr/lib;/lib/x86_64-linux-gnu;/lib]
+        implicit fwks: []
+      
+      
+  -
+    kind: "try_compile-v1"
+    backtrace:
+      - "/usr/share/cmake-3.28/Modules/Internal/CheckSourceCompiles.cmake:101 (try_compile)"
+      - "/usr/share/cmake-3.28/Modules/CheckCSourceCompiles.cmake:52 (cmake_check_source_compiles)"
+      - "cmake/platform.cmake:4 (CHECK_C_SOURCE_COMPILES)"
+      - "CMakeLists.txt:20 (include)"
+    checks:
+      - "Performing Test ARCH_64_BIT"
+    directories:
+      source: "/home/lavanya/tranalyzer2-0.9.3/plugins/regexHyperscan/src/hyperscan/build/CMakeFiles/CMakeScratch/TryCompile-18NjB7"
+      binary: "/home/lavanya/tranalyzer2-0.9.3/plugins/regexHyperscan/src/hyperscan/build/CMakeFiles/CMakeScratch/TryCompile-18NjB7"
+    cmakeVariables:
+      CMAKE_C_FLAGS: ""
+      CMAKE_MODULE_PATH: "/home/lavanya/tranalyzer2-0.9.3/plugins/regexHyperscan/src/hyperscan/cmake"
+      CMAKE_POSITION_INDEPENDENT_CODE: "ON"
+    buildResult:
+      variable: "ARCH_64_BIT"
+      cached: true
+      stdout: |
+        Change Dir: '/home/lavanya/tranalyzer2-0.9.3/plugins/regexHyperscan/src/hyperscan/build/CMakeFiles/CMakeScratch/TryCompile-18NjB7'
+        
+        Run Build Command(s): /usr/bin/cmake -E env VERBOSE=1 /usr/bin/gmake -f Makefile cmTC_3e64a/fast
+        /usr/bin/gmake  -f CMakeFiles/cmTC_3e64a.dir/build.make CMakeFiles/cmTC_3e64a.dir/build
+        gmake[1]: Entering directory '/home/lavanya/tranalyzer2-0.9.3/plugins/regexHyperscan/src/hyperscan/build/CMakeFiles/CMakeScratch/TryCompile-18NjB7'
+        Building C object CMakeFiles/cmTC_3e64a.dir/src.c.o
+        /usr/bin/cc -DARCH_64_BIT  -fPIE -o CMakeFiles/cmTC_3e64a.dir/src.c.o -c /home/lavanya/tranalyzer2-0.9.3/plugins/regexHyperscan/src/hyperscan/build/CMakeFiles/CMakeScratch/TryCompile-18NjB7/src.c
+        Linking C executable cmTC_3e64a
+        /usr/bin/cmake -E cmake_link_script CMakeFiles/cmTC_3e64a.dir/link.txt --verbose=1
+        /usr/bin/cc -rdynamic CMakeFiles/cmTC_3e64a.dir/src.c.o -o cmTC_3e64a 
+        gmake[1]: Leaving directory '/home/lavanya/tranalyzer2-0.9.3/plugins/regexHyperscan/src/hyperscan/build/CMakeFiles/CMakeScratch/TryCompile-18NjB7'
+        
+      exitCode: 0
+  -
+    kind: "try_compile-v1"
+    backtrace:
+      - "/usr/share/cmake-3.28/Modules/Internal/CheckSourceCompiles.cmake:101 (try_compile)"
+      - "/usr/share/cmake-3.28/Modules/CheckCSourceCompiles.cmake:52 (cmake_check_source_compiles)"
+      - "cmake/platform.cmake:6 (CHECK_C_SOURCE_COMPILES)"
+      - "CMakeLists.txt:20 (include)"
+    checks:
+      - "Performing Test ARCH_32_BIT"
+    directories:
+      source: "/home/lavanya/tranalyzer2-0.9.3/plugins/regexHyperscan/src/hyperscan/build/CMakeFiles/CMakeScratch/TryCompile-xZrppd"
+      binary: "/home/lavanya/tranalyzer2-0.9.3/plugins/regexHyperscan/src/hyperscan/build/CMakeFiles/CMakeScratch/TryCompile-xZrppd"
+    cmakeVariables:
+      CMAKE_C_FLAGS: ""
+      CMAKE_MODULE_PATH: "/home/lavanya/tranalyzer2-0.9.3/plugins/regexHyperscan/src/hyperscan/cmake"
+      CMAKE_POSITION_INDEPENDENT_CODE: "ON"
+    buildResult:
+      variable: "ARCH_32_BIT"
+      cached: true
+      stdout: |
+        Change Dir: '/home/lavanya/tranalyzer2-0.9.3/plugins/regexHyperscan/src/hyperscan/build/CMakeFiles/CMakeScratch/TryCompile-xZrppd'
+        
+        Run Build Command(s): /usr/bin/cmake -E env VERBOSE=1 /usr/bin/gmake -f Makefile cmTC_b5db5/fast
+        /usr/bin/gmake  -f CMakeFiles/cmTC_b5db5.dir/build.make CMakeFiles/cmTC_b5db5.dir/build
+        gmake[1]: Entering directory '/home/lavanya/tranalyzer2-0.9.3/plugins/regexHyperscan/src/hyperscan/build/CMakeFiles/CMakeScratch/TryCompile-xZrppd'
+        Building C object CMakeFiles/cmTC_b5db5.dir/src.c.o
+        /usr/bin/cc -DARCH_32_BIT  -fPIE -o CMakeFiles/cmTC_b5db5.dir/src.c.o -c /home/lavanya/tranalyzer2-0.9.3/plugins/regexHyperscan/src/hyperscan/build/CMakeFiles/CMakeScratch/TryCompile-xZrppd/src.c
+        /home/lavanya/tranalyzer2-0.9.3/plugins/regexHyperscan/src/hyperscan/build/CMakeFiles/CMakeScratch/TryCompile-xZrppd/src.c:2:2: error: #error not 64bit
+            2 | #error not 64bit
+              |  ^~~~~
+        gmake[1]: *** [CMakeFiles/cmTC_b5db5.dir/build.make:78: CMakeFiles/cmTC_b5db5.dir/src.c.o] Error 1
+        gmake[1]: Leaving directory '/home/lavanya/tranalyzer2-0.9.3/plugins/regexHyperscan/src/hyperscan/build/CMakeFiles/CMakeScratch/TryCompile-xZrppd'
+        gmake: *** [Makefile:127: cmTC_b5db5/fast] Error 2
+        
+      exitCode: 2
+  -
+    kind: "try_compile-v1"
+    backtrace:
+      - "/usr/share/cmake-3.28/Modules/CheckIncludeFiles.cmake:132 (try_compile)"
+      - "CMakeLists.txt:287 (CHECK_INCLUDE_FILES)"
+    checks:
+      - "Looking for include file unistd.h"
+    directories:
+      source: "/home/lavanya/tranalyzer2-0.9.3/plugins/regexHyperscan/src/hyperscan/build/CMakeFiles/CMakeScratch/TryCompile-ua1kDX"
+      binary: "/home/lavanya/tranalyzer2-0.9.3/plugins/regexHyperscan/src/hyperscan/build/CMakeFiles/CMakeScratch/TryCompile-ua1kDX"
+    cmakeVariables:
+      CMAKE_C_FLAGS: ""
+      CMAKE_MODULE_PATH: "/home/lavanya/tranalyzer2-0.9.3/plugins/regexHyperscan/src/hyperscan/cmake"
+      CMAKE_POSITION_INDEPENDENT_CODE: "ON"
+    buildResult:
+      variable: "HAVE_UNISTD_H"
+      cached: true
+      stdout: |
+        Change Dir: '/home/lavanya/tranalyzer2-0.9.3/plugins/regexHyperscan/src/hyperscan/build/CMakeFiles/CMakeScratch/TryCompile-ua1kDX'
+        
+        Run Build Command(s): /usr/bin/cmake -E env VERBOSE=1 /usr/bin/gmake -f Makefile cmTC_512e4/fast
+        /usr/bin/gmake  -f CMakeFiles/cmTC_512e4.dir/build.make CMakeFiles/cmTC_512e4.dir/build
+        gmake[1]: Entering directory '/home/lavanya/tranalyzer2-0.9.3/plugins/regexHyperscan/src/hyperscan/build/CMakeFiles/CMakeScratch/TryCompile-ua1kDX'
+        Building C object CMakeFiles/cmTC_512e4.dir/HAVE_UNISTD_H.c.o
+        /usr/bin/cc   -fPIE -o CMakeFiles/cmTC_512e4.dir/HAVE_UNISTD_H.c.o -c /home/lavanya/tranalyzer2-0.9.3/plugins/regexHyperscan/src/hyperscan/build/CMakeFiles/CMakeScratch/TryCompile-ua1kDX/HAVE_UNISTD_H.c
+        Linking C executable cmTC_512e4
+        /usr/bin/cmake -E cmake_link_script CMakeFiles/cmTC_512e4.dir/link.txt --verbose=1
+        /usr/bin/cc -rdynamic CMakeFiles/cmTC_512e4.dir/HAVE_UNISTD_H.c.o -o cmTC_512e4 
+        gmake[1]: Leaving directory '/home/lavanya/tranalyzer2-0.9.3/plugins/regexHyperscan/src/hyperscan/build/CMakeFiles/CMakeScratch/TryCompile-ua1kDX'
+        
+      exitCode: 0
+  -
+    kind: "try_compile-v1"
+    backtrace:
+      - "/usr/share/cmake-3.28/Modules/CheckIncludeFiles.cmake:132 (try_compile)"
+      - "CMakeLists.txt:288 (CHECK_INCLUDE_FILES)"
+    checks:
+      - "Looking for include file intrin.h"
+    directories:
+      source: "/home/lavanya/tranalyzer2-0.9.3/plugins/regexHyperscan/src/hyperscan/build/CMakeFiles/CMakeScratch/TryCompile-PwaJ74"
+      binary: "/home/lavanya/tranalyzer2-0.9.3/plugins/regexHyperscan/src/hyperscan/build/CMakeFiles/CMakeScratch/TryCompile-PwaJ74"
+    cmakeVariables:
+      CMAKE_C_FLAGS: ""
+      CMAKE_MODULE_PATH: "/home/lavanya/tranalyzer2-0.9.3/plugins/regexHyperscan/src/hyperscan/cmake"
+      CMAKE_POSITION_INDEPENDENT_CODE: "ON"
+    buildResult:
+      variable: "HAVE_C_INTRIN_H"
+      cached: true
+      stdout: |
+        Change Dir: '/home/lavanya/tranalyzer2-0.9.3/plugins/regexHyperscan/src/hyperscan/build/CMakeFiles/CMakeScratch/TryCompile-PwaJ74'
+        
+        Run Build Command(s): /usr/bin/cmake -E env VERBOSE=1 /usr/bin/gmake -f Makefile cmTC_72469/fast
+        /usr/bin/gmake  -f CMakeFiles/cmTC_72469.dir/build.make CMakeFiles/cmTC_72469.dir/build
+        gmake[1]: Entering directory '/home/lavanya/tranalyzer2-0.9.3/plugins/regexHyperscan/src/hyperscan/build/CMakeFiles/CMakeScratch/TryCompile-PwaJ74'
+        Building C object CMakeFiles/cmTC_72469.dir/HAVE_C_INTRIN_H.c.o
+        /usr/bin/cc   -fPIE -o CMakeFiles/cmTC_72469.dir/HAVE_C_INTRIN_H.c.o -c /home/lavanya/tranalyzer2-0.9.3/plugins/regexHyperscan/src/hyperscan/build/CMakeFiles/CMakeScratch/TryCompile-PwaJ74/HAVE_C_INTRIN_H.c
+        /home/lavanya/tranalyzer2-0.9.3/plugins/regexHyperscan/src/hyperscan/build/CMakeFiles/CMakeScratch/TryCompile-PwaJ74/HAVE_C_INTRIN_H.c:2:10: fatal error: intrin.h: No such file or directory
+            2 | #include <intrin.h>
+              |          ^~~~~~~~~~
+        compilation terminated.
+        gmake[1]: *** [CMakeFiles/cmTC_72469.dir/build.make:78: CMakeFiles/cmTC_72469.dir/HAVE_C_INTRIN_H.c.o] Error 1
+        gmake[1]: Leaving directory '/home/lavanya/tranalyzer2-0.9.3/plugins/regexHyperscan/src/hyperscan/build/CMakeFiles/CMakeScratch/TryCompile-PwaJ74'
+        gmake: *** [Makefile:127: cmTC_72469/fast] Error 2
+        
+      exitCode: 2
+  -
+    kind: "try_compile-v1"
+    backtrace:
+      - "/usr/share/cmake-3.28/Modules/CheckIncludeFileCXX.cmake:89 (try_compile)"
+      - "CMakeLists.txt:289 (CHECK_INCLUDE_FILE_CXX)"
+    checks:
+      - "Looking for C++ include intrin.h"
+    directories:
+      source: "/home/lavanya/tranalyzer2-0.9.3/plugins/regexHyperscan/src/hyperscan/build/CMakeFiles/CMakeScratch/TryCompile-ghKqq9"
+      binary: "/home/lavanya/tranalyzer2-0.9.3/plugins/regexHyperscan/src/hyperscan/build/CMakeFiles/CMakeScratch/TryCompile-ghKqq9"
+    cmakeVariables:
+      CMAKE_CXX_FLAGS: ""
+      CMAKE_MODULE_PATH: "/home/lavanya/tranalyzer2-0.9.3/plugins/regexHyperscan/src/hyperscan/cmake"
+      CMAKE_POSITION_INDEPENDENT_CODE: "ON"
+    buildResult:
+      variable: "HAVE_CXX_INTRIN_H"
+      cached: true
+      stdout: |
+        Change Dir: '/home/lavanya/tranalyzer2-0.9.3/plugins/regexHyperscan/src/hyperscan/build/CMakeFiles/CMakeScratch/TryCompile-ghKqq9'
+        
+        Run Build Command(s): /usr/bin/cmake -E env VERBOSE=1 /usr/bin/gmake -f Makefile cmTC_8b48b/fast
+        /usr/bin/gmake  -f CMakeFiles/cmTC_8b48b.dir/build.make CMakeFiles/cmTC_8b48b.dir/build
+        gmake[1]: Entering directory '/home/lavanya/tranalyzer2-0.9.3/plugins/regexHyperscan/src/hyperscan/build/CMakeFiles/CMakeScratch/TryCompile-ghKqq9'
+        Building CXX object CMakeFiles/cmTC_8b48b.dir/CheckIncludeFile.cxx.o
+        /usr/bin/c++   -fPIE -o CMakeFiles/cmTC_8b48b.dir/CheckIncludeFile.cxx.o -c /home/lavanya/tranalyzer2-0.9.3/plugins/regexHyperscan/src/hyperscan/build/CMakeFiles/CMakeScratch/TryCompile-ghKqq9/CheckIncludeFile.cxx
+        /home/lavanya/tranalyzer2-0.9.3/plugins/regexHyperscan/src/hyperscan/build/CMakeFiles/CMakeScratch/TryCompile-ghKqq9/CheckIncludeFile.cxx:1:10: fatal error: intrin.h: No such file or directory
+            1 | #include <intrin.h>
+              |          ^~~~~~~~~~
+        compilation terminated.
+        gmake[1]: *** [CMakeFiles/cmTC_8b48b.dir/build.make:78: CMakeFiles/cmTC_8b48b.dir/CheckIncludeFile.cxx.o] Error 1
+        gmake[1]: Leaving directory '/home/lavanya/tranalyzer2-0.9.3/plugins/regexHyperscan/src/hyperscan/build/CMakeFiles/CMakeScratch/TryCompile-ghKqq9'
+        gmake: *** [Makefile:127: cmTC_8b48b/fast] Error 2
+        
+      exitCode: 2
+  -
+    kind: "try_compile-v1"
+    backtrace:
+      - "/usr/share/cmake-3.28/Modules/CheckIncludeFiles.cmake:132 (try_compile)"
+      - "CMakeLists.txt:290 (CHECK_INCLUDE_FILES)"
+    checks:
+      - "Looking for include file x86intrin.h"
+    directories:
+      source: "/home/lavanya/tranalyzer2-0.9.3/plugins/regexHyperscan/src/hyperscan/build/CMakeFiles/CMakeScratch/TryCompile-595ngR"
+      binary: "/home/lavanya/tranalyzer2-0.9.3/plugins/regexHyperscan/src/hyperscan/build/CMakeFiles/CMakeScratch/TryCompile-595ngR"
+    cmakeVariables:
+      CMAKE_C_FLAGS: ""
+      CMAKE_MODULE_PATH: "/home/lavanya/tranalyzer2-0.9.3/plugins/regexHyperscan/src/hyperscan/cmake"
+      CMAKE_POSITION_INDEPENDENT_CODE: "ON"
+    buildResult:
+      variable: "HAVE_C_X86INTRIN_H"
+      cached: true
+      stdout: |
+        Change Dir: '/home/lavanya/tranalyzer2-0.9.3/plugins/regexHyperscan/src/hyperscan/build/CMakeFiles/CMakeScratch/TryCompile-595ngR'
+        
+        Run Build Command(s): /usr/bin/cmake -E env VERBOSE=1 /usr/bin/gmake -f Makefile cmTC_6fb22/fast
+        /usr/bin/gmake  -f CMakeFiles/cmTC_6fb22.dir/build.make CMakeFiles/cmTC_6fb22.dir/build
+        gmake[1]: Entering directory '/home/lavanya/tranalyzer2-0.9.3/plugins/regexHyperscan/src/hyperscan/build/CMakeFiles/CMakeScratch/TryCompile-595ngR'
+        Building C object CMakeFiles/cmTC_6fb22.dir/HAVE_C_X86INTRIN_H.c.o
+        /usr/bin/cc   -fPIE -o CMakeFiles/cmTC_6fb22.dir/HAVE_C_X86INTRIN_H.c.o -c /home/lavanya/tranalyzer2-0.9.3/plugins/regexHyperscan/src/hyperscan/build/CMakeFiles/CMakeScratch/TryCompile-595ngR/HAVE_C_X86INTRIN_H.c
+        Linking C executable cmTC_6fb22
+        /usr/bin/cmake -E cmake_link_script CMakeFiles/cmTC_6fb22.dir/link.txt --verbose=1
+        /usr/bin/cc -rdynamic CMakeFiles/cmTC_6fb22.dir/HAVE_C_X86INTRIN_H.c.o -o cmTC_6fb22 
+        gmake[1]: Leaving directory '/home/lavanya/tranalyzer2-0.9.3/plugins/regexHyperscan/src/hyperscan/build/CMakeFiles/CMakeScratch/TryCompile-595ngR'
+        
+      exitCode: 0
+  -
+    kind: "try_compile-v1"
+    backtrace:
+      - "/usr/share/cmake-3.28/Modules/CheckIncludeFileCXX.cmake:89 (try_compile)"
+      - "CMakeLists.txt:291 (CHECK_INCLUDE_FILE_CXX)"
+    checks:
+      - "Looking for C++ include x86intrin.h"
+    directories:
+      source: "/home/lavanya/tranalyzer2-0.9.3/plugins/regexHyperscan/src/hyperscan/build/CMakeFiles/CMakeScratch/TryCompile-aPWmjy"
+      binary: "/home/lavanya/tranalyzer2-0.9.3/plugins/regexHyperscan/src/hyperscan/build/CMakeFiles/CMakeScratch/TryCompile-aPWmjy"
+    cmakeVariables:
+      CMAKE_CXX_FLAGS: ""
+      CMAKE_MODULE_PATH: "/home/lavanya/tranalyzer2-0.9.3/plugins/regexHyperscan/src/hyperscan/cmake"
+      CMAKE_POSITION_INDEPENDENT_CODE: "ON"
+    buildResult:
+      variable: "HAVE_CXX_X86INTRIN_H"
+      cached: true
+      stdout: |
+        Change Dir: '/home/lavanya/tranalyzer2-0.9.3/plugins/regexHyperscan/src/hyperscan/build/CMakeFiles/CMakeScratch/TryCompile-aPWmjy'
+        
+        Run Build Command(s): /usr/bin/cmake -E env VERBOSE=1 /usr/bin/gmake -f Makefile cmTC_edaf7/fast
+        /usr/bin/gmake  -f CMakeFiles/cmTC_edaf7.dir/build.make CMakeFiles/cmTC_edaf7.dir/build
+        gmake[1]: Entering directory '/home/lavanya/tranalyzer2-0.9.3/plugins/regexHyperscan/src/hyperscan/build/CMakeFiles/CMakeScratch/TryCompile-aPWmjy'
+        Building CXX object CMakeFiles/cmTC_edaf7.dir/CheckIncludeFile.cxx.o
+        /usr/bin/c++   -fPIE -o CMakeFiles/cmTC_edaf7.dir/CheckIncludeFile.cxx.o -c /home/lavanya/tranalyzer2-0.9.3/plugins/regexHyperscan/src/hyperscan/build/CMakeFiles/CMakeScratch/TryCompile-aPWmjy/CheckIncludeFile.cxx
+        Linking CXX executable cmTC_edaf7
+        /usr/bin/cmake -E cmake_link_script CMakeFiles/cmTC_edaf7.dir/link.txt --verbose=1
+        /usr/bin/c++ -rdynamic CMakeFiles/cmTC_edaf7.dir/CheckIncludeFile.cxx.o -o cmTC_edaf7 
+        gmake[1]: Leaving directory '/home/lavanya/tranalyzer2-0.9.3/plugins/regexHyperscan/src/hyperscan/build/CMakeFiles/CMakeScratch/TryCompile-aPWmjy'
+        
+      exitCode: 0
+  -
+    kind: "try_compile-v1"
+    backtrace:
+      - "/usr/share/cmake-3.28/Modules/CheckFunctionExists.cmake:86 (try_compile)"
+      - "CMakeLists.txt:293 (CHECK_FUNCTION_EXISTS)"
+    checks:
+      - "Looking for posix_memalign"
+    directories:
+      source: "/home/lavanya/tranalyzer2-0.9.3/plugins/regexHyperscan/src/hyperscan/build/CMakeFiles/CMakeScratch/TryCompile-CEc9Od"
+      binary: "/home/lavanya/tranalyzer2-0.9.3/plugins/regexHyperscan/src/hyperscan/build/CMakeFiles/CMakeScratch/TryCompile-CEc9Od"
+    cmakeVariables:
+      CMAKE_C_FLAGS: ""
+      CMAKE_MODULE_PATH: "/home/lavanya/tranalyzer2-0.9.3/plugins/regexHyperscan/src/hyperscan/cmake"
+      CMAKE_POSITION_INDEPENDENT_CODE: "ON"
+    buildResult:
+      variable: "HAVE_POSIX_MEMALIGN"
+      cached: true
+      stdout: |
+        Change Dir: '/home/lavanya/tranalyzer2-0.9.3/plugins/regexHyperscan/src/hyperscan/build/CMakeFiles/CMakeScratch/TryCompile-CEc9Od'
+        
+        Run Build Command(s): /usr/bin/cmake -E env VERBOSE=1 /usr/bin/gmake -f Makefile cmTC_1686f/fast
+        /usr/bin/gmake  -f CMakeFiles/cmTC_1686f.dir/build.make CMakeFiles/cmTC_1686f.dir/build
+        gmake[1]: Entering directory '/home/lavanya/tranalyzer2-0.9.3/plugins/regexHyperscan/src/hyperscan/build/CMakeFiles/CMakeScratch/TryCompile-CEc9Od'
+        Building C object CMakeFiles/cmTC_1686f.dir/CheckFunctionExists.c.o
+        /usr/bin/cc   -DCHECK_FUNCTION_EXISTS=posix_memalign -fPIE -o CMakeFiles/cmTC_1686f.dir/CheckFunctionExists.c.o -c /home/lavanya/tranalyzer2-0.9.3/plugins/regexHyperscan/src/hyperscan/build/CMakeFiles/CMakeScratch/TryCompile-CEc9Od/CheckFunctionExists.c
+        <command-line>: warning: conflicting types for built-in function ‘posix_memalign’; expected ‘int(void **, long unsigned int,  long unsigned int)’ [-Wbuiltin-declaration-mismatch]
+        /home/lavanya/tranalyzer2-0.9.3/plugins/regexHyperscan/src/hyperscan/build/CMakeFiles/CMakeScratch/TryCompile-CEc9Od/CheckFunctionExists.c:7:3: note: in expansion of macro ‘CHECK_FUNCTION_EXISTS’
+            7 |   CHECK_FUNCTION_EXISTS(void);
+              |   ^~~~~~~~~~~~~~~~~~~~~
+        Linking C executable cmTC_1686f
+        /usr/bin/cmake -E cmake_link_script CMakeFiles/cmTC_1686f.dir/link.txt --verbose=1
+        /usr/bin/cc  -DCHECK_FUNCTION_EXISTS=posix_memalign -rdynamic CMakeFiles/cmTC_1686f.dir/CheckFunctionExists.c.o -o cmTC_1686f 
+        gmake[1]: Leaving directory '/home/lavanya/tranalyzer2-0.9.3/plugins/regexHyperscan/src/hyperscan/build/CMakeFiles/CMakeScratch/TryCompile-CEc9Od'
+        
+      exitCode: 0
+  -
+    kind: "try_compile-v1"
+    backtrace:
+      - "/usr/share/cmake-3.28/Modules/CheckFunctionExists.cmake:86 (try_compile)"
+      - "CMakeLists.txt:294 (CHECK_FUNCTION_EXISTS)"
+    checks:
+      - "Looking for _aligned_malloc"
+    directories:
+      source: "/home/lavanya/tranalyzer2-0.9.3/plugins/regexHyperscan/src/hyperscan/build/CMakeFiles/CMakeScratch/TryCompile-pn4MrQ"
+      binary: "/home/lavanya/tranalyzer2-0.9.3/plugins/regexHyperscan/src/hyperscan/build/CMakeFiles/CMakeScratch/TryCompile-pn4MrQ"
+    cmakeVariables:
+      CMAKE_C_FLAGS: ""
+      CMAKE_MODULE_PATH: "/home/lavanya/tranalyzer2-0.9.3/plugins/regexHyperscan/src/hyperscan/cmake"
+      CMAKE_POSITION_INDEPENDENT_CODE: "ON"
+    buildResult:
+      variable: "HAVE__ALIGNED_MALLOC"
+      cached: true
+      stdout: |
+        Change Dir: '/home/lavanya/tranalyzer2-0.9.3/plugins/regexHyperscan/src/hyperscan/build/CMakeFiles/CMakeScratch/TryCompile-pn4MrQ'
+        
+        Run Build Command(s): /usr/bin/cmake -E env VERBOSE=1 /usr/bin/gmake -f Makefile cmTC_2abe7/fast
+        /usr/bin/gmake  -f CMakeFiles/cmTC_2abe7.dir/build.make CMakeFiles/cmTC_2abe7.dir/build
+        gmake[1]: Entering directory '/home/lavanya/tranalyzer2-0.9.3/plugins/regexHyperscan/src/hyperscan/build/CMakeFiles/CMakeScratch/TryCompile-pn4MrQ'
+        Building C object CMakeFiles/cmTC_2abe7.dir/CheckFunctionExists.c.o
+        /usr/bin/cc   -DCHECK_FUNCTION_EXISTS=_aligned_malloc -fPIE -o CMakeFiles/cmTC_2abe7.dir/CheckFunctionExists.c.o -c /home/lavanya/tranalyzer2-0.9.3/plugins/regexHyperscan/src/hyperscan/build/CMakeFiles/CMakeScratch/TryCompile-pn4MrQ/CheckFunctionExists.c
+        Linking C executable cmTC_2abe7
+        /usr/bin/cmake -E cmake_link_script CMakeFiles/cmTC_2abe7.dir/link.txt --verbose=1
+        /usr/bin/cc  -DCHECK_FUNCTION_EXISTS=_aligned_malloc -rdynamic CMakeFiles/cmTC_2abe7.dir/CheckFunctionExists.c.o -o cmTC_2abe7 
+        /usr/bin/ld: CMakeFiles/cmTC_2abe7.dir/CheckFunctionExists.c.o: in function `main':
+        CheckFunctionExists.c:(.text+0x14): undefined reference to `_aligned_malloc'
+        collect2: error: ld returned 1 exit status
+        gmake[1]: *** [CMakeFiles/cmTC_2abe7.dir/build.make:99: cmTC_2abe7] Error 1
+        gmake[1]: Leaving directory '/home/lavanya/tranalyzer2-0.9.3/plugins/regexHyperscan/src/hyperscan/build/CMakeFiles/CMakeScratch/TryCompile-pn4MrQ'
+        gmake: *** [Makefile:127: cmTC_2abe7/fast] Error 2
+        
+      exitCode: 2
+  -
+    kind: "try_compile-v1"
+    backtrace:
+      - "/usr/share/cmake-3.28/Modules/Internal/CheckSourceCompiles.cmake:101 (try_compile)"
+      - "/usr/share/cmake-3.28/Modules/Internal/CheckCompilerFlag.cmake:18 (cmake_check_source_compiles)"
+      - "/usr/share/cmake-3.28/Modules/CheckCCompilerFlag.cmake:51 (cmake_check_compiler_flag)"
+      - "CMakeLists.txt:297 (CHECK_C_COMPILER_FLAG)"
+    checks:
+      - "Performing Test HAS_C_HIDDEN"
+    directories:
+      source: "/home/lavanya/tranalyzer2-0.9.3/plugins/regexHyperscan/src/hyperscan/build/CMakeFiles/CMakeScratch/TryCompile-1KxrDI"
+      binary: "/home/lavanya/tranalyzer2-0.9.3/plugins/regexHyperscan/src/hyperscan/build/CMakeFiles/CMakeScratch/TryCompile-1KxrDI"
+    cmakeVariables:
+      CMAKE_C_FLAGS: ""
+      CMAKE_MODULE_PATH: "/home/lavanya/tranalyzer2-0.9.3/plugins/regexHyperscan/src/hyperscan/cmake"
+      CMAKE_POSITION_INDEPENDENT_CODE: "ON"
+    buildResult:
+      variable: "HAS_C_HIDDEN"
+      cached: true
+      stdout: |
+        Change Dir: '/home/lavanya/tranalyzer2-0.9.3/plugins/regexHyperscan/src/hyperscan/build/CMakeFiles/CMakeScratch/TryCompile-1KxrDI'
+        
+        Run Build Command(s): /usr/bin/cmake -E env VERBOSE=1 /usr/bin/gmake -f Makefile cmTC_7e093/fast
+        /usr/bin/gmake  -f CMakeFiles/cmTC_7e093.dir/build.make CMakeFiles/cmTC_7e093.dir/build
+        gmake[1]: Entering directory '/home/lavanya/tranalyzer2-0.9.3/plugins/regexHyperscan/src/hyperscan/build/CMakeFiles/CMakeScratch/TryCompile-1KxrDI'
+        Building C object CMakeFiles/cmTC_7e093.dir/src.c.o
+        /usr/bin/cc -DHAS_C_HIDDEN  -fPIE   -fvisibility=hidden -o CMakeFiles/cmTC_7e093.dir/src.c.o -c /home/lavanya/tranalyzer2-0.9.3/plugins/regexHyperscan/src/hyperscan/build/CMakeFiles/CMakeScratch/TryCompile-1KxrDI/src.c
+        Linking C executable cmTC_7e093
+        /usr/bin/cmake -E cmake_link_script CMakeFiles/cmTC_7e093.dir/link.txt --verbose=1
+        /usr/bin/cc -rdynamic CMakeFiles/cmTC_7e093.dir/src.c.o -o cmTC_7e093 
+        gmake[1]: Leaving directory '/home/lavanya/tranalyzer2-0.9.3/plugins/regexHyperscan/src/hyperscan/build/CMakeFiles/CMakeScratch/TryCompile-1KxrDI'
+        
+      exitCode: 0
+  -
+    kind: "try_compile-v1"
+    backtrace:
+      - "/usr/share/cmake-3.28/Modules/Internal/CheckSourceCompiles.cmake:101 (try_compile)"
+      - "/usr/share/cmake-3.28/Modules/Internal/CheckCompilerFlag.cmake:18 (cmake_check_source_compiles)"
+      - "/usr/share/cmake-3.28/Modules/CheckCXXCompilerFlag.cmake:34 (cmake_check_compiler_flag)"
+      - "CMakeLists.txt:298 (CHECK_CXX_COMPILER_FLAG)"
+    checks:
+      - "Performing Test HAS_CXX_HIDDEN"
+    directories:
+      source: "/home/lavanya/tranalyzer2-0.9.3/plugins/regexHyperscan/src/hyperscan/build/CMakeFiles/CMakeScratch/TryCompile-8MthAa"
+      binary: "/home/lavanya/tranalyzer2-0.9.3/plugins/regexHyperscan/src/hyperscan/build/CMakeFiles/CMakeScratch/TryCompile-8MthAa"
+    cmakeVariables:
+      CMAKE_CXX_FLAGS: ""
+      CMAKE_MODULE_PATH: "/home/lavanya/tranalyzer2-0.9.3/plugins/regexHyperscan/src/hyperscan/cmake"
+      CMAKE_POSITION_INDEPENDENT_CODE: "ON"
+    buildResult:
+      variable: "HAS_CXX_HIDDEN"
+      cached: true
+      stdout: |
+        Change Dir: '/home/lavanya/tranalyzer2-0.9.3/plugins/regexHyperscan/src/hyperscan/build/CMakeFiles/CMakeScratch/TryCompile-8MthAa'
+        
+        Run Build Command(s): /usr/bin/cmake -E env VERBOSE=1 /usr/bin/gmake -f Makefile cmTC_11eba/fast
+        /usr/bin/gmake  -f CMakeFiles/cmTC_11eba.dir/build.make CMakeFiles/cmTC_11eba.dir/build
+        gmake[1]: Entering directory '/home/lavanya/tranalyzer2-0.9.3/plugins/regexHyperscan/src/hyperscan/build/CMakeFiles/CMakeScratch/TryCompile-8MthAa'
+        Building CXX object CMakeFiles/cmTC_11eba.dir/src.cxx.o
+        /usr/bin/c++ -DHAS_CXX_HIDDEN  -fPIE   -fvisibility=hidden -o CMakeFiles/cmTC_11eba.dir/src.cxx.o -c /home/lavanya/tranalyzer2-0.9.3/plugins/regexHyperscan/src/hyperscan/build/CMakeFiles/CMakeScratch/TryCompile-8MthAa/src.cxx
+        Linking CXX executable cmTC_11eba
+        /usr/bin/cmake -E cmake_link_script CMakeFiles/cmTC_11eba.dir/link.txt --verbose=1
+        /usr/bin/c++ -rdynamic CMakeFiles/cmTC_11eba.dir/src.cxx.o -o cmTC_11eba 
+        gmake[1]: Leaving directory '/home/lavanya/tranalyzer2-0.9.3/plugins/regexHyperscan/src/hyperscan/build/CMakeFiles/CMakeScratch/TryCompile-8MthAa'
+        
+      exitCode: 0
+  -
+    kind: "try_compile-v1"
+    backtrace:
+      - "/usr/share/cmake-3.28/Modules/CheckSymbolExists.cmake:140 (try_compile)"
+      - "/usr/share/cmake-3.28/Modules/CheckCXXSymbolExists.cmake:72 (__CHECK_SYMBOL_EXISTS_IMPL)"
+      - "CMakeLists.txt:301 (CHECK_CXX_SYMBOL_EXISTS)"
+    checks:
+      - "Looking for _LIBCPP_VERSION"
+    directories:
+      source: "/home/lavanya/tranalyzer2-0.9.3/plugins/regexHyperscan/src/hyperscan/build/CMakeFiles/CMakeScratch/TryCompile-9xSZJU"
+      binary: "/home/lavanya/tranalyzer2-0.9.3/plugins/regexHyperscan/src/hyperscan/build/CMakeFiles/CMakeScratch/TryCompile-9xSZJU"
+    cmakeVariables:
+      CMAKE_CXX_FLAGS: ""
+      CMAKE_MODULE_PATH: "/home/lavanya/tranalyzer2-0.9.3/plugins/regexHyperscan/src/hyperscan/cmake"
+      CMAKE_POSITION_INDEPENDENT_CODE: "ON"
+    buildResult:
+      variable: "HAVE_LIBCPP"
+      cached: true
+      stdout: |
+        Change Dir: '/home/lavanya/tranalyzer2-0.9.3/plugins/regexHyperscan/src/hyperscan/build/CMakeFiles/CMakeScratch/TryCompile-9xSZJU'
+        
+        Run Build Command(s): /usr/bin/cmake -E env VERBOSE=1 /usr/bin/gmake -f Makefile cmTC_c4ebe/fast
+        /usr/bin/gmake  -f CMakeFiles/cmTC_c4ebe.dir/build.make CMakeFiles/cmTC_c4ebe.dir/build
+        gmake[1]: Entering directory '/home/lavanya/tranalyzer2-0.9.3/plugins/regexHyperscan/src/hyperscan/build/CMakeFiles/CMakeScratch/TryCompile-9xSZJU'
+        Building CXX object CMakeFiles/cmTC_c4ebe.dir/CheckSymbolExists.cxx.o
+        /usr/bin/c++   -fPIE -o CMakeFiles/cmTC_c4ebe.dir/CheckSymbolExists.cxx.o -c /home/lavanya/tranalyzer2-0.9.3/plugins/regexHyperscan/src/hyperscan/build/CMakeFiles/CMakeScratch/TryCompile-9xSZJU/CheckSymbolExists.cxx
+        /home/lavanya/tranalyzer2-0.9.3/plugins/regexHyperscan/src/hyperscan/build/CMakeFiles/CMakeScratch/TryCompile-9xSZJU/CheckSymbolExists.cxx: In function ‘int main(int, char**)’:
+        /home/lavanya/tranalyzer2-0.9.3/plugins/regexHyperscan/src/hyperscan/build/CMakeFiles/CMakeScratch/TryCompile-9xSZJU/CheckSymbolExists.cxx:8:19: error: ‘_LIBCPP_VERSION’ was not declared in this scope
+            8 |   return ((int*)(&_LIBCPP_VERSION))[argc];
+              |                   ^~~~~~~~~~~~~~~
+        gmake[1]: *** [CMakeFiles/cmTC_c4ebe.dir/build.make:78: CMakeFiles/cmTC_c4ebe.dir/CheckSymbolExists.cxx.o] Error 1
+        gmake[1]: Leaving directory '/home/lavanya/tranalyzer2-0.9.3/plugins/regexHyperscan/src/hyperscan/build/CMakeFiles/CMakeScratch/TryCompile-9xSZJU'
+        gmake: *** [Makefile:127: cmTC_c4ebe/fast] Error 2
+        
+      exitCode: 2
+  -
+    kind: "try_compile-v1"
+    backtrace:
+      - "/usr/share/cmake-3.28/Modules/Internal/CheckSourceCompiles.cmake:101 (try_compile)"
+      - "/usr/share/cmake-3.28/Modules/CheckCSourceCompiles.cmake:52 (cmake_check_source_compiles)"
+      - "cmake/attrib.cmake:6 (CHECK_C_SOURCE_COMPILES)"
+      - "CMakeLists.txt:325 (include)"
+    checks:
+      - "Performing Test HAS_C_ATTR_IFUNC"
+    directories:
+      source: "/home/lavanya/tranalyzer2-0.9.3/plugins/regexHyperscan/src/hyperscan/build/CMakeFiles/CMakeScratch/TryCompile-BDTPLh"
+      binary: "/home/lavanya/tranalyzer2-0.9.3/plugins/regexHyperscan/src/hyperscan/build/CMakeFiles/CMakeScratch/TryCompile-BDTPLh"
+    cmakeVariables:
+      CMAKE_C_FLAGS: ""
+      CMAKE_MODULE_PATH: "/home/lavanya/tranalyzer2-0.9.3/plugins/regexHyperscan/src/hyperscan/cmake"
+      CMAKE_POSITION_INDEPENDENT_CODE: "ON"
+    buildResult:
+      variable: "HAS_C_ATTR_IFUNC"
+      cached: true
+      stdout: |
+        Change Dir: '/home/lavanya/tranalyzer2-0.9.3/plugins/regexHyperscan/src/hyperscan/build/CMakeFiles/CMakeScratch/TryCompile-BDTPLh'
+        
+        Run Build Command(s): /usr/bin/cmake -E env VERBOSE=1 /usr/bin/gmake -f Makefile cmTC_116f7/fast
+        /usr/bin/gmake  -f CMakeFiles/cmTC_116f7.dir/build.make CMakeFiles/cmTC_116f7.dir/build
+        gmake[1]: Entering directory '/home/lavanya/tranalyzer2-0.9.3/plugins/regexHyperscan/src/hyperscan/build/CMakeFiles/CMakeScratch/TryCompile-BDTPLh'
+        Building C object CMakeFiles/cmTC_116f7.dir/src.c.o
+        /usr/bin/cc -DHAS_C_ATTR_IFUNC  -Werror -fPIE -o CMakeFiles/cmTC_116f7.dir/src.c.o -c /home/lavanya/tranalyzer2-0.9.3/plugins/regexHyperscan/src/hyperscan/build/CMakeFiles/CMakeScratch/TryCompile-BDTPLh/src.c
+        Linking C executable cmTC_116f7
+        /usr/bin/cmake -E cmake_link_script CMakeFiles/cmTC_116f7.dir/link.txt --verbose=1
+        /usr/bin/cc  -Werror -rdynamic CMakeFiles/cmTC_116f7.dir/src.c.o -o cmTC_116f7 
+        gmake[1]: Leaving directory '/home/lavanya/tranalyzer2-0.9.3/plugins/regexHyperscan/src/hyperscan/build/CMakeFiles/CMakeScratch/TryCompile-BDTPLh'
+        
+      exitCode: 0
+  -
+    kind: "try_compile-v1"
+    backtrace:
+      - "/usr/share/cmake-3.28/Modules/Internal/CheckSourceCompiles.cmake:101 (try_compile)"
+      - "/usr/share/cmake-3.28/Modules/CheckCSourceCompiles.cmake:52 (cmake_check_source_compiles)"
+      - "cmake/arch.cmake:33 (CHECK_C_SOURCE_COMPILES)"
+      - "CMakeLists.txt:336 (include)"
+    checks:
+      - "Performing Test HAVE_SSSE3"
+    directories:
+      source: "/home/lavanya/tranalyzer2-0.9.3/plugins/regexHyperscan/src/hyperscan/build/CMakeFiles/CMakeScratch/TryCompile-iqIazN"
+      binary: "/home/lavanya/tranalyzer2-0.9.3/plugins/regexHyperscan/src/hyperscan/build/CMakeFiles/CMakeScratch/TryCompile-iqIazN"
+    cmakeVariables:
+      CMAKE_C_FLAGS: ""
+      CMAKE_MODULE_PATH: "/home/lavanya/tranalyzer2-0.9.3/plugins/regexHyperscan/src/hyperscan/cmake"
+      CMAKE_POSITION_INDEPENDENT_CODE: "ON"
+    buildResult:
+      variable: "HAVE_SSSE3"
+      cached: true
+      stdout: |
+        Change Dir: '/home/lavanya/tranalyzer2-0.9.3/plugins/regexHyperscan/src/hyperscan/build/CMakeFiles/CMakeScratch/TryCompile-iqIazN'
+        
+        Run Build Command(s): /usr/bin/cmake -E env VERBOSE=1 /usr/bin/gmake -f Makefile cmTC_670b6/fast
+        /usr/bin/gmake  -f CMakeFiles/cmTC_670b6.dir/build.make CMakeFiles/cmTC_670b6.dir/build
+        gmake[1]: Entering directory '/home/lavanya/tranalyzer2-0.9.3/plugins/regexHyperscan/src/hyperscan/build/CMakeFiles/CMakeScratch/TryCompile-iqIazN'
+        Building C object CMakeFiles/cmTC_670b6.dir/src.c.o
+        /usr/bin/cc -DHAVE_SSSE3  -Os -std=c99 -Wall -Wextra -Wshadow -Wcast-qual -fno-strict-aliasing -DNDEBUG -Wno-array-bounds -Wno-maybe-uninitialized -Wno-abi -fno-omit-frame-pointer -fvisibility=hidden -march=native -mtune=skylake -fPIE -o CMakeFiles/cmTC_670b6.dir/src.c.o -c /home/lavanya/tranalyzer2-0.9.3/plugins/regexHyperscan/src/hyperscan/build/CMakeFiles/CMakeScratch/TryCompile-iqIazN/src.c
+        Linking C executable cmTC_670b6
+        /usr/bin/cmake -E cmake_link_script CMakeFiles/cmTC_670b6.dir/link.txt --verbose=1
+        /usr/bin/cc   -Os -std=c99 -Wall -Wextra -Wshadow -Wcast-qual -fno-strict-aliasing -DNDEBUG -Wno-array-bounds -Wno-maybe-uninitialized -Wno-abi -fno-omit-frame-pointer -fvisibility=hidden -march=native -mtune=skylake -rdynamic CMakeFiles/cmTC_670b6.dir/src.c.o -o cmTC_670b6 
+        gmake[1]: Leaving directory '/home/lavanya/tranalyzer2-0.9.3/plugins/regexHyperscan/src/hyperscan/build/CMakeFiles/CMakeScratch/TryCompile-iqIazN'
+        
+      exitCode: 0
+  -
+    kind: "try_compile-v1"
+    backtrace:
+      - "/usr/share/cmake-3.28/Modules/Internal/CheckSourceCompiles.cmake:101 (try_compile)"
+      - "/usr/share/cmake-3.28/Modules/CheckCSourceCompiles.cmake:52 (cmake_check_source_compiles)"
+      - "cmake/arch.cmake:40 (CHECK_C_SOURCE_COMPILES)"
+      - "CMakeLists.txt:336 (include)"
+    checks:
+      - "Performing Test HAVE_AVX2"
+    directories:
+      source: "/home/lavanya/tranalyzer2-0.9.3/plugins/regexHyperscan/src/hyperscan/build/CMakeFiles/CMakeScratch/TryCompile-bcIZNC"
+      binary: "/home/lavanya/tranalyzer2-0.9.3/plugins/regexHyperscan/src/hyperscan/build/CMakeFiles/CMakeScratch/TryCompile-bcIZNC"
+    cmakeVariables:
+      CMAKE_C_FLAGS: ""
+      CMAKE_MODULE_PATH: "/home/lavanya/tranalyzer2-0.9.3/plugins/regexHyperscan/src/hyperscan/cmake"
+      CMAKE_POSITION_INDEPENDENT_CODE: "ON"
+    buildResult:
+      variable: "HAVE_AVX2"
+      cached: true
+      stdout: |
+        Change Dir: '/home/lavanya/tranalyzer2-0.9.3/plugins/regexHyperscan/src/hyperscan/build/CMakeFiles/CMakeScratch/TryCompile-bcIZNC'
+        
+        Run Build Command(s): /usr/bin/cmake -E env VERBOSE=1 /usr/bin/gmake -f Makefile cmTC_77565/fast
+        /usr/bin/gmake  -f CMakeFiles/cmTC_77565.dir/build.make CMakeFiles/cmTC_77565.dir/build
+        gmake[1]: Entering directory '/home/lavanya/tranalyzer2-0.9.3/plugins/regexHyperscan/src/hyperscan/build/CMakeFiles/CMakeScratch/TryCompile-bcIZNC'
+        Building C object CMakeFiles/cmTC_77565.dir/src.c.o
+        /usr/bin/cc -DHAVE_AVX2  -Os -std=c99 -Wall -Wextra -Wshadow -Wcast-qual -fno-strict-aliasing -DNDEBUG -Wno-array-bounds -Wno-maybe-uninitialized -Wno-abi -fno-omit-frame-pointer -fvisibility=hidden -march=native -mtune=skylake -fPIE -o CMakeFiles/cmTC_77565.dir/src.c.o -c /home/lavanya/tranalyzer2-0.9.3/plugins/regexHyperscan/src/hyperscan/build/CMakeFiles/CMakeScratch/TryCompile-bcIZNC/src.c
+        Linking C executable cmTC_77565
+        /usr/bin/cmake -E cmake_link_script CMakeFiles/cmTC_77565.dir/link.txt --verbose=1
+        /usr/bin/cc   -Os -std=c99 -Wall -Wextra -Wshadow -Wcast-qual -fno-strict-aliasing -DNDEBUG -Wno-array-bounds -Wno-maybe-uninitialized -Wno-abi -fno-omit-frame-pointer -fvisibility=hidden -march=native -mtune=skylake -rdynamic CMakeFiles/cmTC_77565.dir/src.c.o -o cmTC_77565 
+        gmake[1]: Leaving directory '/home/lavanya/tranalyzer2-0.9.3/plugins/regexHyperscan/src/hyperscan/build/CMakeFiles/CMakeScratch/TryCompile-bcIZNC'
+        
+      exitCode: 0
+  -
+    kind: "try_compile-v1"
+    backtrace:
+      - "/usr/share/cmake-3.28/Modules/Internal/CheckSourceCompiles.cmake:101 (try_compile)"
+      - "/usr/share/cmake-3.28/Modules/CheckCSourceCompiles.cmake:52 (cmake_check_source_compiles)"
+      - "cmake/arch.cmake:51 (CHECK_C_SOURCE_COMPILES)"
+      - "CMakeLists.txt:336 (include)"
+    checks:
+      - "Performing Test HAVE_AVX512"
+    directories:
+      source: "/home/lavanya/tranalyzer2-0.9.3/plugins/regexHyperscan/src/hyperscan/build/CMakeFiles/CMakeScratch/TryCompile-B8xX8o"
+      binary: "/home/lavanya/tranalyzer2-0.9.3/plugins/regexHyperscan/src/hyperscan/build/CMakeFiles/CMakeScratch/TryCompile-B8xX8o"
+    cmakeVariables:
+      CMAKE_C_FLAGS: ""
+      CMAKE_MODULE_PATH: "/home/lavanya/tranalyzer2-0.9.3/plugins/regexHyperscan/src/hyperscan/cmake"
+      CMAKE_POSITION_INDEPENDENT_CODE: "ON"
+    buildResult:
+      variable: "HAVE_AVX512"
+      cached: true
+      stdout: |
+        Change Dir: '/home/lavanya/tranalyzer2-0.9.3/plugins/regexHyperscan/src/hyperscan/build/CMakeFiles/CMakeScratch/TryCompile-B8xX8o'
+        
+        Run Build Command(s): /usr/bin/cmake -E env VERBOSE=1 /usr/bin/gmake -f Makefile cmTC_d8668/fast
+        /usr/bin/gmake  -f CMakeFiles/cmTC_d8668.dir/build.make CMakeFiles/cmTC_d8668.dir/build
+        gmake[1]: Entering directory '/home/lavanya/tranalyzer2-0.9.3/plugins/regexHyperscan/src/hyperscan/build/CMakeFiles/CMakeScratch/TryCompile-B8xX8o'
+        Building C object CMakeFiles/cmTC_d8668.dir/src.c.o
+        /usr/bin/cc -DHAVE_AVX512  -Os -std=c99 -Wall -Wextra -Wshadow -Wcast-qual -fno-strict-aliasing -DNDEBUG -Wno-array-bounds -Wno-maybe-uninitialized -Wno-abi -fno-omit-frame-pointer -fvisibility=hidden -march=native -mtune=skylake -fPIE -o CMakeFiles/cmTC_d8668.dir/src.c.o -c /home/lavanya/tranalyzer2-0.9.3/plugins/regexHyperscan/src/hyperscan/build/CMakeFiles/CMakeScratch/TryCompile-B8xX8o/src.c
+        /home/lavanya/tranalyzer2-0.9.3/plugins/regexHyperscan/src/hyperscan/build/CMakeFiles/CMakeScratch/TryCompile-B8xX8o/src.c:3:2: error: #error no avx512bw
+            3 | #error no avx512bw
+              |  ^~~~~
+        gmake[1]: *** [CMakeFiles/cmTC_d8668.dir/build.make:78: CMakeFiles/cmTC_d8668.dir/src.c.o] Error 1
+        gmake[1]: Leaving directory '/home/lavanya/tranalyzer2-0.9.3/plugins/regexHyperscan/src/hyperscan/build/CMakeFiles/CMakeScratch/TryCompile-B8xX8o'
+        gmake: *** [Makefile:127: cmTC_d8668/fast] Error 2
+        
+      exitCode: 2
+  -
+    kind: "try_compile-v1"
+    backtrace:
+      - "/usr/share/cmake-3.28/Modules/Internal/CheckSourceCompiles.cmake:101 (try_compile)"
+      - "/usr/share/cmake-3.28/Modules/CheckCSourceCompiles.cmake:52 (cmake_check_source_compiles)"
+      - "CMakeLists.txt:339 (CHECK_C_SOURCE_COMPILES)"
+    checks:
+      - "Performing Test HAVE_CC_BUILTIN_ASSUME_ALIGNED"
+    directories:
+      source: "/home/lavanya/tranalyzer2-0.9.3/plugins/regexHyperscan/src/hyperscan/build/CMakeFiles/CMakeScratch/TryCompile-DxBord"
+      binary: "/home/lavanya/tranalyzer2-0.9.3/plugins/regexHyperscan/src/hyperscan/build/CMakeFiles/CMakeScratch/TryCompile-DxBord"
+    cmakeVariables:
+      CMAKE_C_FLAGS: ""
+      CMAKE_MODULE_PATH: "/home/lavanya/tranalyzer2-0.9.3/plugins/regexHyperscan/src/hyperscan/cmake"
+      CMAKE_POSITION_INDEPENDENT_CODE: "ON"
+    buildResult:
+      variable: "HAVE_CC_BUILTIN_ASSUME_ALIGNED"
+      cached: true
+      stdout: |
+        Change Dir: '/home/lavanya/tranalyzer2-0.9.3/plugins/regexHyperscan/src/hyperscan/build/CMakeFiles/CMakeScratch/TryCompile-DxBord'
+        
+        Run Build Command(s): /usr/bin/cmake -E env VERBOSE=1 /usr/bin/gmake -f Makefile cmTC_d4dea/fast
+        /usr/bin/gmake  -f CMakeFiles/cmTC_d4dea.dir/build.make CMakeFiles/cmTC_d4dea.dir/build
+        gmake[1]: Entering directory '/home/lavanya/tranalyzer2-0.9.3/plugins/regexHyperscan/src/hyperscan/build/CMakeFiles/CMakeScratch/TryCompile-DxBord'
+        Building C object CMakeFiles/cmTC_d4dea.dir/src.c.o
+        /usr/bin/cc -DHAVE_CC_BUILTIN_ASSUME_ALIGNED  -fPIE -o CMakeFiles/cmTC_d4dea.dir/src.c.o -c /home/lavanya/tranalyzer2-0.9.3/plugins/regexHyperscan/src/hyperscan/build/CMakeFiles/CMakeScratch/TryCompile-DxBord/src.c
+        Linking C executable cmTC_d4dea
+        /usr/bin/cmake -E cmake_link_script CMakeFiles/cmTC_d4dea.dir/link.txt --verbose=1
+        /usr/bin/cc -rdynamic CMakeFiles/cmTC_d4dea.dir/src.c.o -o cmTC_d4dea 
+        gmake[1]: Leaving directory '/home/lavanya/tranalyzer2-0.9.3/plugins/regexHyperscan/src/hyperscan/build/CMakeFiles/CMakeScratch/TryCompile-DxBord'
+        
+      exitCode: 0
+  -
+    kind: "try_compile-v1"
+    backtrace:
+      - "/usr/share/cmake-3.28/Modules/Internal/CheckSourceCompiles.cmake:101 (try_compile)"
+      - "/usr/share/cmake-3.28/Modules/CheckCXXSourceCompiles.cmake:52 (cmake_check_source_compiles)"
+      - "CMakeLists.txt:340 (CHECK_CXX_SOURCE_COMPILES)"
+    checks:
+      - "Performing Test HAVE_CXX_BUILTIN_ASSUME_ALIGNED"
+    directories:
+      source: "/home/lavanya/tranalyzer2-0.9.3/plugins/regexHyperscan/src/hyperscan/build/CMakeFiles/CMakeScratch/TryCompile-mQmYBJ"
+      binary: "/home/lavanya/tranalyzer2-0.9.3/plugins/regexHyperscan/src/hyperscan/build/CMakeFiles/CMakeScratch/TryCompile-mQmYBJ"
+    cmakeVariables:
+      CMAKE_CXX_FLAGS: ""
+      CMAKE_MODULE_PATH: "/home/lavanya/tranalyzer2-0.9.3/plugins/regexHyperscan/src/hyperscan/cmake"
+      CMAKE_POSITION_INDEPENDENT_CODE: "ON"
+    buildResult:
+      variable: "HAVE_CXX_BUILTIN_ASSUME_ALIGNED"
+      cached: true
+      stdout: |
+        Change Dir: '/home/lavanya/tranalyzer2-0.9.3/plugins/regexHyperscan/src/hyperscan/build/CMakeFiles/CMakeScratch/TryCompile-mQmYBJ'
+        
+        Run Build Command(s): /usr/bin/cmake -E env VERBOSE=1 /usr/bin/gmake -f Makefile cmTC_f2bdc/fast
+        /usr/bin/gmake  -f CMakeFiles/cmTC_f2bdc.dir/build.make CMakeFiles/cmTC_f2bdc.dir/build
+        gmake[1]: Entering directory '/home/lavanya/tranalyzer2-0.9.3/plugins/regexHyperscan/src/hyperscan/build/CMakeFiles/CMakeScratch/TryCompile-mQmYBJ'
+        Building CXX object CMakeFiles/cmTC_f2bdc.dir/src.cxx.o
+        /usr/bin/c++ -DHAVE_CXX_BUILTIN_ASSUME_ALIGNED  -fPIE -o CMakeFiles/cmTC_f2bdc.dir/src.cxx.o -c /home/lavanya/tranalyzer2-0.9.3/plugins/regexHyperscan/src/hyperscan/build/CMakeFiles/CMakeScratch/TryCompile-mQmYBJ/src.cxx
+        Linking CXX executable cmTC_f2bdc
+        /usr/bin/cmake -E cmake_link_script CMakeFiles/cmTC_f2bdc.dir/link.txt --verbose=1
+        /usr/bin/c++ -rdynamic CMakeFiles/cmTC_f2bdc.dir/src.cxx.o -o cmTC_f2bdc 
+        gmake[1]: Leaving directory '/home/lavanya/tranalyzer2-0.9.3/plugins/regexHyperscan/src/hyperscan/build/CMakeFiles/CMakeScratch/TryCompile-mQmYBJ'
+        
+      exitCode: 0
+  -
+    kind: "try_compile-v1"
+    backtrace:
+      - "/usr/share/cmake-3.28/Modules/Internal/CheckSourceCompiles.cmake:101 (try_compile)"
+      - "/usr/share/cmake-3.28/Modules/CheckCSourceCompiles.cmake:52 (cmake_check_source_compiles)"
+      - "CMakeLists.txt:341 (CHECK_C_SOURCE_COMPILES)"
+    checks:
+      - "Performing Test HAVE__BUILTIN_CONSTANT_P"
+    directories:
+      source: "/home/lavanya/tranalyzer2-0.9.3/plugins/regexHyperscan/src/hyperscan/build/CMakeFiles/CMakeScratch/TryCompile-Jwbm8C"
+      binary: "/home/lavanya/tranalyzer2-0.9.3/plugins/regexHyperscan/src/hyperscan/build/CMakeFiles/CMakeScratch/TryCompile-Jwbm8C"
+    cmakeVariables:
+      CMAKE_C_FLAGS: ""
+      CMAKE_MODULE_PATH: "/home/lavanya/tranalyzer2-0.9.3/plugins/regexHyperscan/src/hyperscan/cmake"
+      CMAKE_POSITION_INDEPENDENT_CODE: "ON"
+    buildResult:
+      variable: "HAVE__BUILTIN_CONSTANT_P"
+      cached: true
+      stdout: |
+        Change Dir: '/home/lavanya/tranalyzer2-0.9.3/plugins/regexHyperscan/src/hyperscan/build/CMakeFiles/CMakeScratch/TryCompile-Jwbm8C'
+        
+        Run Build Command(s): /usr/bin/cmake -E env VERBOSE=1 /usr/bin/gmake -f Makefile cmTC_b8d87/fast
+        /usr/bin/gmake  -f CMakeFiles/cmTC_b8d87.dir/build.make CMakeFiles/cmTC_b8d87.dir/build
+        gmake[1]: Entering directory '/home/lavanya/tranalyzer2-0.9.3/plugins/regexHyperscan/src/hyperscan/build/CMakeFiles/CMakeScratch/TryCompile-Jwbm8C'
+        Building C object CMakeFiles/cmTC_b8d87.dir/src.c.o
+        /usr/bin/cc -DHAVE__BUILTIN_CONSTANT_P  -fPIE -o CMakeFiles/cmTC_b8d87.dir/src.c.o -c /home/lavanya/tranalyzer2-0.9.3/plugins/regexHyperscan/src/hyperscan/build/CMakeFiles/CMakeScratch/TryCompile-Jwbm8C/src.c
+        Linking C executable cmTC_b8d87
+        /usr/bin/cmake -E cmake_link_script CMakeFiles/cmTC_b8d87.dir/link.txt --verbose=1
+        /usr/bin/cc -rdynamic CMakeFiles/cmTC_b8d87.dir/src.c.o -o cmTC_b8d87 
+        gmake[1]: Leaving directory '/home/lavanya/tranalyzer2-0.9.3/plugins/regexHyperscan/src/hyperscan/build/CMakeFiles/CMakeScratch/TryCompile-Jwbm8C'
+        
+      exitCode: 0
+  -
+    kind: "try_compile-v1"
+    backtrace:
+      - "/usr/share/cmake-3.28/Modules/Internal/CheckSourceCompiles.cmake:101 (try_compile)"
+      - "/usr/share/cmake-3.28/Modules/Internal/CheckCompilerFlag.cmake:18 (cmake_check_source_compiles)"
+      - "/usr/share/cmake-3.28/Modules/CheckCCompilerFlag.cmake:51 (cmake_check_compiler_flag)"
+      - "CMakeLists.txt:356 (CHECK_C_COMPILER_FLAG)"
+    checks:
+      - "Performing Test C_FLAG_Wvla"
+    directories:
+      source: "/home/lavanya/tranalyzer2-0.9.3/plugins/regexHyperscan/src/hyperscan/build/CMakeFiles/CMakeScratch/TryCompile-Q6L4cF"
+      binary: "/home/lavanya/tranalyzer2-0.9.3/plugins/regexHyperscan/src/hyperscan/build/CMakeFiles/CMakeScratch/TryCompile-Q6L4cF"
+    cmakeVariables:
+      CMAKE_C_FLAGS: ""
+      CMAKE_MODULE_PATH: "/home/lavanya/tranalyzer2-0.9.3/plugins/regexHyperscan/src/hyperscan/cmake"
+      CMAKE_POSITION_INDEPENDENT_CODE: "ON"
+    buildResult:
+      variable: "C_FLAG_Wvla"
+      cached: true
+      stdout: |
+        Change Dir: '/home/lavanya/tranalyzer2-0.9.3/plugins/regexHyperscan/src/hyperscan/build/CMakeFiles/CMakeScratch/TryCompile-Q6L4cF'
+        
+        Run Build Command(s): /usr/bin/cmake -E env VERBOSE=1 /usr/bin/gmake -f Makefile cmTC_bc502/fast
+        /usr/bin/gmake  -f CMakeFiles/cmTC_bc502.dir/build.make CMakeFiles/cmTC_bc502.dir/build
+        gmake[1]: Entering directory '/home/lavanya/tranalyzer2-0.9.3/plugins/regexHyperscan/src/hyperscan/build/CMakeFiles/CMakeScratch/TryCompile-Q6L4cF'
+        Building C object CMakeFiles/cmTC_bc502.dir/src.c.o
+        /usr/bin/cc -DC_FLAG_Wvla  -fPIE   -Wvla -o CMakeFiles/cmTC_bc502.dir/src.c.o -c /home/lavanya/tranalyzer2-0.9.3/plugins/regexHyperscan/src/hyperscan/build/CMakeFiles/CMakeScratch/TryCompile-Q6L4cF/src.c
+        Linking C executable cmTC_bc502
+        /usr/bin/cmake -E cmake_link_script CMakeFiles/cmTC_bc502.dir/link.txt --verbose=1
+        /usr/bin/cc -rdynamic CMakeFiles/cmTC_bc502.dir/src.c.o -o cmTC_bc502 
+        gmake[1]: Leaving directory '/home/lavanya/tranalyzer2-0.9.3/plugins/regexHyperscan/src/hyperscan/build/CMakeFiles/CMakeScratch/TryCompile-Q6L4cF'
+        
+      exitCode: 0
+  -
+    kind: "try_compile-v1"
+    backtrace:
+      - "/usr/share/cmake-3.28/Modules/Internal/CheckSourceCompiles.cmake:101 (try_compile)"
+      - "/usr/share/cmake-3.28/Modules/Internal/CheckCompilerFlag.cmake:18 (cmake_check_source_compiles)"
+      - "/usr/share/cmake-3.28/Modules/CheckCCompilerFlag.cmake:51 (cmake_check_compiler_flag)"
+      - "CMakeLists.txt:356 (CHECK_C_COMPILER_FLAG)"
+    checks:
+      - "Performing Test C_FLAG_Wpointer_arith"
+    directories:
+      source: "/home/lavanya/tranalyzer2-0.9.3/plugins/regexHyperscan/src/hyperscan/build/CMakeFiles/CMakeScratch/TryCompile-vqQgS6"
+      binary: "/home/lavanya/tranalyzer2-0.9.3/plugins/regexHyperscan/src/hyperscan/build/CMakeFiles/CMakeScratch/TryCompile-vqQgS6"
+    cmakeVariables:
+      CMAKE_C_FLAGS: ""
+      CMAKE_MODULE_PATH: "/home/lavanya/tranalyzer2-0.9.3/plugins/regexHyperscan/src/hyperscan/cmake"
+      CMAKE_POSITION_INDEPENDENT_CODE: "ON"
+    buildResult:
+      variable: "C_FLAG_Wpointer_arith"
+      cached: true
+      stdout: |
+        Change Dir: '/home/lavanya/tranalyzer2-0.9.3/plugins/regexHyperscan/src/hyperscan/build/CMakeFiles/CMakeScratch/TryCompile-vqQgS6'
+        
+        Run Build Command(s): /usr/bin/cmake -E env VERBOSE=1 /usr/bin/gmake -f Makefile cmTC_94a56/fast
+        /usr/bin/gmake  -f CMakeFiles/cmTC_94a56.dir/build.make CMakeFiles/cmTC_94a56.dir/build
+        gmake[1]: Entering directory '/home/lavanya/tranalyzer2-0.9.3/plugins/regexHyperscan/src/hyperscan/build/CMakeFiles/CMakeScratch/TryCompile-vqQgS6'
+        Building C object CMakeFiles/cmTC_94a56.dir/src.c.o
+        /usr/bin/cc -DC_FLAG_Wpointer_arith  -fPIE   -Wpointer-arith -o CMakeFiles/cmTC_94a56.dir/src.c.o -c /home/lavanya/tranalyzer2-0.9.3/plugins/regexHyperscan/src/hyperscan/build/CMakeFiles/CMakeScratch/TryCompile-vqQgS6/src.c
+        Linking C executable cmTC_94a56
+        /usr/bin/cmake -E cmake_link_script CMakeFiles/cmTC_94a56.dir/link.txt --verbose=1
+        /usr/bin/cc -rdynamic CMakeFiles/cmTC_94a56.dir/src.c.o -o cmTC_94a56 
+        gmake[1]: Leaving directory '/home/lavanya/tranalyzer2-0.9.3/plugins/regexHyperscan/src/hyperscan/build/CMakeFiles/CMakeScratch/TryCompile-vqQgS6'
+        
+      exitCode: 0
+  -
+    kind: "try_compile-v1"
+    backtrace:
+      - "/usr/share/cmake-3.28/Modules/Internal/CheckSourceCompiles.cmake:101 (try_compile)"
+      - "/usr/share/cmake-3.28/Modules/Internal/CheckCompilerFlag.cmake:18 (cmake_check_source_compiles)"
+      - "/usr/share/cmake-3.28/Modules/CheckCCompilerFlag.cmake:51 (cmake_check_compiler_flag)"
+      - "CMakeLists.txt:356 (CHECK_C_COMPILER_FLAG)"
+    checks:
+      - "Performing Test C_FLAG_Wstrict_prototypes"
+    directories:
+      source: "/home/lavanya/tranalyzer2-0.9.3/plugins/regexHyperscan/src/hyperscan/build/CMakeFiles/CMakeScratch/TryCompile-VHCNSN"
+      binary: "/home/lavanya/tranalyzer2-0.9.3/plugins/regexHyperscan/src/hyperscan/build/CMakeFiles/CMakeScratch/TryCompile-VHCNSN"
+    cmakeVariables:
+      CMAKE_C_FLAGS: ""
+      CMAKE_MODULE_PATH: "/home/lavanya/tranalyzer2-0.9.3/plugins/regexHyperscan/src/hyperscan/cmake"
+      CMAKE_POSITION_INDEPENDENT_CODE: "ON"
+    buildResult:
+      variable: "C_FLAG_Wstrict_prototypes"
+      cached: true
+      stdout: |
+        Change Dir: '/home/lavanya/tranalyzer2-0.9.3/plugins/regexHyperscan/src/hyperscan/build/CMakeFiles/CMakeScratch/TryCompile-VHCNSN'
+        
+        Run Build Command(s): /usr/bin/cmake -E env VERBOSE=1 /usr/bin/gmake -f Makefile cmTC_c86c6/fast
+        /usr/bin/gmake  -f CMakeFiles/cmTC_c86c6.dir/build.make CMakeFiles/cmTC_c86c6.dir/build
+        gmake[1]: Entering directory '/home/lavanya/tranalyzer2-0.9.3/plugins/regexHyperscan/src/hyperscan/build/CMakeFiles/CMakeScratch/TryCompile-VHCNSN'
+        Building C object CMakeFiles/cmTC_c86c6.dir/src.c.o
+        /usr/bin/cc -DC_FLAG_Wstrict_prototypes  -fPIE   -Wstrict-prototypes -o CMakeFiles/cmTC_c86c6.dir/src.c.o -c /home/lavanya/tranalyzer2-0.9.3/plugins/regexHyperscan/src/hyperscan/build/CMakeFiles/CMakeScratch/TryCompile-VHCNSN/src.c
+        Linking C executable cmTC_c86c6
+        /usr/bin/cmake -E cmake_link_script CMakeFiles/cmTC_c86c6.dir/link.txt --verbose=1
+        /usr/bin/cc -rdynamic CMakeFiles/cmTC_c86c6.dir/src.c.o -o cmTC_c86c6 
+        gmake[1]: Leaving directory '/home/lavanya/tranalyzer2-0.9.3/plugins/regexHyperscan/src/hyperscan/build/CMakeFiles/CMakeScratch/TryCompile-VHCNSN'
+        
+      exitCode: 0
+  -
+    kind: "try_compile-v1"
+    backtrace:
+      - "/usr/share/cmake-3.28/Modules/Internal/CheckSourceCompiles.cmake:101 (try_compile)"
+      - "/usr/share/cmake-3.28/Modules/Internal/CheckCompilerFlag.cmake:18 (cmake_check_source_compiles)"
+      - "/usr/share/cmake-3.28/Modules/CheckCCompilerFlag.cmake:51 (cmake_check_compiler_flag)"
+      - "CMakeLists.txt:356 (CHECK_C_COMPILER_FLAG)"
+    checks:
+      - "Performing Test C_FLAG_Wmissing_prototypes"
+    directories:
+      source: "/home/lavanya/tranalyzer2-0.9.3/plugins/regexHyperscan/src/hyperscan/build/CMakeFiles/CMakeScratch/TryCompile-6DLl2v"
+      binary: "/home/lavanya/tranalyzer2-0.9.3/plugins/regexHyperscan/src/hyperscan/build/CMakeFiles/CMakeScratch/TryCompile-6DLl2v"
+    cmakeVariables:
+      CMAKE_C_FLAGS: ""
+      CMAKE_MODULE_PATH: "/home/lavanya/tranalyzer2-0.9.3/plugins/regexHyperscan/src/hyperscan/cmake"
+      CMAKE_POSITION_INDEPENDENT_CODE: "ON"
+    buildResult:
+      variable: "C_FLAG_Wmissing_prototypes"
+      cached: true
+      stdout: |
+        Change Dir: '/home/lavanya/tranalyzer2-0.9.3/plugins/regexHyperscan/src/hyperscan/build/CMakeFiles/CMakeScratch/TryCompile-6DLl2v'
+        
+        Run Build Command(s): /usr/bin/cmake -E env VERBOSE=1 /usr/bin/gmake -f Makefile cmTC_ffbb4/fast
+        /usr/bin/gmake  -f CMakeFiles/cmTC_ffbb4.dir/build.make CMakeFiles/cmTC_ffbb4.dir/build
+        gmake[1]: Entering directory '/home/lavanya/tranalyzer2-0.9.3/plugins/regexHyperscan/src/hyperscan/build/CMakeFiles/CMakeScratch/TryCompile-6DLl2v'
+        Building C object CMakeFiles/cmTC_ffbb4.dir/src.c.o
+        /usr/bin/cc -DC_FLAG_Wmissing_prototypes  -fPIE   -Wmissing-prototypes -o CMakeFiles/cmTC_ffbb4.dir/src.c.o -c /home/lavanya/tranalyzer2-0.9.3/plugins/regexHyperscan/src/hyperscan/build/CMakeFiles/CMakeScratch/TryCompile-6DLl2v/src.c
+        Linking C executable cmTC_ffbb4
+        /usr/bin/cmake -E cmake_link_script CMakeFiles/cmTC_ffbb4.dir/link.txt --verbose=1
+        /usr/bin/cc -rdynamic CMakeFiles/cmTC_ffbb4.dir/src.c.o -o cmTC_ffbb4 
+        gmake[1]: Leaving directory '/home/lavanya/tranalyzer2-0.9.3/plugins/regexHyperscan/src/hyperscan/build/CMakeFiles/CMakeScratch/TryCompile-6DLl2v'
+        
+      exitCode: 0
+  -
+    kind: "try_compile-v1"
+    backtrace:
+      - "/usr/share/cmake-3.28/Modules/Internal/CheckSourceCompiles.cmake:101 (try_compile)"
+      - "/usr/share/cmake-3.28/Modules/Internal/CheckCompilerFlag.cmake:18 (cmake_check_source_compiles)"
+      - "/usr/share/cmake-3.28/Modules/CheckCXXCompilerFlag.cmake:34 (cmake_check_compiler_flag)"
+      - "CMakeLists.txt:368 (CHECK_CXX_COMPILER_FLAG)"
+    checks:
+      - "Performing Test CXX_FLAG_Wvla"
+    directories:
+      source: "/home/lavanya/tranalyzer2-0.9.3/plugins/regexHyperscan/src/hyperscan/build/CMakeFiles/CMakeScratch/TryCompile-9fSPwX"
+      binary: "/home/lavanya/tranalyzer2-0.9.3/plugins/regexHyperscan/src/hyperscan/build/CMakeFiles/CMakeScratch/TryCompile-9fSPwX"
+    cmakeVariables:
+      CMAKE_CXX_FLAGS: ""
+      CMAKE_MODULE_PATH: "/home/lavanya/tranalyzer2-0.9.3/plugins/regexHyperscan/src/hyperscan/cmake"
+      CMAKE_POSITION_INDEPENDENT_CODE: "ON"
+    buildResult:
+      variable: "CXX_FLAG_Wvla"
+      cached: true
+      stdout: |
+        Change Dir: '/home/lavanya/tranalyzer2-0.9.3/plugins/regexHyperscan/src/hyperscan/build/CMakeFiles/CMakeScratch/TryCompile-9fSPwX'
+        
+        Run Build Command(s): /usr/bin/cmake -E env VERBOSE=1 /usr/bin/gmake -f Makefile cmTC_5227f/fast
+        /usr/bin/gmake  -f CMakeFiles/cmTC_5227f.dir/build.make CMakeFiles/cmTC_5227f.dir/build
+        gmake[1]: Entering directory '/home/lavanya/tranalyzer2-0.9.3/plugins/regexHyperscan/src/hyperscan/build/CMakeFiles/CMakeScratch/TryCompile-9fSPwX'
+        Building CXX object CMakeFiles/cmTC_5227f.dir/src.cxx.o
+        /usr/bin/c++ -DCXX_FLAG_Wvla  -fPIE   -Wvla -o CMakeFiles/cmTC_5227f.dir/src.cxx.o -c /home/lavanya/tranalyzer2-0.9.3/plugins/regexHyperscan/src/hyperscan/build/CMakeFiles/CMakeScratch/TryCompile-9fSPwX/src.cxx
+        Linking CXX executable cmTC_5227f
+        /usr/bin/cmake -E cmake_link_script CMakeFiles/cmTC_5227f.dir/link.txt --verbose=1
+        /usr/bin/c++ -rdynamic CMakeFiles/cmTC_5227f.dir/src.cxx.o -o cmTC_5227f 
+        gmake[1]: Leaving directory '/home/lavanya/tranalyzer2-0.9.3/plugins/regexHyperscan/src/hyperscan/build/CMakeFiles/CMakeScratch/TryCompile-9fSPwX'
+        
+      exitCode: 0
+  -
+    kind: "try_compile-v1"
+    backtrace:
+      - "/usr/share/cmake-3.28/Modules/Internal/CheckSourceCompiles.cmake:101 (try_compile)"
+      - "/usr/share/cmake-3.28/Modules/Internal/CheckCompilerFlag.cmake:18 (cmake_check_source_compiles)"
+      - "/usr/share/cmake-3.28/Modules/CheckCXXCompilerFlag.cmake:34 (cmake_check_compiler_flag)"
+      - "CMakeLists.txt:368 (CHECK_CXX_COMPILER_FLAG)"
+    checks:
+      - "Performing Test CXX_FLAG_Wpointer_arith"
+    directories:
+      source: "/home/lavanya/tranalyzer2-0.9.3/plugins/regexHyperscan/src/hyperscan/build/CMakeFiles/CMakeScratch/TryCompile-zhauw2"
+      binary: "/home/lavanya/tranalyzer2-0.9.3/plugins/regexHyperscan/src/hyperscan/build/CMakeFiles/CMakeScratch/TryCompile-zhauw2"
+    cmakeVariables:
+      CMAKE_CXX_FLAGS: ""
+      CMAKE_MODULE_PATH: "/home/lavanya/tranalyzer2-0.9.3/plugins/regexHyperscan/src/hyperscan/cmake"
+      CMAKE_POSITION_INDEPENDENT_CODE: "ON"
+    buildResult:
+      variable: "CXX_FLAG_Wpointer_arith"
+      cached: true
+      stdout: |
+        Change Dir: '/home/lavanya/tranalyzer2-0.9.3/plugins/regexHyperscan/src/hyperscan/build/CMakeFiles/CMakeScratch/TryCompile-zhauw2'
+        
+        Run Build Command(s): /usr/bin/cmake -E env VERBOSE=1 /usr/bin/gmake -f Makefile cmTC_2e16b/fast
+        /usr/bin/gmake  -f CMakeFiles/cmTC_2e16b.dir/build.make CMakeFiles/cmTC_2e16b.dir/build
+        gmake[1]: Entering directory '/home/lavanya/tranalyzer2-0.9.3/plugins/regexHyperscan/src/hyperscan/build/CMakeFiles/CMakeScratch/TryCompile-zhauw2'
+        Building CXX object CMakeFiles/cmTC_2e16b.dir/src.cxx.o
+        /usr/bin/c++ -DCXX_FLAG_Wpointer_arith  -fPIE   -Wpointer-arith -o CMakeFiles/cmTC_2e16b.dir/src.cxx.o -c /home/lavanya/tranalyzer2-0.9.3/plugins/regexHyperscan/src/hyperscan/build/CMakeFiles/CMakeScratch/TryCompile-zhauw2/src.cxx
+        Linking CXX executable cmTC_2e16b
+        /usr/bin/cmake -E cmake_link_script CMakeFiles/cmTC_2e16b.dir/link.txt --verbose=1
+        /usr/bin/c++ -rdynamic CMakeFiles/cmTC_2e16b.dir/src.cxx.o -o cmTC_2e16b 
+        gmake[1]: Leaving directory '/home/lavanya/tranalyzer2-0.9.3/plugins/regexHyperscan/src/hyperscan/build/CMakeFiles/CMakeScratch/TryCompile-zhauw2'
+        
+      exitCode: 0
+  -
+    kind: "try_compile-v1"
+    backtrace:
+      - "/usr/share/cmake-3.28/Modules/Internal/CheckSourceCompiles.cmake:101 (try_compile)"
+      - "/usr/share/cmake-3.28/Modules/Internal/CheckCompilerFlag.cmake:18 (cmake_check_source_compiles)"
+      - "/usr/share/cmake-3.28/Modules/CheckCCompilerFlag.cmake:51 (cmake_check_compiler_flag)"
+      - "CMakeLists.txt:375 (CHECK_C_COMPILER_FLAG)"
+    checks:
+      - "Performing Test CC_SELF_ASSIGN"
+    directories:
+      source: "/home/lavanya/tranalyzer2-0.9.3/plugins/regexHyperscan/src/hyperscan/build/CMakeFiles/CMakeScratch/TryCompile-GlTmDN"
+      binary: "/home/lavanya/tranalyzer2-0.9.3/plugins/regexHyperscan/src/hyperscan/build/CMakeFiles/CMakeScratch/TryCompile-GlTmDN"
+    cmakeVariables:
+      CMAKE_C_FLAGS: ""
+      CMAKE_MODULE_PATH: "/home/lavanya/tranalyzer2-0.9.3/plugins/regexHyperscan/src/hyperscan/cmake"
+      CMAKE_POSITION_INDEPENDENT_CODE: "ON"
+    buildResult:
+      variable: "CC_SELF_ASSIGN"
+      cached: true
+      stdout: |
+        Change Dir: '/home/lavanya/tranalyzer2-0.9.3/plugins/regexHyperscan/src/hyperscan/build/CMakeFiles/CMakeScratch/TryCompile-GlTmDN'
+        
+        Run Build Command(s): /usr/bin/cmake -E env VERBOSE=1 /usr/bin/gmake -f Makefile cmTC_20602/fast
+        /usr/bin/gmake  -f CMakeFiles/cmTC_20602.dir/build.make CMakeFiles/cmTC_20602.dir/build
+        gmake[1]: Entering directory '/home/lavanya/tranalyzer2-0.9.3/plugins/regexHyperscan/src/hyperscan/build/CMakeFiles/CMakeScratch/TryCompile-GlTmDN'
+        Building C object CMakeFiles/cmTC_20602.dir/src.c.o
+        /usr/bin/cc -DCC_SELF_ASSIGN  -fPIE   -Wself-assign -o CMakeFiles/cmTC_20602.dir/src.c.o -c /home/lavanya/tranalyzer2-0.9.3/plugins/regexHyperscan/src/hyperscan/build/CMakeFiles/CMakeScratch/TryCompile-GlTmDN/src.c
+        cc: error: unrecognized command-line option '-Wself-assign'
+        gmake[1]: *** [CMakeFiles/cmTC_20602.dir/build.make:78: CMakeFiles/cmTC_20602.dir/src.c.o] Error 1
+        gmake[1]: Leaving directory '/home/lavanya/tranalyzer2-0.9.3/plugins/regexHyperscan/src/hyperscan/build/CMakeFiles/CMakeScratch/TryCompile-GlTmDN'
+        gmake: *** [Makefile:127: cmTC_20602/fast] Error 2
+        
+      exitCode: 2
+  -
+    kind: "try_compile-v1"
+    backtrace:
+      - "/usr/share/cmake-3.28/Modules/Internal/CheckSourceCompiles.cmake:101 (try_compile)"
+      - "/usr/share/cmake-3.28/Modules/Internal/CheckCompilerFlag.cmake:18 (cmake_check_source_compiles)"
+      - "/usr/share/cmake-3.28/Modules/CheckCXXCompilerFlag.cmake:34 (cmake_check_compiler_flag)"
+      - "CMakeLists.txt:379 (CHECK_CXX_COMPILER_FLAG)"
+    checks:
+      - "Performing Test CXX_SELF_ASSIGN"
+    directories:
+      source: "/home/lavanya/tranalyzer2-0.9.3/plugins/regexHyperscan/src/hyperscan/build/CMakeFiles/CMakeScratch/TryCompile-sbKI2F"
+      binary: "/home/lavanya/tranalyzer2-0.9.3/plugins/regexHyperscan/src/hyperscan/build/CMakeFiles/CMakeScratch/TryCompile-sbKI2F"
+    cmakeVariables:
+      CMAKE_CXX_FLAGS: ""
+      CMAKE_MODULE_PATH: "/home/lavanya/tranalyzer2-0.9.3/plugins/regexHyperscan/src/hyperscan/cmake"
+      CMAKE_POSITION_INDEPENDENT_CODE: "ON"
+    buildResult:
+      variable: "CXX_SELF_ASSIGN"
+      cached: true
+      stdout: |
+        Change Dir: '/home/lavanya/tranalyzer2-0.9.3/plugins/regexHyperscan/src/hyperscan/build/CMakeFiles/CMakeScratch/TryCompile-sbKI2F'
+        
+        Run Build Command(s): /usr/bin/cmake -E env VERBOSE=1 /usr/bin/gmake -f Makefile cmTC_5402b/fast
+        /usr/bin/gmake  -f CMakeFiles/cmTC_5402b.dir/build.make CMakeFiles/cmTC_5402b.dir/build
+        gmake[1]: Entering directory '/home/lavanya/tranalyzer2-0.9.3/plugins/regexHyperscan/src/hyperscan/build/CMakeFiles/CMakeScratch/TryCompile-sbKI2F'
+        Building CXX object CMakeFiles/cmTC_5402b.dir/src.cxx.o
+        /usr/bin/c++ -DCXX_SELF_ASSIGN  -fPIE   -Wself-assign -o CMakeFiles/cmTC_5402b.dir/src.cxx.o -c /home/lavanya/tranalyzer2-0.9.3/plugins/regexHyperscan/src/hyperscan/build/CMakeFiles/CMakeScratch/TryCompile-sbKI2F/src.cxx
+        c++: error: unrecognized command-line option '-Wself-assign'
+        gmake[1]: *** [CMakeFiles/cmTC_5402b.dir/build.make:78: CMakeFiles/cmTC_5402b.dir/src.cxx.o] Error 1
+        gmake[1]: Leaving directory '/home/lavanya/tranalyzer2-0.9.3/plugins/regexHyperscan/src/hyperscan/build/CMakeFiles/CMakeScratch/TryCompile-sbKI2F'
+        gmake: *** [Makefile:127: cmTC_5402b/fast] Error 2
+        
+      exitCode: 2
+  -
+    kind: "try_compile-v1"
+    backtrace:
+      - "/usr/share/cmake-3.28/Modules/Internal/CheckSourceCompiles.cmake:101 (try_compile)"
+      - "/usr/share/cmake-3.28/Modules/Internal/CheckCompilerFlag.cmake:18 (cmake_check_source_compiles)"
+      - "/usr/share/cmake-3.28/Modules/CheckCCompilerFlag.cmake:51 (cmake_check_compiler_flag)"
+      - "CMakeLists.txt:385 (CHECK_C_COMPILER_FLAG)"
+    checks:
+      - "Performing Test CC_PAREN_EQUALITY"
+    directories:
+      source: "/home/lavanya/tranalyzer2-0.9.3/plugins/regexHyperscan/src/hyperscan/build/CMakeFiles/CMakeScratch/TryCompile-aeiMm5"
+      binary: "/home/lavanya/tranalyzer2-0.9.3/plugins/regexHyperscan/src/hyperscan/build/CMakeFiles/CMakeScratch/TryCompile-aeiMm5"
+    cmakeVariables:
+      CMAKE_C_FLAGS: ""
+      CMAKE_MODULE_PATH: "/home/lavanya/tranalyzer2-0.9.3/plugins/regexHyperscan/src/hyperscan/cmake"
+      CMAKE_POSITION_INDEPENDENT_CODE: "ON"
+    buildResult:
+      variable: "CC_PAREN_EQUALITY"
+      cached: true
+      stdout: |
+        Change Dir: '/home/lavanya/tranalyzer2-0.9.3/plugins/regexHyperscan/src/hyperscan/build/CMakeFiles/CMakeScratch/TryCompile-aeiMm5'
+        
+        Run Build Command(s): /usr/bin/cmake -E env VERBOSE=1 /usr/bin/gmake -f Makefile cmTC_d7060/fast
+        /usr/bin/gmake  -f CMakeFiles/cmTC_d7060.dir/build.make CMakeFiles/cmTC_d7060.dir/build
+        gmake[1]: Entering directory '/home/lavanya/tranalyzer2-0.9.3/plugins/regexHyperscan/src/hyperscan/build/CMakeFiles/CMakeScratch/TryCompile-aeiMm5'
+        Building C object CMakeFiles/cmTC_d7060.dir/src.c.o
+        /usr/bin/cc -DCC_PAREN_EQUALITY  -fPIE   -Wparentheses-equality -o CMakeFiles/cmTC_d7060.dir/src.c.o -c /home/lavanya/tranalyzer2-0.9.3/plugins/regexHyperscan/src/hyperscan/build/CMakeFiles/CMakeScratch/TryCompile-aeiMm5/src.c
+        cc: error: unrecognized command-line option '-Wparentheses-equality'
+        gmake[1]: *** [CMakeFiles/cmTC_d7060.dir/build.make:78: CMakeFiles/cmTC_d7060.dir/src.c.o] Error 1
+        gmake[1]: Leaving directory '/home/lavanya/tranalyzer2-0.9.3/plugins/regexHyperscan/src/hyperscan/build/CMakeFiles/CMakeScratch/TryCompile-aeiMm5'
+        gmake: *** [Makefile:127: cmTC_d7060/fast] Error 2
+        
+      exitCode: 2
+  -
+    kind: "try_compile-v1"
+    backtrace:
+      - "/usr/share/cmake-3.28/Modules/Internal/CheckSourceCompiles.cmake:101 (try_compile)"
+      - "/usr/share/cmake-3.28/Modules/Internal/CheckCompilerFlag.cmake:18 (cmake_check_source_compiles)"
+      - "/usr/share/cmake-3.28/Modules/CheckCXXCompilerFlag.cmake:34 (cmake_check_compiler_flag)"
+      - "CMakeLists.txt:391 (CHECK_CXX_COMPILER_FLAG)"
+    checks:
+      - "Performing Test CXX_UNUSED_CONST_VAR"
+    directories:
+      source: "/home/lavanya/tranalyzer2-0.9.3/plugins/regexHyperscan/src/hyperscan/build/CMakeFiles/CMakeScratch/TryCompile-lX6sCx"
+      binary: "/home/lavanya/tranalyzer2-0.9.3/plugins/regexHyperscan/src/hyperscan/build/CMakeFiles/CMakeScratch/TryCompile-lX6sCx"
+    cmakeVariables:
+      CMAKE_CXX_FLAGS: ""
+      CMAKE_MODULE_PATH: "/home/lavanya/tranalyzer2-0.9.3/plugins/regexHyperscan/src/hyperscan/cmake"
+      CMAKE_POSITION_INDEPENDENT_CODE: "ON"
+    buildResult:
+      variable: "CXX_UNUSED_CONST_VAR"
+      cached: true
+      stdout: |
+        Change Dir: '/home/lavanya/tranalyzer2-0.9.3/plugins/regexHyperscan/src/hyperscan/build/CMakeFiles/CMakeScratch/TryCompile-lX6sCx'
+        
+        Run Build Command(s): /usr/bin/cmake -E env VERBOSE=1 /usr/bin/gmake -f Makefile cmTC_543b4/fast
+        /usr/bin/gmake  -f CMakeFiles/cmTC_543b4.dir/build.make CMakeFiles/cmTC_543b4.dir/build
+        gmake[1]: Entering directory '/home/lavanya/tranalyzer2-0.9.3/plugins/regexHyperscan/src/hyperscan/build/CMakeFiles/CMakeScratch/TryCompile-lX6sCx'
+        Building CXX object CMakeFiles/cmTC_543b4.dir/src.cxx.o
+        /usr/bin/c++ -DCXX_UNUSED_CONST_VAR  -fPIE   -Wunused-const-variable -o CMakeFiles/cmTC_543b4.dir/src.cxx.o -c /home/lavanya/tranalyzer2-0.9.3/plugins/regexHyperscan/src/hyperscan/build/CMakeFiles/CMakeScratch/TryCompile-lX6sCx/src.cxx
+        Linking CXX executable cmTC_543b4
+        /usr/bin/cmake -E cmake_link_script CMakeFiles/cmTC_543b4.dir/link.txt --verbose=1
+        /usr/bin/c++ -rdynamic CMakeFiles/cmTC_543b4.dir/src.cxx.o -o cmTC_543b4 
+        gmake[1]: Leaving directory '/home/lavanya/tranalyzer2-0.9.3/plugins/regexHyperscan/src/hyperscan/build/CMakeFiles/CMakeScratch/TryCompile-lX6sCx'
+        
+      exitCode: 0
+  -
+    kind: "try_compile-v1"
+    backtrace:
+      - "/usr/share/cmake-3.28/Modules/Internal/CheckSourceCompiles.cmake:101 (try_compile)"
+      - "/usr/share/cmake-3.28/Modules/Internal/CheckCompilerFlag.cmake:18 (cmake_check_source_compiles)"
+      - "/usr/share/cmake-3.28/Modules/CheckCXXCompilerFlag.cmake:34 (cmake_check_compiler_flag)"
+      - "CMakeLists.txt:397 (CHECK_CXX_COMPILER_FLAG)"
+    checks:
+      - "Performing Test CXX_IGNORED_ATTR"
+    directories:
+      source: "/home/lavanya/tranalyzer2-0.9.3/plugins/regexHyperscan/src/hyperscan/build/CMakeFiles/CMakeScratch/TryCompile-iPVrnq"
+      binary: "/home/lavanya/tranalyzer2-0.9.3/plugins/regexHyperscan/src/hyperscan/build/CMakeFiles/CMakeScratch/TryCompile-iPVrnq"
+    cmakeVariables:
+      CMAKE_CXX_FLAGS: ""
+      CMAKE_MODULE_PATH: "/home/lavanya/tranalyzer2-0.9.3/plugins/regexHyperscan/src/hyperscan/cmake"
+      CMAKE_POSITION_INDEPENDENT_CODE: "ON"
+    buildResult:
+      variable: "CXX_IGNORED_ATTR"
+      cached: true
+      stdout: |
+        Change Dir: '/home/lavanya/tranalyzer2-0.9.3/plugins/regexHyperscan/src/hyperscan/build/CMakeFiles/CMakeScratch/TryCompile-iPVrnq'
+        
+        Run Build Command(s): /usr/bin/cmake -E env VERBOSE=1 /usr/bin/gmake -f Makefile cmTC_79158/fast
+        /usr/bin/gmake  -f CMakeFiles/cmTC_79158.dir/build.make CMakeFiles/cmTC_79158.dir/build
+        gmake[1]: Entering directory '/home/lavanya/tranalyzer2-0.9.3/plugins/regexHyperscan/src/hyperscan/build/CMakeFiles/CMakeScratch/TryCompile-iPVrnq'
+        Building CXX object CMakeFiles/cmTC_79158.dir/src.cxx.o
+        /usr/bin/c++ -DCXX_IGNORED_ATTR  -fPIE   -Wignored-attributes -o CMakeFiles/cmTC_79158.dir/src.cxx.o -c /home/lavanya/tranalyzer2-0.9.3/plugins/regexHyperscan/src/hyperscan/build/CMakeFiles/CMakeScratch/TryCompile-iPVrnq/src.cxx
+        Linking CXX executable cmTC_79158
+        /usr/bin/cmake -E cmake_link_script CMakeFiles/cmTC_79158.dir/link.txt --verbose=1
+        /usr/bin/c++ -rdynamic CMakeFiles/cmTC_79158.dir/src.cxx.o -o cmTC_79158 
+        gmake[1]: Leaving directory '/home/lavanya/tranalyzer2-0.9.3/plugins/regexHyperscan/src/hyperscan/build/CMakeFiles/CMakeScratch/TryCompile-iPVrnq'
+        
+      exitCode: 0
+  -
+    kind: "try_compile-v1"
+    backtrace:
+      - "/usr/share/cmake-3.28/Modules/Internal/CheckSourceCompiles.cmake:101 (try_compile)"
+      - "/usr/share/cmake-3.28/Modules/Internal/CheckCompilerFlag.cmake:18 (cmake_check_source_compiles)"
+      - "/usr/share/cmake-3.28/Modules/CheckCXXCompilerFlag.cmake:34 (cmake_check_compiler_flag)"
+      - "CMakeLists.txt:404 (CHECK_CXX_COMPILER_FLAG)"
+    checks:
+      - "Performing Test CXX_WEAK_VTABLES"
+    directories:
+      source: "/home/lavanya/tranalyzer2-0.9.3/plugins/regexHyperscan/src/hyperscan/build/CMakeFiles/CMakeScratch/TryCompile-gqzDaK"
+      binary: "/home/lavanya/tranalyzer2-0.9.3/plugins/regexHyperscan/src/hyperscan/build/CMakeFiles/CMakeScratch/TryCompile-gqzDaK"
+    cmakeVariables:
+      CMAKE_CXX_FLAGS: ""
+      CMAKE_MODULE_PATH: "/home/lavanya/tranalyzer2-0.9.3/plugins/regexHyperscan/src/hyperscan/cmake"
+      CMAKE_POSITION_INDEPENDENT_CODE: "ON"
+    buildResult:
+      variable: "CXX_WEAK_VTABLES"
+      cached: true
+      stdout: |
+        Change Dir: '/home/lavanya/tranalyzer2-0.9.3/plugins/regexHyperscan/src/hyperscan/build/CMakeFiles/CMakeScratch/TryCompile-gqzDaK'
+        
+        Run Build Command(s): /usr/bin/cmake -E env VERBOSE=1 /usr/bin/gmake -f Makefile cmTC_88419/fast
+        /usr/bin/gmake  -f CMakeFiles/cmTC_88419.dir/build.make CMakeFiles/cmTC_88419.dir/build
+        gmake[1]: Entering directory '/home/lavanya/tranalyzer2-0.9.3/plugins/regexHyperscan/src/hyperscan/build/CMakeFiles/CMakeScratch/TryCompile-gqzDaK'
+        Building CXX object CMakeFiles/cmTC_88419.dir/src.cxx.o
+        /usr/bin/c++ -DCXX_WEAK_VTABLES  -fPIE   -Wweak-vtables -o CMakeFiles/cmTC_88419.dir/src.cxx.o -c /home/lavanya/tranalyzer2-0.9.3/plugins/regexHyperscan/src/hyperscan/build/CMakeFiles/CMakeScratch/TryCompile-gqzDaK/src.cxx
+        c++: error: unrecognized command-line option '-Wweak-vtables'
+        gmake[1]: *** [CMakeFiles/cmTC_88419.dir/build.make:78: CMakeFiles/cmTC_88419.dir/src.cxx.o] Error 1
+        gmake[1]: Leaving directory '/home/lavanya/tranalyzer2-0.9.3/plugins/regexHyperscan/src/hyperscan/build/CMakeFiles/CMakeScratch/TryCompile-gqzDaK'
+        gmake: *** [Makefile:127: cmTC_88419/fast] Error 2
+        
+      exitCode: 2
+  -
+    kind: "try_compile-v1"
+    backtrace:
+      - "/usr/share/cmake-3.28/Modules/Internal/CheckSourceCompiles.cmake:101 (try_compile)"
+      - "/usr/share/cmake-3.28/Modules/Internal/CheckCompilerFlag.cmake:18 (cmake_check_source_compiles)"
+      - "/usr/share/cmake-3.28/Modules/CheckCXXCompilerFlag.cmake:34 (cmake_check_compiler_flag)"
+      - "CMakeLists.txt:409 (CHECK_CXX_COMPILER_FLAG)"
+    checks:
+      - "Performing Test CXX_MISSING_DECLARATIONS"
+    directories:
+      source: "/home/lavanya/tranalyzer2-0.9.3/plugins/regexHyperscan/src/hyperscan/build/CMakeFiles/CMakeScratch/TryCompile-b7RabU"
+      binary: "/home/lavanya/tranalyzer2-0.9.3/plugins/regexHyperscan/src/hyperscan/build/CMakeFiles/CMakeScratch/TryCompile-b7RabU"
+    cmakeVariables:
+      CMAKE_CXX_FLAGS: ""
+      CMAKE_MODULE_PATH: "/home/lavanya/tranalyzer2-0.9.3/plugins/regexHyperscan/src/hyperscan/cmake"
+      CMAKE_POSITION_INDEPENDENT_CODE: "ON"
+    buildResult:
+      variable: "CXX_MISSING_DECLARATIONS"
+      cached: true
+      stdout: |
+        Change Dir: '/home/lavanya/tranalyzer2-0.9.3/plugins/regexHyperscan/src/hyperscan/build/CMakeFiles/CMakeScratch/TryCompile-b7RabU'
+        
+        Run Build Command(s): /usr/bin/cmake -E env VERBOSE=1 /usr/bin/gmake -f Makefile cmTC_feca4/fast
+        /usr/bin/gmake  -f CMakeFiles/cmTC_feca4.dir/build.make CMakeFiles/cmTC_feca4.dir/build
+        gmake[1]: Entering directory '/home/lavanya/tranalyzer2-0.9.3/plugins/regexHyperscan/src/hyperscan/build/CMakeFiles/CMakeScratch/TryCompile-b7RabU'
+        Building CXX object CMakeFiles/cmTC_feca4.dir/src.cxx.o
+        /usr/bin/c++ -DCXX_MISSING_DECLARATIONS  -fPIE   -Wmissing-declarations -o CMakeFiles/cmTC_feca4.dir/src.cxx.o -c /home/lavanya/tranalyzer2-0.9.3/plugins/regexHyperscan/src/hyperscan/build/CMakeFiles/CMakeScratch/TryCompile-b7RabU/src.cxx
+        Linking CXX executable cmTC_feca4
+        /usr/bin/cmake -E cmake_link_script CMakeFiles/cmTC_feca4.dir/link.txt --verbose=1
+        /usr/bin/c++ -rdynamic CMakeFiles/cmTC_feca4.dir/src.cxx.o -o cmTC_feca4 
+        gmake[1]: Leaving directory '/home/lavanya/tranalyzer2-0.9.3/plugins/regexHyperscan/src/hyperscan/build/CMakeFiles/CMakeScratch/TryCompile-b7RabU'
+        
+      exitCode: 0
+  -
+    kind: "try_compile-v1"
+    backtrace:
+      - "/usr/share/cmake-3.28/Modules/Internal/CheckSourceCompiles.cmake:101 (try_compile)"
+      - "/usr/share/cmake-3.28/Modules/Internal/CheckCompilerFlag.cmake:18 (cmake_check_source_compiles)"
+      - "/usr/share/cmake-3.28/Modules/CheckCXXCompilerFlag.cmake:34 (cmake_check_compiler_flag)"
+      - "CMakeLists.txt:414 (CHECK_CXX_COMPILER_FLAG)"
+    checks:
+      - "Performing Test CXX_UNUSED_LOCAL_TYPEDEFS"
+    directories:
+      source: "/home/lavanya/tranalyzer2-0.9.3/plugins/regexHyperscan/src/hyperscan/build/CMakeFiles/CMakeScratch/TryCompile-BcGevf"
+      binary: "/home/lavanya/tranalyzer2-0.9.3/plugins/regexHyperscan/src/hyperscan/build/CMakeFiles/CMakeScratch/TryCompile-BcGevf"
+    cmakeVariables:
+      CMAKE_CXX_FLAGS: ""
+      CMAKE_MODULE_PATH: "/home/lavanya/tranalyzer2-0.9.3/plugins/regexHyperscan/src/hyperscan/cmake"
+      CMAKE_POSITION_INDEPENDENT_CODE: "ON"
+    buildResult:
+      variable: "CXX_UNUSED_LOCAL_TYPEDEFS"
+      cached: true
+      stdout: |
+        Change Dir: '/home/lavanya/tranalyzer2-0.9.3/plugins/regexHyperscan/src/hyperscan/build/CMakeFiles/CMakeScratch/TryCompile-BcGevf'
+        
+        Run Build Command(s): /usr/bin/cmake -E env VERBOSE=1 /usr/bin/gmake -f Makefile cmTC_88ca2/fast
+        /usr/bin/gmake  -f CMakeFiles/cmTC_88ca2.dir/build.make CMakeFiles/cmTC_88ca2.dir/build
+        gmake[1]: Entering directory '/home/lavanya/tranalyzer2-0.9.3/plugins/regexHyperscan/src/hyperscan/build/CMakeFiles/CMakeScratch/TryCompile-BcGevf'
+        Building CXX object CMakeFiles/cmTC_88ca2.dir/src.cxx.o
+        /usr/bin/c++ -DCXX_UNUSED_LOCAL_TYPEDEFS  -fPIE   -Wunused-local-typedefs -o CMakeFiles/cmTC_88ca2.dir/src.cxx.o -c /home/lavanya/tranalyzer2-0.9.3/plugins/regexHyperscan/src/hyperscan/build/CMakeFiles/CMakeScratch/TryCompile-BcGevf/src.cxx
+        Linking CXX executable cmTC_88ca2
+        /usr/bin/cmake -E cmake_link_script CMakeFiles/cmTC_88ca2.dir/link.txt --verbose=1
+        /usr/bin/c++ -rdynamic CMakeFiles/cmTC_88ca2.dir/src.cxx.o -o cmTC_88ca2 
+        gmake[1]: Leaving directory '/home/lavanya/tranalyzer2-0.9.3/plugins/regexHyperscan/src/hyperscan/build/CMakeFiles/CMakeScratch/TryCompile-BcGevf'
+        
+      exitCode: 0
+  -
+    kind: "try_compile-v1"
+    backtrace:
+      - "/usr/share/cmake-3.28/Modules/Internal/CheckSourceCompiles.cmake:101 (try_compile)"
+      - "/usr/share/cmake-3.28/Modules/Internal/CheckCompilerFlag.cmake:18 (cmake_check_source_compiles)"
+      - "/usr/share/cmake-3.28/Modules/CheckCXXCompilerFlag.cmake:34 (cmake_check_compiler_flag)"
+      - "CMakeLists.txt:417 (CHECK_CXX_COMPILER_FLAG)"
+    checks:
+      - "Performing Test CXX_WUNUSED_VARIABLE"
+    directories:
+      source: "/home/lavanya/tranalyzer2-0.9.3/plugins/regexHyperscan/src/hyperscan/build/CMakeFiles/CMakeScratch/TryCompile-KwDpHL"
+      binary: "/home/lavanya/tranalyzer2-0.9.3/plugins/regexHyperscan/src/hyperscan/build/CMakeFiles/CMakeScratch/TryCompile-KwDpHL"
+    cmakeVariables:
+      CMAKE_CXX_FLAGS: ""
+      CMAKE_MODULE_PATH: "/home/lavanya/tranalyzer2-0.9.3/plugins/regexHyperscan/src/hyperscan/cmake"
+      CMAKE_POSITION_INDEPENDENT_CODE: "ON"
+    buildResult:
+      variable: "CXX_WUNUSED_VARIABLE"
+      cached: true
+      stdout: |
+        Change Dir: '/home/lavanya/tranalyzer2-0.9.3/plugins/regexHyperscan/src/hyperscan/build/CMakeFiles/CMakeScratch/TryCompile-KwDpHL'
+        
+        Run Build Command(s): /usr/bin/cmake -E env VERBOSE=1 /usr/bin/gmake -f Makefile cmTC_38a7d/fast
+        /usr/bin/gmake  -f CMakeFiles/cmTC_38a7d.dir/build.make CMakeFiles/cmTC_38a7d.dir/build
+        gmake[1]: Entering directory '/home/lavanya/tranalyzer2-0.9.3/plugins/regexHyperscan/src/hyperscan/build/CMakeFiles/CMakeScratch/TryCompile-KwDpHL'
+        Building CXX object CMakeFiles/cmTC_38a7d.dir/src.cxx.o
+        /usr/bin/c++ -DCXX_WUNUSED_VARIABLE  -fPIE   -Wunused-variable -o CMakeFiles/cmTC_38a7d.dir/src.cxx.o -c /home/lavanya/tranalyzer2-0.9.3/plugins/regexHyperscan/src/hyperscan/build/CMakeFiles/CMakeScratch/TryCompile-KwDpHL/src.cxx
+        Linking CXX executable cmTC_38a7d
+        /usr/bin/cmake -E cmake_link_script CMakeFiles/cmTC_38a7d.dir/link.txt --verbose=1
+        /usr/bin/c++ -rdynamic CMakeFiles/cmTC_38a7d.dir/src.cxx.o -o cmTC_38a7d 
+        gmake[1]: Leaving directory '/home/lavanya/tranalyzer2-0.9.3/plugins/regexHyperscan/src/hyperscan/build/CMakeFiles/CMakeScratch/TryCompile-KwDpHL'
+        
+      exitCode: 0
+  -
+    kind: "try_compile-v1"
+    backtrace:
+      - "/usr/share/cmake-3.28/Modules/CheckFunctionExists.cmake:86 (try_compile)"
+      - "util/CMakeLists.txt:3 (CHECK_FUNCTION_EXISTS)"
+    checks:
+      - "Looking for mmap"
+    directories:
+      source: "/home/lavanya/tranalyzer2-0.9.3/plugins/regexHyperscan/src/hyperscan/build/CMakeFiles/CMakeScratch/TryCompile-y7Nx01"
+      binary: "/home/lavanya/tranalyzer2-0.9.3/plugins/regexHyperscan/src/hyperscan/build/CMakeFiles/CMakeScratch/TryCompile-y7Nx01"
+    cmakeVariables:
+      CMAKE_C_FLAGS: " -march=native -mtune=skylake"
+      CMAKE_MODULE_PATH: "/home/lavanya/tranalyzer2-0.9.3/plugins/regexHyperscan/src/hyperscan/cmake"
+      CMAKE_POSITION_INDEPENDENT_CODE: "ON"
+    buildResult:
+      variable: "HAVE_MMAP"
+      cached: true
+      stdout: |
+        Change Dir: '/home/lavanya/tranalyzer2-0.9.3/plugins/regexHyperscan/src/hyperscan/build/CMakeFiles/CMakeScratch/TryCompile-y7Nx01'
+        
+        Run Build Command(s): /usr/bin/cmake -E env VERBOSE=1 /usr/bin/gmake -f Makefile cmTC_4bab8/fast
+        /usr/bin/gmake  -f CMakeFiles/cmTC_4bab8.dir/build.make CMakeFiles/cmTC_4bab8.dir/build
+        gmake[1]: Entering directory '/home/lavanya/tranalyzer2-0.9.3/plugins/regexHyperscan/src/hyperscan/build/CMakeFiles/CMakeScratch/TryCompile-y7Nx01'
+        Building C object CMakeFiles/cmTC_4bab8.dir/CheckFunctionExists.c.o
+        /usr/bin/cc   -march=native -mtune=skylake -DCHECK_FUNCTION_EXISTS=mmap -fPIE -o CMakeFiles/cmTC_4bab8.dir/CheckFunctionExists.c.o -c /home/lavanya/tranalyzer2-0.9.3/plugins/regexHyperscan/src/hyperscan/build/CMakeFiles/CMakeScratch/TryCompile-y7Nx01/CheckFunctionExists.c
+        Linking C executable cmTC_4bab8
+        /usr/bin/cmake -E cmake_link_script CMakeFiles/cmTC_4bab8.dir/link.txt --verbose=1
+        /usr/bin/cc  -march=native -mtune=skylake -DCHECK_FUNCTION_EXISTS=mmap -rdynamic CMakeFiles/cmTC_4bab8.dir/CheckFunctionExists.c.o -o cmTC_4bab8 
+        gmake[1]: Leaving directory '/home/lavanya/tranalyzer2-0.9.3/plugins/regexHyperscan/src/hyperscan/build/CMakeFiles/CMakeScratch/TryCompile-y7Nx01'
+        
+      exitCode: 0
+...

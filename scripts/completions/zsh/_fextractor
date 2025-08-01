@@ -1,0 +1,21 @@
+# ZSH completion for fextractor
+
+_fextractor() {
+    #compdef fextractor
+
+    local opts=(
+        '-r[Either read packet indexes from a single _flows.xer file named INPUT or read packet indexes from multiple _flows.xer files prefixed by INPUT and with suffix in range (start, end). If start or end are omitted, they are replaced by, respectively, first and last available XER files.]:INPUT:_files'
+        '-w[Write packets to pcap file OUTPUT. OUTPUT "-" means that the PCAP is written to stdout.]:OUTPUT:_files'
+        '-f[Overwrite OUTPUT if it already exists]'
+        '-i[Read flow indexes from FILE. FILE can either be in _flows.txt format (flow index in 2nd tab-separated column), or have one flow index per line. FILE "-" means that flows are read from stdin.]:FILE:_files'
+        '-b[By default when FILE is in _flows.txt format, only directions present in it are extracted, this option forces both directions to be extracted even if only the A or B direction is present in the flow file.]'
+        '-s[Skip the first N PCAPs]:number of PCAP to skip (int):'
+        '-p[Search pcaps in DIR (should only be set if pcaps were moved since Tranalyzer2 was run]:DIR:_files -/'
+        '(- 1 *)-n[Print oldest PCAP still available, its first packet timestamp and exit]'
+        '(- 1 *)-h[Print this help message and exit]'
+    )
+
+    _arguments -s -S "${opts[@]}"
+}
+
+compdef _fextractor fextractor

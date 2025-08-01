@@ -1,0 +1,195 @@
+.\"
+.\" This program is free software; you can redistribute it and/or modify
+.\" it under the terms of the GNU General Public License as published by
+.\" the Free Software Foundation; either version 2, or (at your option)
+.\" any later version.
+.\"
+.\" This program is distributed in the hope that it will be useful,
+.\" but WITHOUT ANY WARRANTY; without even the implied warranty of
+.\" MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+.\" GNU General Public License for more details.
+.\"
+.\" You should have received a copy of the GNU General Public License
+.\" along with this program; if not, write to the Free Software Foundation,
+.\" Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
+.\"
+
+.IX Title t2conf 1
+
+.TH T2CONF 1 "November 2024" "0.9.3" "User Commands"
+
+.SH NAME
+t2conf -- configure, activate and deactivate Tranalyzer plugins.
+
+.SH SYNOPSIS
+\fBt2conf\fI [\fIOPTION\fR...] [\fIPLUGIN\fR...]
+
+.SH DESCRIPTION
+\fBt2conf\fR facilitates the configuration of Tranalyzer and plugins.
+
+.SH ACTION ARGUMENTS
+.TP
+\fB-I\fR
+list the configuration flags available for the plugin
+(option only available if ONE plugin is being configured)
+.TP
+\fB-G \fIname\fR
+get the value of the define \fIname\fR
+(option only available if ONE plugin is being configured)
+.TP
+\fB-D \fIname=default\fR
+reset the define \fIname\fR to its default value
+(option only available if ONE plugin is being configured)
+.TP
+\fB-D \fIname=value\fR
+set the define \fIname\fR to \fIvalue\fR
+(option only available if ONE plugin is being configured)
+.TP
+.TP
+\fB-g\fR default
+shorter way to point to a plugin \fIdefault.config\fR file
+generate configuration \fIfile\fR for the current configuration
+(if \fIfile\fR is omitted, create \fIpluginName.config\fR)
+.TP
+\fB-g\fR [\fIfile\fR]
+generate configuration \fIfile\fR for the current configuration
+(if \fIfile\fR is omitted, create \fIpluginName.config\fR)
+.TP
+\fB-C\fR \fIfile\fR
+load and apply configuration \fIfile\fR whose format is FLAG = val
+(if '\fIfile\fR' is '\fIauto\fR', use '\fIpluginName.config\fR',
+if '\fIfile\fR' is '\fIdefault\fR', use '\fIdefault.config\fR')
+.TP
+\fB--reset\fR
+load \fIdefault.config\fR to reset the default configuration
+.TP
+.TP
+\fB--patch\fR \fIfile\fR
+configure tranalyzer according to '\fIfile\fR' whose format is
+.RS
+FLAG <tab> NEWVAL <tab> OLDVAL <tab> FILE or
+.RE
+.RS
+FLAG <tab> NEWVAL <tab> FILE,
+.RE
+.RS
+where FILE is relative to '\fB-t\fR'
+.RE
+.TP
+\fB--rpatch\fR \fIfile\fR
+same as \fB--patch\fR, but restore OLDVAL
+
+.SH TRANALYZER2 CONFIGURATION ARGUMENTS
+.TP
+\fB--t2\fR
+configure/build Tranalyzer2 first
+.TP
+\fB--dual\fR
+activate IPv4 and IPv6 dissection
+.TP
+\fB--ip6\fR
+activate IPv6 dissection and deactivate IPv4 dissection
+.TP
+\fB--ip4\fR
+activate IPv4 dissection and deactivate IPv6 dissection
+.TP
+\fB-m\fR
+activate monitoring mode
+
+.SH PLUGINS CONFIGURATION ARGUMENTS
+.TP
+\fB-c\fR
+run $EDITOR for every requested plugin
+.TP
+\fB-a\fR
+activate all plugins
+.TP
+\fB-0\fR
+deactivate all plugins
+.TP
+\fB-9\fR
+activate pcapd only
+.TP
+\fB-q\fR
+deactivate pcapd and restore previous state
+.TP
+\fB-L\fR [\fIfile\fR]
+edit plugins loading list \fIfile\fR
+(if \fIfile\fR is omitted, edit \fI~/.tranalyzer/plugins/plugins.load\fR)
+.TP
+\fB-S\fR [\fIfile\fR]
+show active plugins in loading list \fIfile\fR
+(if \fIfile\fR is omitted, show active plugins in \fI~/.tranalyzer/plugins/plugins.load\fR)
+.TP
+\fB-s\fR [\fIfile\fR]
+save list of loaded plugins in '\fIfile\fR' [/tmp/t2pl_state]
+.TP
+\fB-r\fR [\fIfile\fR]
+restore previous list of plugins from '\fIfile\fR' [/tmp/t2pl_state]
+
+.SH BUILD ARGUMENTS
+.TP
+\fB-l\fR
+lazy mode (only build plugins if they do not exist)
+.TP
+\fB-f\fR
+force rebuild of the plugins (./autogen.sh)
+.TP
+\fB-d\fR
+build plugins in debug mode (./autogen.sh \fB-d\fR)
+
+.SH GUI ARGUMENTS
+.TP
+\fB--gui\fR
+run the graphical (command-line) configurator
+.TP
+\fB-n\fR
+sort by plugin name instead of plugin number
+
+.SH OPTIONAL ARGUMENTS
+.TP
+\fB-t\fR \fIpath\fR
+set tranalyzer folder to '\fIpath\fR' [$T2HOME]
+.TP
+\fB-p\fR \fIpath\fR
+set plugin folder to '\fIpath\fR' [~/.tranalyzer/plugins]
+.TP
+\fB-x\fR
+exit after performing \fB--t2\fR, \fB-a\fR, \fB-r\fR, \fB-p\fR, \fB-q\fR, \fB--patch\fR or \fB--rpatch\fR option
+.TP
+\fB-y\fR
+do not ask for confirmation before executing an action
+.TP
+\fB-v\fR
+enable verbose mode
+
+.SH HELP AND DOCUMENTATION ARGUMENTS
+.TP
+\fB-?\fR, \fB-h\fR, \fB--help\fR
+Show help options and exit
+
+.SH EXIT STATUS
+\fBt2conf\fR returns 0 on success. Any different value is an indication of error.
+
+.SH AUTHORS
+\fBt2conf\fR was written by the Tranalyzer Development Team
+
+.SH BUGS
+Please send problems, bugs, questions and suggestions to:
+
+.ti +24
+\fIandy@tranalyzer.com\fR
+
+.SH DISTRIBUTION
+The latest version of \fBt2conf\fR can be found at
+
+.ti +22
+\fIhttps://tranalyzer.com\fR
+
+.SH SEE ALSO
+\fIt2fm\fR(1), \fItawk\fR(1), \fItranalyzer\fR(1)
+
+The full documentation for \fBt2conf\fR is available at
+
+.ti +6
+\fIhttps://tranalyzer.com/download/doc/documentation.pdf\fR

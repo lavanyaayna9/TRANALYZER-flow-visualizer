@@ -1,0 +1,45 @@
+-- Top destination organization by number of bytes
+
+SELECT
+    CASE org
+        WHEN 'Private network' THEN '--'
+        WHEN '--' THEN 'N/A'
+        WHEN '-' THEN 'N/A'
+        ELSE org
+    END as orga,
+    SUM(bytes) AS cnt
+
+FROM (
+    -- A flows
+    SELECT
+        "dstIPOrg" AS org,
+        "l7BytesRcvd" AS bytes
+    FROM
+        flow
+    WHERE
+        "dir" = 'A'
+        AND ("flowStat"::BIGINT & 1) = 0::BIGINT
+        AND ("flowStat"::BIGINT & x'c000'::BIGINT) > 0::BIGINT  -- IPv4/6 only
+        AND "timeFirst" >= to_timestamp(:time_from)
+        AND "timeLast" <= to_timestamp(:time_to)
+
+    UNION ALL
+
+    -- B flows
+    SELECT
+        "srcIPOrg" AS org,
+        "l7BytesSnt" AS bytes
+    FROM
+        flow
+    WHERE
+        "dir" = 'A'
+        AND ("flowStat"::BIGINT & 1) = 1::BIGINT
+        AND ("flowStat"::BIGINT & x'c000'::BIGINT) > 0::BIGINT  -- IPv4/6 only
+        AND "timeFirst" >= to_timestamp(:time_from)
+        AND "timeLast" <= to_timestamp(:time_to)
+) AS flows
+
+GROUP BY orga
+ORDER BY cnt :sort_order
+
+LIMIT :n

@@ -1,0 +1,41 @@
+cursor = db.flow.find(
+    {
+        $or : [
+            { sshStat : { $ne : 0 } },
+            { nDPIclass : { $eq : "SSH" } },
+        ],
+        sshVersion  : { $exists : true },
+        duration    : { $gt : new Date("1970-01-01") },
+        l7BytesSnt  : { $gt : 0 },
+        timeFirst   : { $gte : time_from },
+        timeLast    : { $lte : time_to },
+    },
+    {
+        _id         : 0,
+        timeFirst   : 1,
+        duration    : 1,
+        srcIP       : 1,
+        dstIP       : 1,
+        l7BytesSnt  : 1,
+        sshVersion  : 1
+    },
+    //{
+    //    $sort : { timeFirst : 1 }
+    //},
+    {
+        $limit : n
+    }
+)
+
+cursor.forEach(
+    function(e) {
+        print(
+              e.timeFirst / 1000 + "\t"
+            + e.duration / 1000  + "\t"
+            + e.srcIP            + "\t"
+            + e.dstIP            + "\t"
+            + e.l7BytesSnt       + "\t"
+            + e.sshVersion
+        )
+    }
+)

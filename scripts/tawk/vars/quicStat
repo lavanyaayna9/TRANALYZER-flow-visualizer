@@ -1,0 +1,10 @@
+#H bit | quicStat | Description
+#H =============================================================================
+     0 | 0x01     | Flow is QUIC
+     1 | 0x02     | Handshake (Packet Type 2)
+     2 | 0x04     | Version negotiation (version is 0)
+     3 | 0x08     | Version changed
+     4 | 0x10     | Destination Connection ID changed
+     5 | 0x20     | Source Connection ID changed
+     6 | 0x40     | Original Destination Connection ID changed
+#W   7 | 0x80     | Packet was snapped (t2buf failed)

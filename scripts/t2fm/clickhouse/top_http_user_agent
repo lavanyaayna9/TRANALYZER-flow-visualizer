@@ -1,0 +1,23 @@
+-- Top HTTP user-agent by number of flows
+
+SELECT
+    toValidUTF8(user_agent),
+    COUNT(*) AS cnt
+
+FROM (
+    SELECT
+        user_agent
+    FROM
+        flow
+    ARRAY JOIN
+        "httpUsrAg" AS user_agent
+    WHERE
+        notEmpty("httpUsrAg")
+        AND "timeFirst" >= {time_from:DateTime64(6)}
+        AND "timeLast" <= {time_to:DateTime64(6)}
+) AS flows
+
+GROUP BY user_agent
+ORDER BY multiply(cnt, {sort_order:Int8})
+
+LIMIT {n:UInt64}

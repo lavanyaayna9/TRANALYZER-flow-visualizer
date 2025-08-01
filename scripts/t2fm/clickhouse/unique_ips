@@ -1,0 +1,26 @@
+-- Return a list of unique IP addresses
+
+SELECT DISTINCT
+    replaceRegexpOne(IPv6NumToString(ip.2), '^::ffff:', '')
+
+FROM (
+    SELECT
+        "srcIP" AS ip
+    FROM
+        flow
+    WHERE
+        bitTestAny("flowStat", 14, 15) > 0  -- IPv4/6 only
+        AND "timeFirst" >= {time_from:DateTime64(6)}
+        AND "timeLast" <= {time_to:DateTime64(6)}
+
+    UNION ALL
+
+    SELECT
+        "dstIP" AS ip
+    FROM
+        flow
+    WHERE
+        bitTestAny("flowStat", 14, 15) > 0  -- IPv4/6 only
+        AND "timeFirst" >= {time_from:DateTime64(6)}
+        AND "timeLast" <= {time_to:DateTime64(6)}
+) AS ips

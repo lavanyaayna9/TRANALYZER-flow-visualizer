@@ -1,0 +1,179 @@
+\IfFileExists{t2doc.cls}{
+    \documentclass[documentation]{subfiles}
+}{
+    \errmessage{Error: could not find 't2doc.cls'}
+}
+
+\begin{document}
+
+\trantitle
+    {vrrpDecode} % Plugin name
+    {Virtual Router Redundancy Protocol (VRRP)} % Short description
+    {Tranalyzer Development Team} % author(s)
+
+\section{vrrpDecode}\label{s:vrrpDecode}
+
+\subsection{Description}
+The vrrpDecode plugin analyzes Virtual Router Redundancy Protocol (VRRP) traffic.
+
+%\subsection{Dependencies}
+%None.
+
+\subsection{Configuration Flags}
+The following flags can be used to control the output of the plugin:
+\begin{longtable}{>{\tt}lcl>{\tt\small}l}
+    \toprule
+    {\bf Name} & {\bf Default} & {\bf Description} & {\bf Flags}\\
+    \midrule\endhead%
+    VRRP\_NUM\_VRID &  5 & number of unique virtual router ID to store & \\
+    VRRP\_NUM\_IP   & 25 & number of unique IPs to store               & \\
+    VRRP\_RT        &  1 & output routing tables                       & \\
+    VRRP\_SUFFIX    & {\tt\small "\_vrrp.txt"}
+                         & Suffix for routing tables file              & VRRP\_RT=1\\
+    \bottomrule
+\end{longtable}
+
+\subsubsection{Environment Variable Configuration Flags}
+The following configuration flags can also be configured with environment variables ({\tt ENVCNTRL>0}):
+\begin{itemize}
+    \item {\tt VRRP\_SUFFIX}
+\end{itemize}
+
+\subsection{Flow File Output}
+The vrrpDecode plugin outputs the following columns:
+\begin{longtable}{>{\tt}lll}%>{\tt\small}l}
+    \toprule
+    {\bf Column}           & {\bf Type} & {\bf Description}                        \\ %& {\bf Flags}\\
+    \midrule\endhead%
+    \nameref{vrrpStat}     & H16        & Status                                   \\ %& \\
+    \nameref{vrrpVer}      & H8         & Version                                  \\ %& \\
+    \nameref{vrrpType}     & H8         & Type                                     \\ %& \\
+    vrrpVRIDCnt            & U32        & Virtual router ID count                  \\ %& \\
+    vrrpVRID               & R(U8)      & Virtual router ID                        \\ %& \\
+    vrrpMinPri             & U8         & Minimum priority                         \\ %& \\
+    vrrpMaxPri             & U8         & Maximum priority                         \\ %& \\
+    vrrpMinAdvInt          & U8         & Minimum advertisement interval (seconds) \\ %& \\
+    vrrpMaxAdvInt          & U8         & Maximum advertisement interval (seconds) \\ %& \\
+    \nameref{vrrpAuthType} & H8         & Authentication type                      \\ %& \\
+    vrrpAuth               & SC         & Authentication string                    \\ %& \\
+    vrrpIPCnt              & U32        & IP address count                         \\ %& \\
+    vrrpIP                 & R(IP)      & IP addresses                             \\ %& \\
+    \bottomrule
+\end{longtable}
+
+\subsubsection{vrrpStat}\label{vrrpStat}
+The {\tt vrrpStat} column is to be interpreted as follows:
+\begin{longtable}{>{\tt}rl}
+    \toprule
+    {\bf vrrpStat} & {\bf Description}\\
+    \midrule\endhead%
+    0x0001 & flow is VRRP\\
+    0x0002 & invalid version\\
+    0x0004 & invalid type\\
+    0x0008 & invalid checksum\\
+    \\
+    0x0010 & invalid TTL (should be 255)\\
+    0x0020 & invalid destination IP (should be 224.0.0.18)\\
+    0x0040 & ---\\%invalid destination MAC (should be 00:00:5e:00:01:routerID)\\
+    0x0080 & ---\\
+    \\
+    0x0100 & Virtual Router ID list truncated\ldots increase {\tt VRRP\_NUM\_VRID}\\
+    0x0200 & IP list truncated\ldots increase {\tt VRRP\_NUM\_IP}\\
+    0x0400 & ---\\
+    0x0800 & ---\\
+    \\
+    0x1000 & ---\\
+    0x2000 & ---\\
+    0x4000 & Packet snapped\\
+    0x8000 & Malformed packet\ldots covert channel?\\
+    \bottomrule
+\end{longtable}
+
+\subsubsection{vrrpVer}\label{vrrpVer}
+The {\tt vrrpVer} column is to be interpreted as follows:
+\begin{longtable}{>{\tt}rl}
+    \toprule
+    {\bf vrrpVer} & {\bf Description}\\
+    \midrule\endhead%
+    0x04 & VRRPv2\\
+    0x08 & VRRPv3\\
+    \bottomrule
+\end{longtable}
+
+\subsubsection{vrrpType}\label{vrrpType}
+The {\tt vrrpType} column is to be interpreted as follows:
+\begin{longtable}{>{\tt}rl}
+    \toprule
+    {\bf vrrpType} & {\bf Description}\\
+    \midrule\endhead%
+    0x01 & Advertisement\\
+    \bottomrule
+\end{longtable}
+
+\subsubsection{vrrpAuthType}\label{vrrpAuthType}
+The {\tt vrrpAuthType} column is to be interpreted as follows:
+\begin{longtable}{>{\tt}rl}
+    \toprule
+    {\bf vrrpAuthType} & {\bf Description}\\
+    \midrule\endhead%
+    0x01 & No authentication\\
+    0x02 & Simple text password\\
+    0x04 & IP Authentication Header\\
+    \bottomrule
+\end{longtable}
+
+\subsection{Monitoring Output}
+In monitoring mode, the vrrpDecode plugin outputs the following columns:
+\begin{longtable}{>{\tt}lll>{\tt\small}l}
+    \toprule
+    {\bf Column} & {\bf Type} & {\bf Description} & {\bf Flags}\\
+    \midrule\endhead%
+    vrrp2NPkts         & U64 & Number of VRRPv2 packets & \\
+    vrrp3NPkts         & U64 & Number of VRRPv3 packets & \\
+    \nameref{vrrpStat} & H16 & Status                   & \\
+    \bottomrule
+\end{longtable}
+
+\subsection{Plugin Report Output}
+The following information is reported:
+\begin{itemize}
+    \item Aggregated {\tt\nameref{vrrpStat}}
+    \item Number of VRRPv2 packets
+    \item Number of VRRPv3 packets
+\end{itemize}
+
+\subsection{Additional Output}
+Non-standard output:
+\begin{itemize}
+    \item {\tt PREFIX\_vrrp.txt}: VRRP routing tables
+\end{itemize}
+
+The routing tables contain the following columns:
+\begin{longtable}{>{\tt}rl}
+    \toprule
+    {\bf Name} & {\bf Description}\\
+    \midrule\endhead%
+    VirtualRtrID          & Virtual router ID\\
+    Priority              & Priority\\
+    SkewTime              & Skew time (seconds)\\
+    MasterDownInterval    & Master down interval (seconds)\\
+    AddrCount             & Number of addresses\\
+    Addresses             & List of addresses\\
+    Version               & VRRP version\\
+    Type                  & \hyperref[vrrpType]{Message type}\\
+    AdverInt              & Advertisement interval (seconds)\\
+    AuthType              & \hyperref[vrrpAuthType]{Authentication type}\\
+    AuthString            & Authentication string\\
+    Checksum              & Stored checksum\\
+    CalcChecksum          & Calculated checksum\\
+    flowInd               & Flow index\\
+    \bottomrule
+\end{longtable}
+
+\subsection{Post-Processing}
+The routing tables can be pruned by using the following command:
+\begin{verbatim}
+sort -u PREFIX_vrrp.txt > PREFIX_vrrp_pruned.txt
+\end{verbatim}
+
+\end{document}

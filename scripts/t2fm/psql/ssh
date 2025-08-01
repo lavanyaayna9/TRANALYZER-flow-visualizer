@@ -1,0 +1,19 @@
+-- List of SSH connections
+
+SELECT
+    EXTRACT(epoch FROM "timeFirst"),
+    "duration",
+    "srcIP",
+    "dstIP",
+    "l7BytesSnt",
+    UNNEST("sshVersion")
+FROM
+    flow
+WHERE
+    ("sshStat" != 0 OR "nDPIclass" ~ 'SSH')
+    AND "duration" > '0'
+    AND "l7BytesSnt" > 0
+    AND "timeFirst" >= to_timestamp(:time_from)
+    AND "timeLast" <= to_timestamp(:time_to)
+
+LIMIT :n

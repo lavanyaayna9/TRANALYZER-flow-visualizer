@@ -1,0 +1,46 @@
+#H bit | icmpType    | Description
+#H =============================================================================
+     0 | 0x0000 0001 | Echo Reply
+     1 | 0x0000 0002 | -
+     2 | 0x0000 0004 | -
+     3 | 0x0000 0008 | Destination Unreachable
+
+     4 | 0x0000 0010 | Source Quench
+     5 | 0x0000 0020 | Redirect (change route)
+     6 | 0x0000 0040 | Alternate Host Address
+     7 | 0x0000 0080 | -
+
+     8 | 0x0000 0100 | Echo Request
+     9 | 0x0000 0200 | Router advertisement
+    10 | 0x0000 0400 | Router selection
+    11 | 0x0000 0800 | Time Exceeded
+
+    12 | 0x0000 1000 | Parameter Problem
+    13 | 0x0000 2000 | Timestamp Request
+    14 | 0x0000 4000 | Timestamp Reply
+    15 | 0x0000 8000 | Information Request
+
+    16 | 0x0001 0000 | Information Reply
+    17 | 0x0002 0000 | Address Mask Request
+    18 | 0x0004 0000 | Address Mask Reply
+    19 | 0x0008 0000 | Reserved (for Security)
+
+    20 | 0x0010 0000 | Experimental
+    21 | 0x0020 0000 | Experimental
+    22 | 0x0040 0000 | Experimental
+    23 | 0x0080 0000 | Experimental
+
+    24 | 0x0100 0000 | Experimental
+    25 | 0x0200 0000 | Experimental
+    26 | 0x0400 0000 | Experimental
+    27 | 0x0800 0000 | Experimental
+
+    28 | 0x1000 0000 | Experimental
+    29 | 0x2000 0000 | Experimental
+    30 | 0x4000 0000 | Traceroute
+    31 | 0x8000 0000 | Datagram Conversion Error
+
+    40 | 0x0000 0100 | Photuris
+    41 | 0x0000 0200 | Seamoby
+    42 | 0x0000 0400 | Extended Echo Request
+    43 | 0x0000 0800 | Extended Echo Reply

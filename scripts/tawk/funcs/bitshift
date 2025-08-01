@@ -1,0 +1,59 @@
+#!/usr/bin/env awk
+#
+# Shift a byte or a list of bytes 'n' to the left or right by
+# a given number of bits 't'.
+#
+# Parameters:
+#   - n   : the byte (or list of bytes) to shift
+#   - t   : the number of bits by which to shift 'n'
+#   - [d] : shift to the left ('d == 0', default) or to the right ('d != 0')
+#   - [b] : base for input number
+#           (currently only 16 is supported to force interpretation of, e.g., 45 as 0x45)
+#
+# See also:
+#   - nibble_swap
+#   - tobits
+#
+# Examples:
+#   - tawk '{ $l7HexContent = bitshift($l7HexContent, 2); print }' file_packets.txt
+#   - tawk '{ print bitshift($l7HexContent, 6, 0, 16) }' file_packets.txt
+#   - tawk '{ print bitshift(0x45, 4, 1) }' file.txt
+
+@include "hdr"
+
+function bitshift(n, t, d, b,        _p, _x) {
+    if (hdr()) return n
+
+    if (!n) return "0x00"
+
+    if (n ~ /^0x/) {
+        _x = gensub(/0x/, "", "g", n)
+        _p = "0x"
+    } else {
+        _x = n
+        _p = ""
+    }
+
+    if (n ~ /[\t ,]+/) {
+        _x = gensub(/[\t ,]+/, "", "g", _x)
+        _p = " " _p
+    }
+
+    _x = strtonum("0x" _x)
+
+    if (d == 0) {
+        _x = lshift(_x, t)
+    } else {
+        _x = rshift(_x, t)
+    }
+
+    _x = sprintf("%x", _x)
+    if ((length(_x) % 2) != 0) {
+        _x = "0" _x
+    }
+
+    _x = gensub(/(..)/, _p "\\1", "g", _x)
+    _x = gensub(/^[\t ,]/, "", "g", _x)
+
+    return _x
+}

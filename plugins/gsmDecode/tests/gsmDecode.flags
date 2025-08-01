@@ -1,0 +1,70 @@
+# Flags to toggle
+#
+# Run the ../../../tests/test.sh script from the plugin main directory:
+#
+# cd $T2HOME/plugins/gsmDecode
+# ../../tests/test.sh [OPTION...]
+#
+# If run from this folder, make sure to use absolute path for the '-p' option.
+#
+# Flag name     File
+
+# ../../tranalyzer2/src/networkHeaders.h
+ETH_ACTIVATE        ../../tranalyzer2/src/networkHeaders.h
+LAPD_ACTIVATE       ../../tranalyzer2/src/networkHeaders.h
+LAPD_OVER_UDP       ../../tranalyzer2/src/networkHeaders.h
+SCTP_ACTIVATE       ../../tranalyzer2/src/networkHeaders.h
+
+# ../../tranalyzer2/src/tranalyzer.h
+ENVCNTRL            ../../tranalyzer2/src/tranalyzer.h
+
+# src/e164_list.h
+GSM_E164_FORMAT     src/e164_list.h
+
+# src/gsm_a_dtap.h
+#GSM_DEBUG_DTAP      src/gsm_a_dtap.h
+#GSM_DBG_DTAP_UNK    src/gsm_a_dtap.h
+
+# src/gsm_a_rp.h
+#GSM_DEBUG_A_RP      src/gsm_a_rp.h
+#GSM_DBG_A_RP_UNK    src/gsm_a_rp.h
+
+# src/gsm_lapd.h
+#GSM_DEBUG_LAPD      src/gsm_lapd.h
+#GSM_DBG_LAPD_UNK    src/gsm_lapd.h
+
+# src/gsm_lapdm.h
+#GSM_DEBUG_LAPDM     src/gsm_lapdm.h
+#GSM_DBG_LAPDM_UNK   src/gsm_lapdm.h
+
+# src/gsm_rsl.h
+#GSM_DEBUG_RSL       src/gsm_rsl.h
+#GSM_DBG_RSL_UNK     src/gsm_rsl.h
+
+# src/gsm_sms.h
+#GSM_DEBUG_SMS       src/gsm_sms.h
+#GSM_DBG_SMS_UNK     src/gsm_sms.h
+
+# src/gsmtap.h
+#GSM_DEBUG_GSMTAP    src/gsmtap.h
+#GSM_DBG_GSMTAP_UNK  src/gsmtap.h
+
+# src/mcc_list.h
+GSM_MCC_FORMAT      src/mcc_list.h
+GSM_MNC_FORMAT      src/mcc_list.h
+
+# src/gsmDecode.h
+#GSM_DEBUG           src/gsmDecode.h
+#GSM_DBG_UNK         src/gsmDecode.h
+GSM_RMDIR           src/gsmDecode.h
+GSM_TMSI_FORMAT     src/gsmDecode.h
+GSM_ROTATE_TIME     src/gsmDecode.h
+GSM_ARFCNFILE       src/gsmDecode.h
+GSM_CALLFILE        src/gsmDecode.h
+GSM_CDFILE          src/gsmDecode.h
+GSM_IMMASSFILE      src/gsmDecode.h
+GSM_IMSIFILE        src/gsmDecode.h
+GSM_OPFILE          src/gsmDecode.h
+GSM_SMSFILE         src/gsmDecode.h
+GSM_SPEECHFILE      src/gsmDecode.h
+GSM_STATFILE        src/gsmDecode.h

@@ -1,0 +1,89 @@
+\IfFileExists{t2doc.cls}{
+    \documentclass[documentation]{subfiles}
+}{
+    \errmessage{Error: could not find 't2doc.cls'}
+}
+
+\begin{document}
+
+\trantitle
+    {nFrstPkts}
+    {Statistics Over the N First Packets}
+    {Tranalyzer Development Team} % author(s)
+
+\section{nFrstPkts}\label{s:nFrstPkts}
+
+\subsection{Description}
+The nFrstPkts plugin supplies the Packet Length (PL) and Inter-Arrival Times (IAT) of the $N$ first packets per flow as a column. The default value for $N$ is 20.
+It complements the packet mode ({\tt -s} option) with flow based view for the $N$ first packets signal. The plugin supplies several configuration options of how the
+resulting packet length signal should be represented. Using the {\tt fpsGplt} script files are generated readily post processable by any command line tool (AWK, Perl),
+Excel or Data mining suit, such as SPSS. As outlined in the configuration below, Signals can be produced with IAT, or relative/absolute time. Also the
+aggregation of bursts into a single pulse can be configured via {\tt NFRST\_MINIAT}. {\tt NFRST\_MINPLAVE} controls the meaning of the PL value in pulse aggregation
+mode. If 0 it corresponds to the BPP measure currently used in research for categorizing media content.
+
+\subsection{Configuration Flags}
+The following flags can be used to control the output of the plugin:
+\begin{longtable}{>{\tt}lcl>{\tt\small}l}
+    \toprule
+    {\bf Name} & {\bf Default} & {\bf Description} & {\bf Flags}\\
+    \midrule\endhead%
+    NFRST\_IAT        &  1 & 0: Time relative to flow start                        & \\
+                      &    & 1: Inter-arrival time                                 & \\
+                      &    & 2: Absolute time                                      & \\
+    NFRST\_BCORR      &  0 & 0: A,B start at 0.0                                   & \\
+                      &    & 1: B shift by flow start                              & NFRST\_MINIATS=0\\
+    NFRST\_PKTCNT     & 20 & Number of packets to record                           & \\
+    NFRST\_HDRINFO    &  0 & add L3,L4 header length                               & \\
+    NFRST\_MINIATS    &  0 & 0: Standard IAT sequence                              & \\
+                      &    & > 0: minimal packet IAT us/ns defining a pulse signal & \\
+    NFRST\_MINIATU    &  0 & 0: Standard IAT sequence                              & \\
+                      &    & > 0: minimal packet IAT us/ns defining a pulse signal & \\
+    NFRST\_MINPLENFRC &  2 & Minimal pulse length fraction                         & \\
+    NFRST\_PLAVE      &  1 & 0: Sum PL (BPP)                                       & NFRST\_MINIATS>0||\\
+                      &    & 1: Average PL                                         & NFRST\_MINIATU>0\\
+    NFRST\_XMIN       &  0 & Min PL boundary                                       &\\
+    NFRST\_XMAX       & {\tt\small UINT16\_MAX}
+                           & Max PL boundary                                       & \\
+    \bottomrule
+\end{longtable}
+
+For the rest of this document, {\tt NFRST\_MINIAT} is used to represent {\tt (NFRST\_MINIATS>0||NFRST\_MINIATU>0)}.
+
+\subsection{Flow File Output}
+The nFrstPkts plugin outputs the following columns:
+\begin{longtable}{>{\tt}lll>{\tt\small}l}
+    \toprule
+    {\bf Column} & {\bf Type} & {\bf Description} & {\bf Flags}\\
+    \midrule\endhead%
+    nFpCnt                   & U32               & Number of signal samples\\
+    L2L3L4Pl\_Iat            & R(U16\_UT)        & L2/L3/L4 or payload length and inter-arrival       & NFRST\_HDRINFO=0\&\&\\
+                             &                   & \qquad times for the N first packets               & NFRST\_MINIAT=0\\
+    L2L3L4Pl\_Iat\_nP        & R(U16\_UT\_UT)    & L2/L3/L4 or payload length, inter-arrival times    & NFRST\_HDRINFO=0\&\&\\
+                             &                   & \qquad and pulse length for the N first packets    & NFRST\_MINIAT>0\\
+    HD3l\_HD4l\_             & R(U8\_U8\_        & L3Hdr, L4Hdr, L2/L3/L4 or payload length and       & NFRST\_HDRINFO=1\&\&\\
+    \qquad L2L3L4Pl\_Iat     & \qquad \_U16\_UT) & \qquad inter-arrival times for the N first packets & NFRST\_MINIAT=0\\
+    HD3l\_HD4l\_             & R(U8\_U8\_U16\_   & L3Hdr, L4Hdr, L2/L3/L4 or payload length and       & NFRST\_HDRINFO=1\&\&\\
+    \qquad L2L3L4Pl\_Iat\_nP & \qquad UT\_UT)    & \qquad inter-arrival times for the N first packets & NFRST\_MINIAT>0\\
+    \bottomrule
+\end{longtable}
+
+\subsection{Post-Processing}
+The {\tt fpsGplt} script can be used to transform the packet signal from nFrstPkts to gnuplot or \tranref{t2plot} format. It produces several signal variants which can also be used for signal processing and AI applications. For more details, refer to the traffic mining tutorial at \url{https://tranalyzer.com/tutorial/trafficmining}.\\
+
+\begin{verbatim}
+>fpsGplt -h
+Usage:
+    fpsGplt [OPTION...] <FILE>
+
+Optional arguments:
+
+    -f               Flow index to extract, default: all flows
+    -d               Flow Direction: 0, 1; default both
+    -t               noTime: counts on x axis; default time on x axis
+    -i               invert B Flow PL
+    -s               time sorted
+
+    -h, --help       Show this help, then exit
+\end{verbatim}
+
+\end{document}

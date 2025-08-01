@@ -1,0 +1,187 @@
+#!/usr/bin/env bash
+#
+# Extract and decode all base64 encoded attachments.
+#
+# Examples:
+#   # Process several files
+#   $ ./b64ex /tmp/SMTPFILES/user@*
+#
+#   # Process a directory
+#   $ ./b64ex /tmp/SMTPFILES/*
+#
+#   # Process a single file
+#   $ grep "base64" /tmp/SMTPFILES/*
+#   file@wurst.ch_0_1223
+#   $ ./b64ex /tmp/SMTPFILES/file@wurst.ch_0_1223
+
+source "$(dirname "$0")/t2utils.sh"
+
+usage() {
+    echo "Usage:"
+    echo "    $SNAME [OPTION...] <DIR|FILE>"
+    echo
+    echo "Optional arguments:"
+    echo "    -w                Output folder for extracted files [default: \"$OUTFOLDER\"]"
+    echo "    -n                Do not remove base64 encoded files"
+    echo "    -y                Answer yes to all questions"
+    echo "    -v                Be more verbose"
+    echo
+    echo "Help and documentation arguments:"
+    echo "    -h, --help        Show this help, then exit"
+}
+
+FILES=()
+OUTFOLDER="."
+
+while [ $# -ne 0 ]; do
+    case "$1" in
+
+        -n)
+            KEEP_B64=1
+            ;;
+        -y|--yes)
+            YES="yes"
+            ;;
+        -v|--verbose)
+            VERBOSE=1
+            ;;
+        -w)
+            validate_next_arg "$1" "$2"
+            OUTFOLDER="$2"
+            shift
+            ;;
+
+        -h|-\?|--help)
+            usage
+            exit 0
+            ;;
+
+        *)
+            if [ -f "$1" ]; then
+                FILES+=("$1")
+            elif [ -d "$1" ]; then
+                if [ $(ls "$1" | wc -l) -eq 0 ]; then
+                    printwrn "Directory '$1' is empty"
+                else
+                    FILES+=("$1"/*)
+                fi
+            else
+                abort_option_unknown "$1"
+            fi
+            ;;
+    esac
+    shift
+done
+
+if [ ${#FILES[*]} -eq 0  ]; then
+    printerr "A file or non-empty directory must be specified"
+    abort_with_help
+fi
+
+if [ ! -d "$OUTFOLDER" ]; then
+    ask_default_no "'$OUTFOLDER' folder does not exist... create it" "$YES" || exit 1
+    mkdir -p "$OUTFOLDER" || {
+        printerr "Failed to create '$OUTFOLDER'"
+        exit 1
+    }
+elif [ $(find "$OUTFOLDER" -type f -depth 1 | wc -l) -ne 0 ]; then
+    ask_default_no "'$OUTFOLDER' is not empty... proceed anyway" "$YES" || exit 1
+fi
+
+OUTFOLDER="$($READLINK -f "$OUTFOLDER")"
+
+B64_SUFFIX="_b64"
+
+for file in ${FILES[@]}; do
+    file="$($READLINK -f "$file")"
+    if ! grep -F ': base64' "$file" &> /dev/null; then
+        [ -n "$VERBOSE" ] && printinf "No base64 attachment found in '$file'"
+        continue
+    fi
+
+    ATTACHMENTS=($(
+        AWK -v suffix="$B64_SUFFIX" -v outfolder="$OUTFOLDER" '
+
+        function strip(s) {
+            gsub(/^\s*/, "", s) # remove leading spaces
+            gsub(/\s*$/, "", s) # remove trailing spaces
+            return s
+        }
+
+        function unquote(s) {
+            gsub(/^"*/, "", s) # remove leading quote
+            gsub(/"$/, "", s) # remove trailing quote
+            return s
+        }
+
+        BEGIN {
+            s = 0
+            CNT=1
+        }
+
+        $0 == "\r" {
+            if (s == 2) s = 3
+            next
+        }
+
+        s == 0 {
+            if (index($0, "Content-Type:")) s = 1
+            next
+        }
+
+        s == 1 {
+            if (index($0, ": base64")) {
+                base64 = 1
+            } else if (index($0, "name=")) {
+                split($0, A, "=")
+                name = strip(A[2])
+                if (name ~ /^"/ && name !~ /"$/) {
+                    gsub(/"[^"]+$/, "", name)
+                }
+                name = unquote(name)
+                gsub(" ", "_", name)
+            }
+            if (name && base64) {
+                s = 2
+                outfile = outfolder "/" CNT "_" name suffix
+                CNT++
+                print outfile
+            }
+            next
+        }
+
+        s == 3 {
+            if ($0 ~ /^--/ || index($0, "------=_NextPart")) {
+                s = 0
+                base64 = 0
+                name = ""
+                outfile = ""
+                next
+            } else if (index($0, "Content") == 0) {  # Not found
+                print > outfile
+            }
+        }
+    ' "$file"))
+
+    count=${#ATTACHMENTS[*]}
+    if [ $count -gt 1 ]; then
+        [ -n "$VERBOSE" ] && printinf "$count base64 attachments found in '$file'"
+    elif [ $count -eq 1 ]; then
+        [ -n "$VERBOSE" ] && printinf "One base64 attachment found in '$file'"
+    else
+        [ -n "$VERBOSE" ] && printinf "No base64 attachments found in '$file'"
+        continue
+    fi
+
+    for attachment in ${ATTACHMENTS[*]}; do
+        out="$($READLINK -f "${OUTFOLDER}/$(basename "$attachment" _b64)")"
+        if [ -f "$out" ]; then
+            ask_default_no "File '$out' already exists... overwrite" "$YES" || continue
+        fi
+        [ -n "$VERBOSE" ] && echo "Saving base64 encoded attachment '$out'"
+        base64 -d -i "$attachment" -o "$out"
+        if [ $? -eq 0 ] && [ -z "$KEEP_B64" ]; then
+            rm "$attachment"  # remove the base64 encoded file
+        fi
+    done
+done

@@ -1,0 +1,7 @@
+#H vtpVlanType | Description
+#H =============================================================================
+          0x01 | Ethernet
+          0x02 | FDDI: Fiber Distributed Data Interface
+          0x03 | TrCRF: Token Ring Concentrator Relay Function
+          0x04 | FDDI-net: Fiber Distributed Data Interface Network Entity Title
+          0x05 | TrBRF: Token Ring Bridge Relay Function

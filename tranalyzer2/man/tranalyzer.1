@@ -1,0 +1,230 @@
+.\"
+.\" This program is free software; you can redistribute it and/or modify
+.\" it under the terms of the GNU General Public License as published by
+.\" the Free Software Foundation; either version 2, or (at your option)
+.\" any later version.
+.\"
+.\" This program is distributed in the hope that it will be useful,
+.\" but WITHOUT ANY WARRANTY; without even the implied warranty of
+.\" MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+.\" GNU General Public License for more details.
+.\"
+.\" You should have received a copy of the GNU General Public License
+.\" along with this program; if not, write to the Free Software Foundation,
+.\" Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
+.\"
+
+.IX Title Tranalyzer 1
+
+.TH TRANALYZER 1 "November 2024" "0.9.3" "Tranalyzer (Anteater)"
+
+.SH NAME
+tranalyzer \- high performance flow based network traffic analyzer
+
+.SH SYNOPSIS
+
+.B tranalyzer
+[\ \fB-r\fR\ \fIpcap\fR | \fB-R\fR \fIfile\fR | \fB-D\fR \fIexpr[:schr][,stop]\fR | \fB-i\fR\ \fIiface\fR\ ]
+.br
+.ti +11
+[\ \fB-w\fR\ \fIprefix\fR | \fB-W\fR\ \fIprefix[:size][,start]\fR \]
+.br
+.ti +11
+[\ \fB-p\fR\ \fIpath\fR\ ]
+.br
+.ti +11
+[\ \fB-b\fR\ \fIfile\fR\ ]
+.br
+.ti +11
+[\ \fB-e\fR\ \fIfile\fR\ ]
+.br
+.ti +11
+[\ \fB-f\fR\ \fIfactor\fR\ ]
+.br
+.ti +11
+[\ \fB-c\fR\ \fIcpu\fR\ ]
+.br
+.ti +11
+[\ \fB-x\fR\ \fIid\fR\ ]
+.br
+.ti +11
+[\ \fB-s\fR\ ]
+.br
+.ti +11
+[\ \fB-l\fR\ ]
+.br
+.ti +11
+[\ \fB-m\fR\ ]
+.br
+.ti +11
+[\ \fB-F\fR\ \fIfile\fR\ ]
+.br
+.ti +11
+[\ \fIbpf\fR\ ]
+
+.SH DESCRIPTION
+\fBtranalyzer\fR analyzes a PCAP file \fIpcap\fR (\fB-r\fR option), processes
+a list of PCAP files listed in \fIfile\fR (\fB-R\fR option) or captures traffic
+from a given interface \fIiface\fR (\fB-i\fR option). Output can be written to
+files with a specific \fIprefix\fR (\fB-w\fR or \fB-W\fR options). If none of
+those options is set, \fIprefix\fR is automatically derived from the input
+(file, interface, ...). Flow files can be output to \fIstdout\fR by using
+\fB-w -\fR (other files will be saved as if the \fB-w\fR option had been
+omitted and the \fB-l\fR and \fB-m\fR options used).
+
+.SH OPTIONS
+
+.SS INPUT OPTIONS
+
+.TP
+\fB-i\fR\ \fIiface\fR
+Listen on interface \fIiface\fR.
+
+.TP
+\fB-r\fR\ \fIpcap\fR
+Read packets from PCAP file \fIpcap\fR or from \fIstdin\fR if \fIpcap\fR is \fI"-"\fR.
+
+.TP
+\fB-R\fR\ \fIfile\fR
+Process every PCAP file listed in \fIfile\fR.
+
+.TP
+\fB-D\fR\ \fIexpr[:schr][,stop]\fR
+Process every PCAP file whose name matches \fIexpr\fR, up to an optional last
+index \fIstop\fR. If \fIstop\fR is omitted, then \fBtranalyzer\fR never stops.
+\fIexpr\fR can be a filename, e.g., \fIfile.pcap0\fR, or an expression, such as
+\fI"dump*.pcap00"\fR, where the star matches anything (note the quotes to
+prevent the shell from interpreting the expression). \fIschr\fR can be used to
+specify the last character before the index.
+
+.SS OUTPUT OPTIONS
+
+.TP
+\fB-w\fR\ \fIprefix\fR
+Append \fIprefix\fR to any output file produced. If the option is omitted,
+derive \fIprefix\fR from the input. Use \fB-w -\fR to output the flow file to
+\fIstdout\fR (other files will be saved as if the \fB-w\fR option had been
+omitted and the \fB-l\fR and \fB-m\fR options used).
+
+.TP
+\fB-W\fR\ \fIprefix[:size][,start]\fR
+Like \fB-w\fR, but fragment flow files according to \fIsize\fR, producing files
+starting with index \fIstart\fR. \fIsize\fR can be specified in bytes (default),
+KB (\fIK\fR), MB (\fIM\fR) or GB (\fIG\fR). Scientific notation, i.e., \fI1e5\fR
+or \fI1E5\fR (=100000), can be used as well. If a \fIf\fR is appended, e.g.,
+\fI10Kf\fR, then \fIsize\fR denotes the number of flows.
+
+.TP
+.B -l
+Print end report in \fIprefix\fR_log.txt instead of \fIstdout\fR.
+
+.TP
+.B -m
+Print monitoring output in \fIprefix\fR_monitoring.txt instead of \fIstdout\fR.
+
+.TP
+.B -s
+Activate packet forensics mode (information saved in \fIprefix\fR_packets.txt).
+
+.SS INTERFACE CAPTURE ARGUMENTS
+
+.TP
+\fB-S\fR\ \fIsnaplen\fR
+Set the snapshot length to \fIsnaplen\fR (used with \fB-i\fR option).
+
+.TP
+\fB-B\fR\ \fIbufsize\fR
+Set the live Rx buffer size to \fIbufsize\fR (used with \fB-i\fR option).
+
+.SS OPTIONAL ARGUMENTS
+
+.TP
+\fB-p\fR\ \fIpath\fR
+Load plugins from \fIpath\fR instead of \fI~/.tranalyzer/plugins/\fR.
+
+.TP
+\fB-b\fR \fIfile\fR
+Use plugin list \fIfile\fR instead of \fIplugin_folder/plugins.txt\fR.
+
+.TP
+\fB-e\fR\ \fIfile\fR
+Create a PCAP file by extracting all packets belonging to flow indexes listed
+in \fIFILE\fR (require pcapd plugin).
+
+.TP
+\fB-f\fR\ \fIfactor\fR
+Set hash multiplication \fIfactor\fR.
+
+.TP
+\fB-x\fR\ \fIid\fR
+Sensor \fIid\fR.
+
+.TP
+\fB-c\fR\ \fIcpu\fR
+Bind \fBtranalyzer\fR to one core. If \fIcpu\fR is 0, then the operating system
+selects the core to bind.
+
+.TP
+\fB-P\fR\ \fIpriority\fR
+Set \fBtranalyzer\fR priority to \fIpriority\fR (int) instead of 0.
+\fIpriority\fR MUST belong in [-20, 20] for root and in [0, 20] for standard users.
+The lower the number, the higher the priority, i.e., -20 has higher priority than 20.
+
+.TP
+\fB-M\fR\ \fIseconds\fR
+Set monitoring interval to \fIseconds\fR (float).
+
+.TP
+\fB-F\fR\ \fIfile\fR
+Read BPF filter from \fIfile\fR.
+
+.SS HELP AND DOCUMENTATION ARGUMENTS
+
+.TP
+\fB-V\fR
+Show the version of the program and exit.
+
+.TP
+\fB-h\fR
+Show help options and exit.
+
+.SS REMAINING ARGUMENTS
+
+.TP
+.I bpf
+Berkeley Packet Filter command, as in tcpdump.
+
+.SH FILES
+.I ~/.tranalyzer/plugins/
+.RS
+Default plugins folder.
+
+.SH EXIT STATUS
+\fBtranalyzer\fR returns 0 on success.
+Any different value is an indication of error.
+
+.SH AUTHORS
+\fBtranalyzer\fR was written by the Tranalyzer Development Team
+
+.SH BUGS
+Please send problems, bugs, questions and suggestions to:
+
+.ti +24
+\fIandy@tranalyzer.com\fR
+
+.SH DISTRIBUTION
+The latest version of \fBtranalyzer\fR can be found at
+
+.ti +22
+\fIhttps://tranalyzer.com\fR
+
+.SH SEE ALSO
+\fIt2conf\fR(1), \fIt2fm\fR(1), \fItawk\fR(1), \fIawk\fR(1), \fIbpf\fR(2),
+\fIdumpcap\fR(1), \fIeditcap\fR(1), \fImergecap\fR(1), \fIpcap\fR(3PCAP),
+\fIpcap-linktype\fR(7), \fIpcap-savefile\fR(5), \fItcpdump\fR(8),
+\fItext2pcap\fR(1), \fItshark\fR(1).
+
+The full documentation for \fBtranalyzer\fR is available at
+
+.ti +6
+\fIhttps://tranalyzer.com/download/doc/documentation.pdf\fR

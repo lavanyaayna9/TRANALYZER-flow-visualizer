@@ -1,0 +1,26 @@
+-- Top Know HASSH Signatures by number of flows
+
+SELECT
+    hassh,
+    toValidUTF8(hasshDesc),
+    COUNT(*) AS cnt
+
+FROM (
+    SELECT
+        hassh,
+        hasshDesc
+    FROM
+        flow
+    ARRAY JOIN
+        "sshHassh" AS hassh,
+        "sshHasshDesc" AS hasshDesc
+    WHERE
+        notEmpty("sshHasshDesc")
+        AND "timeFirst" >= {time_from:DateTime64(6)}
+        AND "timeLast" <= {time_to:DateTime64(6)}
+) AS flows
+
+GROUP BY hassh, hasshDesc
+ORDER BY multiply(cnt, {sort_order:Int8})
+
+LIMIT {n:UInt64}

@@ -1,0 +1,41 @@
+#!/usr/bin/env awk
+#
+# Sort the file according to 'col' in reverse order.
+#
+# Multiple column numbers can be specified by using ';' as separator, e.g., 1 ";" 2.
+#
+# If 'num' is omitted or 0, return the full list, otherwise
+# the top ('num > 0') or bottom ('num < 0') 'num' results.
+#
+# The type of sorting to do (numeric, IP (version) or string) is determined
+# based on the first matching record. If the field is empty, then numeric sort
+# will be used. The type can be forced by specifying the 'type' parameter as
+# follows:
+#   - "ip" : sort IP addresses or version (sort -V)
+#   - "str": sort strings
+#   - "num": sort numbers (sort -g) [default]
+#
+# Parameters:
+#   - col   : column number(s) to use for the sorting
+#             (use ';' as separator to sort by multiple columns)
+#   - [num] : return the top/bottom 'num' results
+#   - [type]: type of sorting to do ('ip', 'str', 'num')
+#
+# Dependencies:
+#   - None
+#
+# See also:
+#   - t2sort
+#
+# Examples:
+#   - tawk 't2rsort(1)' file.txt
+#   - tawk 't2rsort(duration)' file.txt
+#   - tawk 't2rsort(pktsSnt, 5)' file.txt
+#   - tawk 't2rsort(srcIP, 0, "ip")' file.txt
+#   - tawk 't2rsort(flowInd ";" pktNo)' file_packets.txt
+
+@include "t2sort"
+
+function t2rsort(col, num, type, rev,        _sortorder, _sorttype) {
+    t2sort(col, num, type, 1)
+}

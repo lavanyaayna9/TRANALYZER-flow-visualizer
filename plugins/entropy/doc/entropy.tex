@@ -1,0 +1,74 @@
+\IfFileExists{t2doc.cls}{
+    \documentclass[documentation]{subfiles}
+}{
+    \errmessage{Error: could not find t2doc.cls}
+}
+
+\begin{document}
+
+\trantitle
+    {entropy}
+    {Entropy}
+    {Tranalyzer Development Team}
+
+\section{entropy}\label{s:entropy}
+
+\subsection{Description}
+The entropy plugin estimates the entropy of the snapped IP payload distribution.
+The number of bits of the alphabet can be 1,2,4,8. Default 8 bit, hence an alphabet of 256 symbols.
+The calculation of the entropy demands a certain minimum number of elements per flow.
+Two other key parameters, a binary and text based ratio, in combination with the entropy serve as input for AI for content and application classification. The character and binary ratio denote the degree of text or binary
+content respectively. All is experimental and described in detail in the
+\href{https://tranalyzer.com/tutorial/entropy}{Entropy et al} tutorial on \url{https://www.tranalyzer.com}.
+
+\subsection{Configuration Flags}
+The following flags can be used to control the output of the plugin:
+\begin{longtable}{>{\tt}lcl}
+    \toprule
+    {\bf Name}  & {\bf Default}           & {\bf Description}\\
+    \midrule\endhead%
+    ENT\_NORM   & 1                       & 0: \# bits\\
+                &                         & 1: Normalized entropy\\
+    ENT\_NBITS  & 8                       & $N$ bit word, vocabulary: $2^N$\\
+    ENT\_HPKTIG & 0                       & Ignore first $N$ packets\\
+    ENT\_HEAD   & 0                       & Start word of entropy calc in payload\\
+    ENT\_TAIL   & 1500                    & Position until entropy is calculated\\
+    ENT\_THRESL & 8                       & Threshold for minimal payload length\\
+    ENT\_THRESH & 8192                    & Threshold for maximal payload length\\
+    ENT\_ALPHAD & 0                       & Print alphabet distribution in flow file\\
+    \bottomrule
+\end{longtable}
+
+\subsubsection{Environment Variable Configuration Flags}
+The following configuration flags can also be configured with environment variables ({\tt ENVCNTRL>0}):
+\begin{itemize}
+    \item {\tt ENT\_HPKTIG}
+    \item {\tt ENT\_HEAD}
+    \item {\tt ENT\_TAIL}
+    \item {\tt ENT\_THRESL}
+    \item {\tt ENT\_THRESH}
+\end{itemize}
+
+\subsection{Flow File Output}
+The entropy plugin outputs the following columns:
+\begin{longtable}{>{\tt}lll>{\tt\small}l}
+    \toprule
+    {\bf Column} & {\bf Type} & {\bf Description} & {\bf Flags}\\
+    \midrule\endhead%
+    PyldEntropy  &      F & Payload entropy\footnote{A value of -1 indicates that no entropy was calculated} & \\
+    PyldChRatio  &      F & Payload character ratio                                                          & \\
+    PyldBinRatio &      F & Payload binary ratio                                                             & \\
+    NumBin0      &    U32 & Number of 0 count bins                                                           & ENT\_ALPHAD=1\\
+    Corr         &      F & entropy correction                                                               & ENT\_ALPHAD=1\\
+    PyldLen      &    U32 & Payload length                                                                   & ENT\_ALPHAD=1\\
+    PyldHisto    & R(U32) & Payload histogram                                                                & ENT\_ALPHAD=1\\
+    \bottomrule
+\end{longtable}
+
+\subsection{Plugin Report Output}
+The following information is reported:
+\begin{itemize}
+    \item NValFlows, Min, Average, Max entropy
+\end{itemize}
+
+\end{document}

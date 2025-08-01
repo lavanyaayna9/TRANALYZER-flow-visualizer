@@ -1,0 +1,21 @@
+#H bit | tcpFlags | Description
+#H =============================================================================
+     0 | 0x0001     | FIN: No more data, finish connection
+     1 | 0x0002     | SYN: Synchronize sequence numbers
+     2 | 0x0004     | RST: Reset connection
+     3 | 0x0008     | PSH: Push data
+
+     4 | 0x0010     | ACK: Acknowledgement field value valid
+     5 | 0x0020     | URG: Urgent pointer valid
+     6 | 0x0040     | ECE: ECN-Echo
+     7 | 0x0080     | CWR: Congestion Window Reduced flag is set
+
+     8 | 0x0100     | FIN-ACK: Acknowledgement of FIN
+     9 | 0x0200     | SYN-ACK: Acknowledgement of SYN
+    10 | 0x0400     | RST-ACK: Acknowledgement of RST
+#W  11 | 0x0800     | Potential NULL scan packet or malicious channel
+
+#W  12 | 0x1000     | SYN-FIN flag: potential scan packet or malicious packet
+#W  13 | 0x2000     | SYN-FIN-RST flag: potential scan packet or malicious channel
+#W  14 | 0x4000     | FIN-RST flag: abnormal flow termination
+#W  15 | 0x8000     | Potential Xmas scan packet (FIN-PSH-URG) or malicious channel

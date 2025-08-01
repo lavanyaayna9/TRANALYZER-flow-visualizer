@@ -1,0 +1,131 @@
+\IfFileExists{t2doc.cls}{
+    \documentclass[documentation]{subfiles}
+}{
+    \errmessage{Error: could not find 't2doc.cls'}
+}
+
+\begin{document}
+
+\trantitle
+    {snmpDecode} % Plugin name
+    {Simple Network Management Protocol (SNMP)} % Short description
+    {Tranalyzer Development Team} % author(s)
+
+\section{snmpDecode}\label{s:snmpDecode}
+
+\subsection{Description}
+The snmpDecode plugin analyzes SNMP traffic.
+
+\subsection{Configuration Flags}
+The following flags can be used to control the output of the plugin:
+\begin{longtable}{>{\tt}lcl}
+    \toprule
+    {\bf Name} & {\bf Default} & {\bf Description}\\
+    \midrule\endhead%
+    SNMP\_STRLEN & 64 & Maximum length for strings\\
+    \bottomrule
+\end{longtable}
+
+\subsection{Flow File Output}
+The snmpDecode plugin outputs the following columns:
+\begin{longtable}{>{\tt}lll>{\tt\small}l}
+    \toprule
+    {\bf Column}                   & {\bf Type}   & {\bf Description}       & {\bf Flags}\\
+    \midrule\endhead%
+    \nameref{snmpStat}             & H8           & Status                  & \\
+    \nameref{snmpVersion}          & U8           & Version                 & \\
+    snmpCommunity                  & S            & Community (SNMPv1-2)    & \\
+    snmpUser                       & S            & Username (SNMPv3)       & \\
+    \hyperref[snmpTypes]{snmpMsgT} & H16          & Message types bitfield  & \\
+    snmpNumReq\_                   & U64\_        & Number of GetRequest,   & \\
+    \qquad Next\_                  & \qquad U64\_ & \qquad GetNextRequest,  & \\
+    \qquad Resp\_                  & \qquad U64\_ & \qquad GetResponse,     & \\
+    \qquad Set\_                   & \qquad U64\_ & \qquad SetRequest,      & \\
+    \qquad Trap1\_                 & \qquad U64\_ & \qquad Trapv1,          & \\
+    \qquad Bulk\_                  & \qquad U64\_ & \qquad GetBulkRequest,  & \\
+    \qquad Info\_                  & \qquad U64\_ & \qquad InformRequest,   & \\
+    \qquad Trap2\_                 & \qquad U64\_ & \qquad Trapv2,          & \\
+    \qquad Rep                     & \qquad U64   & \qquad Report packets   & \\
+    \bottomrule
+\end{longtable}
+
+\subsubsection{snmpStat}\label{snmpStat}
+The {\tt snmpStat} column is to be interpreted as follows:
+\begin{longtable}{>{\tt}rl}
+    \toprule
+    {\bf snmpStat} & {\bf Description}\\
+    \midrule\endhead%
+    0x01 & Flow is SNMP\\
+    0x02 & ---\\
+    0x04 & ---\\
+    0x08 & ---\\
+    \\
+    0x10 & ---\\
+    0x20 & ---\\
+    0x40 & String was truncated\ldots increase {\tt SNMP\_STRLEN}\\
+    0x80 & Packet was malformed\\
+    \bottomrule
+\end{longtable}
+
+\subsubsection{snmpVersion}\label{snmpVersion}
+The {\tt snmpVersion} column is to be interpreted as follows:
+\begin{longtable}{rl}
+    \toprule
+    {\bf snmpVersion} & {\bf Description}\\
+    \midrule\endhead%
+    0 & SNMPv1\\
+    1 & SNMPv2c\\
+    3 & SNMPv3\\
+    \bottomrule
+\end{longtable}
+
+\subsubsection{snmpMsgT and snmpType}\label{snmpTypes}
+The {\tt snmpMsgT} and {\tt snmpType} columns are to be interpreted as follows:
+\begin{longtable}{>{\tt}r>{\tt}rl}
+    \toprule
+    {\bf snmpMsgT} & {\bf snmpType} & {\bf Description}\\
+    \midrule\endhead%
+    0x0001 & 0xa0 & GetRequest\\
+    0x0002 & 0xa1 & GetNextRequest\\
+    0x0004 & 0xa2 & GetResponse\\
+    0x0008 & 0xa3 & SetRequest\\
+    \\
+    0x0010 & 0xa4 & Trap (v1)\\
+    0x0020 & 0xa5 & GetBulkRequest (v2c, v3)\\
+    0x0040 & 0xa6 & InformRequest\\
+    0x0080 & 0xa7 & Trap (v2c, v3)\\
+    \\
+    0x0100 & 0xa8 & Report\\
+    \bottomrule
+\end{longtable}
+
+\subsection{Packet File Output}
+In packet mode ({\tt --s} option), the snmpDecode plugin outputs the following columns:
+\begin{longtable}{>{\tt}lll>{\tt\small}l}
+    \toprule
+    {\bf Column} & {\bf Type} & {\bf Description} & {\bf Flags}\\
+    \midrule\endhead%
+    \nameref{snmpVersion}          & U8 & Version           & \\
+    snmpCommunity                  & S  & Community         & \\
+    snmpUser                       & S  & Username (SNMPv3) & \\
+    \hyperref[snmpTypes]{snmpType} & H8 & Message type      & \\
+    \bottomrule
+\end{longtable}
+
+\subsection{Plugin Report Output}
+The following information is reported:
+\begin{itemize}
+    \item Number of SNMP packets
+    \item Number of SNMP GetRequest packets
+    \item Number of SNMP GetNextRequest packets
+    \item Number of SNMP GetResponse packets
+    \item Number of SNMP SetRequest packets
+    \item Number of SNMP Trap v1 packets
+    \item Number of SNMP GetBulkRequest packets
+    \item Number of SNMP InformRequest packets
+    \item Number of SNMP Trap v2 packets
+    \item Number of SNMP Report packets
+    %\item Aggregated status flags ({\tt\nameref{snmpStat}})
+\end{itemize}
+
+\end{document}

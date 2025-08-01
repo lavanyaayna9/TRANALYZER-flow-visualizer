@@ -1,0 +1,499 @@
+\IfFileExists{t2doc.cls}{
+    \documentclass[documentation]{subfiles}
+}{
+    \errmessage{Error: could not find 't2doc.cls'}
+}
+
+\begin{document}
+
+\trantitle
+    {icmpDecode}
+    {Internet Control Message Protocol (ICMP)}
+    {Tranalyzer Development Team} % author(s)
+
+\section{icmpDecode}\label{s:icmpDecode}
+
+\subsection{Description}
+The icmpDecode plugin analyzes ICMP and ICMPv6 traffic.
+It generates global and flow based statistics.
+
+%\subsection{Dependencies}
+%None.
+%
+%\subsubsection{External Libraries}
+%None.
+%
+%\subsubsection{Other Plugins}
+%None.
+%
+%\subsubsection{Required Files}
+%None.
+
+\subsection{Configuration Flags}
+The following flags can be used to control the output of the plugin:
+\begin{longtable}{>{\tt}lcl>{\tt\small}l}
+    \toprule
+    {\bf Name} & {\bf Default} & {\bf Description} & {\bf Flags}\\
+    \midrule\endhead%
+    ICMP\_TC\_MD   & 0  & Type/code representation:                            & \\
+                   &    & \qquad 0: bitfield,                                  & \\
+                   &    & \qquad 1: explicit array of type code,               & \\
+                   &    & \qquad 2: type code statistics [NOT IMPLEMENTED YET] & \\
+    ICMP\_NUM      & 10 & Number of type and code information                  & ICMP\_TC\_MD=1\\
+    ICMP\_FDCORR   & 1  & Flow direction correction                            & \\
+    ICMP\_PARENT   & 0  & Resolve the parent flow                              & \\
+
+    \hyperref[icmpDecode:additonalOutput]{ICMP\_STATFILE}
+                   & 0  & Print ICMP statistics in a separate file\\
+
+    ICMP\_NOCODE   & {\tt\small "-"}
+                        & Symbol to use to represent the absence of a code     & \\
+    \bottomrule
+\end{longtable}
+
+\subsubsection{Environment Variable Configuration Flags}
+The following configuration flags can also be configured with environment variables ({\tt ENVCNTRL>0}):
+\begin{itemize}
+    \item {\tt ICMP\_NOCODE}
+    \item {\tt ICMP\_SUFFIX}
+\end{itemize}
+
+\subsection{Flow File Output}
+The icmpDecode plugin outputs the following columns:
+\begin{longtable}{>{\tt}lll>{\tt\small}l}
+    \toprule
+    {\bf Column}                                & {\bf Type}    & {\bf Description}                             & {\bf Flags}\\
+    \midrule\endhead%
+    \nameref{icmpStat}                          & H8            & Status                                        & \\
+    icmpTCcnt                                   & U8            & Type/Code count                               & \\
+    \hyperref[icmpBFTypeCode]{icmpBFType\_Code} & H32\_H16      & Aggregated type (<32) and code bitfield       & ICMP\_TC\_MD=0\&\&\\
+                                                &               &                                               & IPV6\_ACTIVATE=0\\
+    icmpBFTypH\_TypL\_Code                      & H32\_H32\_H16 & Aggr.\ type H(>128), L(<32) and code bitfield & ICMP\_TC\_MD=0\&\&\\
+                                                &               &                                               & IPV6\_ACTIVATE=1\\
+    \hyperref[icmpBFTypeCode]{icmpType\_Code}   & R(U8\_U8)     & Type and code fields                          & ICMP\_TC\_MD=1\\
+    icmpTmGtw                                   & H32           & Time/gateway                                  & \\
+    icmpEchoSuccRatio                           & F             & Echo reply/request success ratio              & \\
+    icmpPFindex                                 & U64           & Parent flowIndex                              & ICMP\_PARENT=1\\
+    \bottomrule
+\end{longtable}
+\newpage
+
+\subsubsection{icmpStat}\label{icmpStat}
+The {\tt icmpStat} column is to be interpreted as follows:
+\begin{longtable}{>{\tt}rl}
+    \toprule
+    {\bf icmpStat}                     & {\bf Description}\\
+    \midrule\endhead%
+    $2^0$ (=0x0\textcolor{magenta}{1}) & Flow is ICMP\\
+    $2^1$ (=0x0\textcolor{magenta}{2}) & ---\\
+    $2^2$ (=0x0\textcolor{magenta}{4}) & ---\\
+    $2^3$ (=0x0\textcolor{magenta}{8}) & ---\\
+    \\
+    $2^4$ (=0x\textcolor{magenta}{1}0) & WANG2 Microsoft bandwidth test\\
+    $2^5$ (=0x\textcolor{magenta}{2}0) & ICMP ECHO Seq Num abnormal increment\\
+    $2^6$ (=0x\textcolor{magenta}{4}0) & Embedded LOKI covert channel\\
+    $2^7$ (=0x\textcolor{magenta}{8}0) & Embedded SSH covert channel\\
+    \bottomrule
+\end{longtable}
+
+\subsubsection{icmpBFType\_Code}\label{icmpBFTypeCode}
+
+For {\bf ICMP (IPv4)}, the {\tt icmpBFType\_Code} column is to be interpreted as follows:
+
+\begin{longtable}{>{\tt}rl}
+    \toprule
+    {\bf icmpBFType} & {\bf Description} \\
+    \midrule\endhead%
+    $2^{0}$  (=0x0000000\textcolor{magenta}{1}) & Echo Reply \\
+    $2^{1}$  (=0x0000000\textcolor{magenta}{2}) & --- \\
+    $2^{2}$  (=0x0000000\textcolor{magenta}{4}) & --- \\
+    $2^{3}$  (=0x0000000\textcolor{magenta}{8}) & Destination Unreachable \\
+    \\
+    $2^{4}$  (=0x000000\textcolor{magenta}{1}0) & Source Quench \\
+    $2^{5}$  (=0x000000\textcolor{magenta}{2}0) & Redirect (change route) \\
+    $2^{6}$  (=0x000000\textcolor{magenta}{4}0) & Alternate Host Address (Deprecated) \\
+    $2^{7}$  (=0x000000\textcolor{magenta}{8}0) & --- \\
+    \\
+    $2^{8}$  (=0x00000\textcolor{magenta}{1}00) & Echo Request \\
+    $2^{9}$  (=0x00000\textcolor{magenta}{2}00) & Router Advisement \\
+    $2^{10}$ (=0x00000\textcolor{magenta}{4}00) & Router Selection \\
+    $2^{11}$ (=0x00000\textcolor{magenta}{8}00) & Time Exceeded \\
+    \\
+    $2^{12}$ (=0x0000\textcolor{magenta}{1}000) & Parameter Problem \\
+    $2^{13}$ (=0x0000\textcolor{magenta}{2}000) & Timestamp Request \\
+    $2^{14}$ (=0x0000\textcolor{magenta}{4}000) & Timestamp Reply \\
+    $2^{15}$ (=0x0000\textcolor{magenta}{8}000) & Information Request \\
+    \\
+    $2^{16}$ (=0x000\textcolor{magenta}{1}0000) & Information Reply \\
+    $2^{17}$ (=0x000\textcolor{magenta}{2}0000) & Address Mask Request \\
+    $2^{18}$ (=0x000\textcolor{magenta}{4}0000) & Address Mask Reply \\
+    $2^{19}$ (=0x000\textcolor{magenta}{8}0000) & Reserved (for Security)\\
+    \\
+    $2^{20}$ (=0x00\textcolor{magenta}{1}00000) & Experimental \\
+    $2^{21}$ (=0x00\textcolor{magenta}{2}00000) & Experimental\\
+    $2^{22}$ (=0x00\textcolor{magenta}{4}00000) & Experimental \\
+    $2^{23}$ (=0x00\textcolor{magenta}{8}00000) & Experimental \\
+    \\
+    $2^{24}$ (=0x0\textcolor{magenta}{1}000000) & Experimental \\
+    $2^{25}$ (=0x0\textcolor{magenta}{2}000000) & Experimental \\
+    $2^{26}$ (=0x0\textcolor{magenta}{4}000000) & Experimental \\
+    $2^{27}$ (=0x0\textcolor{magenta}{8}000000) & Experimental \\
+    \\
+    $2^{28}$ (=0x\textcolor{magenta}{1}0000000) & Experimental \\
+    $2^{29}$ (=0x\textcolor{magenta}{2}0000000) & Experimental \\
+    $2^{30}$ (=0x\textcolor{magenta}{4}0000000) & Traceroute \\
+    $2^{31}$ (=0x\textcolor{magenta}{8}0000000) & Datagram Conversion Error (Deprecated) \\
+    \bottomrule
+\end{longtable}
+
+~\\\\
+The {\tt icmpCode} for {\bf Destination Unreachable} ({\tt 0x0000000\textcolor{magenta}{8}}) is to be interpreted as follows:\\
+\begin{longtable}{>{\tt}rl}
+    \toprule
+    {\bf icmpBFCode} & {\bf Description}\\
+    \midrule\endhead%
+    $2^0$ (=0x000\textcolor{magenta}{1}) & Network Unreachable \\
+    $2^1$ (=0x000\textcolor{magenta}{2}) & Host Unreachable \\
+    $2^2$ (=0x000\textcolor{magenta}{4}) & Protocol Unreachable \\
+    $2^3$ (=0x000\textcolor{magenta}{8}) & Port Unreachable \\
+    \\
+    $2^4$ (=0x00\textcolor{magenta}{1}0) & Fragmentation Needed/DF set \\
+    $2^5$ (=0x00\textcolor{magenta}{2}0) & Source Route failed \\
+    $2^6$ (=0x00\textcolor{magenta}{4}0) & Destination Network unknown \\
+    $2^7$ (=0x00\textcolor{magenta}{8}0) & Destination Host unknown \\
+    \\
+    $2^{8}$  (=0x0\textcolor{magenta}{1}00) & Src host isolated\\
+    $2^{9}$  (=0x0\textcolor{magenta}{2}00) & Dest net administratively prohibited \\
+    $2^{10}$ (=0x0\textcolor{magenta}{4}00) & Dest host administratively prohibited \\
+    $2^{11}$ (=0x0\textcolor{magenta}{8}00) & Dest net unreachable for type of service \\
+    \\
+    $2^{12}$ (=0x\textcolor{magenta}{1}000) & Dest host unreachable for type of service \\
+    $2^{13}$ (=0x\textcolor{magenta}{2}000) & Communication administratively prohibited \\
+    $2^{14}$ (=0x\textcolor{magenta}{4}000) & Precedence violation \\
+    $2^{15}$ (=0x\textcolor{magenta}{8}000) & Precedence cut off \\
+    \bottomrule
+\end{longtable}
+
+\clearpage
+For {\bf ICMPv6 (IPv6)}, the {\tt icmpBFType\_Code} column is to be interpreted as follows:\\
+
+\begin{small}
+    \begin{minipage}{.48\textwidth}
+        \begin{longtable}{rl}
+            \toprule
+            {\bf icmpType} & {\bf Description}\\
+            \midrule\endhead%
+            0   & Reserved\\
+            1   & Destination Unreachable\\
+            2   & Packet Too Big\\
+            3   & Time Exceeded\\
+            4   & Parameter Problem\\
+            100 & Private experimentation\\
+            101 & Private experimentation\\
+            102--126 & Unassigned\\
+            127 & Reserved for expansion of ICMPv6\\
+                & error messages\\
+            128 & Echo Request\\
+            129 & Echo Reply\\
+            130 & Multicast Listener Query\\
+            131 & Multicast Listener Report\\
+            132 & Multicast Listener Done\\
+            133 & Router Solicitation\\
+            134 & Router Advertisement\\
+            135 & Neighbor Solicitation\\
+            136 & Neighbor Advertisement\\
+            137 & Redirect Message\\
+            138 & Router Renumbering\\
+            139 & ICMP Node Information Query\\
+            140 & ICMP Node Information Response\\
+            141 & Inverse Neighbor Discovery Solicitation \\
+            \bottomrule
+        \end{longtable}
+    \end{minipage}
+    \hfill
+    \begin{minipage}{.48\textwidth}
+        \begin{longtable}{rl}
+            \toprule
+            {\bf icmpType} & {\bf Description}\\
+            \midrule\endhead%
+            142 & Inverse Neighbor Discovery Advertisement \\
+            143 & Version 2 Multicast Listener Report\\
+            144 & Home Agent Address Discovery Request \\
+            145 & Home Agent Address Discovery Reply \\
+            146 & Mobile Prefix Solicitation\\
+            147 & Mobile Prefix Advertisement\\
+            148 & Certification Path Solicitation \\
+            149 & Certification Path Advertisement \\
+            150 & ICMP messages utilized by experimental \\
+                & mobility protocols such as Seamoby\\
+            151 & Multicast Router Advertisement\\
+            152 & Multicast Router Solicitation\\
+            153 & Multicast Router Termination\\
+            154 & FMIPv6 Messages\\
+            155 & RPL Control Message\\
+            156 & ILNPv6 Locator Update Message\\
+            157 & Duplicate Address Request\\
+            158 & Duplicate Address Confirmation\\
+            159 & MPL Control Message\\
+            160--199 & Unassigned\\
+            200 & Private experimentation\\
+            201 & Private experimentation\\
+            255 & Reserved for expansion of ICMPv6\\
+                & informational messages\\
+            \bottomrule
+        \end{longtable}
+    \end{minipage}
+\end{small}
+
+\paragraph{}
+
+The {\tt icmpCode} for {\bf Destination Unreachable (1)} are:
+\begin{longtable}{>{\tt}rl}
+    \toprule
+    {\bf icmpCode} & {\bf Description}\\
+    \midrule\endhead%
+    $2^{0}$ (=0x000\textcolor{magenta}{1}) & No route to destination\\
+    $2^{1}$ (=0x000\textcolor{magenta}{2}) & Communication with destination administratively prohibited\\
+    $2^{2}$ (=0x000\textcolor{magenta}{4}) & Beyond scope of source address\\
+    $2^{3}$ (=0x000\textcolor{magenta}{8}) & Address unreachable\\
+    \\
+    $2^{4}$ (=0x00\textcolor{magenta}{1}0) & Port unreachable\\
+    $2^{5}$ (=0x00\textcolor{magenta}{2}0) & Source address failed ingress/egress policy\\
+    $2^{6}$ (=0x00\textcolor{magenta}{4}0) & Reject route to destination\\
+    $2^{7}$ (=0x00\textcolor{magenta}{8}0) & Error in Source Routing Header\\
+    \bottomrule
+\end{longtable}
+
+The {\tt icmpCode} for {\bf Time Exceeded (3)} are:
+\begin{longtable}{>{\tt}rl}
+    \toprule
+    {\bf icmpCode} & {\bf Description}\\
+    \midrule\endhead%
+    $2^{0}$ (=0x000\textcolor{magenta}{1}) & Hop limit exceeded in transit\\
+    $2^{1}$ (=0x000\textcolor{magenta}{2}) & Fragment reassembly time exceeded\\
+    \bottomrule
+\end{longtable}
+
+The {\tt icmpCode} for {\bf Parameter Problem (4)} are:
+\begin{longtable}{>{\tt}rl}
+    \toprule
+    {\bf icmpCode} & {\bf Description}\\
+    \midrule\endhead%
+    $2^{0}$ (=0x000\textcolor{magenta}{1}) & Erroneous header field encountered\\
+    $2^{1}$ (=0x000\textcolor{magenta}{2}) & Unrecognized Next Header type encountered\\
+    $2^{2}$ (=0x000\textcolor{magenta}{4}) & Unrecognized IPv6 option encountered\\
+    $2^{3}$ (=0x000\textcolor{magenta}{8}) & IPv6 First Fragment has incomplete IPv6 Header Chain\\
+    \bottomrule
+\end{longtable}
+
+The {\tt icmpCode} for {\bf Router Renumbering (138)} are:
+\begin{longtable}{>{\tt}rl}
+    \toprule
+    {\bf icmpCode} & {\bf Description}\\
+    \midrule\endhead%
+    $2^{0}$ (=0x000\textcolor{magenta}{1}) & Router Renumbering Command\\
+    $2^{1}$ (=0x000\textcolor{magenta}{2}) & Router Renumbering Result\\
+    255 & Sequence Number Reset\\
+    \bottomrule
+\end{longtable}
+
+The {\tt icmpCode} for {\bf ICMP Node Information Query (139)} are:
+\begin{longtable}{>{\tt}rl}
+    \toprule
+    {\bf icmpCode} & {\bf Description}\\
+    \midrule\endhead%
+    $2^{0}$ (=0x000\textcolor{magenta}{1}) & The Data field contains an IPv6 address which is the Subject of this Query\\
+    $2^{1}$ (=0x000\textcolor{magenta}{2}) & The Data field contains a name which is the Subject of this Query, or is empty,\\
+                                           & as in the case of a NOOP\\
+    $2^{3}$ (=0x000\textcolor{magenta}{4}) & The Data field contains an IPv4 address which is the Subject of this Query\\
+    \bottomrule
+\end{longtable}
+
+The {\tt icmpCode} for {\bf ICMP Node Information Response (140)} are:
+\begin{longtable}{>{\tt}rl}
+    \toprule
+    {\bf icmpCode} & {\bf Description}\\
+    \midrule\endhead%
+    $2^{0}$ (=0x000\textcolor{magenta}{1}) & A successful reply. The Reply Data field may or may not be empty\\
+    $2^{1}$ (=0x000\textcolor{magenta}{2}) & The Responder refuses to supply the answer. The Reply Data field will be empty\\
+    $2^{2}$ (=0x000\textcolor{magenta}{4}) & The Qtype of the Query is unknown to the Responder. The Reply Data field will be empty\\
+    \bottomrule
+\end{longtable}
+
+\subsection{Packet File Output}
+In packet mode ({\tt --s} option), the icmpDecode plugin outputs the following columns:
+\begin{longtable}{>{\tt}lll>{\tt\small}l}
+    \toprule
+    {\bf Column} & {\bf Type} & {\bf Description} & {\bf Flags}\\
+    \midrule\endhead%
+    \nameref{icmpStat}                  & H8  & Status           & \\
+    \hyperref[icmpBFTypeCode]{icmpType} & U8  & Message type     & \\
+    \hyperref[icmpBFTypeCode]{icmpCode} & U8  & Message code     & \\
+    icmpID                              & H16 & Identifier       & \\
+    icmpSeq                             & H16 & Sequence number  & \\
+    icmpPFindex                         & U64 & Parent flowIndex & ICMP\_PARENT=1\\
+    \bottomrule
+\end{longtable}
+
+\subsection{Monitoring Output}
+In monitoring mode, the icmpDecode plugin outputs the following columns:
+\begin{longtable}{>{\tt}lll>{\tt\small}l}
+    \toprule
+    {\bf Column} & {\bf Type} & {\bf Description} & {\bf Flags}\\
+    \midrule\endhead%
+    icmpPkts    & U64 & Number of ICMP/ICMPv6 packets              & \\
+    icmpEchoReq & U64 & Number of ICMP/ICMPv6 echo request packets & \\
+    icmpEchoRep & U64 & Number of ICMP/ICMPv6 echo reply packets   & \\
+    \bottomrule
+\end{longtable}
+
+\subsection{Plugin Report Output}
+The following information is reported:
+\begin{itemize}
+    \item Aggregated {\tt\nameref{icmpStat}}
+    \item Number of ICMP/ICMPv6 echo request packets
+    \item Number of ICMP/ICMPv6 echo reply packets
+    \item ICMP/ICMPv6 echo reply / request ratio
+\end{itemize}
+
+\subsection{Additional Output}\label{icmpDecode:additonalOutput}
+The icmpDecode plugin outputs absolute and relative statistics in the {\tt PREFIX\_icmpStats.txt} file.
+Note that the default suffix of ``{\tt \_icmpStats.txt}'' can be changed  by editing the {\tt ICMP\_SUFFIX} flag.\\
+
+The output is as follows ({\tt IPV6\_ACTIVATE=0||IPV6\_ACTIVATE=2}):
+\begin{longtable}{>{\tt}l>{\tt}ll}
+    \toprule
+    {\bf Type}           & {\bf Code}            & {\bf Description}\\
+    \midrule\endhead%
+    ICMP\_ECHOREQUEST    & ---                   & Echo request \\
+    ICMP\_ECHOREPLY      & ---                   & Echo reply to an echo request \\
+    ICMP\_SOURCE\_QUENCH & ---                   & Source quenches \\
+    ICMP\_TRACEROUTE     & ---                   & Traceroute packets\\
+    ICMP\_DEST\_UNREACH  & ICMP\_NET\_UNREACH    & Network unreachable \\
+    ICMP\_DEST\_UNREACH  & ICMP\_HOST\_UNREACH   & Host unreachable \\
+    ICMP\_DEST\_UNREACH  & ICMP\_PROT\_UNREACH   & Protocol unreachable \\
+    ICMP\_DEST\_UNREACH  & ICMP\_PORT\_UNREACH   & Port unreachable \\
+    ICMP\_DEST\_UNREACH  & ICMP\_FRAG\_NEEDED    & Fragmentation needed \\
+    ICMP\_DEST\_UNREACH  & ICMP\_SR\_FAILED      & Source route failed \\
+    ICMP\_DEST\_UNREACH  & ICMP\_NET\_UNKNOWN    & Network unknown \\
+    ICMP\_DEST\_UNREACH  & ICMP\_HOST\_UNKNOWN   & Host unknown \\
+    ICMP\_DEST\_UNREACH  & ICMP\_HOST\_ISOLATED  & Host is isolated \\
+    ICMP\_DEST\_UNREACH  & ICMP\_NET\_ANO        & Network annotation \\
+    ICMP\_DEST\_UNREACH  & ICMP\_HOST\_ANO       & Host annotation \\
+    ICMP\_DEST\_UNREACH  & ICMP\_NET\_UNR\_TOS   & Unreachable type of network service \\
+    ICMP\_DEST\_UNREACH  & ICMP\_HOST\_UNR\_TOS  & Unreachable type of host service \\
+    ICMP\_DEST\_UNREACH  & ICMP\_PKT\_FILTERED   & Dropped by a filtering device \\
+    ICMP\_DEST\_UNREACH  & ICMP\_PREC\_VIOLATION & Precedence violation \\
+    ICMP\_DEST\_UNREACH  & ICMP\_PREC\_CUTOFF    & Precedence cut off \\
+    ICMP\_REDIRECT       & ICMP\_REDIR\_NET      & Network redirection \\
+    ICMP\_REDIRECT       & ICMP\_REDIR\_HOST     & Host redirection \\
+    ICMP\_REDIRECT       & ICMP\_REDIR\_NETTOS   & Network type of service \\
+    ICMP\_REDIRECT       & ICMP\_REDIR\_HOSTTOS  & Host type of service \\
+    ICMP\_TIME\_EXCEEDED & ICMP\_EXC\_TTL        & TTL exceeded in Transit\\
+    ICMP\_TIME\_EXCEEDED & ICMP\_EXC\_FRAGTIME   & Fragment Reassembly Time Exceeded\\
+    \bottomrule
+\end{longtable}
+
+If {\tt IPV6\_ACTIVATE>0}, then the output becomes:
+\begin{longtable}{>{\tt}l>{\tt}ll}
+    \toprule
+    {\bf Type}               & {\bf Code}                          & {\bf Description}\\
+    \midrule\endhead%
+    ICMP6\_ECHOREQUEST       & ---                                 & Echo request \\
+    ICMP6\_ECHOREPLY         & ---                                 & Echo reply to an echo request \\
+    ICMP6\_PKT\_TOO\_BIG     & ---                                 & Packet too big\\
+    ICMP6\_DEST\_UNREACH     & ICMP6\_NO\_ROUTE                    & No route to destination\\
+    ICMP6\_DEST\_UNREACH     & ICMP6\_COMM\_PROHIBIT               & Communication with destination prohibited\\
+    ICMP6\_DEST\_UNREACH     & ICMP6\_BEYOND\_SCOPE                & Beyond scope of source address\\
+    ICMP6\_DEST\_UNREACH     & ICMP6\_ADDR\_UNREACH                & Address unreachable\\
+    ICMP6\_DEST\_UNREACH     & ICMP6\_PORT\_UNREACH                & Port unreachable\\
+    ICMP6\_DEST\_UNREACH     & ICMP6\_SR\_FAILED                   & Source route failed \\
+    ICMP6\_DEST\_UNREACH     & ICMP6\_REJECT                       & Reject source to destination\\
+    ICMP6\_DEST\_UNREACH     & ICMP6\_ERROR\_HDR                   & Error in Source Routing Header\\
+    ICMP6\_TIME\_EXCEEDED    & ICMP6\_EXC\_HOPS                    & Hop limit exceeded in transit\\
+    ICMP6\_TIME\_EXCEEDED    & ICMP6\_EXC\_FRAGTIME                & Fragment reassembly time exceeded\\
+    ICMP6\_PARAM\_PROBLEM    & ICMP6\_ERR\_HDR                     & Erroneous header field\\
+    ICMP6\_PARAM\_PROBLEM    & ICMP6\_UNRECO\_NEXT\_HDR            & Unrecognized Next Header type\\
+    ICMP6\_PARAM\_PROBLEM    & ICMP6\_UNRECO\_IP6\_OPT             & Unrecognized IPv6 option\\
+    ICMP6\_MCAST\_QUERY      & ---                                 & Multicast Listener Query\\
+    ICMP6\_MCAST\_REP        & ---                                 & Multicast Listener Report\\
+    ICMP6\_MCAST\_DONE       & ---                                 & Multicast Listener Done\\
+    ICMP6\_RTER\_SOLICIT     & ---                                 & Router Solicitation\\
+    ICMP6\_RTER\_ADVERT      & ---                                 & Router Advertisement\\
+    ICMP6\_NBOR\_SOLICIT     & ---                                 & Neighbor Solicitation\\
+    ICMP6\_NBOR\_ADVERT      & ---                                 & Neighbor Advertisement\\
+    ICMP6\_REDIRECT\_MSG     & ---                                 & Redirect Message\\
+    ICMP6\_RTER\_RENUM       & ICMP6\_RR\_CMD \textnormal{(0)}     & Router Renumbering Command\\
+    ICMP6\_RTER\_RENUM       & ICMP6\_RR\_RES \textnormal{(1)}     & Router Renumbering Result\\
+    ICMP6\_RTER\_RENUM       & ICMP6\_RR\_RST \textnormal{(255)}   & Router Renum.: Sequence Number Reset\\
+    ICMP6\_NODE\_INFO\_QUERY & ICMP6\_NIQ\_IP6 \textnormal{(0)}    & Node Info. Query: contains an IPv6 address\\
+    ICMP6\_NODE\_INFO\_QUERY & ICMP6\_NIQ\_NAME \textnormal{(1)}   & Contains a name or is empty (NOOP)\\
+    ICMP6\_NODE\_INFO\_QUERY & ICMP6\_NIQ\_IP4 \textnormal{(2)}    & Contains an IPv4 address\\
+    ICMP6\_NODE\_INFO\_RESP  & ICMP6\_NIR\_SUCC \textnormal{(0)}   & Node Info. Response: Successful reply\\
+    ICMP6\_NODE\_INFO\_RESP  & ICMP6\_NIR\_DENIED \textnormal{(1)} & Responder refuses to answer\\
+    ICMP6\_NODE\_INFO\_RESP  & ICMP6\_NIR\_UNKN \textnormal{(2)}   & Qtype of the query unknown\\
+    ICMP6\_INV\_NBOR\_DSM    & ---                                 & Inverse Neighbor Discovery Solicitation Msg\\
+    ICMP6\_INV\_NBOR\_DAM    & ---                                 & Inverse Neighbor Disc. Advertisement Msg\\
+    ICMP6\_MLD2              & ---                                 & Version 2 Multicast Listener Report\\
+    ICMP6\_ADDR\_DISC\_REQ   & ---                                 & Home Agent Address Discovery Request Msg\\
+    ICMP6\_ADDR\_DISC\_REP   & ---                                 & Home Agent Address Discovery Reply Msg\\
+    ICMP6\_MOB\_PREF\_SOL    & ---                                 & Mobile Prefix Solicitation\\
+    ICMP6\_MOB\_PREF\_ADV    & ---                                 & Mobile Prefix Advertisement\\
+    ICMP6\_CERT\_PATH\_SOL   & ---                                 & Certification Path Solicitation Message\\
+    ICMP6\_CERT\_PATH\_ADV   & ---                                 & Certification Path Advertisement Message\\
+    ICMP6\_EXP\_MOBI         & ---                                 & Experimental mobility protocols\\
+    ICMP6\_MRD\_ADV          & ---                                 & Multicast Router Advertisement\\
+    ICMP6\_MRD\_SOL          & ---                                 & Multicast Router Solicitation\\
+    ICMP6\_MRD\_TERM         & ---                                 & Multicast Router Termination\\
+    ICMP6\_FMIPV6            & ---                                 & FMIPv6 Messages\\
+    ICMP6\_RPL\_CTRL         & ---                                 & RPL Control Message\\
+    ICMP6\_ILNP\_LOC\_UP     & ---                                 & ILNPv6 Locator Update Message\\
+    ICMP6\_DUP\_ADDR\_REQ    & ---                                 & Duplicate Address Request\\
+    ICMP6\_DUP\_ADDR\_CONF   & ---                                 & Duplicate Address Confirmation\\
+    \bottomrule
+\end{longtable}
+
+\subsection{Post-Processing}
+
+\subsubsection{icmpX}
+The {\tt icmpX} script extracts all ICMP flows and their parents (flows which caused the ICMP message) from a flow file.\\
+Run {\tt ./icmpX --{}--help} for more information.
+
+\subsubsection{protStat}
+The {\tt\tranref{protStat}} script can be used to sort the {\tt PREFIX\_icmpStats.txt} file for the most or least occurring types and codes.
+It can output the top or bottom $N$ protocols or only those with at least a given percentage:
+\begin{itemize}
+    \item list all the options: {\tt protStat --{}--help}
+    \item for better readability, use {\tt protStat} with {\tt tcol}: {\tt protStat ... | tcol}
+    \item sorted list of types (by packets):
+          \begin{center}
+              {\tt protStat PREFIX\_icmpStats.txt}
+          \end{center}
+    \item top 10 ICMP types and codes (by packets):
+          \begin{center}
+              {\tt protStat PREFIX\_icmpStats.txt --n 10 -icmp}
+          \end{center}
+    \item bottom 5 ICMPv6 types and codes (by packets):
+          \begin{center}
+            {\tt protStat PREFIX\_icmpStats.txt --n --5 -icmpv6}
+          \end{center}
+    \item ICMP and ICMPv6 types and codes with packets percentage greater than 20\%:
+          \begin{center}
+            {\tt protStat PREFIX\_icmpStats.txt --p 20}
+          \end{center}
+    \item ICMP and ICMPv6 types and codes with packets percentage smaller than 5\%:
+          \begin{center}
+            {\tt protStat PREFIX\_icmpStats.txt --p --5}
+          \end{center}
+\end{itemize}
+
+%\subsection{Example Output}
+
+%\subsection{Known Bugs and Limitations}
+
+%\subsection{TODO}
+%\begin{itemize}
+%    \item
+%\end{itemize}
+
+\end{document}

@@ -1,0 +1,66 @@
+#!/usr/bin/env awk
+#
+# Split values according to 'sep'.
+#
+# If 'num' is omitted or 0, 'val' is split into 'osep' separated columns.
+# If 'num' > 0, return the 'num' repetition.
+# If 'num' < 0, return the 'num' item from the end, e.g., -1 for last element.
+#
+# Multiple 'num' can be specified, e.g., "1;-1;2".
+#
+# Parameters:
+#   - val    : the value to split
+#   - sep    : the separator to use to split 'val'
+#   - [num]  : the index of the subvalue(s) to extract (see above)
+#   - [osep] : output separator (default: OFS)
+#
+# Dependencies:
+#   - None
+#
+# See also:
+#   - splitc
+#   - splitr
+#
+# Examples:
+#   - tawk '{ print t2split("abc:def:ghi", ":", 1) }' file.txt
+#   - tawk '{ print t2split("abc!def!ghi", ":", 1, "\n") }' file.txt
+#   - tawk '{ print t2split("a;b;c;d;e", ";", "1;-1", "\n") }' file.txt
+
+@include "abs"
+@include "join"
+
+function t2split(val, sep, num, osep,        _i, _l, _m, _n, _q, _str, _tmp) {
+    if (!osep) osep = OFS
+    if (val ~ /^".*"$/) {
+        _q = 1
+        _val = gensub(/^"/, "", 1, val)  # remove leading quote
+        _val = gensub(/"$/, "", 1, _val) # remove trailing quote
+        sep = "\"" sep "\""
+        osep = "\"" osep "\""
+    }
+    _l = split(_val, _tmp, sep)
+    if (!num) {
+        if (_q) {
+            _tmp[1] = "\"" _tmp[1]   # add leading quote
+            _tmp[_l] = _tmp[_l] "\"" # add trailing quote
+        }
+        return join(_tmp, osep);
+    }
+    _m = split(num, _n, ";")
+    _str = ""
+    for (_i = 1; _i <= _m; _i++) {
+        if (_n[_i] > 0) {
+            if (_n[_i] <= _l) _str = _str osep _tmp[_n[_i]]
+        } else if (_n[_i] < 0) {
+            _n[_i] = abs(_n[_i])
+            if (_n[_i] <= _l) _str = _str osep _tmp[_l + 1 - _n[_i]]
+        } else {
+            # Invalid
+        }
+    }
+    gsub("^" osep, "", _str) # remove leading 'osep'
+    if (_q) {
+        _str = "\"" _str "\""
+    }
+    return _str
+}

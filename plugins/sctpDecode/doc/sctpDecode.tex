@@ -1,0 +1,201 @@
+\IfFileExists{t2doc.cls}{
+    \documentclass[documentation]{subfiles}
+}{
+    \errmessage{Error: could not find t2doc.cls}
+}
+
+\begin{document}
+
+\trantitle
+    {sctpDecode}
+    {Stream Control Transmission Protocol (SCTP)}
+    {Tranalyzer Development Team}
+
+\section{sctpDecode}\label{s:sctpDecode}
+
+\subsection{Description}
+The sctpDecode plugin produces a flow based view of SCTP operations between computers for anomaly detection and troubleshooting purposes.
+
+\subsection{Configuration Flags}
+The following flags can be used to control the output of the plugin:
+\begin{longtable}{>{\tt}lcl>{\tt\small}l}
+    \toprule
+    {\bf Name} & {\bf Default} & {\bf Description} & {\bf Flags}\\
+    \midrule\endhead%
+    SCTP\_CRCADL32CHK & 0  & Checksum computation:                               & \\
+                      &    & \qquad 0: No checksum computation                   & \\
+                      &    & \qquad 1: CRC32                                     & \\
+                      &    & \qquad 2: ADLER32                                   & \\
+    SCTP\_CHNKVAL     & 0  & Chunk type representation:                          & \\
+                      &    & \qquad 0: chunk type bit field                      & \\
+                      &    & \qquad 1: chunk type value                          & \\
+                      &    & \qquad 2: chunk type as string                      & \\
+    SCTP\_CHNKAGGR    & 0  & Aggregate chunk types                               & SCTP\_CHNKVAL>0\\
+    SCTP\_TSNREL      & 0  & 1: Relative TSN, 0: Absolute TSN                    & \\
+    SCTP\_MAXCTYPE    & 15 & Maximum chunk types to store/flow                   & SCTP\_CHNKVAL>0\\
+    SCTP\_ASMX        & 10 & Maximum ASCONF IP                                   & \\
+    SCTP\_MXADDR      &  5 & Maximum number of addresses to print in packet mode & \\
+    \bottomrule
+\end{longtable}
+
+\subsection{Flow File Output}
+The sctpDecode plugin outputs the following columns:
+\begin{longtable}{>{\tt}lll>{\tt\small}l}
+    \toprule
+    {\bf Column}                    & {\bf Type}    & {\bf Description}                           {\bf Flags}\\
+    \midrule\endhead%
+    \nameref{sctpStat}              & H8            & Status                                      & \\
+    sctpDSNum                       & U16           & Data stream number                          & SCTP\_ACTIVATE=1\\
+    sctpMaxDSNum                    & U16           & Max. number of data streams                 & SCTP\_ACTIVATE=0\\
+    sctpPID                         & U32           & Payload ID                                  & \\
+    sctpVTag                        & H32           & Verification tag                            & \\
+    \hyperref[sctpType]{sctpTypeBF} & H16           & Aggregated type bit field                   & SCTP\_CHNKVAL=0\\
+    \hyperref[sctpType]{sctpType}   & R(U8)         & Unique types values                         & SCTP\_CHNKVAL=1\\
+    \hyperref[sctpType]{sctpTypeN}  & R(SC)         & Unique types names                          & SCTP\_CHNKVAL=2\\
+    sctpCntD\_I\_A                  & U16\_U16\_U16 & DATA, INIT and ABORT count                  & \\
+    \nameref{sctpCFlags}            & H8            & Aggregated chunk flag                       & \\
+    \nameref{sctpCCBF}              & H16           & Aggregated error cause code bit field       & \\
+    sctpASIP4                       & R(SC)         & ASCONF IPv4                                 & \\
+    sctpASIP6                       & R(SC)         & ASCONF IPv6                                 & \\
+    sctpIS                          & U16           & Inbound streams                             & \\
+    sctpOS                          & U16           & Outbound streams                            & \\
+    sctpIARW                        & U32           & Initial Advertised Receiver Window          & \\
+    sctpIARWMin                     & U32           & Initial Advertised Receiver Window Minimum  & \\
+    sctpIARWMax                     & U32           & Initial Advertised Receiver Window Maximum  & \\
+    sctpARW                         & F             & Advertised Receiver Window                  & \\
+    \bottomrule
+\end{longtable}
+
+\clearpage
+
+\subsubsection{sctpStat}\label{sctpStat}
+The {\tt sctpStat} column is to be interpreted as follows:
+\begin{longtable}{>{\tt}rl}
+    \toprule
+    {\bf sctpStat}      & {\bf Description}\\
+    \midrule\endhead%
+    $2^0$ (=0x01) & Adler32 error \\
+    $2^1$ (=0x02) & CRC32 error\\
+    $2^2$ (=0x04) & Chunk padded\\
+    $2^3$ (=0x08) & Chunk truncated\\
+    \\
+    $2^6$ (=0x10) & 3 ACK\\
+    $2^7$ (=0x20) & Type Field overflow\\
+    $2^4$ (=0x40) & Do not report\\
+    $2^5$ (=0x80) & Stop processing of the packet\\
+    \bottomrule
+\end{longtable}
+
+\subsubsection{sctpTypeN, sctpTypeBF and sctpType}\label{sctpType}
+The {\tt sctpTypeN}, {\tt sctpTypeBF} and {\tt sctpType} columns are to be interpreted as follows:
+\begin{longtable}{r>{\tt}r>{\tt}ll}
+    \toprule
+    {\bf sctpTypeN} & {\bf sctpTypeBF} & {\bf sctpType} & {\bf Description}\\
+    \midrule\endhead%
+     0 & 0x0001 & DATA               & Payload data\\
+     1 & 0x0002 & INIT               & Initiation\\
+     2 & 0x0004 & INIT\_ACK          & Initiation acknowledgement\\
+     3 & 0x0008 & SACK               & Selective acknowledgement\\
+     \\
+     4 & 0x0010 & HEARTBEAT          & Heartbeat request\\
+     5 & 0x0020 & HEARTBEAT\_ACK     & Heartbeat acknowledgement\\
+     6 & 0x0040 & ABORT              & Abort\\
+     7 & 0x0080 & SHUTDOWN           & Shutdown\\
+     \\
+     8 & 0x0100 & SHUTDOWN\_ACK      & Shutdown acknowledgement\\
+     9 & 0x0200 & ERROR              & Operation error\\
+    10 & 0x0400 & COOKIE\_ECHO       & State cookie\\
+    11 & 0x0800 & COOKIE\_ACK        & Cookie acknowledgement\\
+    \\
+    12 & 0x1000 & ECNE               & Explicit congestion notification echo (reserved)\\
+    13 & 0x2000 & CWR                & Congestion window reduced (reserved)\\
+    14 & 0x4000 & SHUTDOWN\_COMPLETE & Shutdown complete\\
+    15 & 0x8000 & AUTH               & Authentication chunk\\
+    \bottomrule
+\end{longtable}
+
+\subsubsection{sctpCFlags}\label{sctpCFlags}
+The {\tt sctpCFlags} column is to be interpreted as follows:
+\begin{longtable}{>{\tt}rl}
+    \toprule
+    {\bf sctpCFlags}    & {\bf Description}\\
+    \midrule\endhead%
+    $2^0$ (=0x01) & Last segment\\
+    $2^1$ (=0x02) & First segment\\
+    $2^2$ (=0x04) & Ordered delivery\\
+    $2^3$ (=0x08) & Possibly delay SACK\\
+    \\
+    $2^4$ (=0x10) & ---\\
+    $2^5$ (=0x20) & ---\\
+    $2^6$ (=0x40) & Transmission sequence number error\\
+    $2^7$ (=0x80) & Association sequence number error\\
+    \bottomrule
+\end{longtable}
+
+\subsubsection{sctpCCBF}\label{sctpCCBF}
+The {\tt sctpCCBF} column is to be interpreted as follows:
+\begin{longtable}{>{\tt}rl}
+    \toprule
+    {\bf sctpCCBF}    & {\bf Description}\\
+    \midrule\endhead%
+    $2^{0}$  (=0x0001) & ---\\
+    $2^{1}$  (=0x0002) & Invalid Stream Identifier\\
+    $2^{2}$  (=0x0004) & Missing Mandatory Parameter\\
+    $2^{3}$  (=0x0008) & Stale Cookie Error\\
+    \\
+    $2^{4}$  (=0x0010) & Out of Resource\\
+    $2^{5}$  (=0x0020) & Unresolvable Address\\
+    $2^{6}$  (=0x0040) & Unrecognized Chunk Type\\
+    $2^{7}$  (=0x0080) & Invalid Mandatory Parameter\\
+    \\
+    $2^{8}$  (=0x0100) & Unrecognized Parameters\\
+    $2^{9}$  (=0x0200) & No User Data\\
+    $2^{10}$ (=0x0400) & Cookie Received While Shutting Down\\
+    $2^{11}$ (=0x0800) & Restart of an Association with New Addresses\\
+    \\
+    $2^{12}$ (=0x1000) & User Initiated ABORT\\
+    $2^{13}$ (=0x2000) & Protocol Violation\\
+    $2^{14}$ (=0x4000) & ---\\
+    $2^{15}$ (=0x8000) & Error code > 14\\
+    \bottomrule
+\end{longtable}
+
+\subsection{Packet File Output}
+In packet mode ({\tt --s} option), the sctpDecode plugin outputs the following columns:
+\begin{longtable}{>{\tt}lll>{\tt\small}l}
+    \toprule
+    {\bf Column}       & {\bf Type}   & {\bf Description}                           & {\bf Flags}\\
+    \midrule\endhead%
+    sctpVTag           & H32          & Verification tag                            & \\
+    sctpChkSum         & H32          & Checksum                                    & \\
+    sctpCalCRCChkSum   & H32          & Computed CRC checksum                       & SCTP\_CRCADL32CHK=1\\
+    sctpCalADLChkSum   & H32          & Computed ADLER32 checksum                   & SCTP\_CRCADL32CHK=2\\
+    sctpChunkType\_    & U8\_         & Chunk type,                                 & \\
+    \qquad sid\_       & \qquad U16\_ & \qquad stream identifier,                   & \\
+    \qquad flags\_     & \qquad H8\_  & \qquad \hyperref[sctpCFlags]{chunk flags},  & \\
+    \qquad numDPkts\_  & \qquad U16\_ & \qquad DATA count,                          & \\
+    \qquad len\_       & \qquad I32\_ & \qquad chunk length,                        & \\
+    \qquad pid         & \qquad U32   & \qquad Payload ID                           & \\
+    sctpNChunks        & U8           & Number of chunks                            & \\
+    \nameref{sctpCCBF} & H16          & Aggregated error cause code bit field       & \\
+    sctpARW            & U32          & Advertised Receiver Window                  & \\
+    sctpPID            & U32          & Payload ID                                  & \\
+    \nameref{sctpStat} & U8           & Status                                      & \\
+    sctpTSN            & U32          & Transmission Sequence Number (TSN)          & SCTP\_TSNREL=0\\
+    sctpTSNAck         & U32          & TSN Acknowledgement                         & SCTP\_TSNREL=0\\
+    sctpRelTSN         & U32          & Relative Transmission Sequence Number (TSN) & SCTP\_TSNREL=1\\
+    sctpRelTSNAck      & U32          & Relative TSN Acknowledgement                & SCTP\_TSNREL=1\\
+    sctpASIP4          & R(IP4)       & ASCONF IPv4                                 & \\
+    sctpASIP6          & R(IP6)       & ASCONF IPv6                                 & \\
+    \bottomrule
+\end{longtable}
+
+\subsection{Plugin Report Output}
+The following information is reported:
+\begin{itemize}
+    \item Aggregated {\tt\nameref{sctpStat}}
+    \item Aggregated {\tt\nameref{sctpCFlags}}
+    \item Aggregated {\tt\hyperref[sctpType]{sctpTypeBF}}
+\end{itemize}
+
+\end{document}

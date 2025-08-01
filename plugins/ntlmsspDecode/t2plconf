@@ -1,0 +1,104 @@
+#!/usr/bin/env bash
+#
+# Configuration file for ntlmsspDecode
+# ====================================
+#
+# Usage
+# -----
+#
+# $ ./t2plconf
+#
+# Defining the configurations options
+# -----------------------------------
+#
+# If no configuration options are available, ITEMS must be set as follows:
+#   - ITEMS=(none)
+#
+# Otherwise, enter configurations items as follows:
+#   "NAME" "TYPE" "DEPENDENCIES" "DESCRIPTION"
+#
+#   - TYPE can be:
+#       - bitfield
+#       - check (boolean),
+#       - radio (set of values),
+#       - range (min <= val <= max)
+#       - text
+#
+#   - DEPENDENCIES MUST be numeric, e.g., "A == 1 && (B < 4 || C >= 1)"
+#
+#   - DESCRIPTION for type 'bitfield' MUST NOT contain '\t', ':' or ';'
+#   - DESCRIPTION for type 'check' MUST NOT contain tabs ('\t')
+#   - DESCRIPTION for type 'radio' MUST NOT contain '\t', ':' or ';'
+#   - DESCRIPTION for type 'range' MUST NOT contain '\t' or ':'
+#   - DESCRIPTION for type 'text'  MUST NOT contain '\t'
+#
+#   - DESCRIPTION MUST be formatted according to the type (see examples below):
+#       - bitfield : description ';' val1 ':' description1 ';' valN ':' descriptionN
+#       - check    : description
+#       - radio    : description ';' val1 ':' description1 ';' valN ':' descriptionN
+#       - range    : description ':' min ' ' max
+#       - text     : description
+#
+# Examples
+# --------
+#
+#ITEMS=(
+#    # An item can be specified in one line...
+#    T2PSKEL_VAR1 check "" "Description of option" # No dependencies
+#
+#    # Or span multiple lines
+#    T2PSKEL_VAR1 radio "T2PSKEL_VAR1 == 1"
+#           "Description of option; \
+#                   0: description of val 0; \
+#                   1: description of val 1; \
+#                   2: description of val 2"
+#
+#    T2PSKEL_SIZE range "T2PSKEL_VAR1 == 1 || T2PSKEL_VAR2 > 0"
+#           "Description: 0 255" # min=0, max=255
+#
+#    T2PSKEL_STR text
+#           "T2PSKEL_SIZE <= 5 && (T2PSKEL_VAR1 != 0 || T2PSKEL_VAR2 <= 1)"
+#           "Description"
+#
+#    T2PSKEL_BITFIELD bitfield ""
+#           "Description of option; \
+#                   0x01: description of bit 0; \
+#                   0x02: description of bit 1; \
+#                   0x04: description of bit 2; \
+#                   0x08: description of bit 3; \
+#                   0x10: description of bit 4; \
+#                   0x20: description of bit 5; \
+#                   0x40: description of bit 6; \
+#                   0x80: description of bit 7"
+#)
+#
+# If no configuration option is available, use the value 'none'
+#ITEMS=(none)
+#
+# Source the master t2plconf file
+# source ../../scripts/t2conf/t2plconf
+
+ITEMS=(
+    NTLMSSP_CLI_CHALL    check "" "Output client challenge"
+    NTLMSSP_DNS          check "" "Output DNS computer/domain/tree name"
+    NTLMSSP_NETBIOS      check "" "Output NetBIOS computer/domain name"
+    NTLMSSP_SAVE_AUTH_V1 check "" "Extract NetNTLMv1 hashes"
+    NTLMSSP_SAVE_AUTH_V2 check "" "Extract NetNTLMv2 hashes"
+
+    NTLMSSP_SAVE_INFO    check
+        "NTLMSSP_SAVE_AUTH_V1 == 1 || NTLMSSP_SAVE_AUTH_V2 == 1"
+        "Add flow information in the hashes files"
+
+    NTLMSSP_VERSION radio "" "Output format for the version; \
+            0: do not output the version; \
+            1: output the version as string; \
+            2: output the version as major_minor_build_rev"
+
+    NTLMSSP_AUTH_V1_FILE text "NTLMSSP_SAVE_AUTH_V1 == 1" "Suffix for NetNTLMv1 hashes file"
+    NTLMSSP_AUTH_V2_FILE text "NTLMSSP_SAVE_AUTH_V2 == 1" "Suffix for NetNTLMv2 hashes file"
+
+    NTLMSSP_NAME_LEN range "" "Max length for string output: 1 255"
+)
+
+# Source the master t2plconf file
+source "$(dirname "$0")/../../scripts/t2conf/t2plconf"

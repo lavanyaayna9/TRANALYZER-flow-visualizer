@@ -1,0 +1,27 @@
+#!/usr/bin/env awk
+#
+# Return true if one of the destination MAC address(es) is equal to 'mac'.
+# If 'mac' is omitted, return the destination MAC address(es).
+#
+# Parameters:
+#   - [m] : the MAC address to filter
+#
+# Dependencies:
+#   - macRecorder
+#
+# See also:
+#   - dmac: alias for dether
+#   - ether
+#   - mac
+#   - sether
+#   - smac
+#
+# Examples:
+#   - tawk 'dether("00:11:22:33:44:55")' file.txt
+#   - tawk '{ print dether() }' file.txt
+
+@include "dmac"
+
+function dether(m) {
+    return dmac(m)
+}

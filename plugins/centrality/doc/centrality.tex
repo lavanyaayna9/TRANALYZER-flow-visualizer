@@ -1,0 +1,117 @@
+\IfFileExists{t2doc.cls}{
+    \documentclass[documentation]{subfiles}
+}{
+    \errmessage{Error: could not find t2doc.cls}
+}
+
+\begin{document}
+
+\trantitle
+    {centrality}
+    {Centrality}
+    {Tranalyzer Development Team}
+
+\section{centrality}\label{s:centrality}
+
+\subsection{Description}
+This plugin produces a connection matrix from pcap files and calculates the centrality
+of each IP address. The centrality is defined by the corresponding entry in the eigenvector to the largest eigenvalue of the adjacency matrix (\refs{s:eigenvector-centrality}).
+
+\subsection{Dependencies}
+
+\subsubsection{Other Plugins}
+This plugin requires the \tranrefpl{basicStats} plugin if {\tt CENTRALITY\_MATRIXENTRIES} $\geq 2$.
+
+\subsection{Eigenvector centrality}\label{s:eigenvector-centrality}
+Let $G=(V,E)$ be a graph, where $V$ is a set of vertices $v_i$ and $E$ a set of edges connecting those vertices. We define the \emph{adjacency matrix} $A \in\mathbb{N}_0^{n\times n}$ matrix labelled by the vertices of $G$, where the entry $A_{i,j}=1$, if there is a connecting edge between $v_i$ and $v_j$.\\
+Eigenvalues are defined as roots of the characteristic polynomial $p(\lambda) = det(A-\lambda*I)$, where $I$ is the identity matrix and $A$ the adjacency matrix.\\
+Each eigenvalue $\lambda \in \mathbb{C}$ has a corresponding eigenvector $\mathbf{x} \in \mathbb{C}^{n\times1}$ which satisfies the equation $A*\mathbf{x}=\lambda*\mathbf{x}$.\\
+The centrality of vertex $i$ is defined by: $centrality(v_i):=\mathbf{x}_i$, where $\mathbf{x}$ is the eigenvector to $\lambda_{max} := max(\lambda \in \mathbb{R})$.
+All values of $\mathbf{x}$ are strictly positive.\\
+This Plugin uses a simple version of the power iteration to calculate this eigenvector: \\
+$\mathbf{x}_{n+1} = \frac{A*\mathbf{x}_n}{\|A*\mathbf{x}_n\|}$. For $n \to \infty$, $\mathbf{x}_n$ converges to $\mathbf{x}$.
+
+\subsection{Configuration Flags}
+The following flags can be used to control the output of the plugin:
+\begin{center}
+    \begin{tabular}{>{\tt}lcl}
+        \toprule
+        {\bf Variable} & {\bf Default} & {\bf Description}\\
+        \midrule
+        CENTRALITY\_MATRIXENTRIES & 1 & 0: $A_{i,j}\in\{0,1\}$\\
+                                  &   & 1: $A_{i,j}=$ number of flows between $v_i$ and $v_j$\\
+                                  &   & 2: $A_{i,j}=$ number of bytes sent between $v_i$ and $v_j$\\
+                                  &   & 3: $A_{i,j}=$ bytes asymmetry between $v_i$ and $v_j$\\
+                                  &   & 4: $A_{i,j}=$ number of packets sent between $v_i$ and $v_j$\\
+                                  &   & 5: $A_{i,j}=$ packets asymmetry between $v_i$ and $v_j$\\
+        CENTRALITY\_TIME\_CALC    & 1 & 0: centrality calculated at application termination,\\
+                                  &   & $\mathbb{N} \ni n\neq0$: centrality calculated every $n$ seconds (dump time)\\
+        CENTRALITY\_IP\_FORMAT    & 1 & 0: IPs as unsigned integer\\
+                                  &   & 1: IPs as hex\\
+                                  &   & 2: IPs in compressed format, e.g., 1.2.3.4\\
+        CENTRALITY\_MATRIXFILE    & 0 & 1: Write a file with triplet matrix\\
+        CENTRALITY\_TRAVIZ        & 0 & 1: Traviz output mode\\
+        \bottomrule
+    \end{tabular}
+\end{center}
+
+In addition, {\tt CENTRALITY\_SUFFIX} and {\tt MATRIX\_SUFFIX} can be used to control the suffix for the centrality and matrix output files ({\tt "\_centrality.txt"} and {\tt "\_matrix.txt"} respectively).
+
+\subsection{Flow File Output}
+There is no output to the flow file.
+
+\subsection{Centrality File Output}
+
+If {\tt CENTRALITY\_TRAVIZ=1}, then the first row is as follows:
+\begin{center}
+    {\tt \% number\_of\_rows time IP centrality}
+\end{center}
+Where {\tt number\_of\_rows} is the actual number of entries in the file and {\tt time}, {\tt IP} and {\tt centrality} represent the name of the various columns.
+\begin{center}
+    \begin{tabular}{rcl>{\tt\small}l}
+        \toprule
+        {\bf Column} & {\bf Type} & {\bf Description} & {\bf Flags}\\
+        \midrule
+        1 & U32/U64 & Time (seconds) & CENTRALITY\_TRAVIZ=1\\
+        2 & IP4/U32 & IPv4 address   & \\
+        3 & D       & Centrality     & \\
+        \bottomrule
+    \end{tabular}
+\end{center}
+
+%In every centrality file, the first host will be:\\
+%
+%\begin{center}
+%    \begin{tabular}{cccc}
+%        1 & 0 & 0.0.0.0 & 1.0000000000\\
+%    \end{tabular}
+%\end{center}
+%
+%This host is used to normalize the centralities with the maximum possible centrality. He will get an imaginary connection to every new host that appears to the network.
+
+\subsection{Matrix File Output}
+
+This File shows the adjacency matrix of your network in triplet matrix format. You can restore the original matrix $A$ by assigning $A_{row.column}=value$ and $A_{i.j}=0$ for all unassigned indices.\\
+The first row and column will be full of ones as this is the maximum centrality host used for normalization.
+
+\begin{center}
+    \begin{tabular}{rcl}
+        \toprule
+        {\bf Column} & {\bf Type} & {\bf Description}\\
+        \midrule
+        1 & I & Matrix row\\
+        2 & I & Matrix column\\
+        3 & I & value of $A_{row,column}$\\
+        \bottomrule
+    \end{tabular}
+\end{center}
+
+\subsection{TODO}
+
+\begin{itemize}
+    \item Add support for IPv6
+    \item Analyzing centralities in known networks
+    \item Classification of networks by their centrality
+\end{itemize}
+
+\end{document}

@@ -1,0 +1,28 @@
+#!/usr/bin/env awk
+#
+# Return true if 'v' is a floating point number, false otherwise.
+#
+# Parameters:
+#   - v : the value to test
+#
+# Dependencies:
+#   - None
+#
+# See also:
+#   - isint
+#   - isnum
+#   - isset
+#   - isuint
+#
+# Examples:
+#   - tawk 'isfloat(-4.2)   { print "true"  }' file.txt
+#   - tawk 'isfloat(3.)     { print "true"  }' file.txt
+#   - tawk 'isfloat(0.0)    { print "true"  }' file.txt
+#   - tawk 'isfloat(2)      { print "false" }' file.txt
+#   - tawk 'isfloat("test") { print "false" }' file.txt
+
+@include "hdr"
+
+function isfloat(v) {
+    return (v ~ /^-?(0|[1-9][0-9]*).[0-9]*$/) || (__PRIHDR__ && hdr())
+}

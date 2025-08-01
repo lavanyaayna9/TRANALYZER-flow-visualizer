@@ -1,0 +1,433 @@
+\IfFileExists{t2doc.cls}{
+    \documentclass[documentation]{subfiles}
+}{
+    \errmessage{Error: could not find 't2doc.cls'}
+}
+
+\begin{document}
+
+\trantitle
+    {smbDecode}
+    {Server Message Block (SMB)}
+    {Tranalyzer Development Team} % author(s)
+
+\section{smbDecode}\label{s:smbDecode}
+
+\subsection{Description}
+The smbDecode plugin analyzes SMBv1 and SMBv2 traffic.
+
+\subsection{Configuration Flags}
+The following flags can be used to control the output of the plugin:
+\begin{longtable}{>{\tt}lcl>{\tt\small}l}
+    \toprule
+    {\bf Name} & {\bf Default} & {\bf Description} & {\bf Flags}\\
+    \midrule\endhead%
+    SMB1\_DECODE           & 0                                & decode SMB1 (beta)                                 & \\
+    SMB\_SECBLOB           & 0                                & decode security blob (beta)                        & \\
+    \\
+    SMB\_NUM\_FNAME        & 5                                & number of unique filenames to store                & \\
+    SMB2\_NUM\_DIALECT     & 3                                & number of SMB2 dialects to store                   & \\
+    SMB1\_NUM\_DIALECT     & 3                                & number of SMB1 dialects to store                   & SMB1\_DECODE=1\\
+    SMB1\_DIAL\_MAXLEN     & 32                               & maximum length for SMB1 dialects                   & SMB1\_DECODE=1\\
+    \\
+    SMB2\_NUM\_STAT        & 18                               & number of unique SMB2 header status to store       & \\
+    \\
+    SMB1\_SAVE\_DATA       & 0                                & save files (SMB1)                                  & SMB1\_DECODE=1\\
+    SMB2\_SAVE\_DATA       & 0                                & save files (SMB2)                                  & \\
+    SMB\_SAVE\_AUTH        & 0                                & save NTLM authentications                          & \\
+    SMB\_NATIVE\_NAME\_LEN & 64                               & Maximum length for names                           & \\
+    SMB\_SAVE\_DIR         & {\tt\small "/tmp/TranSMB/"}      & Folder for saved data                              & SMB\_SAVE\_DATA=1\\
+    SMB\_FILE\_ID          & {\tt\small "File\_Id\_"}         & Prefix for output files                            & SMB\_SAVE\_DATA=1\\
+    SMB\_AUTH\_FILE        & {\tt\small "smb\_auth.txt"}      & File where to store NTLM authentications           & SMB\_SAVE\_AUTH=1\\
+    %SMB\_MAP\_FILE         & {\tt\small "smb\_filenames.txt"} & File mapping file id and filenames                 & \\
+    SMB\_RM\_DATADIR       & 1 & Remove {\tt\small SMB\_SAVE\_DIR} before starting                                 & SMB\_SAVE\_DATA=1\\
+    %SMB\_USE\_FILTER       & 2 & 0: save all files, 1: use whitelist, 2: use blacklist                             & SMB\_SAVE\_DATA=1\\
+    %SMB\_SAVE\_FMT         & {\tt\small "spoolss"}            & Only save files with those extensions/filenames    & SMB\_SAVE\_DATA=1\&\&\\
+    %                       &                                                                                       & SMB\_USE\_FILTER=1\\
+    %SMB\_SAVE\_FMT         & {\tt\small "spoolss"}            & Do not save files with those extensions/filenames  & SMB\_SAVE\_DATA=1\&\&\\
+    %                       &                                                                                       & SMB\_USE\_FILTER=2\\
+    SMB\_FNAME\_LEN        & 512                              & Maximum length for filenames                       &\\
+
+    SMB\_STRCPY\_BEHAVIOR  & {\tt\small T2\_STRCPY\_TRUNC}
+                                                              & If data to copy is bigger than buffer:                                 & \\
+                           &                                  & \qquad {\tt\small T2\_STRCPY\_EXIT}: exit                              & \\
+                           &                                  & \qquad {\tt\small T2\_STRCPY\_EMPTY}: return an empty buffer           & \\
+                           &                                  & \qquad \qquad ({\tt "abcdefg"} $\rightarrow$ {\tt ""})                 & \\
+                           &                                  & \qquad {\tt\small T2\_STRCPY\_TRUNC}: truncate destination             & \\
+                           &                                  & \qquad \qquad ({\tt "abcdefg"} $\rightarrow$ {\tt "abcdef"})           & \\
+                           &                                  & \qquad {\tt\small T2\_STRCPY\_ELLIPSIS}: truncate destination          & \\
+                           &                                  & \qquad \qquad with an ellipsis                                         & \\
+                           &                                  & \qquad \qquad ({\tt "abcdefg"} $\rightarrow$ {\tt "abc..."})           & \\
+    \bottomrule
+\end{longtable}
+
+When saving files, the plugin uses a combination of the file ID and the flow index as name. The file ID can be replaced with the real filename by using the {\tt smbrename} script and the {\tt SMB\_GUID\_MAP\_FILE} ({\em smb\_filenames.txt}) file (See \refs{smb:postproc}).
+
+\subsubsection{Environment Variable Configuration Flags}
+The following configuration flags can also be configured with environment variables ({\tt ENVCNTRL>0}):
+\begin{itemize}
+    \item {\tt SMB\_RM\_DATADIR}
+    \item {\tt SMB\_AUTH\_FILE}
+    \item {\tt SMB\_SAVE\_DIR}
+    \item {\tt SMB\_MAP\_FILE}
+    \item {\tt SMB\_FILE\_ID}
+\end{itemize}
+
+\subsection{Flow File Output}
+The smbDecode plugin outputs the following columns:
+\begin{longtable}{>{\tt}lll>{\tt\small}l}
+    \toprule
+    {\bf Column}                                    & {\bf Type}    & {\bf Description}                          & {\bf Flags}\\
+    \midrule\endhead%
+    \nameref{smbStat}                               & H16           & Status                                     & \\
+    smb1NDialects                                   & U32           & Number of requested dialects (SMB1)        & \\
+    smb1Dialects                                    & RS            & SMB1 requested dialects                    & \\
+                                                    &               & (client: supported, server: chosen)        & \\
+    smb2NDialects                                   & U32           & Number of dialects (SMB2)                  & \\
+    \nameref{smb2Dialects}                          & RH16          & SMB2 dialect revision                      & \\
+                                                    &               & (client: supported, server: chosen)        & \\
+    smbNHdrStat                                     & U32           & Number of unique SMB2 header status values & \\
+    \nameref{smbHdrStat}                            & RH32          & SMB2 list of unique header status          & \\
+    \nameref{smbOpcodes}                            & H32           & Opcodes                                    & \\
+    \nameref{smbNOpcodes}                           & 19x(U32)      & Number of records per opcode               & \\
+    smbPrevSessId                                   & H64           & SMB previous session ID                    & \\
+    smbNativeOS                                     & S             & SMB native OS                              & \\
+    smbNativeLanMan                                 & S             & SMB native LAN Manager                     & \\
+    smbPrimDom                                      & S             & SMB primary domain                         & \\
+    smbTargName                                     & S             & SMB target name                            & \\
+    smbDomName                                      & S             & SMB domain name                            & \\
+    smbUserName                                     & S             & SMB user name                              & \\
+    smbHostName                                     & S             & SMB host name                              & \\
+    smbNTLMServChallenge                            & S             & SMB NTLM server challenge                  & \\
+    smbNTProofStr                                   & S             & SMB NT proof string                        & \\
+    %smbNTLMCliChallenge                             & S             & SMB NTLM client challenge                 & \\
+    smbSessionKey                                   & S             & SMB session key                            & \\
+    smbGUID                                         & S             & Client/Server GUID                         & \\
+    \hyperref[smbSessFlagsSecMCaps]{smbSessFlags\_} & H16\_         & Session flags,                             & \\
+    \qquad\hyperref[smbSessFlagsSecMCaps]{secM\_}   & \qquad H8\_   & \qquad Security mode,                      & \\
+    \qquad\hyperref[smbSessFlagsSecMCaps]{caps}     & \qquad H32    & \qquad Capabilities                        & \\
+    smbBootT                                        & TS            & Server start time                          & \\
+    smbMaxSizeT\_R\_W                               & U32\_U32\_U32 & Max transaction/read/write size            & \\
+    smbPath                                         & S             & Full share path name                       & \\
+    \nameref{smbShareT}                             & H8            & Type of share being accessed               & \\
+    \hyperref[smbShareFlagsCapsAcc]{smbShareFlags}  & H32\_         & Share flags,                               & \\
+    \qquad\hyperref[smbShareFlagsCapsAcc]{caps}     & \qquad H32\_  & \qquad Capabilities,                       & \\
+    \qquad\hyperref[smbShareFlagsCapsAcc]{acc}      & \qquad H32    & \qquad Access mask                         & \\
+    smbNFiles                                       & U32           & Number of accessed files                   & \\
+    smbFiles                                        & RS            & Accessed files                             & \\
+    \bottomrule
+\end{longtable}
+
+\subsubsection{smbStat}\label{smbStat}
+The {\tt smbStat} column is to be interpreted as follows:
+
+\begin{longtable}{>{\tt}rl}
+    \toprule
+    {\bf smbStat} & {\bf Description}\\
+    \midrule\endhead%
+    0x0001 & Flow is SMB\\
+    0x0002 & SMB2 header status list truncated\ldots increase {\tt SMB2\_NUM\_STAT}\\
+    0x0004 & Dialect name truncated\ldots increase {\tt SMB1\_DIAL\_MAXLEN}\\
+    0x0008 & SMB1 dialect list truncated\ldots increase {\tt SMB1\_NUM\_DIALECT}\\
+    \\
+    0x0010 & SMB2 dialect list truncated\ldots increase {\tt SMB\_NUM\_DIALECT}\\
+    0x0020 & List of accessed files truncated\ldots increase {\tt SMB\_NUM\_FNAME}\\
+    0x0040 & Selected dialect index out of bound\ldots increase {\tt SMB1\_NUM\_DIALECT}\\
+    0x0080 & Selected dialect index out of bound (error or reverse flow not found)\\
+    \\
+    0x0100 & Filename truncated\ldots increase {\tt SMB\_FNAME\_LEN}\\
+    0x0200 & ---\\
+    0x0400 & ---\\
+    0x0800 & ---\\
+    \\
+    0x1000 & Authentication information extracted\\
+    0x2000 & ---\\
+    0x4000 & ---\\
+    0x8000 & Malformed packets\\
+    \bottomrule
+\end{longtable}
+
+\subsubsection{smb2Dialects}\label{smb2Dialects}
+The {\tt smb2Dialects} column is to be interpreted as follows:
+
+\begin{longtable}{>{\tt}rl}
+    \toprule
+    {\bf smb2Dialects} & {\bf Description}\\
+    \midrule\endhead%
+    0x0202 & SMB 2.0.2\\
+    0x0210 & SMB 2.1\\
+    0x02ff & Wildcard revision number ($\geq$ 2.1)\\
+    0x0300 & SMB 3\\
+    0x0302 & SMB 3.0.2\\
+    0x0311 & SMB 3.1.1\\
+    \bottomrule
+\end{longtable}
+
+\subsubsection{smbHdrStat}\label{smbHdrStat}
+The {\tt smbHdrStat} column is to be interpreted as follows:
+\begin{longtable}{>{\tt}r>{\tt}l}
+    \toprule
+    {\bf smbHdrStat} & {\bf Description}\\
+    \midrule\endhead%
+    0x00000000 & STATUS\_SUCCESS\\
+    0x00000103 & STATUS\_PENDING\\
+    0x0000010b & STATUS\_NOTIFY\_CLEANUP\\
+    0x0000010c & STATUS\_NOTIFY\_ENUM\_DIR\\
+    0x80000005 & STATUS\_BUFFER\_OVERFLOW\\
+    0x80000006 & STATUS\_NO\_MORE\_FILES\\
+    0xc0000003 & STATUS\_INVALID\_INFO\_CLASS\\
+    0xc000000d & STATUS\_INVALID\_PARAMETER\\
+    0xc000000f & STATUS\_NO\_SUCH\_FILE\\
+    0xc0000010 & STATUS\_INVALID\_DEVICE\_REQUEST\\
+    0xc0000011 & STATUS\_END\_OF\_FILE\\
+    0xc0000016 & STATUS\_MORE\_PROCESSING\_REQUIRED\\
+    0xc0000022 & STATUS\_ACCESS\_DENIED\\
+    0xc0000023 & STATUS\_BUFFER\_TOO\_SMALL\\
+    0xc0000034 & STATUS\_OBJECT\_NAME\_NOT\_FOUND\\
+    0xc0000035 & STATUS\_OBJECT\_NAME\_COLLISION\\
+    0xc000003a & STATUS\_OBJECT\_PATH\_SYNTAX\_BAD\\
+    0xc0000043 & STATUS\_SHARING\_VIOLATION\\
+    0xc0000061 & STATUS\_PRIVILEGE\_NOT\_HELD\\
+    0xc000006a & STATUS\_WRONG\_PASSWORD\\
+    0xc000006d & STATUS\_LOGON\_FAILURE\\
+    0xc0000071 & STATUS\_PASSWORD\_EXPIRED\\
+    0xc00000ac & STATUS\_PIPE\_NOT\_AVAILABLE\\
+    0xc00000ba & STATUS\_FILE\_IS\_A\_DIRECTORY\\
+    0xc00000bb & STATUS\_NOT\_SUPPORTED\\
+    0xc00000c9 & STATUS\_NETWORK\_NAME\_DELETED\\
+    0xc00000cc & STATUS\_BAD\_NETWORK\_NAME\\
+    0xc0000101 & STATUS\_DIRECTORY\_NOT\_EMPTY\\
+    0xc0000120 & STATUS\_CANCELLED\\
+    0xc0000128 & STATUS\_FILE\_CLOSED\\
+    0xc000019c & STATUS\_FS\_DRIVER\_REQUIRED\\
+    0xc0000203 & STATUS\_USER\_SESSION\_DELETED\\
+    0xc0000225 & STATUS\_NOT\_FOUND\\
+    0xc0000234 & STATUS\_ACCOUNT\_LOCKED\_OUT\\
+    0xc0000257 & STATUS\_PATH\_NOT\_COVERED\\
+    0xc0000275 & STATUS\_NOT\_A\_REPARSE\_POINT\\
+    \bottomrule
+\end{longtable}
+
+For a comprehensive list of the possible status and more extensive description, refer to \href{https://msdn.microsoft.com/en-us/library/cc231196.aspx}{[MS-ERREF]}, Section 2.3.1.
+
+\subsubsection{smbOpcodes}\label{smbOpcodes}
+The {\tt smbOpcodes} column is to be interpreted as follows:
+\begin{longtable}{>{\tt}r>{\tt}l}
+    \toprule
+    {\bf smbOpcodes} & {\bf Description}\\
+    \midrule\endhead%
+    $2^{0}$  (=0x00000001) & SMB2\_NEGOTIATE\\
+    $2^{1}$  (=0x00000002) & SMB2\_SESSION\_SETUP\\
+    $2^{2}$  (=0x00000004) & SMB2\_LOGOFF\\
+    $2^{3}$  (=0x00000008) & SMB2\_TREE\_CONNECT\\
+    \\
+    $2^{4}$  (=0x00000010) & SMB2\_TREE\_DISCONNECT\\
+    $2^{5}$  (=0x00000020) & SMB2\_CREATE\\
+    $2^{6}$  (=0x00000040) & SMB2\_CLOSE\\
+    $2^{7}$  (=0x00000080) & SMB2\_FLUSH\\
+    \\
+    $2^{8}$  (=0x00000100) & SMB2\_READ\\
+    $2^{9}$  (=0x00000200) & SMB2\_WRITE\\
+    $2^{10}$ (=0x00000400) & SMB2\_LOCK\\
+    $2^{11}$ (=0x00000800) & SMB2\_IOCTL\\
+    \\
+    $2^{12}$ (=0x00001000) & SMB2\_CANCEL\\
+    $2^{13}$ (=0x00002000) & SMB2\_ECHO\\
+    $2^{14}$ (=0x00004000) & SMB2\_QUERY\_DIRECTORY\\
+    $2^{15}$ (=0x00008000) & SMB2\_CHANGE\_NOTIFY\\
+    \\
+    $2^{16}$ (=0x00010000) & SMB2\_QUERY\_INFO\\
+    $2^{17}$ (=0x00020000) & SMB2\_SET\_INFO\\
+    $2^{18}$ (=0x00040000) & SMB2\_OPLOCK\_BREAK\\
+    \bottomrule
+\end{longtable}
+
+\subsubsection{smbNOpcodes}\label{smbNOpcodes}
+The {\tt smbNOpcodes} column reports the number of records of each type separated by underscores.
+\begin{longtable}{rl}
+    \toprule
+    {\bf smbNOpcodes} & {\bf Description}\\
+    \midrule\endhead%
+    1  & Number of SMB2\_NEGOTIATE records\\
+    2  & Number of SMB2\_SESSION\_SETUP records\\
+    3  & Number of SMB2\_LOGOFF records\\
+    4  & Number of SMB2\_TREE\_CONNECT records\\
+    5  & Number of SMB2\_TREE\_DISCONNECT records\\
+    6  & Number of SMB2\_CREATE records\\
+    7  & Number of SMB2\_CLOSE records\\
+    8  & Number of SMB2\_FLUSH records\\
+    9  & Number of SMB2\_READ records\\
+    10 & Number of SMB2\_WRITE records\\
+    11 & Number of SMB2\_LOCK records\\
+    12 & Number of SMB2\_IOCTL records\\
+    13 & Number of SMB2\_CANCEL records\\
+    14 & Number of SMB2\_ECHO records\\
+    15 & Number of SMB2\_QUERY\_DIRECTORY records\\
+    16 & Number of SMB2\_CHANGE\_NOTIFY records\\
+    17 & Number of SMB2\_QUERY\_INFO records\\
+    18 & Number of SMB2\_SET\_INFO records\\
+    19 & Number of SMB2\_OPLOCK\_BREAK records\\
+    \bottomrule
+\end{longtable}
+
+\subsubsection{smbSessFlags\_secM\_caps}\label{smbSessFlagsSecMCaps}
+The {\tt\nameref{smbSessFlagsSecMCaps}} column is to be interpreted as follows:
+
+\begin{longtable}{>{\tt}rl}
+    \toprule
+    {\bf smbSessFlags} & {\bf Description}\\
+    \midrule\endhead%
+    0x01 & Client authenticated as guest user\\
+    0x02 & Client authenticated as anonymous user\\
+    0x04 & Server requires encryption of messages on this session (SMB 3.x)\\
+    \bottomrule
+\end{longtable}
+
+\begin{longtable}{>{\tt}rl}
+    \toprule
+    {\bf smbSecM} & {\bf Description}\\
+    \midrule\endhead%
+    0x01 & Security signatures enabled on the server\\
+    0x02 & Security signatures required by the server\\
+    \bottomrule
+\end{longtable}
+
+\begin{longtable}{>{\tt}rl}
+    \toprule
+    {\bf smbCaps} & {\bf Description}\\
+    \midrule\endhead%
+    0x01 & Server supports the Distributed File System (DFS)\\
+    0x02 & Server supports leasing\\
+    0x04 & Server supports multi-credit operation (Large MTU)\\
+    0x08 & Server supports establishing multiple channels for a single session\\
+    \\
+    0x10 & Server supports persistent handles\\
+    0x20 & Server supports directory leasing\\
+    0x40 & Server supports encryption\\
+    \bottomrule
+\end{longtable}
+
+\subsubsection{smbShareT}\label{smbShareT}
+The {\tt smbShareT} column is to be interpreted as follows:
+
+\begin{longtable}{>{\tt}rl}
+    \toprule
+    {\bf smbShareT} & {\bf Description}\\
+    \midrule\endhead%
+    0x01 & Physical disk share\\
+    0x02 & Named pipe share\\
+    0x03 & Printer share\\
+    \bottomrule
+\end{longtable}
+
+\subsubsection{smbShareFlags\_caps\_acc}\label{smbShareFlagsCapsAcc}
+The {\tt\nameref{smbShareFlagsCapsAcc}} column is to be interpreted as follows:
+\begin{longtable}{>{\tt}rl}
+    \toprule
+    {\bf smbShareFlags} & {\bf Description}\\
+    \midrule\endhead%
+    0x00000001 & Specified share is present in a Distributed File System (DFS) tree structure\\
+    0x00000002 & Specified share is present in a DFS tree structure (DFS root)\\
+
+    \\
+    \multicolumn{2}{l}{If none of the following three bits is set, then the caching policy is ``manual''}\\
+    \\
+
+    0x00000010 & Auto caching\\
+    0x00000020 & VDO Caching\\
+    0x00000030 & Offline caching MUST NOT occur\\
+    \\
+    0x00000100 & Restrict exclusive opens\\
+    0x00000200 & Force shared delete\\
+    0x00000400 & Allow namespace caching\\
+    0x00000800 & Server will filter directory entries based on access permissions of the client\\
+    \\
+    0x00001000 & Server will not issue exclusive caching rights on this share\\
+    0x00002000 & Enable hash V1\\
+    0x00004000 & Enable hash V2\\
+    0x00008000 & Encrypt data required\\
+    \bottomrule
+\end{longtable}
+
+\begin{longtable}{>{\tt}rl}
+    \toprule
+    {\bf smbShareCaps} & {\bf Description}\\
+    \midrule\endhead%
+    0x00000008 & Specified share is present in a DFS tree structure\\
+    \\
+    0x00000010 & Continuous availability\\
+    0x00000020 & Scaleout\\
+    0x00000040 & Cluster\\
+    0x00000080 & Asymmetric\\
+    \bottomrule
+\end{longtable}
+
+\begin{longtable}{>{\tt}rl}
+    \toprule
+    {\bf smbShareAcc} & {\bf Description}\\
+    \midrule\endhead%
+    0x00000001 & Read access\\
+    0x00000002 & Write access\\
+    0x00000004 & Append access\\
+    0x00000008 & Read extended attributes access\\
+    \\
+    0x00000010 & Write extended attributes access\\
+    0x00000020 & Execute access\\
+    0x00000040 & Delete child access\\
+    0x00000080 & Read attributes access\\
+    \\
+    0x00000100 & Write attributes access\\
+    \\
+    0x00010000 & Delete access\\
+    0x00020000 & Read access to owner, group and ACL of the SID\\
+    0x00040000 & Owner may write the DAC\\
+    0x00080000 & Can write owner (take ownership)\\
+    \\
+    0x00100000 & Can wait on handle to synchronize on completion of I/O\\
+    \\
+    0x01000000 & System security is NOT set\\
+    0x02000000 & Maximum allowed is NOT set\\
+    \\
+    0x10000000 & Generic all is NOT set\\
+    0x20000000 & Generic execute is NOT set\\
+    0x40000000 & Generic write is NOT set\\
+    0x80000000 & Generic read is NOT set\\
+    \bottomrule
+\end{longtable}
+
+\subsection{Plugin Report Output}
+The following information is reported:
+\begin{itemize}
+    \item Aggregated {\tt\nameref{smbStat}}
+    \item Number of SMBv1, SMBv2 and SMBv3 records
+    \item Number of NetNTLMv2 hashes extracted ({\tt SMB\_SAVE\_AUTH=1})
+\end{itemize}
+
+\subsection{Post-Processing}\label{smb:postproc}
+
+\subsubsection{smbrename}
+The {\bf smbrename} script can be used to rename and organize the files extracted by the plugin.
+It must be run from within the {\tt SMB\_SAVE\_DIR} folder (where the file {\em smb\_filenames.txt} is located). By default, it will replace the file ID with the real filename and organize the files into folders according to their mimetype. Either operation can be performed or not. Try '{\tt smbrename --help}' for more information.
+
+\subsubsection{SMB Authentications}
+When {\tt SMB1\_DECODE=1}, {\tt SMB\_SECBLOB=1} and {\tt SMB\_SAVE\_AUTH=1}, the plugin produces a file with suffix {\tt SMB\_AUTH\_FILE} containing all the NetNTLMv2 hashes extracted from the traffic.
+The hashes can then be reversed using JohnTheRipper\footnote{\url{https://github.com/magnumripper/JohnTheRipper}} or Hashcat\footnote{\url{https://hashcat.net}} as follows:
+
+\begin{center}
+    {\tt john --{}--wordlist=password.lst --format=netntlmv2 FILE\_smb\_auth.txt}\\
+    {\tt hashcat --m 5600 FILE\_smb\_auth.txt wordlist.txt}
+\end{center}
+
+\subsection{References}
+\begin{itemize}
+    \item \href{https://msdn.microsoft.com/en-us/library/ee442092.aspx}{[MS-CIFS]}: Common Internet File System (CIFS) Protocol
+    \item \href{https://msdn.microsoft.com/en-us/library/cc246231.aspx}{[MS-SMB]}: Server Message Block (SMB) Protocol
+    \item \href{https://msdn.microsoft.com/en-us/library/cc246482.aspx}{[MS-SMB2]}: Server Message Block (SMB) Protocol Versions 2 and 3
+    \item \href{https://msdn.microsoft.com/en-us/library/cc231196.aspx}{[MS-ERREF]}: Windows Error Codes
+    \item \href{https://msdn.microsoft.com/en-us/library/cc247021.aspx}{[MS-SPNG]}: Simple and Protected GSS-API Negotiation Mechanism (SPNEGO) Extension
+    \item \href{https://msdn.microsoft.com/en-us/library/gg604662.aspx}{[MS-AUTHSOD]}: Authentication Services Protocols Overview
+    \item \href{https://msdn.microsoft.com/en-us/library/cc230273.aspx}{[MS-DTYP]}: Windows Data Types
+    \item \href{https://www.ietf.org/rfc/rfc4178.txt}{[RFC4178]}: The Simple and Protected Generic Security Service Application Program Interface (GSS-API) Negotiation Mechanism
+\end{itemize}
+
+\end{document}

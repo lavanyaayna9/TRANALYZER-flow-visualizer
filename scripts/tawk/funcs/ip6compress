@@ -1,0 +1,22 @@
+#!/usr/bin/env awk
+#
+# Compress an IPv6 address 'ip'.
+#
+# Parameters:
+#   - ip : the IPv6 address to compress
+#
+# Dependencies:
+#   - None
+#
+# See also:
+#   - ip6expand
+#
+# Examples:
+#   - tawk '{ print ip6compress($srcIP) }' file.txt
+
+function ip6compress(ip) {
+    ip = tolower(ip)
+    sub(/(^|:)(0+(:|$)){2,8}/, "::", ip)
+    ip = gensub(/(^|:)0+([0-9a-f])/, "\\1\\2", "g", ip)
+    return ip
+}

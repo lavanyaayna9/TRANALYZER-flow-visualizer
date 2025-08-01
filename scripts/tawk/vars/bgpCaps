@@ -1,0 +1,21 @@
+#H bit | bgpCaps | Description
+#H =============================================================================
+     0 | 0x0001  | Multiprotocol Extensions for BGP-4
+     1 | 0x0002  | Route Refresh Capability for BGP-4
+     2 | 0x0004  | Outbound Route Filtering Capability
+     3 | 0x0008  | Multiple routes to a destination capability
+
+     4 | 0x0010  | Extended Next Hop Encoding
+     5 | 0x0020  | Graceful Restart Capability
+     6 | 0x0040  | Support for 4-octet AS number capability
+     7 | 0x0080  | Support for Dynamic Capability (capability specific)
+
+     8 | 0x0100  | Multisession BGP Capability
+     9 | 0x0200  | ADD-PATH Capability
+    10 | 0x0400  | Enhanced Route Refresh Capability
+    11 | 0x0800  | Long-Lived Graceful Restart (LLGR) Capability
+
+    12 | 0x1000  | FQDN Capability
+    13 | 0x2000  | -
+    14 | 0x4000  | -
+#I  15 | 0x8000  | Unhandled Capability, i.e., none of the above

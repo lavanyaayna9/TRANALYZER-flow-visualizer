@@ -1,0 +1,23 @@
+-- Top HTTP server by number of flows
+
+SELECT
+    toValidUTF8(server),
+    COUNT(*) AS cnt
+
+FROM (
+    SELECT
+        server
+    FROM
+        flow
+    ARRAY JOIN
+        "httpServ" AS server
+    WHERE
+        notEmpty("httpServ")
+        AND "timeFirst" >= {time_from:DateTime64(6)}
+        AND "timeLast" <= {time_to:DateTime64(6)}
+) AS flows
+
+GROUP BY server
+ORDER BY multiply(cnt, {sort_order:Int8})
+
+LIMIT {n:UInt64}

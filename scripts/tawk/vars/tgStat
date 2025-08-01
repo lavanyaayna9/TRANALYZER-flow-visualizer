@@ -1,0 +1,21 @@
+#H bit | tgStat | Description
+#H =============================================================================
+     0 | 0x0001 | Telegram detected by state machine
+     1 | 0x0002 | Control channel
+     2 | 0x0004 | Voice
+     3 | 0x0008 | Telegram detected by IP
+
+     4 | 0x0010 | File save
+#W   5 | 0x0020 | Bot app
+     6 | 0x0040 | -
+     7 | 0x0080 | -
+
+#E   8 | 0x0100 | Write error
+     9 | 0x0200 | -
+    10 | 0x0400 | -
+    11 | 0x0800 | -
+
+    12 | 0x1000 | Internal state machine
+    13 | 0x2000 | Internal state machine
+    14 | 0x4000 | Internal state machine
+    15 | 0x8000 | Internal state machine init

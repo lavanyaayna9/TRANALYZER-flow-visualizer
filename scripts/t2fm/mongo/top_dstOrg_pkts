@@ -1,0 +1,106 @@
+cursor = db.flow.aggregate([
+    {
+        $match : {
+            dir       : "A",
+            flowStat  : { $bitsAnySet : NumberInt(0xc000) },  // IPv4/6 only
+            timeFirst : { $gte : time_from },
+            timeLast  : { $lte : time_to },
+        }
+    },
+    {
+        $project : {
+            org : {
+                $cond : {
+                    if : {
+                        $eq : [
+                            { $mod : [ "$flowStat", 2 ] },
+                            0
+                        ]
+                    },
+                    then : "$dstIPOrg",
+                    else : "$srcIPOrg"
+                }
+            },
+            pkts : {
+                $cond : {
+                    if : {
+                        $eq : [
+                            { $mod : [ "$flowStat", 2 ] },
+                            0
+                        ]
+                    },
+                    then : "$pktsRcvd",
+                    else : "$pktsSnt"
+                }
+            }
+        }
+    },
+    {
+        $project : {
+            pkts : "$pkts",
+            org : {
+                $switch : {
+                    branches : [
+                        {
+                            case : {
+                                $eq : [ "$org", "Private network" ],
+                            },
+                            then : "--"
+                        },
+                        {
+                            case : {
+                                $or : [
+                                    { $eq : [ "$org", "--" ] },
+                                    { $eq : [ "$org", "-" ] },
+                                ]
+                            },
+                            then : "N/A"
+                        },
+                        {
+                            // XXX hack to test for /^[0-9]+$/
+                            case : {
+                                $eq : [
+                                    { $toUpper : "$org" },
+                                    { $toLower : "$org" }
+                                ],
+                            },
+                            then : "--"
+                        },
+                    ],
+                    default : "$org"
+                }
+            }
+        }
+    },
+    {
+        $group : {
+            _id : "$org",
+            count : { $sum : "$pkts" }
+        }
+    },
+    {
+        $addFields : {
+            sort_id: {
+                $multiply : [
+                    sort_order,
+                    "$count"
+                ]
+            },
+        }
+    },
+    {
+        $sort : { sort_id : -1 }
+    },
+    {
+        $limit : n
+    }
+])
+
+cursor.forEach(
+    function(e) {
+        print(
+              e._id + "\t"
+            + e.count
+        )
+    }
+)

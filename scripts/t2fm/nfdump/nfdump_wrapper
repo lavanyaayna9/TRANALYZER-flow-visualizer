@@ -1,0 +1,27 @@
+#!/usr/bin/env bash
+#
+# Simple wrapper to pass options to nfdump via the scripts in this folder.
+# Last option MUST be the script name to call,
+# other options are passed as is to nfdump.
+#
+# nfdump header (-s option):
+#   1: ts
+#   2: te
+#   3: td
+#   4: pr
+#   5: val
+#   6: fl
+#   7: flP
+#   8: pkt
+#   9: pktP
+#  10: byt
+#  11: bytP
+#  12: pps
+#  13: bps
+#  14: bpp
+
+OPTS=("${@}")
+SCRIPT="${OPTS[-1]}"
+OPTS=("${OPTS[@]/${SCRIPT}}")
+
+"${SCRIPT}" "${OPTS[@]}"

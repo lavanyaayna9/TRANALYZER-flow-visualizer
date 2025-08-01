@@ -1,0 +1,21 @@
+#H bit | httpCFlags | Description
+#H =============================================================================
+     0 | 0x0001     | Set-Cookie detected
+     1 | 0x0002     | Refresh detected
+     2 | 0x0004     | Hostname detected
+     3 | 0x0008     | Post Boundary marker
+
+     4 | 0x0010     | Potential HTTP content
+     5 | 0x0020     | Stream
+     6 | 0x0040     | Quarantine virus upload
+     7 | 0x0080     | Antivirus sample upload
+
+     8 | 0x0100     | Antivirus Avira detected
+     9 | 0x0200     | Antivirus Avast detected
+    10 | 0x0400     | Antivirus AVG detected
+    11 | 0x0800     | Antivirus Bitdefender detected
+
+    12 | 0x1000     | Antivirus ESET detected
+    13 | 0x2000     | Antivirus Microsoft sec detected
+    14 | 0x4000     | Antivirus Symantec, Norton, ...
+    15 | 0x8000     | Stream1

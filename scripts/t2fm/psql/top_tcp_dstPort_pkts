@@ -1,0 +1,40 @@
+-- Top TCP destination port by number of packets
+
+SELECT
+    port,
+    SUM(pkts) AS cnt
+
+FROM (
+    -- A flows
+    SELECT
+        "dstPort" AS port,
+        "pktsRcvd" AS pkts
+    FROM
+        flow
+    WHERE
+        "dir" = 'A'
+        AND ("flowStat"::BIGINT & 1) = 0::BIGINT
+        AND "l4Proto" = 6
+        AND "timeFirst" >= to_timestamp(:time_from)
+        AND "timeLast" <= to_timestamp(:time_to)
+
+    UNION ALL
+
+    -- B flows
+    SELECT
+        "srcPort" AS port,
+        "pktsSnt" AS pkts
+    FROM
+        flow
+    WHERE
+        "dir" = 'A'
+        AND ("flowStat"::BIGINT & 1) = 1::BIGINT
+        AND "l4Proto" = 6
+        AND "timeFirst" >= to_timestamp(:time_from)
+        AND "timeLast" <= to_timestamp(:time_to)
+) AS flows
+
+GROUP BY port
+ORDER BY cnt :sort_order
+
+LIMIT :n

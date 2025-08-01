@@ -1,0 +1,31 @@
+#!/usr/bin/env awk
+#
+# Return true if one item of the compound value 'val' is 'item'.
+# If 'ign' is 1, perform a case insensitive comparison.
+#
+# Parameters:
+#   - val   : the value to analyze
+#   - item  : the value to search for in 'val'
+#   - [ign] : if set and != 0, perform a case insensitive comparison
+#
+# Dependencies:
+#   - None
+#
+# See also:
+#   - contains
+#   - containsi
+#   - cvalcontainsi
+#   - rvalcontains
+#   - rvalcontainsi
+#   - valcontains
+#   - valcontainsi
+#
+# Examples:
+#   - tawk 'cvalcontains($srcMac_dstMac_numP, "00:11:22:33:44:55")' file.txt
+#   - tawk 'cvalcontains("str1_str2_str3", "str2") { print }' file.txt
+
+@include "valcontains"
+
+function cvalcontains(val, item, ign) {
+    return valcontains(val, "_", item, ign)
+}

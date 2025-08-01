@@ -1,0 +1,55 @@
+\IfFileExists{t2doc.cls}{
+    \documentclass[documentation]{subfiles}
+}{
+    \errmessage{Error: could not find 't2doc.cls'}
+}
+
+\begin{document}
+
+\trantitle
+    {liveXtr} % Plugin name
+    {Live PCAP extractor} % Short description
+    {Tranalyzer Development Team} % author(s)
+
+\section{liveXtr}\label{s:liveXtr}
+
+\subsection{Description}
+This plugin extracts all flows which have the {\tt LIVEXTR} bit set in their
+{\tt flow\_t.status}. This bit can be set by any other plugin wanting to extract traffic.
+The traffic is stored in a round-robin buffer, this allows to extract packets processed before
+the {\tt LIVEXTR} bit was set. This plugin can be used when Tranalyzer processes PCAP files and
+also when it listens on an interface.
+
+\subsection{Dependencies}
+
+The {\tt liveXtr} plugin depends on the libpcap.
+
+
+\subsection{Configuration Flags}
+The following flags can be used to control the behavior of the plugin:
+\begin{longtable}{>{\tt}lcl>{\tt\small}l}
+    \toprule
+    {\bf Name} & {\bf Default} & {\bf Description} & {\bf Flags}\\
+    \midrule\endhead%
+    LIVEXTR\_BUFSIZE & $2^{31}$ (2 GB)                 & Size of the round-robin buffer [byte]         & \\
+    LIVEXTR\_MEMORY  & 1                               & 0: store round-robin buffer in a file,        & \\
+                     &                                 & 1: store it in memory                         & \\
+    LIVEXTR\_SPLIT   & 1                               & Split the output PCAP with t2 {\tt -W} option & \\
+    LIVEXTR\_FILE    & {\tt\small "/tmp/livextr.data"} & Round-robin buffer file location              & LIVEXTR\_MEMORY=0\\
+    \bottomrule
+\end{longtable}
+
+
+\subsection{Plugin Report Output}
+The following information is reported:
+\begin{itemize}
+    \item Number of extracted packets
+\end{itemize}
+
+\subsection{Additional Output}
+Non-standard output:
+\begin{itemize}
+    \item {\tt PREFIX\_livextr.pcap}: PCAP containing the extracted packets.
+\end{itemize}
+
+\end{document}

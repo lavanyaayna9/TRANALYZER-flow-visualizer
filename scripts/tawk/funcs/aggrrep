@@ -1,0 +1,65 @@
+#!/usr/bin/env awk
+#
+# Perform aggregation of repetitive values and store the sum of 'val'.
+#
+# If 'val' is omitted, the empty string or equal to "flows" or "packets"
+# (case insensitive), count the number of records (flows or packets).
+#
+# If 'num' is omitted or 0, return the full list, otherwise the
+# top ('num' > 0) or bottom ('num' < 0) 'num' results.
+#
+# If 'ign_e' is omitted or 0, consider all values,
+# otherwise ignore empty values.
+#
+# Results are sorted according to the first value of 'val'.
+#
+# Parameters:
+#   - fields  : the repetitive value to aggregate
+#   - [val]   : tab separated list of values to aggregate
+#               [default: "packets" if input has '_packets.txt' suffix
+#                         "flows" otherwise]
+#   - [num]   : number of records to return [default: all]
+#   - [ign_e] : ignore empty values [default: consider all values]
+#   - [sep]   : separator character [default: ";"]
+#
+# Dependencies:
+#   - None
+#
+# See also:
+#   - aggr
+#
+# Examples:
+#   - tawk 'aggrrep($httpUsrAg)' file.txt
+#   - tawk 'shost("1.2.3.4") && !dnet("1.2.3.0/24") {
+#         aggrrep($dnsAName)
+#     }' file.txt
+#   - tawk 'shost("1.2.3.4") && !dnet("1.2.3.0/24") {
+#         aggrrep($dnsAName, $pktsSnt)
+#     }' file.txt
+#   - tawk 'shost("1.2.3.4") && !dnet("1.2.3.0/24") {
+#         aggrrep($dnsAName, $l7BytesSnt OFS "Flows")
+#     }' file.txt
+#   - tawk 'aggrrep($httpUsrAg, "flows", 10, 1)' file.txt
+
+@include "aggr"
+@include "unquote"
+
+function aggrrep(fields, val, num, ign_e, sep,        _i, _f, _l, _len, _q) {
+    if (!sep) sep = ";"
+    if (fields ~ /^".*"$/) {
+        _q = 1
+        gsub(/^"/, "", fields) # remove leading quote
+        gsub(/"$/, "", fields) # remove trailing quote
+        sep = "\"" sep "\""
+    }
+    _l = split(fields, _f, sep)
+    for (_i = 1; _i <= _l; _i++) {
+        _len = length(_f[_i])
+        if (_q) {
+            _f[_i] = "\"" _f[_i] "\""
+        }
+        if (!ign_e || _len > 0) {
+            aggr(unquote(_f[_i]), val, num)
+        }
+    }
+}

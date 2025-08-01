@@ -1,0 +1,68 @@
+Workstation1
+------------
+  OS: Arch Linux (x86_64)
+  Kernel: 3.15.8-1-ARCH
+  IP: 10.20.7.26
+  Hostname: caprica
+  MAC: 60:a4:4c:52:d6:e9
+
+VM1
+---
+  Qemu KVM running on Workstation1
+  OS: Debian Wheezy (i386)
+  Kernel: 3.2.0-4-686-pae
+  IP: 10.20.5.48 (connected to bridge on Workstation1)
+  MAC: 52:54:00:12:34:56
+
+VM2
+---
+  Qemu KVM running on Workstation1
+  OS: Debian Wheezy (i386)
+  Kernel: 3.2.0-4-686-pae
+  IP: 10.20.5.57 (connected to bridge on Workstation1)
+  MAC: 02:A2:3F:28:9B:C7
+
+
+Network scheme
+-------------
+
+      VM1                VM2
+ hcovert client     Apache server
+         \               /
+          \             /
+    (tap0) \           / (tap1)
+            \         /
+             \ (br0) /
+            Workstation1
+        record traffic on br0
+
+
+Trace capture procedure
+-----------------------
+1) Start workstation
+2) Start Ubuntu VM
+3) Record traffic on Workstation1
+    sudo tcpdump -s 0 -i br0 -w hcovert.dmp
+4) Start the Apache on WM2
+    sudo /etc/init.d/apache2 start
+5) Start the hcovert on WM1 and type some random text
+    ./hcovert -s wheezyvm2.clients.rdit.ch -i "/index.html?id=" -k "mypassword"
+6) Parse the Apache logs on VM2 to make sure the message was correctly transmitted
+    ./hcovert -r /var/log/apache2/access.log -i "/index.html?id=" -k "mypassword"
+
+
+Notes
+-----
+Source: http://hcovert.sourceforge.net/
+
+Patch main.c as follow:
+main.c:59:  char *message = NULL;
+
+
+Conclusion
+----------
+hcovert url-encodes all the characters, even the alpha-numeric ones.
+This is unlikely to happen with a legitimate HTTP program.
+
+The covertChannels plugin can detect hcovert with this simple condition:
+if > 30% of the URL characters of a GET request are URL-encoded -> hcovert

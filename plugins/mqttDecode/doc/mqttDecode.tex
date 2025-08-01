@@ -1,0 +1,168 @@
+\IfFileExists{t2doc.cls}{
+    \documentclass[documentation]{subfiles}
+}{
+    \errmessage{Error: could not find 't2doc.cls'}
+}
+
+\begin{document}
+
+% Declare author and title here, so the main document can reuse it
+\trantitle
+    {mqttDecode} % Plugin name
+    {MQ Telemetry Transport Protocol (MQTT)} % Short description
+    {Tranalyzer Development Team} % author(s)
+
+\section{mqttDecode}\label{s:mqttDecode}
+
+\subsection{Description}
+The mqttDecode plugin analyzes the MQ Telemetry Transport Protocol (MQTT).
+
+\subsection{Configuration Flags}
+The following flags can be used to control the output of the plugin:
+\begin{longtable}{>{\tt}lcl>{\tt\small}l}
+    \toprule
+    {\bf Name}               & {\bf Default}                 & {\bf Description}                           & {\bf Flags}\\
+    \midrule\endhead%
+    MQTT\_TOPIC\_MSG         & 1                             & save topics and messages in a separate file & \\
+    MQTT\_PROTO\_LEN         & 32                            & Max length for protocol name                & \\
+    MQTT\_CLIENT\_ID\_LEN    & 32                            & Max length for client ID                    & \\
+    MQTT\_TOPIC\_LEN         & 32                            & Max length for topic                        & \\
+    MQTT\_TOPIC\_MSG\_SUFFIX & {\small\tt "\_mqtt\_msg.txt"} & suffix to use for topics and messages file  & MQTT\_TOPIC\_MSG=1\\
+    \bottomrule
+\end{longtable}
+
+\subsubsection{Environment Variable Configuration Flags}
+The following configuration flags can also be configured with environment variables ({\tt ENVCNTRL>0}):
+\begin{itemize}
+    \item {\tt MQTT\_TOPIC\_MSG\_SUFFIX} (require {\tt MQTT\_TOPIC\_MSG=1})
+\end{itemize}
+
+\subsection{Flow File Output}
+The mqttDecode plugin outputs the following columns:
+\begin{longtable}{>{\tt}lll>{\tt\small}l}
+    \toprule
+    {\bf Column}           & {\bf Type} & {\bf Description}    & {\bf Flags}\\
+    \midrule\endhead%
+    \nameref{mqttStat}     & H8         & Status               & \\
+    \nameref{mqttCPT}      & H16        & Control packet types & \\
+    mqttProto              & SC         & Protocol name        & \\
+    mqttProtoLevel         & U8         & Protocol level       & \\
+    mqttClientID           & SC         & Client ID            & \\
+    \nameref{mqttConAck}   & H8         & Connection status    & \\
+    mqttTopic              & S          & Topics               & \\
+    %\nameref{mqttMessage}  & S          & Message              & \\
+    \bottomrule
+\end{longtable}
+
+\subsubsection{mqttStat}\label{mqttStat}
+The {\tt mqttStat} column is to be interpreted as follows:
+\begin{longtable}{>{\tt}rl}
+    \toprule
+    {\bf mqttStat}            & {\bf Description}\\
+    \midrule\endhead%
+    0x0\textcolor{magenta}{1} & Flow is MQTT\\
+    0x0\textcolor{magenta}{2} & ---\\
+    0x0\textcolor{magenta}{4} & ---\\
+    0x0\textcolor{magenta}{8} & ---\\
+    \\
+    0x\textcolor{magenta}{1}0 & Reserved Control Packet Type ({\tt\nameref{mqttCPT}}) (0 or 15) was used\\
+    0x\textcolor{magenta}{2}0 & ---\\
+    0x\textcolor{magenta}{4}0 & ---\\
+    0x\textcolor{magenta}{8}0 & Packet snapped\\
+    \bottomrule
+\end{longtable}
+
+\subsubsection{mqttCPT}\label{mqttCPT}
+The {\tt mqttCPT} column is to be interpreted as follows:\\
+\begin{longtable}{>{\tt}rl}
+    \toprule
+    {\bf mqttCPT}      & {\bf Description}\\
+    \midrule\endhead%
+    $2^{0}$  (=0x0001) & Reserved\\
+    $2^{1}$  (=0x0002) & Client request to connect to server\\
+    $2^{2}$  (=0x0004) & Connect acknowledgment\\
+    $2^{3}$  (=0x0008) & Publish message\\
+    \\
+    $2^{4}$  (=0x0010) & Publish acknowledgment\\
+    $2^{5}$  (=0x0020) & Publish complete (assured delivery part 1)\\
+    $2^{6}$  (=0x0040) & Publish complete (assured delivery part 2)\\
+    $2^{7}$  (=0x0080) & Publish complete (assured delivery part 3)\\
+    \\
+    $2^{8}$  (=0x0100) & Subscribe request\\
+    $2^{9}$  (=0x0200) & Subscribe acknowledgment\\
+    $2^{10}$ (=0x0400) & Unsubscribe request\\
+    $2^{11}$ (=0x0800) & Unsubscribe acknowledgment\\
+    \\
+    $2^{12}$ (=0x1000) & PING request\\
+    $2^{13}$ (=0x2000) & PING response\\
+    $2^{14}$ (=0x4000) & Client is disconnecting\\
+    $2^{15}$ (=0x8000) & Reserved\\
+    \bottomrule
+\end{longtable}
+
+\subsubsection{mqttConAck}\label{mqttConAck}
+The {\tt mqttConAck} column is to be interpreted as follows:\\
+\begin{longtable}{>{\tt}rl}
+    \toprule
+    {\bf mqttConAck} & {\bf Description}\\
+    \midrule\endhead%
+    $2^{0}$ (=0x01)  & Connection Accepted\\
+    $2^{1}$ (=0x02)  & Connection Refused, unacceptable protocol version\\
+    $2^{2}$ (=0x04)  & Connection Refused, identifier rejects\\
+    $2^{3}$ (=0x08)  & Connection Refused, Server unavailable\\
+    \\
+    $2^{4}$ (=0x10)  & Connection Refused, bad user name or password\\
+    $2^{5}$ (=0x20)  & Connection Refused, not authorized\\
+    $2^{6}$ (=0x40)  & ---\\
+    $2^{7}$ (=0x80)  & Return codes from {\tt 0x06} to {\tt 0xff} are reserved for future use\\
+    \bottomrule
+\end{longtable}
+
+\subsection{Packet File Output}
+In packet mode ({\tt --s} option), the mqttDecode plugin outputs the following columns:
+\begin{longtable}{>{\tt}lll>{\tt\small}l}
+    \toprule
+    {\bf Column}       & {\bf Type} & {\bf Description} & {\bf Flags}\\
+    \midrule\endhead%
+    \nameref{mqttStat} & H8         & Status            & \\
+    \bottomrule
+\end{longtable}
+
+\subsection{Monitoring Output}
+In monitoring mode, the mqttDecode plugin outputs the following columns:
+\begin{longtable}{>{\tt}lll>{\tt\small}l}
+    \toprule
+    {\bf Column} & {\bf Type} & {\bf Description}      & {\bf Flags}\\
+    \midrule\endhead%
+    mqttPkts     & U64        & Number of MQTT packets & \\
+    \bottomrule
+\end{longtable}
+
+\subsection{Plugin Report Output}
+The following information is reported:
+\begin{itemize}
+    \item Aggregated {\tt\nameref{mqttStat}}
+    \item Number of MQTT packets
+    \item Aggregated {\tt\nameref{mqttCPT}}
+    \item Aggregated {\tt\nameref{mqttConAck}}
+\end{itemize}
+
+\subsection{Additional Output}
+Non-standard output:
+\begin{itemize}
+    \item {\tt PREFIX\_mqtt\_msg.txt}: list of topics and messages
+\end{itemize}
+
+\subsubsection{\_mqtt\_msg.txt Output}
+\begin{longtable}{>{\tt}lll>{\tt\small}l}
+    \toprule
+    {\bf Column} & {\bf Type} & {\bf Description} & {\bf Flags}\\
+    \midrule\endhead%
+    pktNo        & U64        & Packet number     & \\
+    flowInd      & U64        & Flow index        & \\
+    mqttTopic    & S          & Topic             & \\
+    mqttMsg      & S          & Message           & \\
+    \bottomrule
+\end{longtable}
+
+\end{document}

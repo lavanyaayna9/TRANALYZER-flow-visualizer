@@ -1,0 +1,132 @@
+#!/usr/bin/env bash
+
+source "$(dirname "$0")/../t2utils.sh"
+
+# Exit on error and catch pipe fails
+set -e -o pipefail
+
+usage() {
+    echo "Usage:"
+    echo "    $SNAME [OPTIONS]"
+    echo
+    echo "Update the location database of t2locate"
+    echo
+    echo "Optional arguments:"
+    echo "    -c, --skip-clean     Do not remove data files that are not needed anymore"
+    echo "    -s, --skip-sqlite    Skip sqlite download and compilation"
+    echo "    -d, --skip-download  Skip data download"
+    echo "    -p, --skip-pre       Skip data preprocessing"
+    echo "    -i, --skip-import    Skip data import into the database"
+    echo
+    echo "Help and documentation arguments:"
+    echo "    -h, --help                Show this help, then exit"
+}
+
+# UPDATE THIS IN CASE OF FAILURE!
+COMPILER=gcc
+SQLITE_URL="https://www.sqlite.org/2020/sqlite-amalgamation-3330000.zip"
+GEONAMES_URL="http://download.geonames.org/export/dump/allCountries.zip"
+
+# Default arguments
+SKIP_CLEAN=0
+SKIP_SQLITE=0
+SKIP_DOWNLOAD=0
+SKIP_PREPROCESSING=0
+SKIP_IMPORT=0
+
+while [ $# -ne 0 ]; do
+    case "$1" in
+        -c|--skip-clean)
+            SKIP_CLEAN=1
+            ;;
+        -s|--skip-sqlite)
+            SKIP_SQLITE=1
+            ;;
+        -d|--skip-download)
+            SKIP_DOWNLOAD=1
+            ;;
+        -p|--skip-pre)
+            SKIP_PREPROCESSING=1
+            ;;
+        -i|--skip-import)
+            SKIP_IMPORT=1
+            ;;
+        -h|-\?|--help)
+            usage
+            exit 0
+            ;;
+        *)
+            abort_option_unknown "$1"
+            ;;
+    esac
+    shift
+done
+
+# Download and compile sqlite
+# We have to compile our own sqlite3 as the default installation doesn't
+# include the rtree module we need.
+if [[ ! -e "$SHOME/scripts/sqlite3" && ${SKIP_SQLITE} == 0 ]]; then
+    # Getting a static version should be fine, unless they don't host that anymore
+    # at some point for some reason
+    t2_wget "${SQLITE_URL}" "sqlite.zip"
+
+    echo -n "Extracting sqlite... "
+    unzip -qq sqlite.zip
+    rm sqlite.zip
+    echo "Done"
+
+    echo -n "Compiling sqlite... "
+    cd sqlite-amalgamation-*
+    # We need to enable the rtree module, it's disabled by default
+    ${COMPILER} -DSQLITE_ENABLE_RTREE=1 shell.c sqlite3.c -lpthread -ldl
+    mv a.out ../scripts/sqlite3
+    cd ..
+    # I cannot think of a reason to keep that, so we always clean it
+    rm -r sqlite-amalgamation-*
+    echo "Done"
+fi
+
+# Download and extract the location data from geonames.org
+if [[ ${SKIP_DOWNLOAD} == 0 ]]; then
+    t2_wget "${GEONAMES_URL}" "db.zip"
+
+    echo -n "Extracting data... "
+    unzip -qq db.zip
+    rm db.zip
+    mkdir -p data
+    mv allCountries.txt data/locations.tsv
+    echo "Done"
+fi
+
+# Preprocess the data so we can insert them into the database
+if [[ ${SKIP_PREPROCESSING} == 0 ]]; then
+    if [[ ! -f data/locations.tsv ]]; then
+        printerr "Unable to find data in data/locations.tsv"
+        exit 1
+    fi
+
+    # Generate import files for the locations and locations_index tables
+    # Remove quotes as they cause SQL errors and use \a as the new
+    # separator as that's definitely not used. Tabs cause issues with
+    # empty fields.
+    echo -n "Preprocessing data... "
+    $SED 's/"//g' data/locations.tsv | $SED 's/\t/\a/g' > data/locations.asv
+
+    # At this point we don't need the original data anymore
+    if [[ ${SKIP_CLEAN} == 0 ]]; then
+        rm data/locations.tsv
+    fi
+    echo "Done"
+fi
+
+# Create the database and import the data
+if [[ ${SKIP_IMPORT} == 0 ]]; then
+    echo -n "Importing data into database... "
+    ./scripts/sqlite3 data/db.sqlite < scripts/db_init.sql
+
+    # Everything is in the database, so we don't need the raw data anymore
+    if [[ ${SKIP_CLEAN} == 0 ]]; then
+        rm data/locations.asv
+    fi
+    echo "Done"
+fi

@@ -1,0 +1,22 @@
+#!/usr/bin/env awk
+#
+# Return true if the flow contains DHCP traffic.
+#
+# Parameters:
+#   - None
+#
+# Dependencies:
+#   - dhcpDecode
+#
+# Examples:
+#   - tawk 'dhcp()' file.txt
+#   - tawk 'dhcp() { print $srcIP }' file.txt
+
+@include "hdr"
+@include "_validate_col"
+
+function dhcp(        _c) {
+    _c = _validate_col("dhcpStat")
+    if (hdr()) return __PRIHDR__
+    return strtonum($_c)
+}

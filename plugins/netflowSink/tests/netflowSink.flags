@@ -1,0 +1,24 @@
+# Flags to toggle
+#
+# Run the ../../../tests/test.sh script from the plugin main directory:
+#
+# cd $T2HOME/plugins/socketSink
+# ../../tests/test.sh [OPTION...]
+#
+# If run from this folder, make sure to use absolute path for the '-p' option.
+#
+# Flag name     File
+
+# ../../tranalyzer2/src/networkHeaders.h
+ETH_ACTIVATE    ../../tranalyzer2/src/networkHeaders.h
+IPV6_ACTIVATE   ../../tranalyzer2/src/networkHeaders.h
+
+# ../../tranalyzer2/src/tranalyzer.h
+ENVCNTRL        ../../tranalyzer2/src/tranalyzer.h
+
+# ../basicFlow/src/basicFlow.h
+BFO_MPLS        ../basicFlow/src/basicFlow.h
+BFO_MAX_MPLS    ../basicFlow/src/basicFlow.h
+
+# src/netflowSink.h
+NF_SOCKTYPE     src/netflowSink.h

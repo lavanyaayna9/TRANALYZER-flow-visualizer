@@ -1,0 +1,25 @@
+# Flags to toggle
+#
+# Run the ../../../tests/test.sh script from the plugin main directory:
+#
+# cd $T2HOME/plugins/sshDecode
+# ../../tests/test.sh [OPTION...]
+#
+# If run from this folder, make sure to use absolute path for the '-p' option.
+#
+# Flag name     File
+
+# ../../tranalyzer2/src/tranalyzer.h
+BLOCK_BUF             ../../tranalyzer2/src/tranalyzer.h
+DIFF_REPORT           ../../tranalyzer2/src/tranalyzer.h
+ENVCNTRL              ../../tranalyzer2/src/tranalyzer.h
+
+# src/sshDecode.h
+SSH_DEBUG             src/sshDecode.h
+SSH_USE_PORT          src/sshDecode.h
+SSH_DECODE            src/sshDecode.h
+SSH_FINGERPRINT       src/sshDecode.h
+SSH_ALGO              src/sshDecode.h
+SSH_LISTS             src/sshDecode.h
+SSH_HASSH             src/sshDecode.h
+SSH_HASSH_STR         src/sshDecode.h

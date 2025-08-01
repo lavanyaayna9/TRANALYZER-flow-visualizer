@@ -1,0 +1,110 @@
+#!/usr/bin/env bash
+#
+# Update and convert the SSH HASSH fingerprint database from
+# https://raw.githubusercontent.com/salesforce/hassh/master/python/hasshGen/hassh_fingerprints.json
+
+source "$(dirname "$0")/../../../scripts/t2utils.sh"
+
+usage() {
+    printf "Usage:\n"
+    printf "    $SNAME [OPTION...]\n\n"
+    printf "Optional arguments:\n"
+    printf "    -u      update database\n"
+    printf "    -c      convert database\n"
+    printf "    -a      update and convert database\n"
+    printf "    -f      file to convert\n"
+    printf "    -h      display this help, then exit\n"
+}
+
+ssh_hassh_json_convert() {
+    echo "% $(AWK '/^{/ { cnt++ } END { print cnt }' "$INFILE")" > "$OUTFILE"
+    "$PYTHON" -c '
+import json
+
+fingerprints = []
+with open("hassh_fingerprints.json") as f:
+    for line in f:
+        line = line.strip()
+        if not line or line.startswith("#"):
+            continue
+        fingerprints.append(json.loads(line))
+
+for f in fingerprints:
+    print("{}\t{}".format(f["hassh"], f["clientIdentificationString"]))
+    ' | sort >> "$OUTFILE"
+    return $?
+}
+
+ssh_hassh_csv_convert() {
+    printerr "Conversion of CSV file not implemented yet"
+    printinf "Use JSON instead"
+    exit 1
+}
+
+ssh_hassh_convert() {
+    local ext="$(AWK -F. -v OFS=. '{ print $NF }' <<< "$INFILE")"
+    if [ "$ext" = "csv" ]; then
+        ssh_hassh_csv_convert
+    elif [ "$ext" = "json" ]; then
+        ssh_hassh_json_convert
+    else
+        printerr "Cannot determine format of input file (only *.csv and *.json are supported)"
+        exit 1
+    fi
+    if [ $? -eq 0 ]; then
+        printok "'$INFILE' successfully converted to '$OUTFILE'"
+    else
+        printerr "Failed to convert '$INFILE' to '$OUTFILE'"
+    fi
+}
+
+ssh_hassh_update() {
+    if ! t2_wget_n "https://raw.githubusercontent.com/salesforce/hassh/master/python/hasshGen/$INFILE"; then
+        printerr "Failed to update '$INFILE'"
+        exit 1
+    fi
+
+    printok "'$INFILE' successfully updated"
+}
+
+INFILE="hassh_fingerprints.json"
+
+while [ $# -gt 0 ]; do
+    case "$1" in
+        -a|--all)
+            UPDATE=1
+            CONVERT=1
+            ;;
+        -u|--update)
+            UPDATE=1
+            ;;
+        -c|--convert)
+            CONVERT=1
+            ;;
+        -f|--file)
+            validate_next_file "$1" "$2"
+            INFILE="$($READLINK -f "$2")"
+            shift
+            ;;
+        -h|-\?|--help)
+            usage
+            exit 0
+            ;;
+        *)
+            abort_option_unknown "$1"
+            ;;
+    esac
+    shift
+done
+
+if [ -z "$UPDATE$CONVERT" ]; then
+    printerr "One of '-a', '-u' or '-c' option is required"
+    abort_with_help
+fi
+
+cd "$(dirname "$0")" || fatal "Failed to cd into '$(dirname "$0")'"
+
+OUTFILE="../$(AWK -F. -v OFS=. '{ $NF="tsv"; print }' <<< "$(basename "$INFILE")")"
+
+[ -n "$UPDATE" ]  && ssh_hassh_update
+[ -n "$CONVERT" ] && ssh_hassh_convert

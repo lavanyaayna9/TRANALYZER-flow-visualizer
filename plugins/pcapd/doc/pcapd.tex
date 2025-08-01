@@ -1,0 +1,143 @@
+\IfFileExists{t2doc.cls}{
+    \documentclass[documentation]{subfiles}
+}{
+    \errmessage{Error: could not find t2doc.cls}
+}
+
+\begin{document}
+
+\trantitle
+    {pcapd}
+    {Create PCAP Files}
+    {Tranalyzer Development Team}
+
+\section{pcapd}\label{s:pcapd}
+
+\subsection{Description}
+The pcapd plugin can be used to create PCAP files based on some criteria such as flow indexes (\refs{pcapdnormal}) or alarms raised by other plugins (Section \refs{pcapdalarm}).
+
+\subsection{Dependencies}
+If {\tt PD\_MODE\_OUT=1} (one pcap per flow), the libpcap version must be at least 1.7.2. (In this mode, the plugin uses the {\tt pcap\_dump\_open\_append()} function which was introduced in the libpcap in February 12, 2015.)
+
+\subsection{Configuration Flags}
+
+The following flags can be used to configure the plugin:
+\begin{longtable}{>{\tt}lcl>{\tt\small}l}
+    \toprule
+    {\bf Variable} & {\bf Default} & {\bf Description} & {\bf Flags}\\
+    \midrule\endhead%
+    PD\_MODE\_PKT & 0                  & 0: all packets, 1: activate packet range selection                               & \\
+    PD\_STRTPKT   & 1                  & Packet at which processing starts                                                & PD\_MODE\_PKT=1 \\
+    PD\_ENDPKT    & 10                 & Packet at which processing ends (0: end of flow)                                 & PD\_MODE\_PKT=1\\
+                  &                    &                                                                                  & \\
+    PD\_MODE\_IN  & 0                  & 0: if {\small\tt --e} option was used, extract flows listed in {\small\tt FILE}, & \\
+                  &                    & \quad otherwise, extract flows whose alarm bit is set                            & \\
+                  &                    & 1: dump all packets                                                              & \\
+    PD\_EQ        & 1                  & Save matching (1) or non-matching (0) flows                                      & PD\_MODE\_IN=0\\
+    PD\_OPP       & 0                  & 1: extract also the opposite flow, 0: don't                                      & PD\_MODE\_IN=0\\
+    PD\_DIRSEL    & 0                  & 2: extract A flow, 3: extract B flow, 0: off                                     & PD\_MODE\_IN=0\\
+                  &                    &                                                                                  & \\
+    PD\_MODE\_OUT & 0                  & 0: one pcap                                                                      & \\
+                  &                    & 1: one pcap per flow                                                             & \\
+    PD\_SPLIT     & 1                  & Split the output file (Tranalyzer {\tt --W} option)                              & \\
+                  &                    &                                                                                  & \\
+    PD\_LBSRCH    & 0                  & Search algorithm ({\small\tt --e} option):                                       & \\
+                  &                    & \qquad 0: linear search                                                          & \\
+                  &                    & \qquad 1: binary search                                                          & \\
+                  &                    &                                                                                  & \\
+    PD\_TSHFT     & 0                  & Time stamp shift in packets                                                      & \\
+    PD\_TTSFTS    & 0                  & Time stamp increment seconds                                                     & PD\_TSHFT=1\\
+    PD\_TTSFTNMS  & 1                  & Time stamp increment micro/nano seconds                                          & PD\_TSHFT=1\\
+                  &                    & \qquad (depends on {\small\tt TSTAMP\_PREC} in {\em tranalyzer.h})               & \\
+    PD\_MACSHFT   & 0                  & MAC shift in packets                                                             & \\
+    PD\_MACSSHFT  & 1                  & Src MAC increment in packets last byte                                           & PD\_MACSHFT=1\\
+    PD\_MACDSHFT  & 1                  & Src MAC increment in packets last byte                                           & PD\_MACSHFT=1\\
+    PD\_VLNSHFT   & 0                  & VLAN shift in packets                                                            & \\
+    PD\_VLNISHFT  & 1                  & VLAN increment in packets                                                        & PD\_VLNSHFT=1\\
+    PD\_IPSHFT    & 0                  & IPv4/6 increment in packets                                                      & \\
+    PD\_IP4SHFT   & 0x00000001         & IPv4 shift 32 bit network order                                                  & PD\_IPSHFT=1\\
+    PD\_IP6SHFT   & 0x0000000000000001 & IPv6 shift last 64 bit network order                                             & PD\_IPSHFT=1\\
+    PD\_TTLSHFT   & 0                  & 0: no TTL change, 1: TTL shift, 2: random shift                                  & \\
+    PD\_TTL       & 8                  & sub value from TTL                                                               & PD\_TTLSHFT=1\\
+    PD\_TTLMOD    & 128                & TTL modulo                                                                       & PD\_TTLSHFT>0\\
+                  &                    &                                                                                  & \\
+    PD\_CHKSUML3  & 0                  & Correct checksum in IPv4 header                                                  & \\
+    PD\_MAX\_FD   & 128                & Max.\ number of simultaneously open file descriptors                             & PD\_MODE\_OUT=1\\
+    PD\_SUFFIX    & {\tt\small "\_pcapd.pcap"}
+                                       & Suffix for output pcap file                                                      & \\
+    \bottomrule
+\end{longtable}
+
+\subsubsection{Environment Variable Configuration Flags}
+The following configuration flags can also be configured with environment variables ({\tt ENVCNTRL>0}):
+\begin{itemize}
+    \item {\tt PD\_MAX\_FD}
+    \item {\tt PD\_SUFFIX}
+\end{itemize}
+
+\subsubsection{PD\_MODE\_IN=0, --e option used}\label{pcapdnormal}
+The idea behind this mode ({\tt PD\_MODE\_IN=0} and Tranalyzer {\tt --e} option used) is to use {\tt awk} to extract flows of interest and then the pcapd plugin to create one or more PCAP with all those flows. The input file ({\tt -e} option) consists of one column listing the flow indexes (one entry per row). Lines starting with {\tt`\%'}, {\tt`\#'}, a space or a tab are ignored, along with empty lines:
+
+\begin{verbatim}
+        # This file is passed to tranalyzer via -e option: t2 -e file.txt ...
+        # Each row lists a different flow index to extract.
+        123   # Extract flow 123
+        456   # Extract flow 456
+        #789  # Do NOT extract flow 789
+\end{verbatim}
+
+Flows whose index appears in the {\tt --e} file will be dumped in a file named {\tt PREFIX\_PD\_SUFFIX}, where {\tt PREFIX} is the value given to Tranalyzer {\tt --e} option.
+Note that if {\tt PD\_EQ=0}, then flows whose index does {\bf not} appear in the file will be dumped.
+
+\subsubsection{PD\_MODE\_IN=0, --e option not used}\label{pcapdalarm}
+In this mode ({\tt PD\_MODE\_IN=0} and Tranalyzer {\tt --e} option {\bf NOT} used), every flow whose status bit {\tt FL\_ALARM=0x20000000} is set ({\tt PD\_EQ=1}) or not set ({\tt PD\_EQ=0}) will be dumped in a file named {\tt PREFIX\_PD\_SUFFIX}, where {\tt PREFIX} is the value given to Tranalyzer {\tt --w} or {\tt --W} option.
+
+\subsubsection{PD\_MODE\_IN=1}\label{pcapdall}
+In this mode, all the packets are dumped into one or more PCAP files. If Tranalyzer {\tt --W} option is used, then the pcap files will be split accordingly. For example, the following command will create PCAP files of 100MB each: {\tt tranalyzer -i eth0 -W out:100M}
+
+\subsubsection{PD\_MODE\_OUT=1}\label{pcapdoneperflow}
+In this mode, every flow will have its own PCAP file, whose name will end with the flow index.
+
+\subsection{Plugin Report Output}
+The following information is reported:
+\begin{itemize}
+    \item Number of packets extracted
+\end{itemize}
+
+\subsection{Additional Output}
+A PCAP file with suffix {\tt PD\_SUFFIX} will be created.
+The prefix and location of the file depends on the configuration of the plugin.
+\begin{itemize}
+    \item If Tranalyzer {\tt --e} option was used, the file is named according to the {\tt --e} option.
+    \item Otherwise the file is named according to the {\tt --w} or {\tt --W} option.
+\end{itemize}
+
+\subsection{Examples}
+For the following examples, it is assumed that Tranalyzer was run as follows, with the \tranrefpl{basicFlow} and \tranrefpl{txtSink} plugins in their default configuration:
+\begin{center}
+    {\tt tranalyzer -r file.pcap -w out}
+\end{center}
+
+The column numbers can be obtained by looking in the file {\tt out\_headers.txt} or by using \tranrefpl{tawk}.
+
+\subsubsection{Extracting ICMP Flows}\label{pdicmp}
+To create a PCAP file containing ICMP flows only, proceed as follows:
+\begin{enumerate}
+    \item Identify the {\em ``Layer 4 protocol''} column in {\tt out\_headers.txt} (column 14):\\
+        {\tt grep "Layer 4 protocol" out\_headers.txt}
+    \item Extract all flow indexes whose protocol is ICMP (1):\\
+        {\tt awk -F'\textbackslash{}t' '\$14 == 1 \{ print \$2 \}' out\_flows.txt > out\_icmp.txt}
+    \item Configure pcapd.h as follows: {\tt PD\_MODE\_IN=0, PD\_EQ=1}
+    \item Build the pcapd plugin: {\tt cd \$T2HOME/pcapd/; ./autogen.sh}
+    \item Re-run Tranalyzer with the {\tt --e} option:\\
+        {\tt tranalyzer -r file.pcap -w out -e out\_icmp.txt}
+    \item The file {\tt out\_icmp.txt.pcap} now contains all the ICMP flows.\\
+\end{enumerate}
+
+\subsubsection{Extracting Non-ICMP Flows}
+To create a PCAP file containing non-ICMP flows only, use the same procedure as that of \refs{pdicmp},
+but replace {\tt PD\_EQ=1} with {\tt PD\_EQ=0} in step 3.
+Alternatively, replace {\tt \$14==1} with {\tt \$14!=1} in step 2.
+Or if an entire flow file is preferred to the flow indexes only, set {\tt PD\_FORMAT=1} and replace {\tt print \$2} with {\tt print \$0} in step 2.
+
+\end{document}

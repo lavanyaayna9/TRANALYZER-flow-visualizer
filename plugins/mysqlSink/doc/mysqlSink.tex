@@ -1,0 +1,129 @@
+\IfFileExists{t2doc.cls}{
+    \documentclass[documentation]{subfiles}
+}{
+    \errmessage{Error: could not find 't2doc.cls'}
+}
+
+\begin{document}
+
+\trantitle
+    {mysqlSink} % Plugin name
+    {MariaDB / MySQL} % Short description
+    {Tranalyzer Development Team} % author(s)
+
+\section{mysqlSink}\label{s:mysqlSink}
+
+\subsection{Description}
+The mysqlSink plugin outputs flows to a MariaDB / MySQL database.
+
+\subsection{Dependencies}
+
+\subsubsection{External Libraries}
+This plugin depends on the {\bf MariaDB} or {\bf MySQL} library.
+\begin{table}[!ht]
+    \centering
+    \begin{tabular}{>{\bf}r>{\tt}l>{\tt}l>{\tt}l}
+        \toprule
+                                     &                      & {\bf MariaDB}             & {\bf MySQL}\\
+        \midrule
+        Ubuntu:                      & sudo apt-get install & libmariadb-dev            & libmysqlclient-dev\\
+        Arch:                        & sudo pacman -S       & mariadb-libs              & \\
+        Gentoo:                      & sudo emerge          & mariadb-connector-c       & mysql-connector-c\\
+        openSUSE:                    & sudo zypper install  & libmariadb-devel          & \\
+        Red Hat/Fedora\tablefootnote{If the {\tt dnf} command could not be found, try with {\tt yum} instead}:
+                                     & sudo dnf install     & mariadb-connector-c-devel & community-mysql-devel\\
+        macOS\tablefootnote{Brew is a packet manager for macOS that can be found here: \url{https://brew.sh}}:
+                                     & brew install         & mariadb-connector-c       & \\
+        \bottomrule
+    \end{tabular}
+\end{table}
+
+\subsubsection{Core Configuration}
+This plugin requires the following core configuration:
+\begin{itemize}
+    \item {\em \$T2HOME/tranalyzer2/src/tranalyzer.h}:
+        \begin{itemize}
+            \item {\tt BLOCK\_BUF=0}
+        \end{itemize}
+\end{itemize}
+
+\subsection{Database Setup}
+
+\subsubsection{Create a User with Create and Write Permissions}
+\begin{verbatim}
+$ sudo mysql -u root mysql
+...
+MariaDB [mysql]> create user `mysql'@`localhost' identified by `mysql';
+MariaDB [mysql]> grant all privileges on *.* to `mysql'@'`localhost' with grant option;
+\end{verbatim}
+
+\subsection{Configuration Flags}
+The following flags can be used to control the output of the plugin:
+\begin{longtable}{>{\tt}lcl>{\tt\small}l}
+    \toprule
+    {\bf Name} & {\bf Default} & {\bf Description}\\
+    \midrule\endhead%
+    MYSQL\_OVERWRITE\_DB       & 2                        & 0: abort if DB already exists\\
+                               &                          & 1: overwrite DB if it already exists\\
+                               &                          & 2: reuse DB if it already exists\\
+    MYSQL\_OVERWRITE\_TABLE    & 2                        & 0: abort if table already exists\\
+                               &                          & 1: overwrite table if it already exists\\
+                               &                          & 2: append to table if it already exists\\
+    MYSQL\_TRANSACTION\_NFLOWS & 40000                    & 0: one transaction\\
+                               &                          & > 0: one transaction every $n$ flows\\
+    MYSQL\_QRY\_LEN            & 32768                    & Max length for query\\
+    MYSQL\_HOST                & {\tt\small "127.0.0.1"}  & Address of the database\\
+    MYSQL\_DBPORT              & 3306                     & Port the DB is listening to\\
+    MYSQL\_USER                & {\tt\small "mysql"}      & Username to connect to DB\\
+    MYSQL\_PASS                & {\tt\small "mysql"}      & Password to connect to DB\\
+    MYSQL\_DBNAME              & {\tt\small "tranalyzer"} & Name of the database\\
+    MYSQL\_TABLE\_NAME         & {\tt\small "flow"}       & Name of the table\\
+    \\
+    \hyperref[mysql:select]{MYSQL\_SELECT}
+                               & 0                        & Only insert specific fields into the DB\\
+    \hyperref[mysql:select]{MYSQL\_SELECT\_FILE}
+                               & {\small\tt "mysql-columns.txt"}
+                                                          & Filename of the field selector (one column name per line)\\
+    \bottomrule
+\end{longtable}
+
+\subsubsection{Environment Variable Configuration Flags}
+The following configuration flags can also be configured with environment variables ({\tt ENVCNTRL>0}):
+\begin{itemize}
+    \item {\tt MYSQL\_HOST}
+    \item {\tt MYSQL\_DBPORT}
+    \item {\tt MYSQL\_USER}
+    \item {\tt MYSQL\_PASS}
+    \item {\tt MYSQL\_DBNAME}
+    \item {\tt MYSQL\_TABLE\_NAME}
+    \item {\tt MYSQL\_SELECT\_FILE} (require {\tt MYSQL\_SELECT=1})
+\end{itemize}
+
+\subsection{Insertion of Selected Fields Only}\label{mysql:select}
+
+When {\tt MYSQL\_SELECT=1}, the columns to insert into the DB can be customized with the help of {\tt MYSQL\_SELECT\_FILE}.
+The filename defaults to {\tt mysql-columns.txt} in the user plugin folder, e.g., {\em \textasciitilde{}/.tranalyzer/plugins}.
+The format of the file is simply one field name per line with lines starting with a {\tt `\#'} being ignored.
+For example, to only insert source and destination addresses and ports, create the following file:
+
+\begin{verbatim}
+# Lines starting with a '#' are ignored and can be used to add comments
+srcIP
+srcPort
+dstIP
+dstPort
+\end{verbatim}
+
+\subsection{Example}
+{\tt\color{blue} \# Run Tranalyzer}\\
+{\tt \$ t2 -r file.pcap}\\
+{\tt\color{blue} \# Connect to the MySQL database}\\
+{\tt \$ mysql tranalyzer}\\
+{\tt\color{blue} \# Number of flows}\\
+{\tt MariaDB [tranalyzer]> select count(*) from flow;}\\
+{\tt\color{blue} \# 10 first srcIP/dstIP pairs}\\
+{\tt MariaDB [tranalyzer]> select "srcIP", "dstIP" from flow limit 10;}\\
+{\tt\color{blue} \# All flows from 1.2.3.4 to 1.2.3.5}\\
+{\tt MariaDB [tranalyzer]> select * from flow where "srcIP" = '1.2.3.4' and "dstIP" = '1.2.3.5';}
+
+\end{document}

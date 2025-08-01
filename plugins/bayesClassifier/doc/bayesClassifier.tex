@@ -1,0 +1,79 @@
+\IfFileExists{t2doc.cls}{
+    \documentclass[documentation]{subfiles}
+}{
+    \errmessage{Error: could not find 't2doc.cls'}
+}
+
+\begin{document}
+
+% Declare author and title here, so the main document can reuse it
+\trantitle
+    {bayesClassifier} % Plugin name
+    {bayesClassifier} % Short description
+    {Tranalyzer Development Team} % author(s)
+
+\section{bayesClassifier}\label{s:bayesClassifier}
+
+\subsection{Description}
+The bayesClassifier plugin classifies flows based on different models and different source plugins.
+
+\subsection{Dependencies}
+
+%\traninput{file} % use this command to input files
+%\traninclude{file} % use this command to include files
+
+%\tranimg{image} % use this command to include an image (must be located in a subfolder ./img/)
+
+\subsubsection{External Libraries}
+This plugin depends on the {\bf jansson} library.
+\begin{table}[!ht]
+    \centering
+    \begin{tabular}{>{\bf}r>{\tt}l>{\tt}l}
+        \toprule
+        %                             &                      & {\bf OPT1=1}\\
+        %\midrule
+        Ubuntu:                      & sudo apt-get install & libjansson-dev\\
+        Arch:                        & sudo pacman -S       & jansson       \\
+        Gentoo:                      & sudo emerge          & jansson       \\
+        openSUSE:                    & sudo zypper install  & libjansson    \\
+        Red Hat/Fedora\tablefootnote{If the {\tt dnf} command could not be found, try with {\tt yum} instead}:
+                                     & sudo dnf install     & jansson       \\
+        macOS\tablefootnote{Brew is a packet manager for macOS that can be found here: \url{https://brew.sh}}:
+                                     & brew install         & jansson       \\
+        \bottomrule
+    \end{tabular}
+\end{table}
+
+\subsubsection{Other Plugins}
+This plugin requires the \tranrefpl{nFrstPkts} plugin.
+
+\subsubsection{Required Files}
+The file {\tt bayes\_config.json} is required.
+
+\subsection{Configuration Flags}
+The following flags can be used to control the output of the plugin:
+\begin{longtable}{>{\tt}lcl}
+    \toprule
+    {\bf Name} & {\bf Default} & {\bf Description}\\
+    \midrule\endhead%
+    BAYES\_CFG             & {\tt\small "bayes\_config.cfg"} & Name of the Bayes config file\\
+    BAYES\_UNKNOWN         & {\tt\small "unknown"}           & Default class name\\
+    BAYES\_MIN\_POST\_PROB & 0.0001                          & Minimum post-probability\\
+    BAYES\_MIN\_NUM\_PKT   & 1                               & Minimum amount of packets per flow\\
+    \bottomrule
+\end{longtable}
+
+\subsection{Flow File Output}
+The bayesClassifier plugin outputs the following columns:
+\begin{longtable}{>{\tt}lll>{\tt\small}l}
+    \toprule
+    {\bf Column} & {\bf Type} & {\bf Description} & {\bf Flags}\\
+    \midrule\endhead%
+    bayesClass & SC & Naive Bayes Class Name & \\
+    \bottomrule
+\end{longtable}
+
+\subsection{Known Bugs and Limitations}
+Currently the naivebayes library only supports discrete input features.
+
+\end{document}

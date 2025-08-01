@@ -1,0 +1,36 @@
+#!/usr/bin/env awk
+#
+# Return true if 'val1' is equal to 'val2'.
+# If 'ign' is 1, perform a case insensitive comparison.
+#
+# Parameters:
+#   - val1  : the first value
+#   - val2  : the second value
+#   - [ign] : if set and != 0, perform a case insensitive comparison
+#
+# Dependencies:
+#   - None
+#
+# See also:
+#   - streqi
+#   - strneq
+#   - strneqi
+#   - strisempty
+#
+# Examples:
+#   - tawk 'streq($srcIP, $dstIP)' file.txt
+#   - tawk 'streq("abc", "abc") { print }' file.txt
+
+@include "hdr"
+@include "unquote"
+
+function streq(val1, val2, ign) {
+    if (hdr()) return __PRIHDR__
+    val1 = unquote(val1)
+    val2 = unquote(val2)
+    if (ign) {
+        val1 = tolower(val1)
+        val2 = tolower(val2)
+    }
+    return val1 == val2
+}

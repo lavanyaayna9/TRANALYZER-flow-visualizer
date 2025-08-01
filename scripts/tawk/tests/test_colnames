@@ -1,0 +1,108 @@
+#!/usr/bin/env bash
+
+source "$(dirname "$0")/../../t2utils.sh"
+
+TAWKHOME="$($READLINK -f "$SHOME/..")"
+
+usage() {
+    echo "Usage:"
+    echo "    $SNAME [OPTION...] [TEST...]"
+    echo
+    echo "Available tests:"
+    echo "    all               Run all the tests (default)"
+    echo "    examples          Test all files in examples/"
+    echo "    funcs             Test all files in funcs/"
+    echo "    t2fm              Test all files in ../t2fm/tawk/"
+    echo "    t2nfdump          Test all files in t2nfdump/"
+    echo "    vars              Test all files in vars/"
+    echo
+    echo "Optional arguments:"
+    echo "    -n                Silent mode (only report errors)"
+    echo "    -i                Ignore {src,dst}IP[46] legacy names"
+    echo
+    echo "Help and documentation arguments:"
+    echo "    -h, --help        Show this help, then exit"
+}
+
+# $1: var name
+test_var() {
+    local name="$1"
+    if [ -z "$LEGACY" ]; then
+        case "$name" in
+            srcIP4|dstIP4|srcIP6|dstIP6) return
+        esac
+    fi
+    if ! grep -Fw "$name" "$T2PLHOME/"*"/src/"*.c &> /dev/null &&
+       ! grep "\\\t$name" "$T2PLHOME/"*"/src/"*.c &> /dev/null
+    then
+        if ! grep -Fw "$name" "$T2HOME/tranalyzer2/src/"*.c &> /dev/null &&
+           ! grep "\\\t$name" "$T2HOME/tranalyzer2/src/"*.c &> /dev/null
+        then
+            local tab
+            if [ -n "$VERBOSE" ]; then
+                tab="\t"
+            fi
+            printerr "${tab}${name} could not be found"
+        fi
+    fi
+}
+
+LEGACY=1   # report {src,dst}IP[46] as errors
+VERBOSE=1  # print progress information
+
+TEST1=()
+TEST2=()
+
+while [ $# -gt 0 ]; do
+    case "$1" in
+        all)
+            ALL=1
+            ;;
+        examples|funcs|t2nfdump)
+            TEST1+=("$1")
+            ;;
+        t2fm)
+            TEST1+=("$T2HOME/scripts/t2fm/tawk")
+            ;;
+        vars)
+            TEST2+=("$1")
+            ;;
+        -n)
+            unset VERBOSE
+            ;;
+        -i)
+            unset LEGACY
+            ;;
+        -\?|-h|--help)
+            usage
+            exit 0
+            ;;
+        *)
+            abort_option_unknown "$1"
+            ;;
+    esac
+    shift
+done
+
+if [ -n "$ALL" ] || [ $((${#TEST1[@]} + ${#TEST2[@]})) -eq 0 ]; then
+    TEST1=(examples funcs t2nfdump "$T2HOME/scripts/t2fm/tawk")
+    TEST2=(vars)
+fi
+
+cd "$TAWKHOME" || fatal "Failed to cd into '$TAWKHOME'"
+
+if [ ${#TEST1[@]} -gt 0 ]; then
+    for file in $(find "${TEST1[@]}" -type f | grep -vF .load); do
+        [ -n "$VERBOSE" ] && printinf "Testing '$file'"
+        while IFS='' read -r line; do
+            test_var "$line"
+        done < <(grep -Fw '= _validate_col' "$file" | cut -d= -f2 | cut -d'"' -f2 | cut -d'"' -f1 | tr ';' '\n' | sort -u)
+    done
+fi
+
+if [ ${#TEST2[@]} -gt 0 ]; then
+    while IFS='' read -r line; do
+        [ -n "$VERBOSE" ] && printinf "Testing '$line'"
+        test_var "$(basename "$line")"
+    done < <(find "${TEST2[@]}" -type f)
+fi

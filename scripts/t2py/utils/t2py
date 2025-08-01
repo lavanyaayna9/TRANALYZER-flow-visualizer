@@ -1,0 +1,154 @@
+#!/usr/bin/env bash
+
+source "$(dirname "$0")/../../t2utils.sh"
+
+check_dependency python3
+
+usage() {
+    echo "Usage:"
+    echo "    t2py [OPTION...]"
+    echo
+    echo "Optional arguments:"
+    echo "    plugin       The name of a plugin to create, e.g., myPlugin"
+    echo "                 If '-t2' option is set, add the plugins to the session,"
+    echo "                 Else create independent T2Plugin objects, i.e.,"
+    echo "                 myPlugin = T2Plugin('myPlugin')"
+    echo "    -f FILE      A flow or packet file to load, e.g., myFile_flows.txt"
+    echo "                 => myFile = T2Utils.to_json_array('myFile_flows.txt')"
+    echo "    -t2          Create a T2 session: t2 = T2()"
+    echo "    -q           Do not display the welcome banner"
+    echo
+    echo "T2 session options (automatically imply -t2 option):"
+    echo "    -i IFACE     Listen on interface IFACE"
+    echo "    -r PCAP      Read packets from PCAP file"
+    echo "    -R FILE      Process every PCAP file listed in FILE"
+    echo "    -R PCAP1 PCAP2 ..."
+    echo "                 Create a temporary list of PCAP files"
+    echo "    -w PREFIX    Append PREFIX to any output file produced"
+    echo "    -p PATH      Load plugins from PATH instead of ~/.tranalyzer/plugins"
+    echo "    -b FILE      Use plugin list FILE instead of plugin_folder/plugins.txt"
+    echo "    -m           Save the monitoring report in a '_monitoring.txt' file"
+    echo "    -s           Packet forensics mode"
+    echo
+    echo "Help and documentation arguments:"
+    echo "    -h, --help        Show this help, then exit"
+}
+
+BANNER="Welcome to t2py, Python interface to Tranalyzer2!\\n"
+BANNER+="Type \"help(T2Utils)\", \"help(T2Plugin)\" or \"help(T2)\" for more information."
+
+PLUGINS=()
+T2_OPTS=()
+T2PY_VARS=()
+
+while [ $# -gt 0 ]; do
+    case "$1" in
+
+        -q)
+            unset BANNER
+            ;;
+
+        -t2)
+            T2=1
+            ;;
+
+        -f)
+            validate_next_file "$1" "$2"
+            vname="$(AWK -F'.' '{ $NF = ""; print }' <<< "$(basename "$2")")"
+            T2PY_VARS+=("$vname = T2Utils.to_json_array('$2');")
+            shift
+            ;;
+
+        # T2 session options
+
+        -i)
+            validate_next_arg "$1" "$2"
+            T2_OPTS+="iface='$2',"
+            shift
+            ;;
+
+        -r)
+            validate_next_pcap "$1" "$2"
+            T2_OPTS+="pcap='$2',"
+            shift
+            ;;
+
+        -R)
+            validate_next_arg "$1" "$2"
+            T2_OPTS+="pcap_list="
+            if [ ! -f "$3" ]; then
+                T2_OPTS+="'$2'"
+                shift
+            else
+                T2_OPTS+="["
+                while [ -f "$2" ]; do
+                    T2_OPTS+="'$2',"
+                    shift
+                done
+                T2_OPTS+="],"
+            fi
+            ;;
+
+        -w)
+            validate_next_arg "$1" "$2"
+            T2_OPTS+="output_prefix='$2',"
+            shift
+            ;;
+
+        -p)
+            validate_next_dir "$1" "$2"
+            T2_OPTS+="plugin_folder='$2',"
+            shift
+            ;;
+
+        -b)
+            validate_next_file "$1" "$2"
+            T2_OPTS+="loading_list='$2',"
+            shift
+            ;;
+
+        -m)
+            T2_OPTS+="monitoring_file=True,"
+            ;;
+
+        -s)
+            T2_OPTS+="packet_mode=True,"
+            ;;
+
+        -h|-\?|--help)
+            usage
+            exit 0
+            ;;
+
+        *)
+            if [ -f "$T2PLHOME/$1/autogen.sh" ] || [ "$1" = "tranalyzer2" ]; then
+                PLUGINS+=("$1")
+            else
+                abort_option_unknown "$1"
+            fi
+            ;;
+    esac
+    shift
+done
+
+if [ -z "$T2" ] && [ -z "$T2_OPTS" ]; then
+    for plugin in ${PLUGINS[@]}; do
+        T2PY_VARS+=("$plugin = T2Plugin('$plugin');")
+    done
+else
+    if [ ${#PLUGINS[@]} -gt 0 ]; then
+        T2_OPTS+="plugins=["
+        for plugin in ${PLUGINS[@]}; do
+            T2_OPTS+="'$plugin',"
+        done
+        T2_OPTS+="],"
+    fi
+    T2PY_VARS+=("t2 = T2($T2_OPTS);")
+fi
+
+
+if [ -n "$BANNER" ]; then
+    T2PY_VARS+=("print('$BANNER');")
+fi
+
+python3 -i -q -c "from t2py import *; ${T2PY_VARS[*]}"

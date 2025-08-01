@@ -1,0 +1,19 @@
+#H quicVersion           | Description
+#H =============================================================================
+   0x00000000[0001-ffff] | Standardized versions of QUIC
+   0x454747[00-ff]       | NetApp quant
+   0x50435130            | Private Octopus Picoquic internal test version
+   0x5130303[1-9]        | Google QUIC 01-09 (Q001-Q009)
+   0x5130313[0-9]        | Google QUIC 10-19 (Q010-Q019)
+   0x5130323[0-9]        | Google QUIC 20-29 (Q020-Q029)
+   0x5130333[0-9]        | Google QUIC 30-39 (Q030-Q039)
+   0x5130343[0-9]        | Google QUIC 40-49 (Q040-Q049)
+   0x51474f[00-ff]       | quic-go (QGO[0-255])
+   0x91c170[00-ff]       | quicly (qicly0[0-255])
+   0xabcd000[0-f]        | Microsoft WinQuic
+   0xf10000[00-ff]       | IETF QUIC-LB
+   0xf123f0c[0-f]        | Mozilla MozQuic
+   0xfaceb00[0-f]        | Facebook mvfst
+   0xff[000000-ffffff]   | IETF QUIC draft-xx (latest draft is 22: 0xff000016)
+   0xf0f0f0f[0-f]        | ETH Zürich Measurability experiments
+   0xf0f0f1f[0-f]        | Telecom Italia Measurability experiments

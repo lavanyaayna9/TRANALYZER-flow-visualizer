@@ -1,0 +1,31 @@
+# Flags to toggle
+#
+# Run the ../../../tests/test.sh script from the plugin main directory:
+#
+# cd $T2HOME/plugins/voipDetector
+# ../../tests/test.sh [OPTION...]
+#
+# If run from this folder, make sure to use absolute path for the '-p' option.
+#
+# Flag name     File
+
+# ../../tranalyzer2/src/networkHeaders.h
+IPV6_ACTIVATE   ../../tranalyzer2/src/networkHeaders.h
+
+# ../../tranalyzer2/src/tranalyzer.h
+DTLS            ../../tranalyzer2/src/tranalyzer.h
+ENVCNTRL        ../../tranalyzer2/src/tranalyzer.h
+
+# src/voipDetector.h
+VOIP_SIP        src/voipDetector.h
+VOIP_SIP_PRV    src/voipDetector.h
+VOIP_RTP        src/voipDetector.h
+VOIP_RTCP       src/voipDetector.h
+VOIP_SVFDX      src/voipDetector.h
+VOIP_MINPKT     src/voipDetector.h
+VOIP_ANALEN     src/voipDetector.h
+VOIP_RMDIR      src/voipDetector.h
+VOIP_SAVE       src/voipDetector.h
+VOIP_BUFMODE    src/voipDetector.h
+VOIP_SILREST    src/voipDetector.h
+VOIP_PLDOFF     src/voipDetector.h

@@ -1,0 +1,9 @@
+#!/usr/bin/env awk
+
+hdr() {
+    next
+}
+
+!strisempty($sslBlistCat) {
+    aggr($sslCertSha1FP OFS unquote($sslBlistCat), "flows", n)
+}

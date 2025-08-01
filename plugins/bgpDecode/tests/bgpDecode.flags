@@ -1,0 +1,29 @@
+#
+# Run the ../../../tests/test.sh script from the plugin main directory:
+#
+# cd $T2HOME/plugins/bgpDecode
+# ../../tests/test.sh [OPTION...]
+#
+# If run from this folder, make sure to use absolute path for the '-p' option.
+#
+# Flag name     File
+
+# ../../tranalyzer2/src/tranalyzer.h
+ENVCNTRL             ../../tranalyzer2/src/tranalyzer.h
+
+# src/bgpDecode.h
+BGP_DEBUG            src/bgpDecode.h
+BGP_IP_FORMAT        src/bgpDecode.h
+BGP_AS_FORMAT        src/bgpDecode.h
+BGP_NOTIF_FORMAT     src/bgpDecode.h
+BGP_TRAD_BOGONS      src/bgpDecode.h
+BGP_OUTPUT_RT        src/bgpDecode.h
+BGP_ORIG_ID          src/bgpDecode.h
+BGP_AGGR             src/bgpDecode.h
+BGP_CLUSTER          src/bgpDecode.h
+BGP_COMMUNITIES      src/bgpDecode.h
+BGP_MASK_FORMAT      src/bgpDecode.h
+BGP_AS_PATH_AGGR     src/bgpDecode.h
+BGP_RT               src/bgpDecode.h
+BGP_DEBUG_RT         src/bgpDecode.h
+BGP_RT_MASK          src/bgpDecode.h

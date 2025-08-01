@@ -1,0 +1,21 @@
+#H bit | tcpMPTBF | Description
+#H =============================================================================
+     0 | 0x0001   | Multipath Capable
+     1 | 0x0002   | Join Connection
+     2 | 0x0004   | Data Sequence Signal (Data ACK and data sequence mapping)
+     3 | 0x0008   | Add Address
+
+     4 | 0x0010   | Remove Address
+     5 | 0x0020   | Change Subflow Priority
+     6 | 0x0040   | Fallback
+     7 | 0x0080   | Fast Close
+
+     8 | 0x0100   | -
+     9 | 0x0200   | -
+    10 | 0x0400   | -
+    11 | 0x0800   | -
+
+    12 | 0x1000   | -
+    13 | 0x2000   | -
+    14 | 0x4000   | -
+    15 | 0x8000   | Private Use within controlled testbeds

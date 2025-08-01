@@ -1,0 +1,124 @@
+\IfFileExists{t2doc.cls}{
+    \documentclass[documentation]{subfiles}
+}{
+    \errmessage{Error: could not find 't2doc.cls'}
+}
+
+\begin{document}
+
+\trantitle
+    {jsonSink}
+    {JSON Output}
+    {Tranalyzer Development Team} % author(s)
+
+\section{jsonSink}\label{s:jsonSink}
+
+\subsection{Description}
+The jsonSink plugin generates JSON output in a file {\tt PREFIX\_flows.json}, where {\tt PREFIX} is provided via Tranalyzer {\tt --w} or {\tt --W} option.
+
+\subsection{Dependencies}
+
+\subsubsection{External Libraries}
+If gzip compression is activated ({\tt JSON\_GZ\_COMPRESS=1}), then {\bf zlib} must be installed.
+\begin{table}[!ht]
+    \centering
+    \begin{tabular}{>{\bf}r>{\tt}l>{\tt}l}
+        \toprule
+                                     &                      & {\bf JSON\_GZ\_COMPRESS=1}\\
+        \midrule
+        Ubuntu:                      & sudo apt-get install & zlib1g-dev\\
+        Arch:                        & sudo pacman -S       & zlib\\
+        Gentoo:                      & sudo emerge          & zlib\\
+        openSUSE:                    & sudo zypper install  & zlib-devel\\
+        Red Hat/Fedora\tablefootnote{If the {\tt dnf} command could not be found, try with {\tt yum} instead}:
+                                     & sudo dnf install     & zlib-devel\\
+        macOS\tablefootnote{Brew is a packet manager for macOS that can be found here: \url{https://brew.sh}}:
+                                     & brew install         & zlib\\
+        \bottomrule
+    \end{tabular}
+\end{table}
+
+\subsubsection{Core Configuration}
+This plugin requires the following core configuration:
+\begin{itemize}
+    \item {\em \$T2HOME/tranalyzer2/src/tranalyzer.h}:
+        \begin{itemize}
+            \item {\tt BLOCK\_BUF=0}
+        \end{itemize}
+\end{itemize}
+
+\subsection{Configuration Flags}
+
+The following flags can be used to control the output of the plugin:
+
+\begin{longtable}{>{\tt}lcl>{\tt\small}l}
+    \toprule
+    {\bf Name} & {\bf Default} & {\bf Description} & {\bf Flags}\\
+    \midrule\endhead%
+    JSON\_SOCKET\_ON             & 0                              & Output to a socket (1) or to a file (0) & \\
+    JSON\_SOCKET\_ADDR           & {\tt\small ``127.0.0.1''}      & Address of the socket                   & JSON\_SOCKET\_ON=1\\
+    JSON\_SOCKET\_PORT           & 5000                           & Port of the socket                      & JSON\_SOCKET\_ON=1\\
+                                 &                                &                                         & \\
+    JSON\_GZ\_COMPRESS           & 0                              & Compress (gzip) the output              & \\
+    JSON\_SPLIT                  & 1                              & Split the output file                   & JSON\_SOCKET\_ON=0\\
+                                 &                                & (Tranalyzer {\tt --W} option)           & \\
+                                 &                                &                                         & \\
+    JSON\_ROOT\_NODE             & 0                              & Add a root node (array)                 & \\
+    JSON\_SUPPRESS\_EMPTY\_ARRAY & 1                              & Do not output empty fields              & \\
+    JSON\_NO\_SPACES             & 1                              & Suppress unnecessary spaces             & \\
+    JSON\_BUFFER\_SIZE           & 1048576                        & Size of output buffer                   & \\
+                                 &                                &                                         & \\
+    \hyperref[json:select]{JSON\_SELECT}
+                                 & 0                              & Only output specific fields             & \\
+    \hyperref[json:select]{JSON\_SELECT\_FILE}
+                                 & {\small\tt "json-columns.txt"} & Filename of the field selector          & JSON\_SELECT=1\\
+                                 &                                & (one column name per line)\\
+                                 &                                &                                         & \\
+    JSON\_SUFFIX                 & {\tt\small "\_flows.json"}     & Suffix for output file                  & JSON\_SOCKET\_ON=0\\
+    \bottomrule
+\end{longtable}
+
+\subsubsection{Environment Variable Configuration Flags}
+The following configuration flags can also be configured with environment variables ({\tt ENVCNTRL>0}):
+\begin{itemize}
+    \item {\tt JSON\_BUFFER\_SIZE}
+    \item {\tt JSON\_SOCKET\_ADDR} (require {\tt JSON\_SOCKET\_ON=1})
+    \item {\tt JSON\_SOCKET\_PORT} (require {\tt JSON\_SOCKET\_ON=1})
+    \item {\tt JSON\_SUFFIX} (require {\tt JSON\_SOCKET\_ON=0})
+    \item {\tt JSON\_SELECT\_FILE}
+\end{itemize}
+
+\subsection{Plugin Report Output}
+The following information is reported:
+\begin{itemize}
+    \item Number of flows discarded due to main buffer problems
+\end{itemize}
+
+\subsection{Custom File Output}
+\begin{itemize}
+    \item {\tt PREFIX\_flows.json}: JSON representation of Tranalyzer output
+\end{itemize}
+
+\subsection{Output Selected Fields Only}\label{json:select}
+
+When {\tt JSON\_SELECT=1}, the columns to output can be customized with the help of {\tt JSON\_SELECT\_FILE}.
+The filename defaults to {\tt json-columns.txt} in the user plugin folder, e.g., {\em \textasciitilde{}/.tranalyzer/plugins}.
+The format of the file is simply one field name per line with lines starting with a {\tt `\#'} being ignored.
+For example, to only output source and destination addresses and ports, create the following file:
+
+\begin{verbatim}
+# Lines starting with a '#' are ignored and can be used to add comments
+srcIP
+srcPort
+dstIP
+dstPort
+\end{verbatim}
+
+\subsection{Example}
+To send compressed data over a socket ({\tt JSON\_SOCKET\_ON=1} and {\tt JSON\_GZ\_COMPRESS=1}):
+\begin{enumerate}
+    \item {\tt nc -l 127.0.0.1 5000 | gunzip}
+    \item {\tt tranalyzer -r file.pcap}
+\end{enumerate}
+
+\end{document}

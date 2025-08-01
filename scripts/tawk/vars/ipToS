@@ -1,0 +1,11 @@
+#H bit | ipToS    | Description
+#H =============================================================================
+     0 | 0x01     | ECN0: enable ECN when requested by incoming connections, and also request ECN on outgoing connection attempts
+     1 | 0x02     | ECN1: (default) enable ECN when requested by incoming connections, but do not request ECN on outgoing connections
+     2 | 0x04     | Precedence 0
+     3 | 0x08     | Precedence 1
+
+     4 | 0x10     | Precedence 2
+     5 | 0x20     | Precedence 3: Class Sel 0
+     6 | 0x40     | Precedence 4: Class Sel 1
+     7 | 0x80     | Precedence 5: Class Sel 2

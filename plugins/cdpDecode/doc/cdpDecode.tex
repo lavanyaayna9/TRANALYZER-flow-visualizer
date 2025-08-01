@@ -1,0 +1,220 @@
+\IfFileExists{t2doc.cls}{
+    \documentclass[documentation]{subfiles}
+}{
+    \errmessage{Error: could not find 't2doc.cls'}
+}
+
+\begin{document}
+
+\trantitle
+    {cdpDecode} % Plugin name
+    {Cisco Discovery Protocol (CDP)} % Short description
+    {Tranalyzer Development Team} % author(s)
+
+\section{cdpDecode}\label{s:cdpDecode}
+
+\subsection{Description}
+The cdpDecode plugin analyzes CDP traffic.
+
+\subsection{Dependencies}
+
+\subsubsection{Core Configuration}
+This plugin requires the following core configuration:
+\begin{itemize}
+    \item {\em \$T2HOME/tranalyzer2/src/networkHeaders.h}:
+        \begin{itemize}
+            \item {\tt ETH\_ACTIVATE>0}
+        \end{itemize}
+\end{itemize}
+
+\subsection{Configuration Flags}
+The following flags can be used to control the output of the plugin:
+\begin{longtable}{>{\tt}lcl}
+    \toprule
+    {\bf Name} & {\bf Default} & {\bf Description}\\
+    \midrule\endhead%
+    CDP\_NADDR   & 5   & Maximum number of IPv4 addresses\\
+    CDP\_NMADDR  & 5   & Maximum number of management addresses\\
+    CDP\_NIPPG   & 5   & Maximum number of IP prefix gateways\\
+    CDP\_STRLEN  & 25  & Maximum length of strings to store\\
+    CDP\_LSTRLEN & 100 & Maximum length of long strings to store\\
+    \bottomrule
+\end{longtable}
+
+\subsection{Flow File Output}
+The cdpDecode plugin outputs the following columns:
+\begin{longtable}{>{\tt}lll}
+    \toprule
+    {\bf Column} & {\bf Type} & {\bf Description}\\
+    \midrule\endhead%
+    \nameref{cdpStat}     & H8         & Status\\
+    cdpVer                & U8         & Version\\
+    cdpTTL                & U8         & Time To Live (sec)\\
+    \nameref{cdpTLVTypes} & H32        & TLV types\\
+    cdpDevice             & SC         & Device ID\\
+    cdpPlatform           & S          & Platform\\
+    cdpSWVersion          & S          & Software Version\\
+    cdpPortID             & SC         & Port ID\\
+    \nameref{cdpCaps}     & H32        & Capabilities\\
+    \nameref{cdpDuplex}   & H8         & Duplex\\
+    cdpNVLAN              & U16        & Native VLAN\\
+    cdpVoipVLAN           & U16        & VoIP VLAN\\
+    cdpVTPMngmtDmn        & SC         & VTP management domain\\
+    cdpMAddrs             & R(IP4)     & Management Addresses\\
+    cdpAddrs              & R(IP4)     & Addresses\\
+    cdpIPPref\_cdr        & R(IP4\_U8) & IP Prefix, CIDR\\
+    \bottomrule
+\end{longtable}
+
+\subsubsection{cdpStat}\label{cdpStat}
+The {\tt cdpStat} column is to be interpreted as follows:
+\begin{longtable}{>{\tt}rl}
+    \toprule
+    {\bf cdpStat} & {\bf Description}\\
+    \midrule\endhead%
+    0x01 & Flow is CDP\\
+    0x02 & ---\\
+    0x04 & ---\\
+    0x08 & ---\\
+    \\
+    0x10 & ---\\
+    0x20 & String truncated\ldots increase {\tt CDP\_STRLEN}\\
+    0x40 & Invalid TLV length\\
+    0x80 & Snapped payload\\
+    \bottomrule
+\end{longtable}
+
+\subsubsection{cdpTLVTypes}\label{cdpTLVTypes}
+The {\tt cdpTLVTypes} column is to be interpreted as follows:
+
+\begin{minipage}{.48\textwidth}
+    \begin{longtable}{>{\tt}rl}
+        \toprule
+        {\bf cdpTLVTypes} & {\bf Description}\\
+        \midrule\endhead%
+        $2^{0}$  (=0x0000 0001) & ---\\
+        $2^{1}$  (=0x0000 0002) & Device ID\\
+        $2^{2}$  (=0x0000 0004) & Addresses\\
+        $2^{3}$  (=0x0000 0008) & Port ID\\
+        \\
+        $2^{4}$  (=0x0000 0010) & Capabilities\\
+        $2^{5}$  (=0x0000 0020) & Software Version\\
+        $2^{6}$  (=0x0000 0040) & Platform\\
+        $2^{7}$  (=0x0000 0080) & IP Prefixes\\
+        \\
+        $2^{8}$  (=0x0000 0100) & Protocol Hello\\
+        $2^{9}$  (=0x0000 0200) & VTP Management Domain\\
+        $2^{10}$ (=0x0000 0400) & Native VLAN\\
+        $2^{11}$ (=0x0000 0800) & Duplex\\
+        \\
+        $2^{12}$ (=0x0000 1000) & ---\\
+        $2^{13}$ (=0x0000 2000) & ---\\
+        $2^{14}$ (=0x0000 4000) & VoIP VLAN Reply\\
+        $2^{15}$ (=0x0000 8000) & VoIP VLAN Query\\
+        \bottomrule
+    \end{longtable}
+\end{minipage}
+\hfill
+\begin{minipage}{.48\textwidth}
+    \begin{longtable}{>{\tt}rl}
+        \toprule
+        {\bf cdpTLVTypes} & {\bf Description}\\
+        \midrule\endhead%
+        $2^{16}$ (=0x0001 0000) & Power Consumption\\
+        $2^{17}$ (=0x0002 0000) & MTU\\
+        $2^{18}$ (=0x0004 0000) & Trust Bitmap\\
+        $2^{19}$ (=0x0008 0000) & Untrusted Port CoS\\
+        \\
+        $2^{20}$ (=0x0010 0000) & System Name\\
+        $2^{21}$ (=0x0020 0000) & System OID\\
+        $2^{22}$ (=0x0040 0000) & Management Address\\
+        $2^{23}$ (=0x0080 0000) & Location\\
+        \\
+        $2^{24}$ (=0x0100 0000) & External Port ID\\
+        $2^{25}$ (=0x0200 0000) & Power Requested\\
+        $2^{26}$ (=0x0400 0000) & Power Available\\
+        $2^{27}$ (=0x0800 0000) & Port Unidirectional\\
+        \\
+        $2^{28}$ (=0x1000 0000) & Energy Wise\\
+        $2^{29}$ (=0x2000 0000) & Spare Pair POE\\
+        $2^{30}$ (=0x4000 0000) & ---\\
+        $2^{31}$ (=0x8000 0000) & Any type $\geq$ 31\\
+        \bottomrule
+    \end{longtable}
+\end{minipage}
+
+\clearpage
+
+\subsubsection{cdpCaps}\label{cdpCaps}
+The {\tt cdpCaps} column is to be interpreted as follows:
+\begin{longtable}{>{\tt}rl}
+    \toprule
+    {\bf cdpCaps} & {\bf Description}\\
+    \midrule\endhead%
+    0x0000 0001 & Router\\
+    0x0000 0002 & Transparent Bridge\\
+    0x0000 0004 & Source Route Bridge\\
+    0x0000 0008 & Switch\\
+    \\
+    0x0000 0010 & Host\\
+    0x0000 0020 & IGMP capable\\
+    0x0000 0040 & Repeater\\
+    \\
+    0x00000100--0x80000000 & Reserved\\
+    \bottomrule
+\end{longtable}
+
+\subsubsection{cdpDuplex}\label{cdpDuplex}
+The {\tt cdpDuplex} column is to be interpreted as follows:
+\begin{longtable}{>{\tt}rl}
+    \toprule
+    {\bf cdpDuplex} & {\bf Description}\\
+    \midrule\endhead%
+    0x0001 & Half\\
+    0x0002 & Full\\
+    \bottomrule
+\end{longtable}
+
+\subsection{Packet File Output}
+In packet mode ({\tt --s} option), the cdpDecode plugin outputs the following columns:
+\begin{longtable}{>{\tt}lll>{\tt\small}l}
+    \toprule
+    {\bf Column} & {\bf Type} & {\bf Description} & {\bf Flags}\\
+    \midrule\endhead%
+    \nameref{cdpStat}     & H8  & Status\\
+    cdpVer                & U8  & Version\\
+    cdpTTL                & U8  & Time To Live (sec)\\
+    \nameref{cdpTLVTypes} & H16 & TLV types\\
+    cdpDevice             & SC  & Device ID\\
+    cdpPlatform           & S   & Platform\\
+    cdpPortID             & SC  & Port ID\\
+    \nameref{cdpCaps}     & H32 & Capabilities\\
+    \nameref{cdpDuplex}   & H8  & Duplex\\
+    cdpNVLAN              & U16 & Native VLAN\\
+    cdpVoipVLAN           & U16 & VoIP VLAN\\
+    cdpVTPMngmtDmn        & SC  & VTP management domain\\
+    cdpMAddrs             & IP4 & Management Addresses\\
+    cdpAddrs              & IP4 & Addresses\\
+    \bottomrule
+\end{longtable}
+
+\subsection{Monitoring Output}
+In monitoring mode, the cdpDecode plugin outputs the following columns:
+\begin{longtable}{>{\tt}lll>{\tt\small}l}
+    \toprule
+    {\bf Column} & {\bf Type} & {\bf Description}     & {\bf Flags}\\
+    \midrule\endhead%
+    cdpPkts      & U64        & Number of CDP packets & \\
+    \bottomrule
+\end{longtable}
+
+\subsection{Plugin Report Output}
+The following information is reported:
+\begin{itemize}
+    \item Aggregated {\tt\nameref{cdpStat}}
+    \item Aggregated {\tt\nameref{cdpTLVTypes}}
+    \item Aggregated {\tt\nameref{cdpCaps}}
+    \item Number of CDP packets
+\end{itemize}
+
+\end{document}

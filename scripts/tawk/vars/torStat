@@ -1,0 +1,11 @@
+#H bit | torStat | Description
+#H =============================================================================
+     0 | 0x01    | Tor flow
+     1 | 0x02    | Obfuscated Tor flow
+     2 | 0x04    | Tor address detected
+     3 | 0x08    | Tor pktlen modulo 8 detected
+
+     4 | 0x10    | Internal state: SYN detected
+     5 | 0x20    | Internal state: obfuscation checked
+     6 | 0x40    | -
+#W   7 | 0x80    | Packet snapped or decoding failed

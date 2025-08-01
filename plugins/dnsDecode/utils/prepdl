@@ -1,0 +1,131 @@
+#!/usr/bin/env bash
+
+source "$(dirname "$0")/../../../scripts/t2utils.sh"
+
+usage() {
+    printf "Usage:\n"
+    printf "    $SNAME [OPTION...]\n\n"
+    printf "Optional arguments:\n"
+    printf "    -u      update malware domains list\n"
+    printf "    -c      convert malware domains list\n"
+    printf "    -a      update and convert malware domains list\n"
+    printf "    -h      display this help, then exit\n"
+}
+
+update() {
+    printinf "Downloading latest malware domains list"
+
+    local db="domains.txt"
+
+    t2_wget_n "http://mirror1.malwaredomains.com/files/$db"
+    if [ $? -ne 0 ]; then
+        printerr "Failed to update malware domains list"
+        if [ ! "$CONVERT" ]; then
+            exit 1
+        elif [ -f "$OUT1" ]; then
+            printinf "Reusing old '$OUT1' file"
+            return
+        fi
+    fi
+
+    # backup old T2 DB in case conversion fails
+    local out1_bak="$OUT1.bak"
+    [ -f "$OUT1" ] && mv "$OUT1" "$out1_bak"
+
+    # convert to T2 format
+    AWK -F'\t' -v OFS='\t' '!/^#/ { print $3, $4 }' "$db" > "$OUT1"
+    local RET=$?
+
+    rm "$db"
+
+    if [ $RET -ne 0 ]; then
+        printerr "Failed to convert malware domains list '$db' to '$OUT1'"
+        # restore old DB
+        if [ -f "$out1_bak" ]; then
+            mv "$out1_bak" "$OUT1"
+            if [ ! "$CONVERT" ]; then
+                exit 1
+            elif [ -f "$OUT1" ]; then
+                printinf "Reusing old '$OUT1' file"
+                return
+            fi
+        fi
+    fi
+
+    # delete backup
+    [ -f "$out1_bak" ] && rm "$out1_bak"
+
+    [ ! "$CONVERT" ] && exit 0
+}
+
+if [ $# -eq 0 ]; then
+    printerr "One of '-a', '-u' or '-c' option is required"
+    abort_with_help
+fi
+
+while [ $# -gt 0 ]; do
+    case "$1" in
+        -a|--all)
+            UPDATE=1
+            CONVERT=1
+            ;;
+        -u|--update)
+            UPDATE=1
+            ;;
+        -c|--convert)
+            CONVERT=1
+            ;;
+        -h|-\?|--help)
+            usage
+            exit 0
+            ;;
+        *)
+            abort_option_unknown "$1"
+            ;;
+    esac
+    shift
+done
+
+cd "$(dirname "$0")/.."
+
+OUT1="maldomain.txt"
+OUT2="maldm.txt"
+
+if [ "$UPDATE" ]; then
+    update
+fi
+
+if [ "$CONVERT" ]; then
+    if [ ! -f "$OUT1" ]; then
+        printerr "Could not find '$OUT1'"
+        [ ! "$UPDATE" ] && printinf "Run '$SNAME -a' to get the latest version"
+        exit 1
+    fi
+
+    printinf "Converting malware domains list '$OUT1' to '$OUT2'"
+
+    # Extract malware types
+    MALTYPE="maltype.txt"
+    cut -f 2 "$OUT1" | sort -u | AWK -F'\t' -v OFS='\t' '
+        BEGIN { u = 0 }
+        !/^#/ { print $1, ++u }
+    ' > "$MALTYPE"
+    if [ $? -ne 0 ]; then
+        printerr "Failed to extract malware types from malware domains list '$OUT1'"
+        exit 1
+    fi
+
+    AWK -F'\t' -v OFS='\t' '
+        ARGIND == 1 {
+            a[$1] = $2
+            next
+        }
+        !/^#/ { print $1, a[$2], $2 }
+    ' "$MALTYPE" "$OUT1" | LC_ALL=C sort -k 1,1 | uniq > "$OUT2"
+    if [ $? -ne 0 ]; then
+        printerr "Failed to convert malware domains list '$OUT1' to '$OUT2'"
+        exit 1
+    fi
+
+    exit 0
+fi

@@ -1,0 +1,21 @@
+#H bit | stpFlags | Description
+#H =============================================================================
+     0 | 0x0001   | Topology Change
+     1 | 0x0002   | Proposal
+     2 | 0x0004   | Port RoleL
+     3 | 0x0008   | Port RoleH
+
+     4 | 0x0010   | Learning
+     5 | 0x0020   | Forwarding
+     6 | 0x0040   | Agreement
+     7 | 0x0080   | Topology Change Acknowledgment
+
+     8 | 0x0100   | -
+     9 | 0x0200   | -
+    10 | 0x0400   | -
+    11 | 0x0800   | -
+
+    12 | 0x1000   | -
+    13 | 0x2000   | -
+    14 | 0x4000   | -
+    15 | 0x8000   | -

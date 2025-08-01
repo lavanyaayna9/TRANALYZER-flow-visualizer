@@ -1,0 +1,64 @@
+#!/usr/bin/env bash
+
+source "$(dirname "$0")/../../../scripts/t2utils.sh"
+
+usage() {
+    echo "Usage:"
+    echo "    $SNAME [OPTION...] <FILE.json>"
+    echo
+    echo "Optional arguments:"
+    echo "    -h, --help        Show this help, then exit"
+}
+
+while [ $# -ne 0 ]; do
+    case "$1" in
+        -h|-\?|--help) usage; exit 0;;
+        *)
+            if [ ! -f "$1" ]; then
+                abort_option_unknown "$1"
+            fi
+            FILE="$1"
+            ;;
+    esac
+    shift
+done
+
+# Make sure we catch failures from the middle AWK command
+set -o pipefail
+
+if ! make tjx; then
+    printerr "Failed to build tjx"
+    exit 1
+fi
+
+./tjx "$FILE" | AWK -F"\t" '{
+    k = ""
+    if (!$10) $10 = 0
+    if ($8 == "-") $8 = 0.0
+    if (!$9) $9 = 0.0
+    if ($12 && $12 != "-") o = $12
+    else o = $11
+    if ($2 != "-") k = k "G"
+    if ($3 != "-") k = k "E"
+    if ($4 != "-") k = k "D"
+    f = $2 ";" $3 ";" $4
+    n = split(f, A, ";")
+    asort(A)
+    for (i = 1; i <= n; i++) {
+        if (A[i] == t || A[i] == "-") continue
+
+        t = A[i]
+
+        if (index(A[i],":")) tf = "torsub6.txt"
+        else tf = "torsub4.txt";
+
+        printf "%s\t%d\t%f\t%f\t%s\t%s\t%s\t%s(%s)%s\n", A[i], $10, $8, $9, $5, $6, $7, k, $1, o >> tf
+    }
+}'
+
+if [ $? -ne 0 ]; then
+    printerr "$SNAME: failed to execute tjx"
+    exit 1
+fi
+
+exit 0

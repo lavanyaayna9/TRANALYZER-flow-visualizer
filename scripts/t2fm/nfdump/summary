@@ -1,0 +1,32 @@
+#!/usr/bin/env bash
+
+source "$(dirname "${0}")/../../t2utils.sh"
+
+OPTS=()
+while [[ "${#}" -ne 0 ]]; do
+    case "${1}" in
+        -n)
+            validate_next_int "${1}" "${2}"
+            N="${2}"
+            shift
+            ;;
+        *)
+            OPTS+=("${1}")
+            ;;
+    esac
+    shift
+done
+
+nfdump ${OPTS[@]} -I | "${TAWK}" -F: '
+    $1 == "Flows"      { nFlows    = chomp($2); next }
+    $1 == "Packets"    { nPkts     = chomp($2); next }
+    $1 == "Bytes"      { nBytes    = chomp($2); next }
+    $1 == "First"      { tFirst    = chomp($2); next }
+    $1 == "msec_first" { tFirst_ms = chomp($2); next }
+    $1 == "Last"       { tLast     = chomp($2); next }
+    $1 == "msec_last"  { tLast_ms  = chomp($2); exit }
+    END {
+        print tFirst "." tFirst_ms,
+              tLast  "." tLast_ms,
+              nFlows, nPkts, nBytes
+    }'

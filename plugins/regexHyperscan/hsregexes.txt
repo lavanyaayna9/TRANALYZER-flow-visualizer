@@ -1,0 +1,24 @@
+% Example regex file: check plugin doc for the format of this file
+
+% string present in almost all PE executables
+exe	/This program cannot be run in DOS mode/	1
+
+% ELF magic header
+elf	/\x7fELF/	0
+
+% SQL injection in HTTP
+http-get-sqli	/^(GET|HEAD) .*('|"|%22|%27|\d+)(%20|\+| )(?i)((o|%4f|%6f)(r|%52|%72)|(a|%41|%61)(n|%4e|%6e)(d|%44|%64)|(u|%55|%75)(n|%4e|%6e)(i|%49|%69)(o|%4f|%6f)(n|%4e|%6e)|(l|%4c|%6c)(i|%49|%69)(m|%4d|%6d)(i|%49|%69)(t|%54|%74))(?-i)(%20|\+| ).* HTTP\/[\d.]+\r?\n/	1
+http-post-sqli	/^POST .* HTTP\/[\d.]+\r?\n([\w\-]+: .*\r?\n)*\r?\n.*=([^=]*('|"|%22|%27)|\d+)(%20|\+| )(?i)((o|%4f|%6f)(r|%52|%72)|(a|%41|%61)(n|%4e|%6e)(d|%44|%64)|(u|%55|%75)(n|%4e|%6e)(i|%49|%69)(o|%4f|%6f)(n|%4e|%6e)|(l|%4c|%6c)(i|%49|%69)(m|%4d|%6d)(i|%49|%69)(t|%54|%74))(?-i)(%20|\+| )/	1
+
+% NOP sled. TODO: include other 1 byte NOP like instructions (check list from metasploit)
+nop-sled	/%90{10}|\x90{10}/
+
+% detect CVE-2017-5689 : https://www.tenable.com/blog/rediscovering-the-intel-amt-vulnerability
+intel-amt-vuln	/(?m)^Authorization:.*response="[\dA-Fa-f]{0,31}"/	0
+
+% HTTP GET path traversal
+path-trav	/^(GET|HEAD) .*(?i)((\.|%2e){2}(%2f|%5c|\/|\\)){2}(?-i).* HTTP\//	0
+
+% XSS in HTTP
+http-get-xss	/^(GET|HEAD) .*(?i)(<|%3c)((i|%49|%69)(m|%4d|%6d)(g|%47|%67)|(s|%53|%73)(c|%43|%63)(r|%52|%72)(i|%49|%69)(p|%50|%70)(t|%54|%74)).*(>|%3e)(?-i).* HTTP\/[\d.]+\r?\n/	0
+http-post-xss	/^POST .* HTTP\/[\d.]+\r?\n([\w\-]+: .*\r?\n)*\r?\n.*=[^=]*(?i)(<|%3c)((i|%49|%69)(m|%4d|%6d)(g|%47|%67)|(s|%53|%73)(c|%43|%63)(r|%52|%72)(i|%49|%69)(p|%50|%70)(t|%54|%74)).*(>|%3e)(?-i)/	0

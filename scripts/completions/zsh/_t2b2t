@@ -1,0 +1,21 @@
+# ZSH completion for t2b2t
+
+_t2b2t() {
+    #compdef t2b2t
+
+    local opts=(
+        '-r[Tranalyzer flow file to convert]:file:_files'
+        '-w[Destination file (use "-" for stdout) (default: derived from input file)]:file:_files'
+        '-j[Convert to JSON instead of txt]'
+        '-c[Compress (gzip) the output]'
+        '-n[Do not write column names as first row (txt only)]'
+        '(-p -P)-p[Extract the preamble (host info) as comments in the output]'
+        '(-p -P)-P[Extract the preamble (host info) in a separate "*_headers.txt" file]'
+        '-l[List the column names and exit]'
+        '(- 1 *)-h[Show help options and exit]'
+    )
+
+    _arguments -s -S "${opts[@]}"
+}
+
+compdef _t2b2t t2b2t

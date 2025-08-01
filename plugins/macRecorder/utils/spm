@@ -1,0 +1,37 @@
+#!/usr/bin/env bash
+
+source "$(dirname "$0")/../../../scripts/t2utils.sh"
+
+usage() {
+    echo "Usage:"
+    echo "    $SNAME [OPTION...] <macaddress.txt>"
+    echo
+    echo "Optional arguments:"
+    echo "    -h, --help        Show this help, then exit"
+}
+
+if [ "$1" = "-h" ] || [ "$1" == "--help" ]; then
+    usage
+    exit 0
+elif [ ! -f "$1" ]; then
+    abort_required_file
+fi
+
+FILE="$($READLINK -f "$1")"
+
+AWKF -M '
+BEGIN{
+    m = 0xffffffffffffffff
+}
+
+!/^#/ {
+    gsub("0x", "", $2)
+    split($1, A, "/")
+    a = A[1] $2
+    b = or(and(rshift(strtonum(m), A[2]), 0xffffffffffff0000), strtonum(a))
+    x = $4
+    gsub(/[ ,()-\/]/, "", x)
+    x = substr(x, 1, 9)
+    printf "%s\t%d\t%s\t%s\t%s\n", a, A[2], x, $4, $6
+    #printf "0x%016X\t%d\t1\t%s_%s\t%s_%s\n", b, A[2], x,$6, $4, $6
+}' "$FILE"

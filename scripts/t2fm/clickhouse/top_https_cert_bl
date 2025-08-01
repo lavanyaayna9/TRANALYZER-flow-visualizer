@@ -1,0 +1,30 @@
+-- Top known blacklisted certificates
+
+SELECT
+    hash,
+    toValidUTF8(cat),
+    COUNT(*) AS cnt
+
+FROM (
+    SELECT
+        hash,
+        cat
+    FROM
+        flow
+    ARRAY JOIN
+        "sslCertSha1FP" AS hash,
+        "sslBlistCat" AS cat
+    WHERE
+        notEmpty("sslCertSha1FP")
+        AND "timeFirst" >= {time_from:DateTime64(6)}
+        AND "timeLast" <= {time_to:DateTime64(6)}
+    SETTINGS
+        enable_unaligned_array_join = 1
+) AS flows
+
+WHERE cat != ''
+
+GROUP BY hash, cat
+ORDER BY multiply(cnt, {sort_order:Int8})
+
+LIMIT {n:UInt64}

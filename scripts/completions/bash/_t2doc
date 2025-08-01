@@ -1,0 +1,25 @@
+# Bash completion for t2doc
+
+_t2doc() {
+    local cur prev words cword
+
+    if type -t _init_completion &> /dev/null; then
+        _init_completion -n = || return
+    else
+        COMPREPLY=()
+        cur="${COMP_WORDS[COMP_CWORD]}"
+        prev="${COMP_WORDS[COMP_CWORD-1]}"
+    fi
+
+    local plugins=(faq scripts t2fm tawk tranalyzer2)
+    for i in "$T2PLHOME/"*; do
+        local b=$(basename "$i")
+        if [ -d "$i" ] && [ "$b" != "t2PSkel" ]; then
+            plugins+=($b)
+        fi
+    done
+
+    COMPREPLY=($(compgen -W "${plugins[*]} -f --force -y --yes -v --verbose -n --no-open -h -? --help" -- "$cur"))
+}
+
+complete -F _t2doc t2doc

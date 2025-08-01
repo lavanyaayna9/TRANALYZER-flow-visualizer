@@ -1,0 +1,34 @@
+#H dhcpMType | Description
+#H =============================================================================
+           0 | DHCPv6 Reserved
+           1 | DHCP Discover Message
+           1 | DHCPv6 SOLICIT
+           2 | DHCP Offer Message
+           2 | DHCPv6 ADVERTISE
+           3 | DHCP Request Message
+           3 | DHCPv6 REQUEST
+           4 | DHCP Decline Message
+           4 | DHCPv6 CONFIRM
+           5 | DHCP Acknowledgement Message
+           5 | DHCPv6 RENEW
+           6 | DHCP Negative Acknowledgement Message
+           6 | DHCPv6 REBIND
+           7 | DHCP Release Message
+           7 | DHCPv6 REPLY
+           8 | DHCP Informational Message
+           8 | DHCPv6 RELEASE
+           9 | DHCPv6 DECLINE
+          10 | DHCPv6 RECONFIGURE
+          11 | DHCPv6 INFORMATION-REQUEST
+          12 | DHCPv6 RELAY-FORW
+          13 | DHCPv6 RELAY-REPL
+          14 | DHCPv6 LEASEQUERY
+          15 | DHCPv6 LEASEQUERY-REPLY
+          16 | DHCPv6 LEASEQUERY-DONE
+          17 | DHCPv6 LEASEQUERY-DATA
+          18 | DHCPv6 RECONFIGURE-REQUEST
+          19 | DHCPv6 RECONFIGURE-REPLY
+          20 | DHCPv6 DHCPV4-QUERY
+          21 | DHCPv6 DHCPV4-RESPONSE
+          22 | DHCPv6 ACTIVELEASEQUERY
+          23 | DHCPv6 STARTTLS

@@ -1,0 +1,32 @@
+#!/usr/bin/env bash
+
+source "$(dirname "$0")/../../../scripts/t2utils.sh"
+
+usage() {
+    echo "Usage:"
+    echo "    $SNAME [OPTION...] <mactypefile>"
+    echo
+    echo "Optional arguments:"
+    echo "    -h, --help        Show this help, then exit"
+}
+
+if [ "$1" == "-h" ] || [ "$1" == "--help" ]; then
+    usage
+    exit 0
+elif [ ! -f "$1" ]; then
+    abort_required_file
+fi
+
+FILE="$($READLINK -f "$1")"
+
+if [ ! -f "$SHOME/ucv" ]; then
+    make -C "$SHOME" ucv || exit 1
+fi
+
+sort -k1,1 -k2,2 "$FILE" | "$SHOME/ucv" "$SHOME/../macEthlbl_HLP.txt" || exit 1
+
+if [ ! -f "$SHOME/mbm" ]; then
+    make -C "$SHOME" mbm || exit 1
+fi
+
+"$SHOME/mbm" "$SHOME/../macEthlbl_HLP.txt" "$SHOME/../macEthlbl_HLP.bin"

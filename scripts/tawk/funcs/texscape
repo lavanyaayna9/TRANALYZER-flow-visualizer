@@ -1,0 +1,57 @@
+#!/usr/bin/env awk
+#
+# Escape the string 's' to make it LaTeX compatible.
+#
+# Parameters:
+#   - s : the string to escape
+#
+# See also:
+#   - json
+#
+# Examples:
+#   - tawk '{ print texscape($0) }' file.txt
+
+@include "join"
+
+function texscape(s,        _a, _i, _l) {
+    _l = split(s, _a, "")
+    for (_i = 1; _i <= _l; _i++) {
+        switch (_a[_i]) {
+            case "#":
+            case "$":
+            case "%":
+            case "_":
+            case "{":
+            case "}":
+            case "&":
+              _a[_i] = "\\" _a[_i]
+              break
+            case "\\":
+              if (_a[_i+1] == "\"") {
+                _a[_i] = "\""
+                _a[++_i] = ""
+              } else {
+                _a[_i] = "\\textbackslash{}"
+              }
+              break
+            case "^":
+              _a[_i] = "\\textasciicircum{}"
+              break
+            case "~":
+              _a[_i] = "\\textasciitilde{}"
+              break
+            case "*":
+              _a[_i] = "\\textasteriskcentered{}"
+              break
+            case "[":
+            case "]":
+              _a[_i] = "{" _a[_i] "}"
+              break
+            default:
+              break
+        }
+    }
+    s = join(_a, "")
+    gsub(/--/, "--{}--", s)
+    return gensub(/([0-9])-([0-9])/, "\\1--\\2", "g", s)
+}

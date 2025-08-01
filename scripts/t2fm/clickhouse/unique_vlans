@@ -1,0 +1,14 @@
+-- Return a sorted list of unique VLAN tags
+
+SELECT DISTINCT vlan
+
+FROM (
+    SELECT
+        vlan
+    FROM
+        flow
+    ARRAY JOIN
+        "vlanID" AS vlan
+) AS vlans
+
+ORDER BY vlan ASC

@@ -1,0 +1,119 @@
+\IfFileExists{t2doc.cls}{
+    \documentclass[documentation]{subfiles}
+}{
+    \errmessage{Error: could not find 't2doc.cls'}
+}
+
+\begin{document}
+
+\trantitle
+    {regexHyperscan} % Plugin name
+    {Traffic pattern matching using the Hyperscan library.} % Short description
+    {Tranalyzer Development Team} % author(s)
+
+\section{regexHyperscan}\label{s:regexHyperscan}
+
+\subsection{Description}
+This plugin applies regexes on the network traffic using the
+\href{https://github.com/intel/hyperscan}{Hyperscan library}%
+\footnote{\url{https://github.com/intel/hyperscan}}.
+The regexes can be applied on the whole flow or per packet from layer 7.
+
+\subsection{Dependencies}
+
+\subsubsection{External Libraries}
+
+This plugin depends on the Hyperscan library which is included in this plugin.
+In order to compile it, the following tools and libraries are needed.
+\begin{table}[!ht]
+    \centering
+    \begin{tabular}{>{\bf}r>{\tt}l>{\tt}l}
+        \toprule
+        %                             &                      & {\bf OPT1=1}\\
+        %\midrule
+        Ubuntu:                      & sudo apt-get install & cmake g++ libboost-dev ragel\\
+        Arch:                        & sudo pacman -S       & boost cmake ragel\\
+        %Gentoo:                      & sudo emerge          & boost cmake ragel\\
+        %openSUSE:                    & sudo zypper install  & boost-devel cmake gcc-c++ ragel\\
+        Red Hat/Fedora\tablefootnote{If the {\tt dnf} command could not be found, try with {\tt yum} instead}:
+                                     & sudo dnf install     & boost-devel cmake gcc-c++ ragel\\
+        %macOS\tablefootnote{Brew is a packet manager for macOS that can be found here: \url{https://brew.sh}}:
+        %                             & brew install         & boost cmake ragel\\
+        \bottomrule
+    \end{tabular}
+\end{table}
+
+\subsubsection{Required Files}
+\label{s:hsRequiredFiles}
+The file {\tt hsregexes.txt} contains the regexes and their corresponding ID.
+The lines starting with {\tt \%} are comments. The other lines must contain two or three columns:
+\begin{longtable}{cl}
+    \toprule
+    {\bf Column} & {\bf Description}\\
+    \midrule\endhead%
+    1 & A string ID which will appear in the \hyperref[s:hsFlowOutput]{flow output} if the flow matches
+    the regex in column 2.\\
+    2 & A regex in the Hyperscan format describe in \refs{s:hsRegFormat}.\\
+    3 & Optional. Whether (1) to extract flows matching regex using the \tranrefpl{liveXtr} plugin, or not (0).\\
+    \bottomrule
+\end{longtable}
+
+\subsection{Hyperscan regex format}
+\label{s:hsRegFormat}
+
+Each regex must have the following format: {\tt /pattern/flags}\\
+
+The {\bf pattern} use the PCRE syntax with some limitation explained in the
+\href{https://intel.github.io/hyperscan/dev-reference/compilation.html#pattern-support}{Hyperscan documentation}%
+\footnote{\url{https://intel.github.io/hyperscan/dev-reference/compilation.html\#pattern-support}}.\\
+
+The {\bf flags} are optional and are described in the
+\href{https://intel.github.io/hyperscan/dev-reference/api_constants.html#pattern-flags}{Hyperscan documentation}%
+\footnote{\url{https://intel.github.io/hyperscan/dev-reference/api_constants.html\#pattern-flags}}.
+The following table provides a correspondence between the letters used in this plugin regex format
+and the values in the Hyperscan documentation.
+
+\begin{longtable}{>{\tt}cl}
+    \toprule
+    {\bf Flag} & {\bf Description}\\
+    \midrule\endhead%
+    i & {\tt HS\_FLAG\_CASELESS}\\
+    s & {\tt HS\_FLAG\_DOTALL}\\
+    m & {\tt HS\_FLAG\_MULTILINE}\\
+    H & {\tt HS\_FLAG\_SINGLEMATCH} (enabled by default)\\
+    V & {\tt HS\_FLAG\_ALLOWEMPTY}\\
+    8 & {\tt HS\_FLAG\_UTF8}\\
+    W & {\tt HS\_FLAG\_UCP}\\
+    \bottomrule
+\end{longtable}
+
+\subsection{Configuration Flags}
+The following flags can be used to control the output of the plugin:
+\begin{longtable}{>{\tt}lcl}
+    \toprule
+    {\bf Name} & {\bf Default} & {\bf Description}\\
+    \midrule\endhead%
+    RHS\_STREAMING & 1 &
+        \begin{tabular}{@{}l@{}}
+        1: Apply the regexes on the whole flow as a stream.\\
+        0: Apply the regexes per packet.\\
+        \end{tabular}\\
+    RHS\_RELOADING         & 1  & Automatically reload the regex file when modified.\\
+    RHS\_EXTRACT\_OPPOSITE & 1  & Also extract the opposite flow when regex match.\\
+    RHS\_MAX\_FLOW\_MATCH  & 16 & Max. number of regexes which can match on a flow.\\
+    RHS\_REGEX\_FILE       & {\tt\small "hsregexes.txt"} & The name of the file described in \refs{s:hsRequiredFiles}.\\
+    \bottomrule
+\end{longtable}
+
+\subsection{Flow File Output}
+\label{s:hsFlowOutput}
+The regexHyperscan plugin outputs the following columns:
+\begin{longtable}{>{\tt}lll>{\tt\small}l}
+    \toprule
+    {\bf Column} & {\bf Type} & {\bf Description}\\
+    \midrule\endhead%
+    hsregexes & RS & IDs of all regexes matching this flow & \\
+    \bottomrule
+\end{longtable}
+
+\end{document}

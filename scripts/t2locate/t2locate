@@ -1,0 +1,114 @@
+#!/usr/bin/env bash
+
+source "$(dirname "$0")/../t2utils.sh"
+
+# Exit on error and catch pipe fails
+set -e -o pipefail
+
+usage() {
+    echo "Usage:"
+    echo "    $SNAME [OPTIONS] [LATITUDE LONGITUDE]"
+    echo
+    echo "Get a nearby location based on the coordinates supplied"
+    echo
+    echo "Optional arguments:"
+    echo "    -f, --file=FILE           Read coordinates from FILE"
+    echo "                              (one lat/long pair per line)"
+    echo "    -o, --output=FILE         Write the output to FILE instead of stdout"
+    echo "    -d, --database=DIR        Absolute path to database folder"
+    echo "    -s, --separator=FS        Column separator for the output (default: '\\t')"
+    echo "    -i, --input-separator=FS  Column separator for the input (default: '\\t')"
+    echo
+    echo "Help and documentation arguments:"
+    echo "    -h, --help                Show this help, then exit"
+}
+
+# Default arguments
+DBPATH="$SHOME/data"
+ARGS=""
+LAT=""
+LNG=""
+INPUT_SEPARATOR=$'\t'
+OUTPUT_SEPARATOR=$'\t'
+INPUT_FILE="/dev/stdin"
+OUTPUT_FILE="/dev/stdout"
+
+while [ $# -ne 0 ]; do
+    case "$1" in
+        -f|--file)
+            validate_next_file "$1" "$2"
+            INPUT_FILE="$2"
+            shift
+            ;;
+        -o|--output)
+            validate_next_arg "$1" "$2"
+            OUTPUT_FILE="$2"
+            shift
+            ;;
+        -d|--database)
+            validate_next_dir "$1" "$2"
+            DBPATH="$2"
+            shift
+            ;;
+        -s|--separator)
+            validate_next_arg "$1" "$2"
+            OUTPUT_SEPARATOR="$2"
+            shift
+            ;;
+        -i|--input-separator)
+            validate_next_arg "$1" "$2"
+            INPUT_SEPARATOR="$2"
+            shift
+            ;;
+        -h|-\?|--help)
+            usage
+            exit 0
+            ;;
+        *)
+            validate_float "$1"
+            if [ -z "$LAT" ]; then
+                LAT="$1"
+            elif [ -z "$LNG" ]; then
+                LNG="$1"
+            else
+                abort_option_unknown "$1"
+            fi
+            ;;
+    esac
+    shift
+done
+
+DB="$DBPATH/db.sqlite"
+
+# Check if the coordinates were supplied as arguments directly
+if [ -n "$LAT" ]; then
+    if [ -z "$LNG" ]; then
+        printerr "Latitude AND longitude were expected, only latitude was specified."
+        abort_with_help
+    fi
+    ARGS="${LAT}${INPUT_SEPARATOR}${LNG}"
+fi
+
+# Check for sqlite
+SQLITE3="$SHOME/scripts/sqlite3"
+if [ ! -f "$SQLITE3" ]; then
+    printerr "Unable to find sqlite3 in '$SHOME/scripts/'."
+    printinf "Did you run '$SHOME/update_db' first?"
+    exit 1
+fi
+
+# Read queries
+locate_query="$(cat "$SHOME/scripts/locate.sql")"
+info_query="$(cat "$SHOME/scripts/get_info.sql")"
+
+# Query the database
+if [ -n "${ARGS}" ]; then
+    echo "${ARGS}"
+else
+    cat "${INPUT_FILE}"
+fi \
+    | AWK -f "$SHOME/scripts/locate.awk" -v query="${locate_query}" -F "${INPUT_SEPARATOR}" \
+    | "$SQLITE3" "$DB" -separator "${OUTPUT_SEPARATOR}" \
+    | AWK -f "$SHOME/scripts/get_info.awk" -v query="${info_query}" -v FS="${OUTPUT_SEPARATOR}" \
+    | "$SQLITE3" "$DB" -separator "${OUTPUT_SEPARATOR}" \
+> "${OUTPUT_FILE}"

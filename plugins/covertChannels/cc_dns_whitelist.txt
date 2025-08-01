@@ -1,0 +1,16 @@
+% DNS whitelist for the covert_channels plugin
+% one domain per line
+
+% ESET antivirus uses DNS to do URL check for parental/web control: https://forum.eset.com/topic/2037-is-this-malware/
+e5.sk
+google.com
+% reverse DNS queries (PTR) IPv4
+in-addr.arpa
+% reverse DNS queries (PTR) IPv6
+ip6.arpa
+mcafee.com
+metric.gstatic.com
+rackcdn.com
+ramco.com
+% Sophos Central Management Endpoint: https://community.sophos.com/kb/en-us/119263
+upe.p.hmr.sophos.com

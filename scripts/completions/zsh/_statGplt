@@ -1,0 +1,16 @@
+# ZSH completion for statGplt
+
+_statGplt() {
+    #compdef statGplt
+
+    local cur="${words[CURRENT]}"
+    [ $CURRENT -gt 2 ] && local prev="${words[CURRENT-1]}"
+
+    if [[ "$cur" == -* ]]; then
+        _arguments --
+    else
+        _files
+    fi
+}
+
+compdef _statGplt statGplt

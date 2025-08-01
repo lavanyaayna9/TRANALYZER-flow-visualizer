@@ -1,0 +1,11 @@
+#H bit | geoStat | Description
+#H =============================================================================
+#W   0 | 0x01    | A string had to be truncated... increase GEOIP_BUFSIZE
+#E   1 | 0x02    | Source IP lookup failed
+#E   2 | 0x04    | Destination IP lookup failed
+     3 | 0x08    | -
+
+     4 | 0x10    | -
+     5 | 0x20    | -
+     6 | 0x40    | -
+     7 | 0x80    | -

@@ -1,0 +1,201 @@
+\IfFileExists{t2doc.cls}{
+    \documentclass[documentation]{subfiles}
+}{
+    \errmessage{Error: could not find 't2doc.cls'}
+}
+
+\begin{document}
+
+\trantitle
+    {ircDecode}
+    {Internet Relay Chat (IRC)}
+    {Tranalyzer Development Team} % author(s)
+
+\section{ircDecode}\label{s:ircDecode}
+
+\subsection{Description}
+The ircDecode plugin analyzes IRC traffic.
+User defined compiler switches are in {\em ircDecode.h}.
+
+\subsection{Configuration Flags}
+The following flags can be used to control the output of the plugin:
+\begin{longtable}{>{\tt}lcl>{\tt\small}l}
+    \toprule
+    {\bf Name} & {\bf Default} & {\bf Description} & {\bf Flags}\\
+    \midrule\endhead%
+    IRC\_SAVE      &  0 & Save content to {\tt\small IRC\_F\_PATH}             & \\
+    IRC\_RMDIR     &  1 & Empty {\tt\small IRC\_F\_PATH} before starting       & IRC\_SAVE=1\\
+    IRC\_CMD\_AGGR &  1 & Aggregate IRC commands/response codes                & \\
+    IRC\_BITFIELD  &  0 & Bitfield coding of IRC commands                      & \\
+    IRC\_UXNMLN    & 10 & maximal username length                              & \\
+    IRC\_PXNMLN    & 10 & maximal password length                              & \\
+    IRC\_NXNMLN    & 10 & maximal nickname length                              & \\
+    IRC\_MXNMLN    & 50 & maximal name length                                  & \\
+    IRC\_MAXUNM    &  5 & Maximal number of users                              & \\
+    IRC\_MAXPNM    &  5 & Maximal number of passwords                          & \\
+    IRC\_MAXNNM    &  5 & Maximal number of nicknames                          & \\
+    IRC\_MAXCNM    & 20 & Maximal number of parameters                         & \\
+
+    IRC\_F\_PATH   & {\tt\small "/tmp/IRCFILES/"} & Path for extracted content & \\
+    \bottomrule
+\end{longtable}
+
+\subsubsection{Environment Variable Configuration Flags}
+The following configuration flags can also be configured with environment variables ({\tt ENVCNTRL>0}):
+\begin{itemize}
+    \item {\tt IRC\_RMDIR}
+    \item {\tt IRC\_F\_PATH}
+\end{itemize}
+
+\subsection{Flow File Output}
+The ircDecode plugin outputs the following columns:
+\begin{longtable}{>{\tt}lll>{\tt\small}l}
+    \toprule
+    {\bf Column} & {\bf Type} & {\bf Description} & {\bf Flags}\\
+    \midrule\endhead%
+    \nameref{ircStat} & H8   & Status               & \\
+    \nameref{ircCBF}  & H64  & Commands             & IRC\_BITFIELD=1\\
+    ircCC             & RSC  & Command codes        & \\
+    ircRC             & RU16 & Response codes       & \\
+    ircNumUser        & U8   & Number of users      & \\
+    ircUser           & RS   & Users                & \\
+    ircNumPass        & U8   & Number of passwords  & \\
+    ircPass           & RS   & Passwords            & \\
+    ircNumNick        & U8   & Number of nicknames  & \\
+    ircNick           & RS   & Nicknames            & \\
+    ircNumC           & U8   & Number of parameters & \\
+    ircC              & RS   & Content              & \\
+    \bottomrule
+\end{longtable}
+
+\clearpage
+
+\subsubsection{ircStat}\label{ircStat}
+The {\tt ircStat} column is to be interpreted as follows:
+\begin{longtable}{>{\tt}rl}
+    \toprule
+    {\bf ircStat} & {\bf Description}\\
+    \midrule\endhead%
+    $2^0$ (=0x01) & IRC port found\\
+    $2^1$ (=0x02) & IRC registration successful\\
+    $2^2$ (=0x04) & IRC password incorrect\\
+    $2^3$ (=0x08) & ---\\
+    \\
+    $2^4$ (=0x10) & Unrecognized IRC command\\
+    $2^5$ (=0x20) & File error ({\tt IRC\_SAVE=1}\\
+    $2^6$ (=0x40) & Array string or filename overflow\\
+    $2^7$ (=0x80) & Invalid format or parsing error\\
+    \bottomrule
+\end{longtable}
+
+\clearpage
+
+\subsubsection{ircCBF}\label{ircCBF}
+The {\tt ircCBF} column is to be interpreted as follows:
+
+\begin{minipage}{.48\textwidth}
+    \small
+    \begin{longtable}{>{\tt}r>{\tt}l}
+        \toprule
+        {\bf ircCBF} & {\bf Description} \\
+        \midrule\endhead%
+        $2^{0}$  (=0x0000.0000.0000.0001) & ADMIN        \\
+        $2^{1}$  (=0x0000.0000.0000.0002) & AWAY         \\
+        $2^{2}$  (=0x0000.0000.0000.0004) & CAP          \\
+        $2^{3}$  (=0x0000.0000.0000.0008) & CNOTICE      \\
+        \\
+        $2^{4}$  (=0x0000.0000.0000.0010) & CONNECT      \\
+        $2^{5}$  (=0x0000.0000.0000.0020) & CPRIVMSG     \\
+        $2^{6}$  (=0x0000.0000.0000.0040) & DIE          \\
+        $2^{7}$  (=0x0000.0000.0000.0080) & ENCAP        \\
+        \\
+        $2^{8}$  (=0x0000.0000.0000.0100) & ERROR        \\
+        $2^{9}$  (=0x0000.0000.0000.0200) & HELP         \\
+        $2^{10}$ (=0x0000.0000.0000.0400) & INFO         \\
+        $2^{11}$ (=0x0000.0000.0000.0800) & INVITE       \\
+        \\
+        $2^{12}$ (=0x0000.0000.0000.1000) & ISON         \\
+        $2^{13}$ (=0x0000.0000.0000.2000) & JOIN         \\
+        $2^{14}$ (=0x0000.0000.0000.4000) & KICK         \\
+        $2^{15}$ (=0x0000.0000.0000.8000) & KILL         \\
+        \\
+        $2^{16}$ (=0x0000.0000.0001.0000) & KNOCK        \\
+        $2^{17}$ (=0x0000.0000.0002.0000) & LINKS        \\
+        $2^{18}$ (=0x0000.0000.0004.0000) & LIST         \\
+        $2^{19}$ (=0x0000.0000.0008.0000) & LUSERS       \\
+        \\
+        $2^{20}$ (=0x0000.0000.0010.0000) & MODE         \\
+        $2^{21}$ (=0x0000.0000.0020.0000) & MOTD         \\
+        $2^{22}$ (=0x0000.0000.0040.0000) & NAMES        \\
+        $2^{23}$ (=0x0000.0000.0080.0000) & NAMESX       \\
+        \\
+        $2^{24}$ (=0x0000.0000.0100.0000) & NICK         \\
+        $2^{25}$ (=0x0000.0000.0200.0000) & NJOIN        \\
+        $2^{26}$ (=0x0000.0000.0400.0000) & NOTICE       \\
+        $2^{27}$ (=0x0000.0000.0800.0000) & OPER         \\
+        \\
+        $2^{28}$ (=0x0000.0000.1000.0000) & PART         \\
+        $2^{29}$ (=0x0000.0000.2000.0000) & PASS         \\
+        $2^{30}$ (=0x0000.0000.4000.0000) & PING         \\
+        $2^{31}$ (=0x0000.0000.8000.0000) & PONG         \\
+        \bottomrule
+    \end{longtable}
+\end{minipage}
+\hfill
+\begin{minipage}{.48\textwidth}
+    \small
+    \begin{longtable}{>{\tt}r>{\tt}l}
+        \toprule
+        {\bf ircCBF} & {\bf Description} \\
+        \midrule\endhead%
+        $2^{32}$ (=0x0000.0001.0000.0000) & PRIVMSG      \\
+        $2^{33}$ (=0x0000.0002.0000.0000) & QUIT         \\
+        $2^{34}$ (=0x0000.0004.0000.0000) & REHASH       \\
+        $2^{35}$ (=0x0000.0008.0000.0000) & RESTART      \\
+        \\
+        $2^{36}$ (=0x0000.0010.0000.0000) & RULES        \\
+        $2^{37}$ (=0x0000.0020.0000.0000) & SERVER       \\
+        $2^{38}$ (=0x0000.0040.0000.0000) & SERVICE      \\
+        $2^{39}$ (=0x0000.0080.0000.0000) & SERVLIST     \\
+        \\
+        $2^{40}$ (=0x0000.0100.0000.0000) & SETNAME      \\
+        $2^{41}$ (=0x0000.0200.0000.0000) & SILENCE      \\
+        $2^{42}$ (=0x0000.0400.0000.0000) & SQUERY       \\
+        $2^{43}$ (=0x0000.0800.0000.0000) & SQUIT        \\
+        \\
+        $2^{44}$ (=0x0000.1000.0000.0000) & STATS        \\
+        $2^{45}$ (=0x0000.2000.0000.0000) & SUMMON       \\
+        $2^{46}$ (=0x0000.4000.0000.0000) & TIME         \\
+        $2^{47}$ (=0x0000.8000.0000.0000) & TOPIC        \\
+        \\
+        $2^{48}$ (=0x0001.0000.0000.0000) & TRACE        \\
+        $2^{49}$ (=0x0002.0000.0000.0000) & UHNAMES      \\
+        $2^{50}$ (=0x0004.0000.0000.0000) & USER         \\
+        $2^{51}$ (=0x0008.0000.0000.0000) & USERHOST     \\
+        \\
+        $2^{52}$ (=0x0010.0000.0000.0000) & USERIP       \\
+        $2^{53}$ (=0x0020.0000.0000.0000) & USERS        \\
+        $2^{54}$ (=0x0040.0000.0000.0000) & VERSION      \\
+        $2^{55}$ (=0x0080.0000.0000.0000) & WALLOPS      \\
+        \\
+        $2^{56}$ (=0x0100.0000.0000.0000) & WATCH        \\
+        $2^{57}$ (=0x0200.0000.0000.0000) & WHO          \\
+        $2^{58}$ (=0x0400.0000.0000.0000) & WHOIS        \\
+        $2^{59}$ (=0x0800.0000.0000.0000) & WHOWAS       \\
+        \\
+        $2^{60}$ (=0x1000.0000.0000.0000) & --           \\
+        $2^{61}$ (=0x2000.0000.0000.0000) & --           \\
+        $2^{62}$ (=0x4000.0000.0000.0000) & --           \\
+        $2^{63}$ (=0x8000.0000.0000.0000) & \textnormal{Not supported}\\
+        \bottomrule
+    \end{longtable}
+\end{minipage}
+
+\subsection{Plugin Report Output}
+The following information is reported:
+\begin{itemize}
+    \item Aggregated {\tt\nameref{ircStat}}
+    \item Number of IRC packets
+\end{itemize}
+
+\end{document}

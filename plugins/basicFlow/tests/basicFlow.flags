@@ -1,0 +1,57 @@
+# Flags to toggle
+#
+# Run the ../../../tests/test.sh script from the plugin main directory:
+#
+# cd $T2HOME/plugins/basicFlow
+# ../../tests/test.sh [OPTION...]
+#
+# If run from this folder, make sure to use absolute path for the '-p' option.
+#
+# Flag name     File
+
+# ../../tranalyzer2/src/networkHeaders.h
+ETH_ACTIVATE           ../../tranalyzer2/src/networkHeaders.h
+IPV6_ACTIVATE          ../../tranalyzer2/src/networkHeaders.h
+T2_PRI_HDRDESC         ../../tranalyzer2/src/networkHeaders.h
+
+# ../../tranalyzer2/src/tranalyzer.h
+ANONYM_IP              ../../tranalyzer2/src/tranalyzer.h
+BLOCK_BUF              ../../tranalyzer2/src/tranalyzer.h
+RELTIME                ../../tranalyzer2/src/tranalyzer.h
+SUBNET_ON              ../../tranalyzer2/src/tranalyzer.h
+TSTAMP_UTC             ../../tranalyzer2/src/tranalyzer.h
+TSTAMP_PREC            ../../tranalyzer2/src/tranalyzer.h
+
+# ../../utils/bin2txt.h
+B2T_TIMESTR            ../../utils/bin2txt.h
+
+# ../../utils/subnetHL.h
+CNTYCTY                ../../utils/subnetHL.h
+#CNTYLEN                ../../utils/subnetHL.h
+#CTYLEN                 ../../utils/subnetHL.h
+SUBRNG                 ../../utils/subnetHL.h
+
+# src/basicFlow.h
+BFO_SENSORID           src/basicFlow.h
+BFO_MAC                src/basicFlow.h
+BFO_ETHERTYPE          src/basicFlow.h
+BFO_VLAN               src/basicFlow.h
+BFO_MPLS               src/basicFlow.h
+BFO_L2TP               src/basicFlow.h
+BFO_GRE                src/basicFlow.h
+BFO_PPP                src/basicFlow.h
+BFO_LAPD               src/basicFlow.h
+BFO_TEREDO             src/basicFlow.h
+BFO_MAX_HDRDESC        src/basicFlow.h
+BFO_MAX_MAC            src/basicFlow.h
+BFO_MAX_MPLS           src/basicFlow.h
+BFO_MAX_VLAN           src/basicFlow.h
+BFO_SUBNET_TEST        src/basicFlow.h
+BFO_SUBNET_IPLIST      src/basicFlow.h
+BFO_SUBNET_TEST_L2TP   src/basicFlow.h
+BFO_SUBNET_TEST_GRE    src/basicFlow.h
+BFO_SUBNET_TEST_TEREDO src/basicFlow.h
+BFO_SUBNET_ASN         src/basicFlow.h
+BFO_SUBNET_LL          src/basicFlow.h
+BFO_SUBNET_ORG         src/basicFlow.h
+BFO_SUBNET_HEX         src/basicFlow.h

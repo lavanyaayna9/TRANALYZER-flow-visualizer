@@ -1,0 +1,96 @@
+#!/usr/bin/env bash
+
+source "$(dirname "$0")/../../../scripts/t2utils.sh"
+
+usage() {
+    printf "Usage:\n"
+    printf "    $SNAME [OPTION...] <subnets[AB][46].txt>\n\n"
+    printf "Optional arguments:\n"
+    printf "    -4     Generate subnet file for IPv4\n"
+    printf "    -6     Generate subnet file for IPv6\n"
+    printf "\n"
+    printf "    -C     Country file to use [\$T2HOME/utils/subnet/whoCntryCds.txt]\n"
+    printf "    -O     Organization file to use [\$T2HOME/utils/subnet/whoOrgCds.txt]\n"
+    printf "\n"
+    printf "    -h     Show this help, then exit\n"
+}
+
+WHOCNTRY="$T2HOME/utils/subnet/whoCntryCds.txt"
+WHOORG="$T2HOME/utils/subnet/whoOrgCds.txt"
+
+while [ $# -gt 0 ]; do
+    case "$1" in
+        -C)
+            validate_next_file "$1" "$2"
+            WHOCNTRY="$2"
+            shift
+            ;;
+        -O)
+            validate_next_file "$1" "$2"
+            WHOORG="$2"
+            shift
+            ;;
+        -4) IPVER=4;;
+        -6) IPVER=6;;
+        -h|-\?|--help)
+            usage
+            exit 0
+            ;;
+        *)
+            if [ ! -f "$1" ]; then
+                abort_option_unknown "$1"
+            fi
+            FILE="$1"
+            ;;
+    esac
+    shift
+done
+
+if [ ! -f "$FILE" ]; then
+    abort_required_file
+fi
+
+if [ -z "$IPVER" ]; then
+    # Try to automatically detect the version
+    IPVER="$(AWK 'match($0, /^#[ \t]+Begin[ \t]+IPv([46])[ \t]+/, ipver) {
+        print ipver[1]
+        exit
+    }' <<< "$(head -3 "$FILE")")"
+fi
+
+if [ -z "$IPVER" ]; then
+    printerr "One of '-4' or '-6' option is required"
+    abort_with_help
+fi
+
+INFILE=(
+    "$WHOCNTRY"
+    "$WHOORG"
+    "$FILE"
+)
+
+for i in "${INFILE[@]}"; do
+    if [ ! -f "$i" ]; then
+        printerr "File '$i' not found"
+        exit 1
+    fi
+done
+
+AWK -F'\t' -v ipver=$IPVER '
+    ARGIND == 1 {
+        a[$2] = strtonum($1)
+        next
+    }
+
+    ARGIND == 2 {
+        b[$2] = strtonum($1)
+        next
+    }
+
+    !/^#/ {
+	s = or(a[$8], b[tolower($11)]);
+        printf "%s\t%s\t0x%08x\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\n", $1, $2, s, $4, $5, $6, $7, $8, $9, $10, $11
+    }
+
+    /^#/ { print }
+' "${INFILE[@]}"

@@ -1,0 +1,456 @@
+#!/usr/bin/env bash
+#
+# Usage: ./rospf FILE_ospfHello.txt
+
+source "$(dirname "$0")/../../../scripts/t2utils.sh"
+
+usage() {
+    printf "Usage:\n"
+    printf "    $SNAME [OPTION...] <FILE_ospfHello.txt>\n"
+    printf "\nOptional arguments:\n"
+    printf "    -p, --plot          display a map of the network with dotty/xdot\n"
+    printf "    -D, --no-dot        do not save the map of the network as a '.dot' file\n"
+    printf "    -G, --no-png        do not save the map of the network as a '.png' file\n"
+    printf "    -h, --help          display this help, then exit\n"
+}
+
+while [ $# -gt 0 ]; do
+    case "$1" in
+        -p|--plot)
+            PLOT=1
+            ;;
+        -D|--no-dot)
+            NODOT=1
+            ;;
+        -G|--no-png)
+            NOPNG=1
+            ;;
+        -h|-\?|--help)
+            usage
+            exit 0
+            ;;
+        *)
+            if [ ! -f "$1" ]; then
+                abort_option_unknown "$1"
+            fi
+            INFILE="$1"
+            ;;
+    esac
+    shift
+done
+
+if [ ! -f "$INFILE" ]; then
+    abort_required_file
+fi
+
+if [ -n "$PLOT" ]; then
+    check_dependency "dot" "graphviz"
+fi
+
+# Default options for tawk
+TAWK_OPTS=(-H)
+
+# Make sure all the required columns exist
+REQUIRED=(
+    AreaID
+    Netmask
+    Network
+    srcIP
+    SrcOSPRtr
+    Ver
+)
+
+COLS="$("$TAWK" "${TAWK_OPTS[@]}" -l "$INFILE" | AWK '{ print $2 }')"
+
+for i in "${REQUIRED[@]}"; do
+    if ! grep -qFw "$i" <<< "${COLS[@]}"; then
+        printerr "Column '$i' could not be found"
+        exit 1
+    fi
+done
+
+OUTFILE1="$(mktemp)"
+
+# list all the networks and their areas
+# (sorted by area, then by network)
+#"$TAWK" ${TAWK_OPTS[*]} '$Ver == 2 {
+"$TAWK" "${TAWK_OPTS[@]}" '{
+    print ip2num($AreaID), $Network, ip2mask($Netmask)
+}' "$INFILE" | sort -u -V -k2 | AWK -v OFS="\t" '
+    BEGIN {
+        print "Name", "Area", "Network"
+    }
+    {
+        print "NET" nr++, $1, $2 "/" $3
+    }
+    END {
+        printf "\n"
+    }
+' | tee "$OUTFILE1"
+
+# get the networks
+#NETS=$("$TAWK" ${TAWK_OPTS[*]} '$Ver == 2 { print $Network, ip2hex($Netmask) }' "$INFILE" | sort -u -V)
+NETS=$("$TAWK" "${TAWK_OPTS[@]}" '{ print $Network, ip2hex($Netmask) }' "$INFILE" | sort -u -V)
+
+# get all the interfaces
+IFACE=($(
+    #for i in $("$TAWK" ${TAWK_OPTS[*]} '$Ver == 2 { print $SrcOSPRtr }' "$INFILE" | sort -u -V); do
+    for i in $("$TAWK" "${TAWK_OPTS[@]}" '{ print $SrcOSPRtr }' "$INFILE" | sort -u -V); do
+        # "$TAWK" "${TAWK_OPTS[@]}" -v _ip="$i" '$Ver == 2 && ($SrcOSPRtr == _ip || $srcIP == _ip) {
+        "$TAWK" "${TAWK_OPTS[@]}" -v _ip="$i" '($SrcOSPRtr == _ip || $srcIP == _ip) {
+            print $srcIP; print $SrcOSPRtr
+        }' "$INFILE" | sort -u -V
+    done | sort -u -V
+))
+
+# list all routers and their interfaces
+ROUTERS="$(for i in "${IFACE[@]}"; do
+    "$TAWK" "${TAWK_OPTS[@]}" -v _ip="$i" '
+        $Ver == 2 && $srcIP == _ip {
+            print $srcIP, $SrcOSPRtr
+            print $SrcOSPRtr, $srcIP
+            print $SrcOSPRtr, $SrcOSPRtr
+        }' "$INFILE" | sort -u -V
+done | sort -u | AWK -v OFS="\t" -v net="$NETS" '
+    # Add the network to which each interface belongs to
+    BEGIN {
+        split(net, n, /[[:space:]]*/)
+        for (i in n) {
+            if (i % 2) {
+                split(n[i], _ip, ".")
+                m = 0
+                for (j = 1; j <= 4; j++) {
+                    m = or(lshift(m, 8), and(_ip[j], 255))
+                }
+                n[i] = m  # net as an int
+            }
+        }
+    }
+    {
+        c[$1]++
+        if ($1 == $2) next
+        if (!a[$1]) a[$1] = $2
+        else a[$1] = a[$1] "\t" $2
+    }
+    END {
+        for (i in a) {
+            if (c[i] == 1) {
+                for (j in a) {
+                    if (c[j] > 1 && j != i) {
+                        s = j "\t" a[j]
+                        if (match(s, i) && match(s, a[i])) {
+                            # record is redundant
+                            c[i] = 0
+                        }
+                    }
+                }
+            }
+
+            if (c[i] > 0) {
+                # convert ip addresses to int
+                split(i, _ip, ".")
+                p = 0
+                for (j = 1; j <= 4; j++) {
+                    p = or(lshift(p, 8), and(_ip[j], 255))
+                }
+                nn = "?"
+                for (j in n) {
+                    if (j % 2) {
+                        if (and(p, strtonum(n[j+1])) == n[j]) {
+                            nn = (j-1)/2
+                        }
+                    }
+                }
+                split(a[i], aa, /[[:space:]]*/)
+                for (k in aa) {
+                    mm[k] = 0
+                    split(aa[k], _ip, ".")
+                    p = 0
+                    for (j = 1; j <= 4; j++) {
+                        p = or(lshift(p, 8), and(_ip[j], 255))
+                    }
+                    for (j in n) {
+                        if (j % 2) {
+                            if (and(p, strtonum(n[j+1])) == n[j]) {
+                                # ip belongs to net (j-1)/2
+                                mm[k] = (j-1)/2
+                            }
+                        }
+                    }
+                }
+
+                t = "R" nr++ "\t" i "\tNET" nn
+                for (k in aa) {
+                    t = t "\t" aa[k] "\tNET" mm[k]
+                }
+                print t
+            }
+        }
+    }')"
+
+echo "$ROUTERS" | AWK -v OFS="\t" '
+    BEGIN {
+        print "Router", "Interface_n", "Network_n"
+    }
+    {
+        s = $1
+        for (i = 2; i <= NF; i++) {
+            if (match($i, /^R[[:digit:]]+/)) s = s "\n" $i
+            else s = s "\t" $i
+        }
+        printf s "\n"
+    }
+    END {
+        printf "\n"
+    }
+' | tee -a "$OUTFILE1"
+
+echo "$ROUTERS" | AWK -v OFS="\t" '
+    BEGIN {
+        print "Router", "Connected Routers"
+    }
+    {
+        split($0, l, /R[[:digit:]]+[[:space:]]*/)
+        for (i in l) {
+            if (l[i]) {
+                r++
+                n = 0
+                split(l[i], ll, /[[:space:]]+/)
+                for (j in ll) {
+                    if (ll[j] && match(ll[j], /^NET[^?]+/)) {
+                        nn[r,++n] = ll[j]
+                    }
+                }
+            }
+        }
+
+        for (ij in nn) {
+            split(ij, idx1, SUBSEP)
+            if (!(idx1[1] in t)) t[idx1[1]] = "R" idx1[1]
+            for (kl in nn) {
+                split(kl, idx2, SUBSEP)
+                if (idx2[1] != idx1[1]) { # do not check a router against itself
+                    if (nn[idx1[1],idx1[2]] == nn[idx2[1],idx2[2]]) {
+                        t[idx1[1]] = t[idx1[1]] "\tR" idx2[1];
+                    }
+                }
+            }
+        }
+    }
+    END {
+        for (i = 1; i <= r; i++) {
+            split(t[i], tt, /[[:space:]]+/)
+            s = "R" i-1
+            for (j = 1; j <= r; j++) {
+                if (i != j) {
+                    for (k in tt) {
+                        if (tt[k] == "R" j) {
+                            s = s "\tR" j-1
+                            break
+                        }
+                    }
+                }
+            }
+            print s
+        }
+    }
+' | tee -a "$OUTFILE1"
+
+if [ -z "$PLOT" ]; then
+    exit 0
+fi
+
+INFILE2="$OUTFILE1"
+DOTFILE="$(mktemp)"
+
+# get the areas
+AREAS=($("$TAWK" "${TAWK_OPTS[@]}" '/^NET[0-9]+/ { print $Area }' "$INFILE2" | sort -u -V))
+
+# colors for the areas
+AREA_COLORS=(
+    "cornflowerblue"
+    "aquamarine"
+    "cadetblue"
+    "coral"
+    "darkseagreen"
+    "\"#66c2a5\""
+    "\"#fc8d62\""
+    "\"#8da0cb\""
+    "\"#e78ac3\""
+    "\"#a6d854\""
+    "\"#ffd92f\""
+    "\"#e5c494\""
+    "\"#b3b3b3\""
+)
+
+cat << EOF > "$DOTFILE"
+strict graph G {
+
+    graph [
+        //fontname = Arial,
+        fontsize = 12,
+        nodesep = 8,
+        ranksep = 6,
+        //layout = fdp,
+        //layout = sfdp,
+        //layout = twopi,
+        //layout = circo,
+        layout = neato,
+        //fixedsize = true,
+        overlap = false,
+    ];
+
+    node [
+        //fontname = Arial,
+        fontsize = 8,
+        shape = circle,
+        style = filled,
+        fixedsize = true,
+        //color = white,
+        //color = bisque3,
+    ];
+
+    edge [
+        //fontname = Arial,
+        fontsize = 8,
+        len = 1.8,
+    ];
+EOF
+
+# create a subgraph cluster for each area
+for i in "${AREAS[@]}"; do
+    cat << EOF >> "$DOTFILE"
+
+    subgraph cluster_area$i {
+        label = "Area $i\\n";
+        style = filled;
+        color = ${AREA_COLORS[$((i % ${#AREA_COLORS[@]}))]};
+EOF
+
+    # Add each network as a dashed-rectangle
+    "$TAWK" "${TAWK_OPTS[@]}" -v _area="$i" '
+        BEGIN {
+            _tab1 = "    "
+            _tab2 = _tab1 _tab1
+            printf "\n%s// Networks\n\n", _tab2
+        }
+        /^NET[0-9]+/ && $Area == _area {
+            printf _tab2 "%s [\n", $Name
+            printf _tab2 "    label=\"%s\\n%s\",\n", $Name, $Network
+            printf _tab2 "    shape = rectangle,\n"
+            printf _tab2 "    style = dashed,\n"
+            printf _tab2 "    color = black,\n"
+            if (_area == "0") {
+                printf _tab2 "    width = 8,\n"
+                printf _tab2 "    height = 0.75,\n"
+            } else {
+                printf _tab2 "    width = 1.1,\n"
+            }
+            printf _tab2 "]\n\n"
+        }' "$INFILE2" >> "$DOTFILE"
+
+    NET_BY_AREA="$("$TAWK" "${TAWK_OPTS[@]}" -v _area="$i" '
+        /^NET[0-9]+/ && $Area == _area {
+            printf "%s;", $Name
+        }
+        END {
+            printf "\n"
+        }' "$INFILE2" | "$SED" 's/;$//')"
+
+    AWKF -v _area="$i" -v _net_by_area="$NET_BY_AREA" '
+        BEGIN {
+            _num_net = split(_net_by_area, _net, /;/)
+            _tab1 = "    "
+            _tab2 = _tab1 _tab1
+            printf _tab2 "// Routers\n\n"
+        }
+        /^R[0-9]+/ && /\<NET[0-9]+\>/ {
+            links = 0
+            for (i = 3; i <= NF; i += 2) {
+                if ($i != "NET?") {
+                    for (j = 0; j <= _num_net; j++) {
+                        if ($i == _net[j]) {
+                            links++
+                        }
+                    }
+                }
+            }
+            # Simple heuristics to determine if the router belongs to this area
+            if (links > 1) print _tab2 $1
+            links = 0
+        }
+    ' "$INFILE2" >> "$DOTFILE"
+    echo "    }" >> "$DOTFILE"  # end of the subgraph cluster
+done
+
+AWKF '
+    BEGIN {
+        _unk = 0
+        _tab = "    "
+        printf "\n"
+    }
+    /^R[0-9]+/ && /\<NET[0-9]+\>/ {
+        for (i = 3; i <= NF; i += 2) {
+            if ($i == "NET?") {
+                newNode = "UNK" _unk++
+                printf "\n"
+                printf _tab "%s [\n", newNode
+                printf _tab "    label=\"" newNode "\\n" $(i-1) "\",\n"
+                printf _tab "    shape = rectangle,\n"
+                printf _tab "    style = dotted,\n"
+                printf _tab "    color = black,\n"
+                printf _tab "    width=1.1,\n"
+                printf _tab "]\n\n"
+                printf _tab $1 " -- " newNode " [taillabel=\"" $(i-1) "\"]\n"
+            } else {
+                printf _tab $1 " -- " $i " [taillabel=\"" $(i-1) "\"]\n"
+            }
+        }
+    }' "$INFILE2" >> "$DOTFILE"
+
+# end of the graph
+echo "}" >> "$DOTFILE"
+
+# Save the .dot file if required
+if [ -z "$NODOT" ]; then
+    OUTFILE3="$(replace_suffix "$INFILE" ".txt" ".dot")"
+    mv "$DOTFILE" "$OUTFILE3"
+    printok "Saved '$OUTFILE3'"
+    DOTFILE="$OUTFILE3"
+fi
+
+# Generate a .png file if required
+if [ -z "$NOPNG" ]; then
+    PNG="$(replace_suffix "$INFILE" ".txt" ".png")"
+    if dot -Tpng "$DOTFILE" -o "$PNG"; then
+        printok "Successfully generated '$PNG'"
+    else
+        printerr "Failed to generate '$PNG'"
+        STATUS=1
+    fi
+fi
+
+# Map the network
+if [ -n "$PLOT" ]; then
+    if hash xdot 2> /dev/null; then
+        xdot "$DOTFILE"
+    elif hash dotty 2> /dev/null; then
+        dotty "$DOTFILE"
+    else
+        printerr "No viewer found for dot files."
+        printinf "Try installing xdot or dotty."
+        STATUS=1
+    fi
+fi
+
+# Remove temporary files
+rm -f "$OUTFILE1"
+if [ -n "$NODOT" ]; then
+    rm -f "$DOTFILE"
+fi
+
+if [ -n "$STATUS" ]; then
+    exit "$STATUS"
+else
+    exit 0
+fi

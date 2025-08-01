@@ -1,0 +1,11 @@
+#H bit | ntlmsspStat | Description
+#H =============================================================================
+     0 | 0x01        | Flow is NTLMSSP
+     1 | 0x02        | Flow contains Negotiate messages
+     2 | 0x04        | Flow contains Challenge messages
+     3 | 0x08        | Flow contains Authenticate messages
+
+     4 | 0x10        | NetNTLMv1 hash was extracted for this flow
+     5 | 0x20        | NetNTLMv2 hash was extracted for this flow
+#W   6 | 0x40        | String output was truncated... increase NTLMSSP_NAME_LEN
+#E   7 | 0x80        | Decoding error, invalid message type, ...

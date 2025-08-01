@@ -1,0 +1,119 @@
+#!/usr/bin/env bash
+
+source "$(dirname "$0")/../../../scripts/t2utils.sh"
+
+usage() {
+    printf "Usage:\n"
+    printf "    $SNAME [OPTION...]\n\n"
+    printf "Optional arguments:\n"
+    printf "    -u      update address list\n"
+    printf "    -c      convert address list\n"
+    printf "    -a      update and convert address list\n"
+    printf "    -h      display this help, then exit\n"
+}
+
+if [ $# -eq 0 ]; then
+    printerr "One of '-a', '-u' or '-c' option is required"
+    abort_with_help
+fi
+
+while [ $# -gt 0 ]; do
+    case "$1" in
+        -a|--all)
+            UPDATE=1
+            CONVERT=1
+            ;;
+        -u|--update)
+            UPDATE=1
+            ;;
+        -c|--convert)
+            CONVERT=1
+            ;;
+        -h|-\?|--help)
+            usage
+            exit 0
+            ;;
+        *)
+            abort_option_unknown "$1"
+            ;;
+    esac
+    shift
+done
+
+cd "$(dirname "$0")" || fatal "Failed to cd into '$(dirname "$0")'"
+
+if [ -n "$UPDATE" ]; then
+    printinf "Downloading latest Tor address file"
+
+    # Save the files in TMPFILE so if the download fails, we can reuse the old ones
+    TMPFILE="$(mktemp)"
+
+    t2_wget https://onionoo.torproject.org/details?search=flag:Guard%20running:true "$TMPFILE"
+    RET1=$?
+    [ $RET1 -eq 0 ] && mv "$TMPFILE" guard.json
+
+    t2_wget https://onionoo.torproject.org/details?search=flag:Exit%20running:true "$TMPFILE"
+    RET2=$?
+    [ $RET2 -eq 0 ] && mv "$TMPFILE" exit.json
+
+    # Remove temporary file
+    [ -f "$TMPFILE" ] && rm -f "$TMPFILE"
+
+    if [ $RET1 -ne 0 ] || [ $RET2 -ne 0 ]; then
+        printerr "Failed to update Tor files"
+        if [ -z "$CONVERT" ]; then
+             exit 1
+        elif [ -f "guard.json" ] && [ -f "exit.json" ]; then
+            printinf "Reusing old 'guard.json' and 'exit.json' files"
+        fi
+    fi
+
+    [ -z "$CONVERT" ] && exit 0
+fi
+
+if [ -n "$CONVERT" ]; then
+    if [ ! -f "guard.json" ] || [ ! -f "exit.json" ]; then
+        printerr "Could not find 'guard.json' and/or 'exit.json'"
+        [ -z "$UPDATE" ] && printinf "Run '$SNAME -a' to get the latest version"
+        exit 1
+    fi
+
+    printinf "Converting 'guard.json' and 'exit.json' to T2 subnet format"
+
+    # backup files in case the conversion fails
+    [ -f torsub4.txt ] && mv torsub4.txt{,.bak}
+    [ -f torsub6.txt ] && mv torsub6.txt{,.bak}
+
+    ./tjxp guard.json
+    RET1=$?
+
+    ./tjxp exit.json
+    RET2=$?
+
+    if [ $RET1 -ne 0 ] || [ $RET2 -ne 0 ]; then
+        # tjxp failed, use old files
+        printerr "Conversion failed"
+        if [ -f "torsub4.txt.bak" ]; then
+            printinf "Reusing old 'torsub4.txt' file"
+            mv torsub4.txt{.bak,}
+        fi
+        if [ -f "torsub6.txt.bak" ]; then
+            printinf "Reusing old 'torsub6.txt' file"
+            mv torsub6.txt{.bak,}
+        fi
+    else
+        printok "Conversion successful"
+        # Do not use iconv -o option as it is NOT supported on macOS
+        iconv -f iso-8859-1 -t utf-8 torsub4.txt > torsub4c.txt
+        iconv -f iso-8859-1 -t utf-8 torsub6.txt > torsub6c.txt
+        sort -V torsub4c.txt | uniq | AWK -F'\t' -v OFS='\t' 'a != $1 { print; a = $1 }' > torsub4.txt
+        sort -V torsub6c.txt | uniq | AWK -F'\t' -v OFS='\t' 'a != $1 { print; a = $1 }' > torsub6.txt
+        # delete backup files
+        [ -f torsub4.txt.bak ] && rm torsub4.txt.bak
+        [ -f torsub6.txt.bak ] && rm torsub6.txt.bak
+        [ -f torsub4c.txt ] && rm torsub4c.txt
+        [ -f torsub6c.txt ] && rm torsub6c.txt
+    fi
+
+    exit 0
+fi

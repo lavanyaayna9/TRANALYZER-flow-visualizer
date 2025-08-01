@@ -1,0 +1,9 @@
+#!/usr/bin/env awk
+
+hdr() {
+    next
+}
+
+$sslJA4 && strisempty($sslJA4Desc) && length($sslJA4) == 36 {
+    aggrrep($sslJA4, "flows", n, 1)
+}

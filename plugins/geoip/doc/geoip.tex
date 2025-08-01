@@ -1,0 +1,227 @@
+\IfFileExists{t2doc.cls}{
+    \documentclass[documentation]{subfiles}
+}{
+    \errmessage{Error: could not find t2doc.cls}
+}
+
+\begin{document}
+
+\trantitle
+    {geoip}
+    {Geo-Localization of IP Addresses}
+    {Tranalyzer Development Team}
+
+\section{geoip}\label{s:geoip}
+
+\subsection{Description}
+This plugin outputs the geographic location of IP addresses.
+
+\subsection{Dependencies}
+This product includes GeoLite2 data created by MaxMind, available from \url{http://www.maxmind.com}.\\
+The required dependencies depend on the value of {\tt GEOIP\_LIB}:
+\begin{itemize}
+    \item {\tt GEOIP\_LIB=0}:\\
+          Legacy databases ({\tt GeoLiteCity.data.gz} and {\tt GeoLiteCityv6.dat.gz}) require {\em libgeoip}.
+    \item {\tt GEOIP\_LIB=1}:\\
+          GeoLite2 requires {\em libmaxminddb}.
+\end{itemize}
+
+\begin{table}[!ht]
+    \centering
+    \begin{tabular}{>{\bf}r>{\tt}l>{\tt}l>{\tt}l}
+        \toprule
+                                     &                      & {\bf GEOIP\_LIB=1}    & {\bf GEOIP\_LIB=0}\\
+        \midrule
+        Ubuntu:                      & sudo apt-get install & libmaxminddb-dev      & libgeoip-dev\\
+        Arch:                        & sudo pacman -S       & libmaxminddb          & geoip\\
+        Gentoo:                      & sudo emerge          & libmaxminddb          & geoip\\
+        openSUSE:                    & sudo zypper install  & libmaxminddb-devel    & libGeoIP-devel\\
+        Red Hat/Fedora\tablefootnote{If the {\tt dnf} command could not be found, try with {\tt yum} instead}:
+                                     & sudo dnf install     & libmaxminddb-devel    & GeoIP-devel\\
+        macOS\tablefootnote{Brew is a packet manager for macOS that can be found here: \url{https://brew.sh}}:
+                                     & brew install         & libmaxminddb          & geoip\\
+        \bottomrule
+    \end{tabular}
+\end{table}
+
+\subsubsection{Databases Update}
+
+The latest version of the databases can be found at \url{https://dev.maxmind.com/geoip/geoip2/geolite2/} (GeoLite2-City). Legacy databases, the latest version of which can be found at \url{https://dev.maxmind.com/geoip/legacy/geolite} (Geo Lite City and Geo Lite City IPv6), are also supported.
+
+\subsection{Configuration Flags}
+The following flags can be used to control the output of the plugin (Information in italic only applies to legacy databases):
+\begin{longtable}{>{\tt}lcl}
+    \toprule
+    {\bf Name} & {\bf Default} & {\bf Description} \\
+    \midrule\endhead%
+    GEOIP\_LIB         & 2          & Library to use:\\
+                       &            & \qquad 2: GeoLite2 / Internal libmaxmind (faster)\\
+                       &            & \qquad 1: GeoLite2 / libmaxmind\\
+                       &            & \qquad 0: GeoLite / geoip (legacy)\\
+    \\
+    GEOIP\_SRC         & 1          & Display geo info for the source IP\\
+    GEOIP\_DST         & 1          & Display geo info for the destination IP\\
+    \\
+    GEOIP\_CONTINENT   & 2          & 0: no continent,\\
+                       &            & 1: name ({\bf GeoLite2}),\\
+                       &            & 2: two letters code\\
+    GEOIP\_COUNTRY     & 2          & 0: no country,\\
+                       &            & 1: name,\\
+                       &            & 2: two letters code,\\
+                       &            & {\em 3: three letters code}\\
+    GEOIP\_CITY        & 1          & Display the city of the IP\\
+    GEOIP\_POSTCODE    & 1          & Display the postal code of the IP\\
+    GEOIP\_POSITION    & 1          & Display the position (latitude, longitude) of the IP\\
+    GEOIP\_METRO\_CODE & 0          & Display the metro (dma) code of the IP (US only)\\
+    \\
+    \multicolumn{3}{l}{If {\tt GEOIP\_LIB!=0}, the following flags are available:}\\
+    \\
+    GEOIP\_ACCURACY    & 1          & Display the accuracy of the geolocation\\
+    GEOIP\_TIMEZONE    & 1          & Display the time zone\\
+    \\
+    \multicolumn{3}{l}{The six following flags are only available in GeoLite2 Enterprise databases:}\\
+    \\
+    GEOIP\_ORG         & 0          & Display the organization of the IP\\
+    GEOIP\_ISP         & 0          & Display the ISP name of the IP\\
+    GEOIP\_ASN         & 0          & Display the autonomous systems number of the IP\\
+    GEOIP\_ASNAME      & 0          & Display the autonomous systems name of the IP\\
+    GEOIP\_CONNT       & 0          & Display the connection type of the IP\\
+    GEOIP\_USRT        & 0          & Display the user type of the IP\\
+    \\
+    GEOIP\_DB\_FILE    & {\tt\small "GeoLite2-City.mmdb"}
+                                    & Name of the database to use for IPv4 and IPv6 (combined)\\
+    GEOIP\_LANG        & {\tt\small "en"}
+                                    & Language to use:\\
+                       &            & \qquad de: German,\\
+                       &            & \qquad en: English,\\
+                       &            & \qquad es: Spanish,\\
+                       &            & \qquad fr: French,\\
+                       &            & \qquad jp: Japanese,\\
+                       &            & \qquad pt-BR: Brazilian Portuguese,\\
+                       &            & \qquad ru: Russian,\\
+                       &            & \qquad zh-CN: Simplified Chinese\\
+    GEOIP\_BUFSIZE     & 64         & Buffer size\\
+    \\
+    \multicolumn{3}{l}{If {\tt GEOIP\_LIB==0}, the following flags are available:}\\
+    \\
+    GEOIP\_REGION      & {\em 1}    & {\em 0: no region, 1: name, 2: code}\\
+    GEOIP\_AREA\_CODE  & {\em 0}    & {\em Display the telephone area code of the IP}\\
+    GEOIP\_NETMASK     & {\em 1}    & {\em 0: no netmask,}\\
+                       &            & {\em 1: netmask as int (cidr),}\\
+                       &            & {\em 2: netmask as hex,}\\
+                       &            & {\em 3: netmask as IP}\\
+    GEOIP\_DB\_CACHE   & {\em 2}    & {\em 0: read DB from file system (slower, least memory)}\\
+                       &            & {\em 1: index cache (cache frequently used index only)}\\
+                       &            & {\em 2: memory cache (faster, more memory)}\\
+    GEOIP\_DB\_FILE4   & {\em\small "GeoLiteCity.dat"}
+                                    & {\em Name of the database to use for IPv4}\\
+    GEOIP\_DB\_FILE6   & {\em\small "GeoLiteCityv6.dat"}
+                                    & {\em Name of the database to use for IPv6}\\
+    \\
+    GEOIP\_UNKNOWN     & {\tt\small "--{}--"}
+                                    & Representation of unknown locations (GeoIP's default)\\
+    \bottomrule
+\end{longtable}
+
+\subsubsection{Environment Variable Configuration Flags}
+The following configuration flags can also be configured with environment variables ({\tt ENVCNTRL>0}):
+\begin{itemize}
+    \item {\tt GEOIP\_DB\_FILE} (require {\tt GEOIP\_LIB>0})
+    \item {\tt GEOIP\_DB\_FILE4} (require {\tt GEOIP\_LIB=0})
+    \item {\tt GEOIP\_DB\_FILE6} (require {\tt GEOIP\_LIB=0})
+    \item {\tt GEOIP\_UNKNOWN}
+\end{itemize}
+
+\subsection{Flow File Output}
+The geoip plugin outputs the following columns:
+\begin{longtable}{>{\tt}lll>{\tt\small}l}
+    \toprule
+    {\bf Column} & {\bf Type} & {\bf Description} & {\bf Flags}\\
+    \midrule\endhead%
+
+    \\
+    \multicolumn{4}{l}{The following columns prefixed with {\tt src} are only output if {\tt GEOIP\_SRC=1}.}\\
+    \\
+
+    srcIpContinent            & S   & Continent name                      & GEOIP\_CONTINENT=1\\
+    \nameref{srcIpContinent}  & SC  & Continent code                      & GEOIP\_CONTINENT=2\\
+    srcIpCountry              & S   & Country name                        & GEOIP\_COUNTRY=1\\
+    srcIpCountry              & SC  & Country code                        & GEOIP\_COUNTRY=2|3\\
+    srcIpRegion               & SC  & Region                              & GEOIP\_LIB=0\&\&GEOIP\_REGION=1\\
+    srcIpRegion               & S   & Region                              & GEOIP\_LIB=0\&\&GEOIP\_REGION=2\\
+    srcIpCity                 & S   & City                                & GEOIP\_CITY>0\\
+    srcIpPostcode             & SC  & Postal code                         & GEOIP\_POSTCODE>0\\
+    srcIpAccuracy             & U16 & Accuracy of the geolocation (in km) & GEOIP\_LIB>0\&\&GEOIP\_ACCURACY=1\\
+    srcIpLat                  & D   & Latitude                            & GEOIP\_LIB>0\&\&GEOIP\_POSITION=1\\
+    srcIpLong                 & D   & Longitude                           & GEOIP\_LIB>0\&\&GEOIP\_POSITION=1\\
+    srcIpLat                  & F   & Latitude                            & GEOIP\_LIB=0\&\&GEOIP\_POSITION=1\\
+    srcIpLong                 & F   & Longitude                           & GEOIP\_LIB=0\&\&GEOIP\_POSITION=1\\
+    srcIpMetroCode            & U16 & Metro (DMA) code (US only)          & GEOIP\_LIB>0\&\&GEOIP\_METRO\_CODE=1\\
+    srcIpMetroCode            & I32 & Metro (DMA) code (US only)          & GEOIP\_LIB=0\&\&GEOIP\_METRO\_CODE=1\\
+    srcIpAreaCode             & I32 & Area code                           & GEOIP\_LIB=0\&\&GEOIP\_AREA\_CODE=1\\
+    srcIpNetmask              & U32 & Netmask (CIDR)                      & GEOIP\_LIB=0\&\&GEOIP\_NETMASK=1\\
+    srcIpNetmask              & H32 & Netmask                             & GEOIP\_LIB=0\&\&GEOIP\_NETMASK=2\\
+    srcIpNetmask              & IP4 & Netmask                             & GEOIP\_LIB=0\&\&GEOIP\_NETMASK=3\\
+    srcIpTimeZone             & S   & Time zone                           & GEOIP\_LIB=0\&\&GEOIP\_TIMEZONE=1\\
+    srcIpOrg                  & S   & Organization                        & GEOIP\_LIB>0\&\&GEOIP\_ORG=1\\
+    srcIpISP                  & S   & ISP                                 & GEOIP\_LIB>0\&\&GEOIP\_ISP=1\\
+    srcIpASN                  & U32 & AS number                           & GEOIP\_LIB>0\&\&GEOIP\_ASN=1\\
+    srcIpASName               & S   & AS name                             & GEOIP\_LIB>0\&\&GEOIP\_ASNAME=1\\
+    srcIpConnT                & S   & Connection type                     & GEOIP\_LIB>0\&\&GEOIP\_CONNT=1\\
+    srcIpUsrT                 & S   & User type                           & GEOIP\_LIB>0\&\&GEOIP\_USRT=1\\
+
+    \\
+    \multicolumn{4}{l}{The same columns (with prefix {\tt dst} instead of {\tt src}) are output for the destination address if {\tt GEOIP\_DST=1}.}\\
+    \\
+
+    \nameref{geoStat}         & H8  & Status                              & \\
+    \bottomrule
+\end{longtable}
+
+\clearpage
+\subsubsection{srcIpContinent}\label{srcIpContinent}
+Continent codes are as follows:
+\begin{longtable}{>{\tt}rl}
+    \toprule
+    {\bf Code} & {\bf Description}\\
+    \midrule\endhead%
+    AF & Africa\\
+    AS & Asia\\
+    EU & Europe\\
+    NA & North America\\
+    OC & Oceania\\
+    SA & South America\\
+    --{}-- & Unknown (see {\tt GEOIP\_UNKNOWN})\\
+    \bottomrule
+\end{longtable}
+
+\subsubsection{geoStat}\label{geoStat}
+The {\tt geoStat} column is to be interpreted as follows:
+\begin{longtable}{>{\tt}rl}
+    \toprule
+    {\bf geoStat} & {\bf Description}\\
+    \midrule\endhead%
+    $2^0$ (=0x01) & A string had to be truncated\ldots increase {\tt GEOIP\_BUFSIZE}\\
+    $2^1$ (=0x02) & Source IP lookup failed\\
+    $2^2$ (=0x04) & Destination IP lookup failed\\
+    \bottomrule
+\end{longtable}
+
+\subsection{Post-Processing}
+
+\subsubsection{genkml}
+The geoip plugin comes with the {\tt genkml} script which generates a KML (Keyhole Markup Language) file from a flow file.
+This KML file can then be loaded in Google Earth to display the location of the IP addresses involved in the dump file. Its usage
+is straightforward:
+
+\begin{center}
+    {\tt ./scripts/genkml FILE\_flows.txt}
+\end{center}
+
+\subsubsection{t2mmdb}
+The {\tt t2mmdb} program can be used to query the MaxMind DB. It is a faster and easier to use version of the {\tt mmdblookup} utility.
+
+\subsubsection{t2mmdba}
+The {\tt t2mmdba} script can be used to transform the MaxMind DB into Tranalyzer subnet format.
+
+\end{document}

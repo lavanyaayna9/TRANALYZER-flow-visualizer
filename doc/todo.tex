@@ -1,0 +1,71 @@
+\IfFileExists{t2doc.cls}{
+    \documentclass[documentation]{subfiles}
+}{
+    \errmessage{Error: could not find 't2doc.cls'}
+}
+
+\begin{document}
+
+\trantitle
+    {Missing Features, Capabilities and Plugins}
+    {TODO} % Short description
+    {Tranalyzer Development Team} % author(s)
+
+\section{TODO}
+This section lists some features, capabilities and plugins which Tranalyzer is currently missing.
+Feel free to pick a task or two and contribute code, plugins or ideas.
+
+\subsection{Features}
+    \begin{itemize}
+        \item Anonymization
+        \item Endianness independence
+        \item Support for NetMon dump files
+        \item Stream reassembly and reordering
+        \item Parallelization
+    \end{itemize}
+
+\subsection{Plugins}
+
+\subsubsection{Layer 2 Protocol Plugins}
+
+\begin{itemize}
+    \item Extreme Discovery Protocol (EDP)
+    \item Dynamic Trunk Protocol (DTP)
+    \item Port Aggregation Protocol (PAgP)
+\end{itemize}
+
+\subsubsection{Layer 3/4 Protocol Plugins}
+
+\begin{itemize}
+    \item Datagram Congestion Control Protocol (DCCP)
+    \item Reliable Datagram Sockets (RDS)
+    \item Reliable UDP (RUDP)
+    \item Resource Reservation Protocol (RSVP)
+    \item Signalling Connection Control Part (SCCP)
+\end{itemize}
+
+\subsubsection{Layer 7 Protocol Plugins}
+
+\begin{itemize}
+    \item Distributed Computing Environment / Remote Procedure Calls (DCE/RPC)
+    \item Dropbox
+    \item Extensible Messaging and Presence Protocol (XMPP)
+    \item Financial Information eXchange Protocol (FIX)
+    \item Internet Message Access Protocol (IMAP)
+    \item Internet Small Computer Systems Interface (iSCSI)
+    \item Microsoft Tabular Data Stream (TDS)
+    \item Network File System (NFS)
+    \item OCSP, PKIX-CRL (include in \tranrefpl{sslDecode}?)
+    \item Routing Protocols:
+        \begin{itemize}
+            \item Enhanced Interior Gateway Routing Protocol (EIGRP)
+            \item Routing Information Protocol (RIP)
+            \item Cisco Hot Standby Router Protocol (HSRP)
+            \item \ldots
+        \end{itemize}
+    \item Signaling System No.\ 7 (SS7) protocols
+    \item Torrent, Gnutella
+    \item X11
+\end{itemize}
+
+\end{document}

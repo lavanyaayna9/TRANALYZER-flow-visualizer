@@ -1,0 +1,24 @@
+#!/usr/bin/env awk
+#
+# Return true if the flow contains DNS traffic.
+#
+# Parameters:
+#   - None
+#
+# Dependencies:
+#   - dnsDecode
+#
+# Examples:
+#   - tawk 'dns()' file.txt
+#   - tawk 'dns() { print $srcIP }' file.txt
+
+@include "hdr"
+@include "bitsallset"
+@include "_validate_col"
+
+function dns(        _c) {
+    _c = _validate_col("dnsStat")
+    if (hdr()) return __PRIHDR__
+    return (strtonum($_c) && !bitsallset($_c, 0x2))  # Ignore nbns
+    #return strtonum($_c)
+}

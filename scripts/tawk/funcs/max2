@@ -1,0 +1,24 @@
+#!/usr/bin/env awk
+#
+# Return the maximum value between 'a' and 'b'.
+#
+# Parameters:
+#   - a : the first value
+#   - b : the second value
+#
+# Dependencies:
+#   - None
+#
+# See also:
+#   - max
+#   - max3
+#   - min
+#   - min2
+#   - min3
+#
+# Examples:
+#   - tawk '{ print max2(1, 2) }' file.txt
+
+function max2(a, b) {
+    return (a > b ? a : b)
+}

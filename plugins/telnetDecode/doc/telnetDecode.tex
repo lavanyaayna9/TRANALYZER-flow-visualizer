@@ -1,0 +1,262 @@
+\IfFileExists{t2doc.cls}{
+    \documentclass[documentation]{subfiles}
+}{
+    \errmessage{Error: could not find 't2doc.cls'}
+}
+
+\begin{document}
+
+\trantitle
+    {telnetDecode}
+    {Telnet}
+    {Tranalyzer Development Team} % author(s)
+
+\section{telnetDecode}\label{s:telnetDecode}
+
+\subsection{Description}
+The telnetDecode plugin analyzes TELNET traffic and is capable to extract L7 content.
+
+\subsection{Configuration Flags}
+The following flags can be used to control the output of the plugin:
+\begin{longtable}{>{\tt}lcl>{\tt\small}l}
+    \toprule
+    {\bf Name} & {\bf Default} & {\bf Description} & {\bf Flags}\\
+    \midrule\endhead%
+    TEL\_SAVE        & 0  & Save content to {\tt\small TEL\_F\_PATH}       & \\
+    TEL\_RMDIR       & 1  & Empty {\tt\small TEL\_F\_PATH} before starting & TEL\_SAVE=1\\
+    TEL\_SAVE\_SPLIT & 1  & Save requests (A) and responses (B)            & TEL\_SAVE=1\\
+    TEL\_SEQPOS      & 0  & 0: no file position control,                   & TEL\_SAVE=1\\
+                     &    & 1: seq number file position control            & \\
+    TEL\_CMDOPTS     & 1  & 0: Output command/options,                     & \\
+                     &    & 1: Output command/options names                & \\
+    TEL\_CMD\_AGGR   & 1  & Aggregate commands                             & \\
+    TEL\_OPT\_AGGR   & 1  & Aggregate options                              & \\
+    TELCMDN          & 25 & Maximal command / flow                         & \\
+    TELUPLN          & 25 & Maximal length user/password                   & \\
+    TELOPTN          & 25 & Maximal options / flow                         & \\
+    TEL\_F\_PATH     & {\tt\small "/tmp/TELFILES/"}
+                          & Path for extracted content                     & \\
+    \bottomrule
+\end{longtable}
+
+\subsubsection{Environment Variable Configuration Flags}
+The following configuration flags can also be configured with environment variables ({\tt ENVCNTRL>0}):
+\begin{itemize}
+    \item {\tt TEL\_RMDIR}
+    \item {\tt TEL\_F\_PATH}
+\end{itemize}
+
+\subsection{Flow File Output}
+The telnetDecode plugin outputs the following columns:
+\begin{longtable}{>{\tt}lll>{\tt\small}l}
+    \toprule
+    {\bf Column} & {\bf Type} & {\bf Description} & {\bf Flags}\\
+    \midrule\endhead%
+    \nameref{telStat}          & H8    & Status               & \\
+    \nameref{telCmdBF}         & H16   & Commands             & TEL\_BTFLD=1\\
+    \nameref{telOptBF}         & H32   & Options              & TEL\_BTFLD=1\\
+    telUsr                     & SC    & Username             & \\
+    telPW                      & SC    & Password             & \\
+    telTCCnt                   & U16   & Total command count  & \\
+    telTOCnt                   & U16   & Total option count   & \\
+    telCCnt                    & U16   & Stored command count & \\
+    \hyperref[telCmd]{telCmdC} & R(U8) & Command codes        & TEL\_CMDOPTS=0\\
+    \hyperref[telCmd]{telCmdS} & R(S)  & Command names        & TEL\_CMDOPTS=1\\
+    telOCnt                    & U16   & Stored options count & \\
+    \hyperref[telOpt]{telOptC} & R(U8) & Option codes         & TEL\_CMDOPTS=0\\
+    \hyperref[telOpt]{telOptS} & R(S)  & Option names         & TEL\_CMDOPTS=1\\
+    \bottomrule
+\end{longtable}
+
+\subsubsection{telStat}\label{telStat}
+The {\tt telStat} column is to be interpreted as follows:
+\begin{longtable}{>{\tt}rl>{\tt\small}l}
+    \toprule
+    {\bf telStat} & {\bf Description}                                & {\bf Flags}\\
+    \midrule\endhead%
+    $2^0$ (=0x01) & TELNET port found                                & \\
+    $2^1$ (=0x02) & ---                                              & \\
+    $2^2$ (=0x04) & Successful username found                        & \\
+    $2^3$ (=0x08) & Successful password found                        & \\
+    \\
+    $2^4$ (=0x10) & ---                                              & \\
+    $2^5$ (=0x20) & File open error                                  & TEL\_SAVE=1\\
+    $2^6$ (=0x40) & Command array overflow... increase {\tt TELCMDN} & \\
+    $2^7$ (=0x80) & Options array overflow... increase {\tt TELOPTN} & \\
+    \bottomrule
+\end{longtable}
+
+\subsubsection{telCmdBF}\label{telCmdBF}
+The {\tt telCmdBF} column is to be interpreted as follows:\\
+\begin{minipage}{.48\textwidth}
+    \begin{longtable}{>{\tt}rl}
+        \toprule
+        {\bf telCmdBF} & {\bf Description} \\
+        \midrule\endhead%
+        $2^{0}$  (=0x0001) & SE - End subNeg\\
+        $2^{1}$  (=0x0002) & NOP - No operation\\
+        $2^{2}$  (=0x0004) & Data Mark\\
+        $2^{3}$  (=0x0008) & Break\\
+        \\
+        $2^{4}$  (=0x0010) & Int process\\
+        $2^{5}$  (=0x0020) & Abort output\\
+        $2^{6}$  (=0x0040) & Are You There?\\
+        $2^{7}$  (=0x0080) & Erase char\\
+        \bottomrule
+    \end{longtable}
+\end{minipage}
+\hfill
+\begin{minipage}{.48\textwidth}
+    \begin{longtable}{>{\tt}rl}
+        \toprule
+        {\bf telCmdBF} & {\bf Description} \\
+        \midrule\endhead%
+        $2^{8}$  (=0x0100) & Erase line\\
+        $2^{9}$  (=0x0200) & Go ahead!\\
+        $2^{10}$ (=0x0400) & SB - SubNeg\\
+        $2^{11}$ (=0x0800) & WILL use\\
+        \\
+        $2^{12}$ (=0x1000) & WON'T use\\
+        $2^{13}$ (=0x2000) & DO use\\
+        $2^{14}$ (=0x4000) & DON'T use\\
+        $2^{15}$ (=0x8000) & IAC\\
+        \bottomrule
+    \end{longtable}
+\end{minipage}
+
+\subsubsection{telOptBF}\label{telOptBF}
+The {\tt telOptBF} column is to be interpreted as follows:\\
+\begin{minipage}{.48\textwidth}
+    \begin{longtable}{>{\tt}rl}
+        \toprule
+        {\bf telOptBF} & {\bf Description} \\
+        \midrule\endhead%
+        $2^{0}$  (=0x00000001) & Bin Xmit\\
+        $2^{1}$  (=0x00000002) & Echo Data\\
+        $2^{2}$  (=0x00000004) & Reconn\\
+        $2^{3}$  (=0x00000008) & Suppr GA\\
+        \\
+        $2^{4}$  (=0x00000010) & Msg Sz\\
+        $2^{5}$  (=0x00000020) & Opt Stat\\
+        $2^{6}$  (=0x00000040) & Timing Mark\\
+        $2^{7}$  (=0x00000080) & R/C XmtEcho\\
+        \\
+        $2^{8}$  (=0x00000100) & Line Width\\
+        $2^{9}$  (=0x00000200) & Page Length\\
+        $2^{10}$ (=0x00000400) & CR Use\\
+        $2^{11}$ (=0x00000800) & Horiz Tabs\\
+        \\
+        $2^{12}$ (=0x00001000) & Hor Tab Use\\
+        $2^{13}$ (=0x00002000) & FF Use\\
+        $2^{14}$ (=0x00004000) & Vert Tabs\\
+        $2^{15}$ (=0x00008000) & Ver Tab Use\\
+        \bottomrule
+    \end{longtable}
+\end{minipage}
+\hfill
+\begin{minipage}{.48\textwidth}
+    \begin{longtable}{>{\tt}rl}
+        \toprule
+        {\bf telOptBF} & {\bf Description} \\
+        \midrule\endhead%
+        $2^{16}$ (=0x00010000) & Lf Use\\
+        $2^{17}$ (=0x00020000) & Ext ASCII\\
+        $2^{18}$ (=0x00040000) & Logout\\
+        $2^{19}$ (=0x00080000) & Byte Macro\\
+        \\
+        $2^{20}$ (=0x00100000) & Data Term\\
+        $2^{21}$ (=0x00200000) & SUPDUP\\
+        $2^{22}$ (=0x00400000) & SUPDUP Outp\\
+        $2^{23}$ (=0x00800000) & Send Locate\\
+        \\
+        $2^{24}$ (=0x01000000) & Term Type\\
+        $2^{25}$ (=0x02000000) & End Record\\
+        $2^{26}$ (=0x04000000) & TACACS ID\\
+        $2^{27}$ (=0x08000000) & Output Mark\\
+        \\
+        $2^{28}$ (=0x10000000) & Term Loc\\
+        $2^{29}$ (=0x20000000) & 3270 Regime\\
+        $2^{30}$ (=0x40000000) & X.3 PAD\\
+        $2^{31}$ (=0x80000000) & Window Size\\
+        \bottomrule
+    \end{longtable}
+\end{minipage}
+
+\subsubsection{telCmdC and telCmdS}\label{telCmd}
+The {\tt telCmdC} and {\tt telCmdS} columns are to be interpreted as follows:\\
+\begin{longtable}{>{\tt}r>{\tt}ll}
+    \toprule
+    {\bf telCmdC} & {\bf telCmdS} & {\bf Description} \\
+    \midrule\endhead%
+    0xf0 & SE   & End of subnegotiation parameters\\
+    0xf1 & NOP  & No Operation\\
+    0xf2 & DM   & Data Mark\\
+    0xf3 & BRK  & Break\\
+    0xf4 & IP   & Interrupt Process\\
+    0xf5 & AO   & Abort Output\\
+    0xf6 & AYT  & Are You There\\
+    0xf7 & EC   & Erase Character\\
+    0xf8 & EL   & Erase Line\\
+    0xf9 & GA   & Go Ahead\\
+    0xfa & SB   & Subnegotiation\\
+    0xfb & WILL & Will Perform\\
+    0xfc & WONT & Won't Perform\\
+    0xfd & DO   & Do Perform\\
+    0xfe & DONT & Don't Perform\\
+    0xff & IAC  & Interpret As Command\\
+    \bottomrule
+\end{longtable}
+
+\subsubsection{telOptC and telOptS}\label{telOpt}
+The {\tt telOptC} and {\tt telOptS} columns are to be interpreted as follows:\\
+\begin{longtable}{>{\tt}r>{\tt}ll}
+    \toprule
+    {\bf telOptC} & {\bf telOptS} & {\bf Description} \\
+    \midrule\endhead%
+    0xf0 & SE   & End of subnegotiation parameters\\
+    0xf1 & NOP  & No Operation\\
+    0xf2 & DM   & Data Mark\\
+    0xf3 & BRK  & Break\\
+    0xf4 & IP   & Interrupt Process\\
+    0xf5 & AO   & Abort Output\\
+    0xf6 & AYT  & Are You There\\
+    0xf7 & EC   & Erase Character\\
+    0xf8 & EL   & Erase Line\\
+    0xf9 & GA   & Go Ahead\\
+    0xfa & SB   & Subnegotiation\\
+    0xfb & WILL & Will Perform\\
+    0xfc & WONT & Won't Perform\\
+    0xfd & DO   & Do Perform\\
+    0xfe & DONT & Don't Perform\\
+    0xff & IAC  & Interpret As Command\\
+    \bottomrule
+\end{longtable}
+
+\subsection{Packet File Output}
+In packet mode ({\tt --s} option), the telnetDecode plugin outputs the following columns:
+\begin{longtable}{>{\tt}lll>{\tt\small}l}
+    \toprule
+    {\bf Column} & {\bf Type} & {\bf Description} & {\bf Flags}\\
+    \midrule\endhead%
+    \nameref{telStat}          & H8 & Status            & \\
+    \hyperref[telCmd]{telCmdC} & U8 & Last command code & TEL\_CMDOPTS=0\\
+    \hyperref[telCmd]{telCmdS} & S  & Last command name & TEL\_CMDOPTS=1\\
+    \hyperref[telOpt]{telOptC} & U8 & Last option code  & TEL\_CMDOPTS=0\\
+    \hyperref[telOpt]{telOptS} & S  & Last option name  & TEL\_CMDOPTS=1\\
+    \bottomrule
+\end{longtable}
+
+\subsection{Plugin Report Output}
+The following information is reported:
+\begin{itemize}
+    \item Aggregated {\tt\nameref{telStat}}
+    \item Number of Telnet packets
+    \item Number of files extracted ({\tt TEL\_SAVE=1})
+\end{itemize}
+
+\subsection{TODO}
+\begin{itemize}
+    \item fragmentation
+\end{itemize}
+
+\end{document}

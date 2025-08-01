@@ -1,0 +1,21 @@
+#H bit | tcpAnomaly | Description
+#H =============================================================================
+     0 | 0x0001     | SYN retransmission
+     1 | 0x0002     | SEQ Timeout retransmission
+     2 | 0x0004     | SEQ Fast retransmission
+     3 | 0x0008     | Duplicate ACK
+
+     4 | 0x0010     | TCP Keep-Alive
+     5 | 0x0020     | TCP Keep-Alive ACK
+     6 | 0x0040     | Sequence number out-of-order
+     7 | 0x0080     | Sequence mess, rather spurious Retransmission
+
+#W   8 | 0x0100     | ACK for unseen packet
+#W   9 | 0x0200     | Previous packet not captured
+    10 | 0x0400     | -
+    11 | 0x0800     | -
+
+#W  12 | 0x1000     | Scan detected in flow
+#W  13 | 0x2000     | Successful scan detected in flow
+#W  14 | 0x4000     | TCP SYN flag with L7 content
+    15 | 0x8000     | -

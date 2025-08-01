@@ -1,0 +1,9 @@
+#!/usr/bin/env awk
+
+hdr() {
+    next
+}
+
+!strisempty($sslJA3Desc) && hasprefix($sslJA3Desc, "JA3S: ") {
+    aggr($sslJA3Hash OFS substr(unquote($sslJA3Desc), 5), "flows", n)
+}

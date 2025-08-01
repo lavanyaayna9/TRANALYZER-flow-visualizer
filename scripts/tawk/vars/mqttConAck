@@ -1,0 +1,11 @@
+#H bit | mqttConAck | Description
+#H =============================================================================
+     0 | 0x01       | Connection Accepted
+#W   1 | 0x02       | Connection Refused, unacceptable protocol version
+#W   2 | 0x04       | Connection Refused, identifier rejects
+#W   3 | 0x08       | Connection Refused, Server unavailable
+
+#W   4 | 0x10       | Connection Refused, bad user name or password
+#W   5 | 0x20       | Connection Refused, not authorized
+     6 | 0x40       | -
+#W   7 | 0x80       | Return codes from 0x06 to 0xff are reserved for future use

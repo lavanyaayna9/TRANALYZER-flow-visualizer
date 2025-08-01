@@ -1,0 +1,25 @@
+-- Return a list of unique ASNs
+
+SELECT DISTINCT asn
+
+FROM (
+    SELECT
+        "srcIPASN" AS asn
+    FROM
+        flow
+    WHERE
+        bitTestAny("flowStat", 14, 15) > 0  -- IPv4/6 only
+        AND "timeFirst" >= {time_from:DateTime64(6)}
+        AND "timeLast" <= {time_to:DateTime64(6)}
+
+    UNION ALL
+
+    SELECT
+        "dstIPASN" AS asn
+    FROM
+        flow
+    WHERE
+        bitTestAny("flowStat", 14, 15) > 0  -- IPv4/6 only
+        AND "timeFirst" >= {time_from:DateTime64(6)}
+        AND "timeLast" <= {time_to:DateTime64(6)}
+) AS asns

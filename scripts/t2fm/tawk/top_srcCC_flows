@@ -1,0 +1,43 @@
+#!/usr/bin/env awk
+
+hdr() {
+    next
+}
+
+!bitsanyset($flowStat, 0xc000) {  # IPv4/6 only
+    next
+}
+
+# A flows
+$dir == "A" && !bitsallset($flowStat, 1) {
+    if (srcIPCC != 0) {
+        country = toupper($srcIPCC)
+        if (country ~ /^[0-9]/) country = "--"
+        else if (country == "FF" || country == "-" || country == "--") country = "N/A"
+    } else if (privip(shost())) {
+        country = "--"
+    } else if (srcIpCountry == 0) {
+        country = "N/A"
+    } else {
+        country = $srcIpCountry
+        if (country == "-" || country == "--") country = "N/A"
+    }
+    aggr(country, "flows", n)
+}
+
+# B flows
+$dir == "A" && bitsallset($flowStat, 1) {
+    if (dstIPCC != 0) {
+        country = toupper($dstIPCC)
+        if (country ~ /^[0-9]/) country = "--"
+        else if (country == "FF" || country == "-" || country == "--") country = "N/A"
+    } else if (privip(dhost())) {
+        country = "--"
+    } else if (dstIpCountry == 0) {
+        country = "N/A"
+    } else {
+        country = $dstIpCountry
+        if (country == "-" || country == "--") country = "N/A"
+    }
+    aggr(country, "flows", n)
+}

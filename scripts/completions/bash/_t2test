@@ -1,0 +1,86 @@
+# Bash completion for t2test
+
+_t2test() {
+    local cur prev words cword
+
+    if type -t _init_completion &> /dev/null; then
+        _init_completion -n = || return
+    else
+        COMPREPLY=()
+        cur="${COMP_WORDS[COMP_CWORD]}"
+        prev="${COMP_WORDS[COMP_CWORD-1]}"
+    fi
+
+    local args=(
+        -f --file
+        -w --warnings
+        -m --memory
+        -i --invalid-rw
+        -t --runtime
+        -e --no-error
+        -W --no-warning
+        -F --fatal
+        -b --begin --resume
+        -s --stop
+        -c --check
+        -J --johnson
+        -S1 --shift-1
+        -S2 --shift-2
+        -T --no-parent-flags
+        -n --silent
+        -v --verbose-err
+        -vv --verbose
+        -d --debug
+        -r --configure
+        -R --rebuild
+        -X --bypass-lock
+        -B --backend
+        -p --plugin-folder
+        -P --pcap
+        -o --output-prefix
+        -\? -h --help
+    )
+
+    case "$prev" in
+        -B|--backend)
+            local backends=(autotools autotools-out-of-tree cmake meson)
+            COMPREPLY=($(compgen -W "${backends[*]}" -- "$cur"))
+            return
+            ;;
+        -p|--plugin-folder)
+            if type -t _filedir &> /dev/null; then
+                _filedir -d
+            else
+                compopt -o dirnames 2> /dev/null
+                COMPREPLY=($(compgen -d -- "$cur"))
+            fi
+            return
+            ;;
+        -P|--pcap|-f|--file)
+            if type -t _filedir &> /dev/null; then
+                _filedir
+            else
+                compopt -o filenames 2> /dev/null
+                COMPREPLY=($(compgen -f -- "$cur"))
+            fi
+            return
+            ;;
+    esac
+
+    if [[ "$cur" == -* ]]; then
+        COMPREPLY=($(compgen -W "${args[*]}" -- "$cur"))
+        return
+    fi
+
+    local plugins=(tranalyzer2)
+    for i in "$T2PLHOME/"*; do
+        local b=$(basename "$i")
+        if [ -d "$i" ] && [ "$b" != "t2PSkel" ]; then
+            plugins+=($b)
+        fi
+    done
+
+    COMPREPLY=($(compgen -W "${plugins[*]}" -- "$cur"))
+}
+
+complete -F _t2test t2test T2Tester.py

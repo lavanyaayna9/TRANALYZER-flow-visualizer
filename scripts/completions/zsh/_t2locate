@@ -1,0 +1,28 @@
+# ZSH completion for t2locate
+
+_t2locate() {
+    #compdef t2locate
+
+    local cur="${words[CURRENT]}"
+    [ $CURRENT -gt 2 ] && local prev="${words[CURRENT-1]}"
+
+    case "$prev" in
+        -f|--file|-o|--output)
+            _files
+            return
+            ;;
+        -d|--database)
+            _files -/
+            return
+            ;;
+        -s|--separator|-i|--input-separator)
+            return
+            ;;
+    esac
+
+    if [[ "$cur" == -* ]]; then
+        _arguments --
+    fi
+}
+
+compdef _t2locate t2locate

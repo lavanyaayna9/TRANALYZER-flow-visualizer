@@ -1,0 +1,23 @@
+# Flags to toggle
+#
+# Run the ../../../tests/test.sh script from the plugin main directory:
+#
+# cd $T2HOME/plugins/sctpDecode
+# ../../tests/test.sh [OPTION...]
+#
+# If run from this folder, make sure to use absolute path for the '-p' option.
+#
+# Flag name     File
+
+# ../../tranalyzer2/src/networkHeaders.h
+ETH_ACTIVATE        ../../tranalyzer2/src/networkHeaders.h
+SCTP_ACTIVATE       ../../tranalyzer2/src/networkHeaders.h
+
+# ../../tranalyzer2/src/tranalyzer.h
+BLOCK_BUF           ../../tranalyzer2/src/tranalyzer.h
+
+# src/sctpDecode.h
+SCTP_CRCADL32CHK    src/sctpDecode.h
+SCTP_CHNKVAL        src/sctpDecode.h
+SCTP_CHNKAGGR       src/sctpDecode.h
+SCTP_TSNREL         src/sctpDecode.h

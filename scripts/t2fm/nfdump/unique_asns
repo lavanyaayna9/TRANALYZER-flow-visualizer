@@ -1,0 +1,32 @@
+#!/usr/bin/env bash
+
+source "$(dirname "${0}")/../../t2utils.sh"
+
+OPTS=()
+while [[ "${#}" -ne 0 ]]; do
+    case "${1}" in
+        -n)
+            validate_next_int "${1}" "${2}"
+            N="${2}"
+            shift
+            ;;
+        *)
+            OPTS+=("${1}")
+            ;;
+    esac
+    shift
+done
+
+UNIQUE_ASNS="$(nfdump ${OPTS[@]} -s 'as' | "${TAWK}" -F, '
+    NF > 1 && NR > 1 {
+        print $5
+    }' | sort -u)"
+
+if [[ "$(wc -l <<< "${UNIQUE_ASNS}")" -eq 1 ]]; then
+    UNIQUE_ASNS="$(nfdump ${OPTS[@]} -s 'ip' | "${TAWK}" -F, '
+        NF > 1 && NR > 1 {
+            print t2whois($5, "asn")
+        }' | sort -u)"
+fi
+
+echo "${UNIQUE_ASNS}"

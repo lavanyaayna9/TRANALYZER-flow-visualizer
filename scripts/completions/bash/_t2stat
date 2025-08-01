@@ -1,0 +1,25 @@
+# Bash completion for t2stat
+
+_t2stat() {
+    local cur prev words cword
+
+    if type -t _init_completion &> /dev/null; then
+        _init_completion -n = || return
+    else
+        COMPREPLY=()
+        cur="${COMP_WORDS[COMP_CWORD]}"
+        prev="${COMP_WORDS[COMP_CWORD-1]}"
+    fi
+
+    local args=(
+        -USR1 -USR2 -INT -TERM -SYS
+        -s --sudo -p --print -l --list -i --interactive
+        -\? -h --help
+    )
+
+    if [[ "$cur" == -* ]]; then
+        COMPREPLY=($(compgen -W "${args[*]}" -- "$cur"))
+    fi
+}
+
+complete -F _t2stat t2stat

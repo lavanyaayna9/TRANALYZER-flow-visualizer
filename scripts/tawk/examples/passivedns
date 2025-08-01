@@ -1,0 +1,66 @@
+#!/usr/bin/env awk
+#
+# Extract all DNS server replies from a flow file.
+# The following information is reported for each reply:
+#   - FirstSeen
+#   - LastSeen
+#   - Type (A or AAAA)
+#   - TTL
+#   - Query
+#   - Answer
+#   - Organization
+#   - Country
+#   - AS number
+#
+# Dependencies:
+#   - basicFlow
+#   - dnsDecode
+#
+# Examples:
+#   - tawk -e 'passivedns()' file.txt
+
+@include "hdr"
+@include "_validate_col"
+
+function passivedns(        _stat, _ds, _ans, _ip4, _ip6, _typ, _ttl, _ts, _tmp, _ansa, _ip4a, _ip6a, _typa, _ttla, _ip, _t2whois, _org, _i, _n, _typs) {
+    _stat = _validate_col("dnsStat")
+    _stat = strtonum(_stat)
+    _ans  = _validate_col("dnsAname")
+    _ip4  = _validate_col("dns4Aaddress")
+    _ip6  = _validate_col("dns6Aaddress")
+    _typ  = _validate_col("dnsAType")
+    _ttl  = _validate_col("dnsATTL")
+    _ts   = _validate_col("timeFirst")
+    _te   = _validate_col("timeLast")
+    if (__PRIHDR__ && hdr()) {
+        print __HDRSEP__ "FirstSeen", "LastSeen", "Type", "TTL", "Query", "Answer", "Organization", "Country", "ASN"
+    } else if (_stat && $_ans) {
+        gsub(/^"/, "", $_ans) # remove leading quote
+        gsub(/"$/, "", $_ans) # remove trailing quote
+        _n = split($_ans, _ansa, "\";\"")
+        split($_ip4, _ip4a, ";")
+        split($_ip6, _ip6a, ";")
+        split($_typ, _typa, ";")
+        split($_ttl, _ttla, ";")
+        for (_i = 1; _i <= _n; _i++) {
+            if (!_ansa[_i]) continue
+            if (_ip4a[_i] && _ip4a[_i] != "0.0.0.0") {
+                _ip = _ip4a[_i]
+            } else if (_ip6a[_i] && _ip6a[_i] != "::") {
+                _ip = _ip6a[_i]
+            } else {
+                _ip = ""
+            }
+            if (_ip) {
+                if (_typa[_i] == 1) {
+                    _typs = "A"
+                } else if (_typa[_i] == 28) {
+                    _typs = "AAAA"
+                } else {
+                    _typs = _typa[_i]
+                }
+                print $_ts, $_te, _typs, _ttla[_i], _ansa[_i], _ip, t2whois(_ip, "org,country,asn")
+            }
+        }
+    }
+}

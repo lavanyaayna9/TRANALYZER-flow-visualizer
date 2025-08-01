@@ -1,0 +1,6 @@
+-- Return the minimum value of timeFirst as a Unix timestamp
+
+SELECT
+    toUnixTimestamp64Micro(MIN("timeFirst")) / 1000000
+FROM
+    flow
