@@ -1,13 +1,13 @@
 TRANALYZER FLOW VISUALIZER With IP & Domain Lookup
 
-🧰 Features
-Upload and analyze .pcap files using Tranalyzer2
+FEATURES:
+1.Upload and analyze .pcap files using Tranalyzer2
 
-Visual dashboards for protocols, top IPs, and geolocation
+2.Visual dashboards for protocols, top IPs, and geolocation
 
-Domain & IP intelligence (WHOIS, DNS, ASN, geo info)
+3.Domain & IP intelligence (WHOIS, DNS, ASN, geo info)
 
-Clean responsive UI using Streamlit
+4.Clean responsive UI using Streamlit
 
 INSTALLATION GUIDE
 
@@ -72,6 +72,8 @@ t2 -r sample_file.pcap
 You should see an analysis output. If not, refer to: https://tranalyzer.com/tutorial/installation
 
 3. Run the Flow Visualizer
+
+Activate virtual env: source t2flow-env/bin/activate
 
 Step 1: Find Tranalyzer Path
 From your project root, run:
