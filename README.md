@@ -142,11 +142,10 @@ Visit http://localhost:8501 in your browser.
 
 <img width="1899" height="833" alt="Screenshot 2025-07-28 225200" src="https://github.com/user-attachments/assets/8835b6a6-9dcb-4d39-a93d-b2178e78a69f" />
 <img width="1919" height="825" alt="Screenshot 2025-07-28 225342" src="https://github.com/user-attachments/assets/73e0a951-54cc-48bb-8663-689dd529d007" />
-<img width="1523" height="619" alt="Screenshot 2025-07-28 231932" src="https://github.com/user-attachments/assets/19cc7d0b-b654-4e60-bf41-20e47d51850a" />
 <img width="1512" height="845" alt="Screenshot 2025-07-28 231754" src="https://github.com/user-attachments/assets/ab6d7435-db59-415e-9eed-2ab6d072a92f" />
 <img width="1523" height="619" alt="Screenshot 2025-07-28 231932" src="https://github.com/user-attachments/assets/29ff5807-6c2a-4822-b63f-6b0ae4680841" />
-![WhatsApp Image 2025-07-27 at 13 01 47_b9b9e2a7](https://github.com/user-attachments/assets/153394ad-e453-4ee1-937a-166635e2b772)
-![WhatsApp Image 2025-07-27 at 13 02 03_aeb209c9](https://github.com/user-attachments/assets/f1917f27-a4bc-42d3-b67b-30ae168c76c1)
+![papa](https://github.com/user-attachments/assets/739bdce2-9e80-40eb-b8c6-69e0c83bc34c)
+
 
 
 
