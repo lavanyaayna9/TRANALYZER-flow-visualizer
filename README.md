@@ -1,36 +1,105 @@
-TRANALYZER FLOW VISUALIZER WITH IP/DOMAIN LOOK UP
---------------------------------------------------
-INSTALLATION STEPS:
-1. Clone this repository.
-2. Commands to run one by one:
+TRANALYZER FLOW VISUALIZER With IP & Domain Lookup
+
+🧰 Features
+Upload and analyze .pcap files using Tranalyzer2
+
+Visual dashboards for protocols, top IPs, and geolocation
+
+Domain & IP intelligence (WHOIS, DNS, ASN, geo info)
+
+Clean responsive UI using Streamlit
+
+INSTALLATION GUIDE
+
+1. Clone the Repository
+git clone https://github.com/lavanyaayna9/TRANALYZER-flow-visualizer.git
+
+2. Setup Tranalyzer2 (one-time)
+
+Navigate to your Tranalyzer directory:
 cd tranalyzer2-0.9.3
+
+Run setup:
 ./setup.sh
 source ~/.bashrc
+
+Install system dependencies:
 sudo apt-get install autoconf autoconf-archive automake libbsd-dev libpcap-dev libreadline-dev libtool make meson zlib1g-dev
-T2HOME="$PWD"
+
+Set and confirm your T2 path:
+export T2HOME="$PWD"
 echo $T2HOME
+
+Build all plugins:
 t2build -a
-3. This will enable all the plugins by default.
-4. If a plugin is not built or gives error, just built it using : t2build nameoftheplugin
-5. Make sure the following plugins are succesfully built:
+
+If any plugin fails, build it individually:
+t2build <plugin-name>
+
+Ensure the following plugins are built:
 basicFlow
+
 basicStats
+
 protoStats
+
 connStat
+
 descriptiveStats
+
 dnsDecode
+
 geoip
+
 nDPI
+
 portClassifier
-protoStats
+
 sslDecode
+
 tcpFlags
+
 tcpStates
+
 pktSIATHisto
+
 txtSink
-6. Check the plugins that are build using t2build -l. This will provide u with a list of the plugins that are built.
-7. Verify by running any pcap file using: t2 -r nameoffile.pcap
-8. Output must appear.
-9. 
-mysqlSink 
+
+List built plugins:
+t2build -l
+Test your setup:
+t2 -r sample_file.pcap
+You should see an analysis output. If not, refer to: https://tranalyzer.com/tutorial/installation
+
+3. Run the Flow Visualizer
+
+Step 1: Find Tranalyzer Path
+From your project root, run:
+find . -type f -name "tranalyzer"
+Copy the full path it returns — e.g.:
+/home/youruser/tranalyzer2-0.9.3/tranalyzer2/build/tranalyzer
+
+Step 2: Install Python dependencies
+Navigate to your project folder and install:
+cd project
+pip install -r requirements.txt
+
+Step 3: Configure your Tranalyzer path
+Edit the path used in the upload script:
+cd pages
+nano 1_Upload_pcap.py
+Replace the value of t2_path with your copied Tranalyzer path.
+Save & exit:
+Press Ctrl + O → Enter (to save)
+Press Ctrl + X (to exit)
+
+Step 4: Launch the App
+Go back to project directory and run:
+
+cd ..
+streamlit run Home.py
+
+Visit http://localhost:8501 in your browser.
+
+
 
