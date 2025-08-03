@@ -1,6 +1,7 @@
 TRANALYZER FLOW VISUALIZER With IP & Domain Lookup
 
 FEATURES:
+
 1.Upload and analyze .pcap files using Tranalyzer2
 
 2.Visual dashboards for protocols, top IPs, and geolocation
@@ -12,9 +13,10 @@ FEATURES:
 INSTALLATION GUIDE
 
 1. Clone the Repository
+   
 git clone https://github.com/lavanyaayna9/TRANALYZER-flow-visualizer.git
 
-2. Setup Tranalyzer2 (one-time)
+3. Setup Tranalyzer2 (one-time)
 
 Navigate to your Tranalyzer directory:
 cd tranalyzer2-0.9.3
