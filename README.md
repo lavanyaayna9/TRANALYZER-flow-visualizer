@@ -144,7 +144,7 @@ Visit http://localhost:8501 in your browser.
 <img width="1919" height="825" alt="Screenshot 2025-07-28 225342" src="https://github.com/user-attachments/assets/73e0a951-54cc-48bb-8663-689dd529d007" />
 <img width="1512" height="845" alt="Screenshot 2025-07-28 231754" src="https://github.com/user-attachments/assets/ab6d7435-db59-415e-9eed-2ab6d072a92f" />
 <img width="1523" height="619" alt="Screenshot 2025-07-28 231932" src="https://github.com/user-attachments/assets/29ff5807-6c2a-4822-b63f-6b0ae4680841" />
-![papa](https://github.com/user-attachments/assets/739bdce2-9e80-40eb-b8c6-69e0c83bc34c)
+
 
 
 
